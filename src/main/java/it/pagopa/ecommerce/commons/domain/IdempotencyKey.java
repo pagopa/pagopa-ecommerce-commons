@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
  * where the first 11 digits are the <abbr title="Payment Service Provider">PSP</abbr> fiscal code
  * and the latest 10 characters are a key identifier that ensures uniqueness.
  * </p>
- * @param key value of the idempotency key
+ * @param rawValue raw value of the idempotency key
  */
 @ValueObject
-public record IdempotencyKey(String key) {
+public record IdempotencyKey(String rawValue) {
     private static final Pattern pspFiscalCodeRegex = Pattern.compile("\\d{11}");
     private static final Pattern keyIdentifierRegex = Pattern.compile("[a-zA-Z\\d]{10}");
 
@@ -32,12 +32,12 @@ public record IdempotencyKey(String key) {
 
     /**
      * Construct an {@link IdempotencyKey} from a raw {@link String} value.
-     * @param key the key
-     * @throws IllegalArgumentException if the key is not formally valid (see class documentation for the format)
+     * @param rawValue the raw idempotency key
+     * @throws IllegalArgumentException if rawValue is not formally valid (see class documentation for the format)
      */
     @PersistenceConstructor
     public IdempotencyKey {
-        String[] matches = key.split("_");
+        String[] matches = rawValue.split("_");
 
         if (matches.length != 2) {
             throw new IllegalArgumentException("Key doesn't match format `$pspFiscalCode_$keyIdentifier`");
