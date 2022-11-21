@@ -5,7 +5,7 @@ import it.pagopa.ecommerce.commons.annotations.ValueObject;
 import java.util.regex.Pattern;
 
 /**
- * <p>An <abbr title="Ricevuta di Pagamento Telematico">RPT</abbr> id.</p>
+ * <p>An <abbr>RPT</abbr> id.</p>
  * <p>This identifies a single notice given to a citizen inside the pagoPA platform.</p>
  * <p>It <b>MUST</b> adhere to the following format: {@code ([a-zA-Z\d]{29})}</p>
  * @param value RPT id value
@@ -16,8 +16,8 @@ public record RptId(String value) {
 
     /**
      * Construct an {@code RptId} from a {@link String} value.
-     * @param value <abbr title="Ricevuta di Pagamento Telematico">RPT</abbr> id value
-     * @throws IllegalArgumentException if the <abbr title="Ricevuta di Pagamento Telematico">RPT</abbr> id is not formally valid (see the class documentation for the format specification).
+     * @param value <abbr>RPT</abbr> id value
+     * @throws IllegalArgumentException if the <abbr>RPT</abbr> id is not formally valid (see the class documentation for the format specification).
      */
     public RptId {
         if (!rptIdRegex.matcher(value).matches()) {

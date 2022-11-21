@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * <p>An idempotency key used to identify payment activation requests towards Nodo.</p>
  * <p>It <b>MUST</b> have the following format:
  * {@code \d{11}_[a-zA-Z\d]{10}}
- * where the first 11 digits are the <abbr title="Payment Service Provider">PSP</abbr> fiscal code
+ * where the first 11 digits are the <abbr>PSP</abbr> fiscal code
  * and the latest 10 characters are a key identifier that ensures uniqueness.
  * </p>
  * @param rawValue raw value of the idempotency key
@@ -20,7 +20,7 @@ public record IdempotencyKey(String rawValue) {
     private static final Pattern keyIdentifierRegex = Pattern.compile("[a-zA-Z\\d]{10}");
 
     /**
-     * <p>Construct an {@link IdempotencyKey} from the two components, a <abbr title="Payment Service Provider">PSP</abbr> fiscal code
+     * <p>Construct an {@link IdempotencyKey} from the two components, a <abbr>PSP</abbr> fiscal code
      * and a key identifier</p>
      * @param pspFiscalCode PSP fiscal code
      * @param keyIdentifier Key identifier
