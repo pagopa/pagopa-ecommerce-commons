@@ -7,7 +7,39 @@ import java.time.ZonedDateTime;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-/** POJO meant to serve as a base layer for transaction attributes */
+/**
+ * <p>
+ *     Base POJO for transaction attributes.
+ * </p>
+ * <p>
+ *     Each POJO in the {@link it.pagopa.ecommerce.commons.domain.pojos} package corresponds logically to a transaction
+ *     in a specific state (thus with a specific set of attributes).
+ * </p>
+ * <p>
+ *     Given that application of events can only accumulate attributes, attribute inheritance is realized via each POJO
+ *     inheriting from the one corresponding to the previous state (the transaction state flowchart is described in {@link Transaction}).
+ * </p>
+ * <p>
+ *     This POJOs are implemented as abstract classes and are meant to be used only as (a) a reference on attributes
+ *     available/added from each event application, or (b) a mean to access transaction attributes from a generic transaction.
+ * </p>
+ * <p>
+ *     For example, the "lowest" POJO that defines a transaction status is {@code BaseTransaction}, so if you have a generic
+ *     transaction you can check for its status as such:
+ *     <pre>
+ *     {@code
+ *         Transaction t;
+ *         TransactionStatusDto status = ((BaseTransaction) t).getStatus();
+ *     }
+ *     </pre>
+ *     Note that because all other POJOs inherit (most of them indirectly) from {@code BaseTransaction}, it does not matter
+ *     which POJO class you cast to.
+ *     In the same way you can get other attributes by casting the transaction to other POJOs.
+ * </p>
+ * <p>
+ *
+ * </p>
+ */
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
