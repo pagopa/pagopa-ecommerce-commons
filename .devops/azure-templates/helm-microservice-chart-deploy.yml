@@ -4,8 +4,6 @@ parameters:
     type: boolean
   - name: "ENV"
     type: string
-  - name: "KUBERNETES_SERVICE_CONN"
-    type: string
   - name: "NAMESPACE"
     type: string
   - name: "APP_NAME"
@@ -33,12 +31,6 @@ parameters:
   - name: "ARGUMENTS"
     type: string
     default: "--timeout 5m0s"
-  - name: "APPINSIGHTS_SERVICE_CONN"
-    type: string
-    default: "none"
-  - name: "APPINSIGHTS_RESOURCE_ID"
-    type: string
-    default: "none"
 
 steps:
   - task: HelmDeploy@0
