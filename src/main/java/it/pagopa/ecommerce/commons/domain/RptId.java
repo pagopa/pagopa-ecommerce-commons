@@ -1,6 +1,8 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -25,24 +27,44 @@ public record RptId(String value) {
         }
     }
 
-    public String getFiscalCode() {
+    /**
+     * Get the fiscal code portion of the RPT id
+     * @return the fiscal code
+     */
+    public @NonNull String getFiscalCode() {
         return value.substring(0, 11);
     }
 
-    public String getNoticeId() {
+    /**
+     * Get the notice id portion of the RPT id
+     * @return the notice id
+     */
+    public @NonNull String getNoticeId() {
         return value.substring(11);
     }
 
-    public String getAuxDigit()  {
-        return getNoticeId().substring(0,1);
+    /**
+     * Get the auxiliary digit of the RPT id
+     * @return the auxiliary digit
+     */
+    public @NonNull String getAuxDigit()  {
+        return getNoticeId().substring(0, 1);
     }
 
-    public String getApplicationCode()  {
-        return ("0").equals(getAuxDigit()) ? getNoticeId().substring(1,3) : null;
+    /**
+     * Get the application code portion of the RPT id.
+     * @return the application code. Returns null if the auxiliary digit is different from 0.
+     */
+    public @Nullable String getApplicationCode()  {
+        return ("0").equals(getAuxDigit()) ? getNoticeId().substring(1, 3) : null;
     }
 
-    public String getIUV()  {
-        return getNoticeId().substring(getApplicationCode() != null ? 3 : 1,18);
+    /**
+     * Get the IUV (Indicatore Univoco di Versamento) portion of the RPT id
+     * @return the IUV
+     */
+    public @NonNull String getIUV()  {
+        return getNoticeId().substring(getApplicationCode() != null ? 3 : 1, 18);
     }
 }
 
