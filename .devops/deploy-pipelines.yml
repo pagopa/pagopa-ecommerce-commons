@@ -1,18 +1,10 @@
-# Deploy to Azure Kubernetes Service:
-# - DEV
-# - UAT -> PROD
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+variables:
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  BRANCH_NAME: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
 
-parameters:
-  - name: 'RELEASE_SEMVER'
-    displayName: 'When packing a release, define the version bump to apply (release is done automatically when deploying on UAT and skipped on DEV) '
-    type: string
-    values:
-      - major
-      - minor
-      - patch
-    default: patch
+trigger: none
+
 resources:
   repositories:
     - repository: pagopaCommons
@@ -23,6 +15,16 @@ resources:
 
 pool:
   vmImage: ubuntu-latest
+
+parameters:
+  - name: 'RELEASE_SEMVER'
+    displayName: 'When packing a release, define the version bump to apply (release is done automatically when deploying on UAT and skipped on DEV) '
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+    default: patch
 
 stages:
   -   stage: BuildEndUnitTest
