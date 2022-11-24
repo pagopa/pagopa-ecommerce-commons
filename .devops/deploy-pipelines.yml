@@ -59,7 +59,7 @@ stages:
         steps:
           - checkout: self
             displayName: 'Checkout'
-            persistCredentials: ${{ parameters.persistCredentials }}
+            persistCredentials: true
 
           - ${{ if ne(parameters.gitReference, 'none') }}:
             - bash: |
