@@ -26,7 +26,6 @@ pool:
 
 stages:
   - stage: Release
-    dependsOn:
     jobs:
       - job: make_release
         steps:
