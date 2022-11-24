@@ -80,7 +80,7 @@ stages:
     jobs:
       - job: make_release
         steps:
-          - template: templates/template.yaml@pagopaCommons
+          - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
