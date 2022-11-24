@@ -12,31 +12,7 @@ parameters:
       - major
       - minor
       - patch
-      - none
-    default: none
-  - name: 'RELEASE_CHART_SEMVER'
-    displayName: 'When upgrading helm chart, define the version bump to apply'
-    type: string
-    values:
-      - major
-      - minor
-      - patch
-      - none
-    default: none
-  - name: "FORCE_REPLACE_DOCKER_IMAGE"
-    displayName: "Force the existing docker image to be replaced (latest tag)"
-    type: boolean
-    default: False
-    values:
-      - False
-      - True
-  - name: "SKIP_RELEASE"
-    displayName: "Skip release"
-    type: boolean
-    default: False
-    values:
-      - False
-      - True
+    default: patch
 resources:
   repositories:
     - repository: pagopaCommons
