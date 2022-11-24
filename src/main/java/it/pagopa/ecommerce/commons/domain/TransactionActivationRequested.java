@@ -3,12 +3,24 @@ package it.pagopa.ecommerce.commons.domain;
 import static java.time.ZonedDateTime.now;
 
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import java.time.ZonedDateTime;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Transaction with an activation requested.
+ * </p>
+ * <p>
+ *     To this class you can apply an {@link TransactionActivatedEvent} to get a {@link TransactionActivated}
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransaction
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionActivationRequested extends BaseTransaction implements Transaction {
 

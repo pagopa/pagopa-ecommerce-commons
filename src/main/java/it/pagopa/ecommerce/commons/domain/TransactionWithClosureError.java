@@ -6,6 +6,18 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuth
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Transaction with a closure error.
+ * </p>
+ * <p>
+ *     To this class you can apply a {@link TransactionClosureSentEvent} to get a {@link TransactionClosed}.
+ *     Semantically this means that the transaction has recovered from the closure error.
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransactionWithClosureError
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionWithClosureError extends BaseTransactionWithClosureError implements Transaction {
 

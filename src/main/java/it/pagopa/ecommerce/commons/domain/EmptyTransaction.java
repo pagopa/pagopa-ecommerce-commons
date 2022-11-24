@@ -9,9 +9,20 @@ import lombok.EqualsAndHashCode;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+/**
+ * <p>
+ *     Empty transaction, meant as a starting point to which events can be applied to.
+ * </p>
+ * <p>
+ *     To this class you can apply either an {@link TransactionActivationRequestedEvent} (and get a {@link TransactionActivationRequested}
+ *     or a {@link TransactionActivatedEvent} (and get a {@link TransactionActivated})
+ * </p>
+ *
+ * @see Transaction
+ */
 @EqualsAndHashCode
 public final class EmptyTransaction implements Transaction {
-    public TransactionActivated applyActivation(TransactionActivatedEvent event) {
+    private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
                 new PaymentToken(event.getPaymentToken()),
@@ -26,7 +37,7 @@ public final class EmptyTransaction implements Transaction {
         );
     }
 
-    public TransactionActivationRequested applyActivationRequested(TransactionActivationRequestedEvent event) {
+    private TransactionActivationRequested applyActivationRequested(TransactionActivationRequestedEvent event) {
         return new TransactionActivationRequested(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
                 new RptId(event.getRptId()),

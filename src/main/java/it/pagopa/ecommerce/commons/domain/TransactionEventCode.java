@@ -1,5 +1,10 @@
 package it.pagopa.ecommerce.commons.domain;
 
+/**
+ * <p>
+ *     Enumeration describing all possible events.
+ * </p>
+ */
 public enum TransactionEventCode {
     TRANSACTION_ACTIVATED_EVENT("TRANSACTION_ACTIVATED_EVENT"),
     TRANSACTION_ACTIVATION_REQUESTED_EVENT(

@@ -8,6 +8,17 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuth
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Transaction with a requested authorization.
+ * </p>
+ * <p>
+ *     To this class you can apply an {@link TransactionAuthorizationStatusUpdatedEvent} to get a {@link TransactionWithCompletedAuthorization}
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransactionWithRequestedAuthorization
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionWithRequestedAuthorization extends BaseTransactionWithRequestedAuthorization
         implements

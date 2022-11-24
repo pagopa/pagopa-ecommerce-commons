@@ -1,14 +1,23 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionEvent;
+import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Closed transaction.
+ * </p>
+ * <p>
+ *     Given that this is a terminal state for a transaction, there are no events that you can meaningfully apply to it.
+ *     Any event application is thus ignored.
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransactionWithCompletedAuthorization
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionClosed extends BaseTransactionClosed implements Transaction {
 

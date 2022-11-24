@@ -4,11 +4,23 @@ import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionEvent;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import java.time.ZonedDateTime;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Activated transaction.
+ * </p>
+ * <p>
+ *     To this class you can apply an {@link TransactionAuthorizationRequestedEvent} to get a {@link TransactionWithRequestedAuthorization}
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransactionWithPaymentToken
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionActivated extends BaseTransactionWithPaymentToken implements Transaction {
 

@@ -2,10 +2,23 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+/**
+ * <p>
+ *     Transaction with a completed authorization.
+ * </p>
+ * <p>
+ *     To this class you can apply either a {@link TransactionClosureSentEvent} to get a {@link TransactionClosed}
+ *     or a {@link TransactionClosureErrorEvent} to get a {@link TransactionWithClosureError}
+ * </p>
+ *
+ * @see Transaction
+ * @see BaseTransactionWithCompletedAuthorization
+ */
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionWithCompletedAuthorization extends BaseTransactionWithCompletedAuthorization
         implements
