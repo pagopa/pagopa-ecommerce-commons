@@ -57,6 +57,9 @@ stages:
     jobs:
       - job: make_release
         steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              persistCredentials: true
           - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
               gitEmail: $(GIT_EMAIL)
