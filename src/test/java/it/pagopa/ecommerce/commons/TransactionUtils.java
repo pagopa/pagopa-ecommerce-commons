@@ -7,9 +7,10 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuth
 import it.pagopa.ecommerce.commons.generated.nodo.v2.dto.ClosePaymentResponseDto;
 import it.pagopa.ecommerce.commons.generated.transactions.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
+
+import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
 
 public class TransactionUtils {
 
@@ -30,7 +31,7 @@ public class TransactionUtils {
     public static final String AUTHORIZATION_REQUEST_ID = "authorizationRequestId";
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
-    @NotNull
+    @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
@@ -40,7 +41,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionActivated transactionActivated(String creationDate) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
@@ -56,7 +57,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionWithRequestedAuthorization transactionWithRequestedAuthorization(
                                                                                               TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
                                                                                               TransactionActivated transactionActivated
@@ -67,7 +68,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
         return new TransactionAuthorizationRequestedEvent(
                 TRANSACTION_ID,
@@ -88,7 +89,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
                                                                                                         AuthorizationResultDto authorizationResult
     ) {
@@ -107,7 +108,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionWithCompletedAuthorization transactionWithCompletedAuthorization(
                                                                                               TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent,
                                                                                               TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
@@ -118,7 +119,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionClosureSentEvent transactionClosureSentEvent(
                                                                           ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
     ) {
@@ -137,12 +138,12 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(TRANSACTION_ID, RPT_ID, PAYMENT_TOKEN);
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
                                                                           TransactionWithCompletedAuthorization transaction
@@ -153,7 +154,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionClosed transactionClosed(
                                                       TransactionClosureSentEvent closureSentEvent,
                                                       BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
@@ -167,7 +168,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
         return new TransactionActivationRequestedEvent(
                 TRANSACTION_ID,
@@ -184,7 +185,7 @@ public class TransactionUtils {
         );
     }
 
-    @NotNull
+    @Nonnull
     public static Transaction transactionDocument(
                                                   TransactionStatusDto transactionStatus,
                                                   ZonedDateTime creationDateTime
