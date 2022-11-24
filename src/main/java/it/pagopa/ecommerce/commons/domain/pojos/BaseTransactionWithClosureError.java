@@ -7,6 +7,15 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * <p>
+ *     POJO for a transaction that incurred into an error while trying to close.
+ *     Currently it does not expose any additional fields, as the associated event does hold any additional data.
+ * </p>
+ *
+ * @see BaseTransaction
+ * @see TransactionClosureErrorEvent
+ */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)

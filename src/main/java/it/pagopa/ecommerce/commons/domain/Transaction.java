@@ -47,8 +47,8 @@ import it.pagopa.ecommerce.commons.documents.TransactionEvent;
  * <p>
  *     Also, application of events has the following properties:
  *     <ul>
- *         <li>You can apply a non-error events from the corresponding error events (e.g. if you have applied a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent} you can still apply a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent} afterwards)</li>
- *         <li>Events in streams that do not follow the flow above are ignored (e.g. a {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent} after a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent}</li>
+ *         <li>You can apply a non-error events from the corresponding error events (e.g. if you have applied a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent TransactionClosureErrorEvent} you can still apply a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent TransactionClosureSentEvent} afterwards)</li>
+ *         <li>Events in streams that do not follow the flow above are ignored (e.g. a {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent TransactionActivatedEvent} after a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent TransactionClosureSentEvent})</li>
  *     </ul>
  * </p>
  *

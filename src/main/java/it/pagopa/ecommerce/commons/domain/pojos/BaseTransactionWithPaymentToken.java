@@ -7,6 +7,20 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * <p>
+ *     POJO for an activated transaction. As the name implies, the only field added is the payment token.
+ * </p>
+ * <p>
+ *     For simplicity we currently include all data associated to {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent TransactionActivatedEvent}.
+ * </p>
+ * <p>
+ *     To get the payment token, call {@code BaseTransaction.getTransactionActivatedData().getPaymentToken()}
+ * </p>
+ *
+ * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
+ * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent TransactionActivatedEvent
+ */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -15,6 +29,11 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
 
     TransactionActivatedData transactionActivatedData;
 
+    /**
+     * Main constructor.
+     * @param baseTransaction base transaction to be extended
+     * @param transactionActivatedData data generated with the activation event
+     */
     protected BaseTransactionWithPaymentToken(
             BaseTransaction baseTransaction,
             TransactionActivatedData transactionActivatedData
