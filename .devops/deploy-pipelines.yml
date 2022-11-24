@@ -25,7 +25,33 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
+  -   stage: BuildEndUnitTest
+      jobs:
+        - job: make_buildEndUnitTest
+          steps:
+            - task: Cache@2
+              inputs:
+                key: 'maven | "$(Agent.OS)" | pom.xml'
+                restoreKeys: |
+                  maven | "$(Agent.OS)"
+                  maven
+                path: $(MAVEN_CACHE_FOLDER)
+              displayName: Cache Maven local repo
+
+            - task: Maven@3
+              inputs:
+                mavenPomFile: 'pom.xml'
+                mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+                javaHomeOption: 'JDKVersion'
+                jdkVersionOption: '17'
+                jdkArchitectureOption: 'x64'
+                publishJUnitResults: false
+                testResultsFiles: '**/surefire-reports/TEST-*.xml'
+                goals: 'clean verify'
+                sonarQubeRunAnalysis: false
+
   - stage: Release
+    dependsOn: BuildEndUnitTest
     jobs:
       - job: make_release
         steps:
