@@ -57,9 +57,15 @@ stages:
     jobs:
       - job: make_release
         steps:
-          - template: templates/node-job-setup/template.yaml@pagopaCommons
-            parameters:
-              persistCredentials: true
+          - checkout: self
+            displayName: 'Checkout'
+            persistCredentials: ${{ parameters.persistCredentials }}
+
+          - ${{ if ne(parameters.gitReference, 'none') }}:
+            - bash: |
+                git fetch && git checkout ${{ parameters.gitReference }}
+              displayName: 'Checkout reference'
+
           - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
               gitEmail: $(GIT_EMAIL)
