@@ -25,7 +25,44 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
+  -   stage: BuildEndUnitTest
+      jobs:
+        - job: make_buildEndUnitTest
+          steps:
+            - task: Cache@2
+              inputs:
+                key: 'maven | "$(Agent.OS)" | pom.xml'
+                restoreKeys: |
+                  maven | "$(Agent.OS)"
+                  maven
+                path: $(MAVEN_CACHE_FOLDER)
+              displayName: Cache Maven local repo
+
+            - task: Maven@3
+              inputs:
+                mavenPomFile: 'pom.xml'
+                mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+                javaHomeOption: 'JDKVersion'
+                jdkVersionOption: '17'
+                jdkArchitectureOption: 'x64'
+                publishJUnitResults: false
+                testResultsFiles: '**/surefire-reports/TEST-*.xml'
+                goals: 'clean verify'
+                sonarQubeRunAnalysis: true
+
+            - task: SonarCloudPublish@1
+              displayName: 'Publish SonarCloud results on build summary'
+              inputs:
+                pollingTimeoutSec: '300'
+
+            - task: PublishCodeCoverageResults@1
+              inputs:
+                codeCoverageTool: 'JaCoCo'
+                summaryFileLocation: 'target/site/jacoco/jacoco.xml'
+                reportDirectory: 'target/site/jacoco'
+              displayName: 'Publish Code Coverage on Azure Devops'
   - stage: Release
+    dependsOn: BuildEndUnitTest
     jobs:
       - job: make_release
         steps:
@@ -34,5 +71,5 @@ stages:
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              release_branch: main
+              release_branch: CHK-768-pipeline-di-pubblicazione-su-repository-azure-azure-devops
               semver: '${{ parameters.RELEASE_SEMVER }}'
