@@ -48,19 +48,8 @@ stages:
                 publishJUnitResults: false
                 testResultsFiles: '**/surefire-reports/TEST-*.xml'
                 goals: 'clean verify'
-                sonarQubeRunAnalysis: true
+                sonarQubeRunAnalysis: false
 
-            - task: SonarCloudPublish@1
-              displayName: 'Publish SonarCloud results on build summary'
-              inputs:
-                pollingTimeoutSec: '300'
-
-            - task: PublishCodeCoverageResults@1
-              inputs:
-                codeCoverageTool: 'JaCoCo'
-                summaryFileLocation: 'target/site/jacoco/jacoco.xml'
-                reportDirectory: 'target/site/jacoco'
-              displayName: 'Publish Code Coverage on Azure Devops'
   - stage: Release
     dependsOn: BuildEndUnitTest
     jobs:
