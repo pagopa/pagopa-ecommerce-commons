@@ -1,0 +1,70 @@
+variables:
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  BRANCH_NAME: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
+
+trigger: none
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v2.10.1
+      endpoint: 'io-azure-devops-github-ro'
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: 'RELEASE_SEMVER'
+    displayName: 'When packing a release, define the version bump to apply (release is done automatically when deploying on UAT and skipped on DEV) '
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+    default: patch
+
+stages:
+  -   stage: BuildEndUnitTest
+      jobs:
+        - job: make_buildEndUnitTest
+          steps:
+            - task: Cache@2
+              inputs:
+                key: 'maven | "$(Agent.OS)" | pom.xml'
+                restoreKeys: |
+                  maven | "$(Agent.OS)"
+                  maven
+                path: $(MAVEN_CACHE_FOLDER)
+              displayName: Cache Maven local repo
+
+            - task: Maven@3
+              inputs:
+                mavenPomFile: 'pom.xml'
+                mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+                javaHomeOption: 'JDKVersion'
+                jdkVersionOption: '17'
+                jdkArchitectureOption: 'x64'
+                publishJUnitResults: false
+                testResultsFiles: '**/surefire-reports/TEST-*.xml'
+                goals: 'clean verify'
+                sonarQubeRunAnalysis: false
+
+  - stage: Release
+    dependsOn: BuildEndUnitTest
+    jobs:
+      - job: make_release
+        steps:
+          - checkout: self
+            displayName: 'Checkout'
+            persistCredentials: true
+
+          - template: templates/maven-github-release/template.yaml@pagopaCommons
+            parameters:
+              gitEmail: $(GIT_EMAIL)
+              gitUsername: $(GIT_USERNAME)
+              gitHubConnection: $(GITHUB_CONNECTION)
+              release_branch: main
+              semver: '${{ parameters.RELEASE_SEMVER }}'
