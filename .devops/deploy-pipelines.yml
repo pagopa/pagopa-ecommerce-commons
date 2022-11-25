@@ -66,5 +66,5 @@ stages:
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              release_branch: CHK-768-pipeline-di-pubblicazione-su-repository-azure-azure-devops
+              release_branch: main
               semver: '${{ parameters.RELEASE_SEMVER }}'
