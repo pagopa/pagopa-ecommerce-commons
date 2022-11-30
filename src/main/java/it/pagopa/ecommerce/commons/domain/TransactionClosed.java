@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -21,18 +21,29 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionClosed extends BaseTransactionClosed implements Transaction {
 
+    /**
+     * Primary constructor
+     *
+     * @param baseTransaction base transaction
+     * @param closureSentEventData data related to closure sending event
+     */
     public TransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction,
-            TransactionClosureSentEvent event
+            TransactionClosureSendData closureSentEventData
     ) {
-        super(baseTransaction, event.getData());
+        super(baseTransaction, closureSentEventData);
     }
 
     @Override
-    public Transaction applyEvent(TransactionEvent<?> event) {
+    public Transaction applyEvent(Object event) {
         return this;
     }
 
+    /**
+     * Change the transaction status
+     * @param status new status
+     * @return a new transaction with the same data except for the status
+     */
     @Override
     public TransactionClosed withStatus(TransactionStatusDto status) {
         return new TransactionClosed(
@@ -50,26 +61,11 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
                                         this.getCreationDate(),
                                         status
                                 ),
-                                new TransactionAuthorizationRequestedEvent(
-                                        this.getTransactionId().value().toString(),
-                                        this.getRptId().value(),
-                                        this.getTransactionActivatedData().getPaymentToken(),
-                                        this.getTransactionAuthorizationRequestData()
-                                )
+                                this.getTransactionAuthorizationRequestData()
                         ),
-                        new TransactionAuthorizationStatusUpdatedEvent(
-                                this.getTransactionId().value().toString(),
-                                this.getRptId().value(),
-                                this.getTransactionActivatedData().getPaymentToken(),
-                                this.getTransactionAuthorizationStatusUpdateData()
-                        )
+                        this.getTransactionAuthorizationStatusUpdateData()
                 ),
-                new TransactionClosureSentEvent(
-                        this.getTransactionId().value().toString(),
-                        this.getRptId().value(),
-                        this.getTransactionActivatedData().getPaymentToken(),
-                        this.getTransactionClosureSendData()
-                )
+                this.getTransactionClosureSendData()
         );
     }
 }

@@ -35,9 +35,8 @@ import lombok.experimental.FieldDefaults;
  *     Note that because all other POJOs inherit (most of them indirectly) from {@code BaseTransaction}, it does not matter
  *     which POJO class you cast to.
  *     In the same way you can get other attributes by casting the transaction to other POJOs.
- * </p>
  *
- * @see it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent TransactionActivationRequestedEvent
+ * @see it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivationRequestedEvent TransactionActivationRequestedEvent
  */
 @ToString
 @EqualsAndHashCode

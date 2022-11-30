@@ -1,7 +1,10 @@
 package it.pagopa.ecommerce.commons.redis;
 
 import java.util.Arrays;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.convert.RedisCustomConversions;
 
@@ -10,6 +13,8 @@ import org.springframework.data.redis.core.convert.RedisCustomConversions;
  * {@link it.pagopa.ecommerce.commons.domain.RptId}
  */
 @Configuration
+@ConditionalOnBean(type = "org.springframework.data.redis.core.RedisTemplate")
+@ComponentScan
 public class RedisConfiguration {
 
     /**

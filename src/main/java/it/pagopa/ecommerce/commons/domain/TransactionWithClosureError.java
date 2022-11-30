@@ -1,8 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -21,6 +22,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionWithClosureError extends BaseTransactionWithClosureError implements Transaction {
 
+    /**
+     * Primary constructor
+     *
+     * @param baseTransaction base transaction
+     * @param event closure error event
+     */
     public TransactionWithClosureError(
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosureErrorEvent event
@@ -29,17 +36,22 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     }
 
     @Override
-    public Transaction applyEvent(TransactionEvent<?> event) {
+    public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(closureSentEvent.getData().getNewTransactionStatus()),
-                    closureSentEvent
+                    this.withStatus(TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())),
+                    closureSentEvent.getData()
             );
         } else {
             return this;
         }
     }
 
+    /**
+     * Change the transaction status
+     * @param status new status
+     * @return a new transaction with the same data except for the status
+     */
     @Override
     public TransactionWithClosureError withStatus(TransactionStatusDto status) {
         return new TransactionWithClosureError(
@@ -57,19 +69,9 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                                         this.getCreationDate(),
                                         status
                                 ),
-                                new TransactionAuthorizationRequestedEvent(
-                                        this.getTransactionId().value().toString(),
-                                        this.getRptId().value(),
-                                        this.getTransactionActivatedData().getPaymentToken(),
-                                        this.getTransactionAuthorizationRequestData()
-                                )
+                                this.getTransactionAuthorizationRequestData()
                         ),
-                        new TransactionAuthorizationStatusUpdatedEvent(
-                                this.getTransactionId().value().toString(),
-                                this.getRptId().value(),
-                                this.getTransactionActivatedData().getPaymentToken(),
-                                this.getTransactionAuthorizationStatusUpdateData()
-                        )
+                        this.getTransactionAuthorizationStatusUpdateData()
                 ),
                 this.getEvent()
         );

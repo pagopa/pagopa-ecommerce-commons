@@ -1,11 +1,11 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionEvent;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivationRequestedEvent;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -32,7 +32,7 @@ public final class EmptyTransaction implements Transaction {
                 new Email(event.getData().getEmail()),
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
-                ZonedDateTime.parse(event.getCreationDate()),
+                ZonedDateTime.ofInstant(event.getCreationDate().toInstant(), ZoneId.systemDefault()),
                 TransactionStatusDto.ACTIVATED
         );
     }
@@ -44,13 +44,13 @@ public final class EmptyTransaction implements Transaction {
                 new TransactionDescription(event.getData().getDescription()),
                 new TransactionAmount(event.getData().getAmount()),
                 new Email(event.getData().getEmail()),
-                ZonedDateTime.parse(event.getCreationDate()),
+                ZonedDateTime.ofInstant(event.getCreationDate().toInstant(), ZoneId.systemDefault()),
                 TransactionStatusDto.ACTIVATION_REQUESTED
         );
     }
 
     @Override
-	public Transaction applyEvent(TransactionEvent<?> event) {
+	public Transaction applyEvent(Object event) {
 		return switch (event) {
 			case TransactionActivatedEvent transactionActivatedEvent -> this.applyActivation(transactionActivatedEvent);
 			case TransactionActivationRequestedEvent transactionActivationRequestedEvent -> this.applyActivationRequested(transactionActivationRequestedEvent);

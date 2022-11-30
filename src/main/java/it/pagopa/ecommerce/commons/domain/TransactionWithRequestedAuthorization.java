@@ -1,10 +1,8 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -24,25 +22,36 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         implements
         Transaction {
 
+    /**
+     * Primary constructor
+     *
+     * @param transaction base transaction
+     * @param authorizationRequestData data related to authorization request
+     */
     public TransactionWithRequestedAuthorization(
             BaseTransactionWithPaymentToken transaction,
-            TransactionAuthorizationRequestedEvent event
+            TransactionAuthorizationRequestData authorizationRequestData
     ) {
-        super(transaction, event.getData());
+        super(transaction, authorizationRequestData);
     }
 
     @Override
-    public Transaction applyEvent(TransactionEvent<?> event) {
+    public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
             return new TransactionWithCompletedAuthorization(
-                    this.withStatus(authorizationStatusUpdatedEvent.getData().getNewTransactionStatus()),
-                    authorizationStatusUpdatedEvent
+                    this.withStatus(TransactionStatusDto.fromValue(authorizationStatusUpdatedEvent.getData().getNewTransactionStatus().toString())),
+                    authorizationStatusUpdatedEvent.getData()
             );
         } else {
             return this;
         }
     }
 
+    /**
+     * Change the transaction status
+     * @param status new status
+     * @return a new transaction with the same data except for the status
+     */
     @Override
     public TransactionWithRequestedAuthorization withStatus(TransactionStatusDto status) {
         return new TransactionWithRequestedAuthorization(
@@ -58,12 +67,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
                         this.getCreationDate(),
                         status
                 ),
-                new TransactionAuthorizationRequestedEvent(
-                        this.getTransactionId().value().toString(),
-                        this.getRptId().value(),
-                        this.getTransactionActivatedData().getPaymentToken(),
-                        this.getTransactionAuthorizationRequestData()
-                )
+                this.getTransactionAuthorizationRequestData()
         );
     }
 }

@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
-import it.pagopa.ecommerce.commons.documents.TransactionEvent;
 
 /**
  * <p>
@@ -12,7 +11,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionEvent;
  * </p>
  * <pre>
  * {@code
- *     Transaction replayAllEvents(Stream<TransactionEvent<?>> events, Transaction baseTransaction) {
+ *     Transaction replayAllEvents(Stream<TransactionEvent> events, Transaction baseTransaction) {
  *         return events.reduce(baseTransaction, (t, e) -> t.applyEvent(e));
  *     }
  * }
@@ -47,10 +46,9 @@ import it.pagopa.ecommerce.commons.documents.TransactionEvent;
  * <p>
  *     Also, application of events has the following properties:
  *     <ul>
- *         <li>You can apply a non-error events from the corresponding error events (e.g. if you have applied a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent TransactionClosureErrorEvent} you can still apply a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent TransactionClosureSentEvent} afterwards)</li>
- *         <li>Events in streams that do not follow the flow above are ignored (e.g. a {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent TransactionActivatedEvent} after a {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent TransactionClosureSentEvent})</li>
+ *         <li>You can apply a non-error events from the corresponding error events (e.g. if you have applied a {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent TransactionClosureErrorEvent} you can still apply a {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent TransactionClosureSentEvent} afterwards)</li>
+ *         <li>Events in streams that do not follow the flow above are ignored (e.g. a {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent TransactionActivatedEvent} after a {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent TransactionClosureSentEvent})</li>
  *     </ul>
- * </p>
  *
  * See also {@link it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction} for information on how to retrieve the reconstructed transaction data
  */
@@ -62,5 +60,5 @@ public sealed interface Transaction permits EmptyTransaction,TransactionActivate
      * @param event a transaction event
      * @return a new transaction object with the event applied
      */
-    Transaction applyEvent(TransactionEvent<?> event);
+    Transaction applyEvent(Object event);
 }

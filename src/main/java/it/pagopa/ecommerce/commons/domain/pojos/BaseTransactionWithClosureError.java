@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,6 +24,12 @@ public abstract class BaseTransactionWithClosureError extends BaseTransactionWit
 
     TransactionClosureErrorEvent event;
 
+    /**
+     * Primary constructor
+     *
+     * @param baseTransaction base transaction
+     * @param event data related to closure error event
+     */
     protected BaseTransactionWithClosureError(
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosureErrorEvent event

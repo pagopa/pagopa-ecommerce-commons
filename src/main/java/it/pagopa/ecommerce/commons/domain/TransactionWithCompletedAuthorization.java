@@ -1,9 +1,8 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -24,19 +23,25 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
         implements
         Transaction {
 
+    /**
+     * Primary constructor
+     *
+     * @param baseTransaction base transaction
+     * @param authorizationStatusUpdateData data related to authorization status update
+     */
     public TransactionWithCompletedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationStatusUpdatedEvent event
+            TransactionAuthorizationStatusUpdateData authorizationStatusUpdateData
     ) {
-        super(baseTransaction, event.getData());
+        super(baseTransaction, authorizationStatusUpdateData);
     }
 
     @Override
-    public Transaction applyEvent(TransactionEvent<?> event) {
+    public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(closureSentEvent.getData().getNewTransactionStatus()),
-                    closureSentEvent
+                    this.withStatus(TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())),
+                    closureSentEvent.getData()
             );
         } else if (event instanceof TransactionClosureErrorEvent closureErrorEvent) {
             return new TransactionWithClosureError(
@@ -48,6 +53,11 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
         }
     }
 
+    /**
+     * Change the transaction status
+     * @param status new status
+     * @return a new transaction with the same data except for the status
+     */
     @Override
     public TransactionWithCompletedAuthorization withStatus(TransactionStatusDto status) {
         return new TransactionWithCompletedAuthorization(
@@ -64,19 +74,9 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
                                 this.getCreationDate(),
                                 status
                         ),
-                        new TransactionAuthorizationRequestedEvent(
-                                this.getTransactionId().value().toString(),
-                                this.getRptId().value(),
-                                this.getTransactionActivatedData().getPaymentToken(),
-                                this.getTransactionAuthorizationRequestData()
-                        )
+                        this.getTransactionAuthorizationRequestData()
                 ),
-                new TransactionAuthorizationStatusUpdatedEvent(
-                        this.getTransactionId().value().toString(),
-                        this.getRptId().value(),
-                        this.getTransactionActivatedData().getPaymentToken(),
-                        this.getTransactionAuthorizationStatusUpdateData()
-                )
+                this.getTransactionAuthorizationStatusUpdateData()
         );
     }
 }

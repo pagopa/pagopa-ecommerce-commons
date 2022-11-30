@@ -1,14 +1,13 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import static java.time.ZonedDateTime.now;
-
-import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
-import java.time.ZonedDateTime;
 import lombok.EqualsAndHashCode;
+
+import java.time.ZonedDateTime;
+
+import static java.time.ZonedDateTime.now;
 
 /**
  * <p>
@@ -24,6 +23,17 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class TransactionActivationRequested extends BaseTransaction implements Transaction {
 
+    /**
+     * Primary constructor
+     *
+     * @param transactionId transaction id
+     * @param rptId RPT id
+     * @param description payment description
+     * @param amount transaction amount in euro cents
+     * @param email email where the payment receipt will be sent to
+     * @param creationDate creation date of this transaction
+     * @param status transaction status
+     */
     public TransactionActivationRequested(
             TransactionId transactionId,
             RptId rptId,
@@ -36,6 +46,16 @@ public final class TransactionActivationRequested extends BaseTransaction implem
         super(transactionId, rptId, description, amount, email, creationDate, status);
     }
 
+    /**
+     * Convenience constructor that sets the transaction creation date to now.
+     *
+     * @param transactionId transaction id
+     * @param rptId RPT id
+     * @param description payment description
+     * @param amount transaction amount in euro cents
+     * @param email email where the payment receipt will be sent to
+     * @param status transaction status
+     */
     public TransactionActivationRequested(
             TransactionId transactionId,
             RptId rptId,
@@ -48,7 +68,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
     }
 
     @Override
-    public Transaction applyEvent(TransactionEvent<?> event) {
+    public Transaction applyEvent(Object event) {
         if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
             return new TransactionActivated(this.withStatus(TransactionStatusDto.ACTIVATED), transactionActivatedEvent);
         } else {
@@ -56,6 +76,11 @@ public final class TransactionActivationRequested extends BaseTransaction implem
         }
     }
 
+    /**
+     * Change the transaction status
+     * @param status new status
+     * @return a new transaction with the same data except for the status
+     */
     @Override
     public TransactionActivationRequested withStatus(TransactionStatusDto status) {
         return new TransactionActivationRequested(
