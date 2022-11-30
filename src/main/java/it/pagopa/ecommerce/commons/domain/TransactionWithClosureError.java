@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent;
-import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
+import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 /**

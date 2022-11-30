@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivationRequestedEvent;
-import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
+import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZoneId;

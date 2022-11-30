@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.generated.events.v1.TransactionAuthorizationRequestedEvent;
-import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
+import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;

@@ -2,8 +2,9 @@ package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.domain.*;
-import it.pagopa.ecommerce.commons.generated.transactions.model.TransactionStatusDto;
 import java.time.ZonedDateTime;
+
+import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

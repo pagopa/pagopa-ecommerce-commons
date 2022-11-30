@@ -1,5 +1,4 @@
 package it.pagopa.ecommerce.commons.utils;
-
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.springframework.stereotype.Component;
 
@@ -7,7 +6,7 @@ import org.springframework.stereotype.Component;
  *  <p>The utils class for transaction.</p>
  */
 @Component
-public class TransactionUtil {
+public class TransactionUtils {
 
     /**
      * The method used for check if the specific status is transient
