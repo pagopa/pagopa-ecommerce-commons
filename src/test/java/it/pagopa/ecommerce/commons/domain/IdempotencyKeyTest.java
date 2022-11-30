@@ -16,7 +16,10 @@ class IdempotencyKeyTest {
 
     @Test
     void shouldThrowInvalidFiscalCode() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new IdempotencyKey(INVALID_FISCAL_CODE, VALID_KEY_ID));
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new IdempotencyKey(INVALID_FISCAL_CODE, VALID_KEY_ID)
+        );
 
         String expectedMessage = "PSP fiscal code doesn't match regex";
         String actualMessage = exception.getMessage();
@@ -26,7 +29,10 @@ class IdempotencyKeyTest {
 
     @Test
     void shouldThrowInvalidKeyId() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new IdempotencyKey(VALID_FISCAL_CODE, INVALID_KEY_ID));
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new IdempotencyKey(VALID_FISCAL_CODE, INVALID_KEY_ID)
+        );
 
         String expectedMessage = "Key identifier doesn't match regex";
         String actualMessage = exception.getMessage();
@@ -50,7 +56,10 @@ class IdempotencyKeyTest {
 
     @Test
     void shouldThrowInvalidIdempotencyKeyWithPersistenceConstructor() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> new IdempotencyKey(VALID_FISCAL_CODE + "_" + INVALID_KEY_ID));
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new IdempotencyKey(VALID_FISCAL_CODE + "_" + INVALID_KEY_ID)
+        );
 
         String expectedMessage = "Key identifier doesn't match regex";
         String actualMessage = exception.getMessage();
@@ -60,6 +69,9 @@ class IdempotencyKeyTest {
 
     @Test
     void shouldThrowMalformedIdempotencyKeyWithPersistenceConstructor() {
-        assertThrows(IllegalArgumentException.class, () -> new IdempotencyKey(VALID_FISCAL_CODE + "_" + INVALID_KEY_ID + "_" + "aaaa"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new IdempotencyKey(VALID_FISCAL_CODE + "_" + INVALID_KEY_ID + "_" + "aaaa")
+        );
     }
 }

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "templates/events/transaction_closure_error_event/schema.json",
+  "description": "Business event corresponding to a transaction closure incurring in an error. This event maps to a transient state for transactions.",
+  "properties": {
+    "version": {
+      "$ref": "event_version.json"
+    },
+    "id": {
+      "type": "string"
+    },
+    "transactionId": {
+      "type": "string"
+    },
+    "rptId": {
+      "type": "string"
+    },
+    "paymentToken": {
+      "type": "string"
+    },
+    "transactionEventCode": {
+      "type": "string",
+      "enum": ["TRANSACTION_CLOSURE_ERROR_EVENT"]
+    },
+    "creationDate": {
+      "type": "string",
+      "format": "date-time",
+      "existingJavaType": "java.time.ZonedDateTime"
+    },
+    "data": {
+      "type": "object",
+      "existingJavaType" : "java.lang.Void",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "transactionId",
+    "rptId",
+    "paymentToken",
+    "transactionEventCode",
+    "creationDate",
+    "data"
+  ],
+  "additionalProperties": false
+}
