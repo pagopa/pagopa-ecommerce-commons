@@ -265,8 +265,6 @@
                             <configOptions>
                                 <basePackage>it.pagopa.generated.transactions.server</basePackage>
                                 <modelPackage>it.pagopa.generated.transactions.server.model</modelPackage>
-                                <apiPackage>it.pagopa.generated.transactions.server.api</apiPackage>
-                                <configPackage>it.pagopa.generated.transactions.server.config</configPackage>
                                 <interfaceOnly>true</interfaceOnly>
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <skipDefaultInterface>true</skipDefaultInterface>
@@ -294,8 +292,8 @@
                                 <swaggerAnnotations>false</swaggerAnnotations>
                                 <openApiNullable>false</openApiNullable>
                             </configOptions>
-                            <modelPackage>it.pagopa.ecommerce.commons.generated.nodo.v2.dto</modelPackage>
-                            <apiPackage>it.pagopa.ecommerce.commons.generated.nodo.v2.api</apiPackage>
+                            <modelPackage>it.pagopa.generated.ecommerce.nodo.v2.dto</modelPackage>
+                            <apiPackage>it.pagopa.generated.ecommerce.nodo.v2.api</apiPackage>
                             <modelNameSuffix>dto</modelNameSuffix>
                         </configuration>
                     </execution>
@@ -401,7 +399,7 @@
                     <additionalOptions>
                         <additionalOption>--enable-preview</additionalOption>
                     </additionalOptions>
-                    <excludePackageNames>it.pagopa.ecommerce.commons.generated.nodo.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
+                    <excludePackageNames>org.openapitools.api.*:it.pagopa.generated.ecommerce.nodo.v2.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>

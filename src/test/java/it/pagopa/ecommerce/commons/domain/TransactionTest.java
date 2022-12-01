@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.TransactionUtils;
 import it.pagopa.ecommerce.commons.generated.events.v1.*;
-import it.pagopa.ecommerce.commons.generated.nodo.v2.dto.ClosePaymentResponseDto;
+import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
