@@ -399,7 +399,7 @@
                     <additionalOptions>
                         <additionalOption>--enable-preview</additionalOption>
                     </additionalOptions>
-                    <excludePackageNames>org.openapitools.api.*:it.pagopa.generated.ecommerce.nodo.v2.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
+                    <excludePackageNames>org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>
