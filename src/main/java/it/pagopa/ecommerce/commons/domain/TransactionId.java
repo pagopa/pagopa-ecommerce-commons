@@ -5,8 +5,9 @@ import java.util.UUID;
 
 /**
  * <p>
- *     Value object holding a transaction id.
+ * Value object holding a transaction id.
  * </p>
+ *
  * @param value the transaction id
  */
 @ValueObject

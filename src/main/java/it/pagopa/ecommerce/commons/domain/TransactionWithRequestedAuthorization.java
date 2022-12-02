@@ -8,10 +8,12 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- *     Transaction with a requested authorization.
+ * Transaction with a requested authorization.
  * </p>
  * <p>
- *     To this class you can apply an {@link TransactionAuthorizationStatusUpdatedEvent} to get a {@link TransactionWithCompletedAuthorization}
+ * To this class you can apply an
+ * {@link TransactionAuthorizationStatusUpdatedEvent} to get a
+ * {@link TransactionWithCompletedAuthorization}
  * </p>
  *
  * @see Transaction
@@ -25,7 +27,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     /**
      * Primary constructor
      *
-     * @param transaction base transaction
+     * @param transaction              base transaction
      * @param authorizationRequestData data related to authorization request
      */
     public TransactionWithRequestedAuthorization(
@@ -39,7 +41,11 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
             return new TransactionWithCompletedAuthorization(
-                    this.withStatus(TransactionStatusDto.fromValue(authorizationStatusUpdatedEvent.getData().getNewTransactionStatus().toString())),
+                    this.withStatus(
+                            TransactionStatusDto.fromValue(
+                                    authorizationStatusUpdatedEvent.getData().getNewTransactionStatus().toString()
+                            )
+                    ),
                     authorizationStatusUpdatedEvent.getData()
             );
         } else {
@@ -49,6 +55,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
 
     /**
      * Change the transaction status
+     *
      * @param status new status
      * @return a new transaction with the same data except for the status
      */

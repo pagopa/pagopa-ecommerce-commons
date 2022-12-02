@@ -1,9 +1,12 @@
 package it.pagopa.ecommerce.commons.utils;
+
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.springframework.stereotype.Component;
 
 /**
- *  <p>The utils class for transaction.</p>
+ * <p>
+ * The utils class for transaction.
+ * </p>
  */
 @Component
 public class TransactionUtils {

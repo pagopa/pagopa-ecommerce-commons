@@ -18,17 +18,33 @@ public class TransactionUtilsTest {
 
     private TransactionUtils transactionUtils;
 
-    List<TransactionStatusDto> transientStatusList = List.of(TransactionStatusDto.ACTIVATED, TransactionStatusDto.AUTHORIZED, TransactionStatusDto.AUTHORIZATION_REQUESTED, TransactionStatusDto.AUTHORIZATION_FAILED, TransactionStatusDto.CLOSURE_FAILED, TransactionStatusDto.CLOSED);
+    List<TransactionStatusDto> transientStatusList = List.of(
+            TransactionStatusDto.ACTIVATED,
+            TransactionStatusDto.AUTHORIZED,
+            TransactionStatusDto.AUTHORIZATION_REQUESTED,
+            TransactionStatusDto.AUTHORIZATION_FAILED,
+            TransactionStatusDto.CLOSURE_FAILED,
+            TransactionStatusDto.CLOSED
+    );
 
-    List<TransactionStatusDto> refaundableStatusList = List.of(TransactionStatusDto.AUTHORIZED, TransactionStatusDto.AUTHORIZATION_REQUESTED, TransactionStatusDto.AUTHORIZATION_FAILED, TransactionStatusDto.CLOSURE_FAILED);
+    List<TransactionStatusDto> refaundableStatusList = List.of(
+            TransactionStatusDto.AUTHORIZED,
+            TransactionStatusDto.AUTHORIZATION_REQUESTED,
+            TransactionStatusDto.AUTHORIZATION_FAILED,
+            TransactionStatusDto.CLOSURE_FAILED
+    );
 
     @Test
     void shouldHaveBeenTransientStatus() {
         transactionUtils = new TransactionUtils();
         transientStatusList.forEach(
                 transactionStatusDto -> {
-                    assertTrue(transactionUtils.isTransientStatus(transactionStatusDto),"Error! The status is not transient");
-                });
+                    assertTrue(
+                            transactionUtils.isTransientStatus(transactionStatusDto),
+                            "Error! The status is not transient"
+                    );
+                }
+        );
     }
 
     @Test
@@ -36,7 +52,11 @@ public class TransactionUtilsTest {
         transactionUtils = new TransactionUtils();
         refaundableStatusList.forEach(
                 transactionStatusDto -> {
-                    assertTrue(transactionUtils.isRefundableTransaction(transactionStatusDto),"Error! The status is not refundable transaction");
-                });
+                    assertTrue(
+                            transactionUtils.isRefundableTransaction(transactionStatusDto),
+                            "Error! The status is not refundable transaction"
+                    );
+                }
+        );
     }
 }

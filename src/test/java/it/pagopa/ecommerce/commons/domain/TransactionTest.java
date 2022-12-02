@@ -140,7 +140,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -172,7 +174,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -205,7 +209,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
@@ -246,7 +252,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
@@ -307,7 +315,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
@@ -338,7 +348,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
@@ -374,7 +386,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
@@ -413,7 +427,9 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
-                .transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK);
+                .transactionAuthorizationStatusUpdatedEvent(
+                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);

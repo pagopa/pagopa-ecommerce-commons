@@ -11,11 +11,14 @@ import java.util.UUID;
 
 /**
  * <p>
- *     Empty transaction, meant as a starting point to which events can be applied to.
+ * Empty transaction, meant as a starting point to which events can be applied
+ * to.
  * </p>
  * <p>
- *     To this class you can apply either an {@link TransactionActivationRequestedEvent} (and get a {@link TransactionActivationRequested}
- *     or a {@link TransactionActivatedEvent} (and get a {@link TransactionActivated})
+ * To this class you can apply either an
+ * {@link TransactionActivationRequestedEvent} (and get a
+ * {@link TransactionActivationRequested} or a {@link TransactionActivatedEvent}
+ * (and get a {@link TransactionActivated})
  * </p>
  *
  * @see Transaction

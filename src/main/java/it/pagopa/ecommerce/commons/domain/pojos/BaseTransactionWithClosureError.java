@@ -9,8 +9,9 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- *     POJO for a transaction that incurred into an error while trying to close.
- *     Currently it does not expose any additional fields, as the associated event does hold any additional data.
+ * POJO for a transaction that incurred into an error while trying to close.
+ * Currently it does not expose any additional fields, as the associated event
+ * does hold any additional data.
  * </p>
  *
  * @see BaseTransaction
@@ -28,7 +29,7 @@ public abstract class BaseTransactionWithClosureError extends BaseTransactionWit
      * Primary constructor
      *
      * @param baseTransaction base transaction
-     * @param event data related to closure error event
+     * @param event           data related to closure error event
      */
     protected BaseTransactionWithClosureError(
             BaseTransactionWithCompletedAuthorization baseTransaction,

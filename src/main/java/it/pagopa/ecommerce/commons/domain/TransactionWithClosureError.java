@@ -9,11 +9,12 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- *     Transaction with a closure error.
+ * Transaction with a closure error.
  * </p>
  * <p>
- *     To this class you can apply a {@link TransactionClosureSentEvent} to get a {@link TransactionClosed}.
- *     Semantically this means that the transaction has recovered from the closure error.
+ * To this class you can apply a {@link TransactionClosureSentEvent} to get a
+ * {@link TransactionClosed}. Semantically this means that the transaction has
+ * recovered from the closure error.
  * </p>
  *
  * @see Transaction
@@ -26,7 +27,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      * Primary constructor
      *
      * @param baseTransaction base transaction
-     * @param event closure error event
+     * @param event           closure error event
      */
     public TransactionWithClosureError(
             BaseTransactionWithCompletedAuthorization baseTransaction,
@@ -39,7 +40,9 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())),
+                    this.withStatus(
+                            TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())
+                    ),
                     closureSentEvent.getData()
             );
         } else {
@@ -49,6 +52,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
 
     /**
      * Change the transaction status
+     *
      * @param status new status
      * @return a new transaction with the same data except for the status
      */

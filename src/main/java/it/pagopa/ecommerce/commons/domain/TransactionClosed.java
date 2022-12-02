@@ -8,11 +8,11 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- *     Closed transaction.
+ * Closed transaction.
  * </p>
  * <p>
- *     Given that this is a terminal state for a transaction, there are no events that you can meaningfully apply to it.
- *     Any event application is thus ignored.
+ * Given that this is a terminal state for a transaction, there are no events
+ * that you can meaningfully apply to it. Any event application is thus ignored.
  * </p>
  *
  * @see Transaction
@@ -24,7 +24,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
     /**
      * Primary constructor
      *
-     * @param baseTransaction base transaction
+     * @param baseTransaction      base transaction
      * @param closureSentEventData data related to closure sending event
      */
     public TransactionClosed(
@@ -41,6 +41,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
 
     /**
      * Change the transaction status
+     *
      * @param status new status
      * @return a new transaction with the same data except for the status
      */

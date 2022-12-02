@@ -6,7 +6,6 @@ import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 
-
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -98,7 +97,8 @@ public class TransactionUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(TransactionAuthorizationStatusUpdateData.AuthorizationResult authorizationResult
+    public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
+                                                                                                        TransactionAuthorizationStatusUpdateData.AuthorizationResult authorizationResult
     ) {
         TransactionAuthorizationStatusUpdateData.TransactionStatus newStatus;
         switch (authorizationResult) {
@@ -135,7 +135,8 @@ public class TransactionUtils {
                                                                           ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
     ) {
         TransactionAuthorizationStatusUpdateData.TransactionStatus newStatus;
-        TransactionClosureSendData.ClosepaymentResponseOutcome transactionClosePaymentOutcome = TransactionClosureSendData.ClosepaymentResponseOutcome.fromValue(closePaymentOutcome.getValue());
+        TransactionClosureSendData.ClosepaymentResponseOutcome transactionClosePaymentOutcome = TransactionClosureSendData.ClosepaymentResponseOutcome
+                .fromValue(closePaymentOutcome.getValue());
         switch (transactionClosePaymentOutcome) {
             case OK -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.CLOSED;
             case KO -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.CLOSURE_FAILED;
@@ -184,7 +185,8 @@ public class TransactionUtils {
                                                       TransactionClosureSentEvent closureSentEvent,
                                                       BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
-        TransactionStatusDto newStatus = TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value());
+        TransactionStatusDto newStatus = TransactionStatusDto
+                .fromValue(closureSentEvent.getData().getNewTransactionStatus().value());
 
         return new TransactionClosed(
                 ((BaseTransactionWithCompletedAuthorization) transactionWithCompletedAuthorization

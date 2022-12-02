@@ -11,10 +11,11 @@ import static java.time.ZonedDateTime.now;
 
 /**
  * <p>
- *     Transaction with an activation requested.
+ * Transaction with an activation requested.
  * </p>
  * <p>
- *     To this class you can apply an {@link TransactionActivatedEvent} to get a {@link TransactionActivated}
+ * To this class you can apply an {@link TransactionActivatedEvent} to get a
+ * {@link TransactionActivated}
  * </p>
  *
  * @see Transaction
@@ -27,12 +28,12 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * Primary constructor
      *
      * @param transactionId transaction id
-     * @param rptId RPT id
-     * @param description payment description
-     * @param amount transaction amount in euro cents
-     * @param email email where the payment receipt will be sent to
-     * @param creationDate creation date of this transaction
-     * @param status transaction status
+     * @param rptId         RPT id
+     * @param description   payment description
+     * @param amount        transaction amount in euro cents
+     * @param email         email where the payment receipt will be sent to
+     * @param creationDate  creation date of this transaction
+     * @param status        transaction status
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
@@ -50,11 +51,11 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * Convenience constructor that sets the transaction creation date to now.
      *
      * @param transactionId transaction id
-     * @param rptId RPT id
-     * @param description payment description
-     * @param amount transaction amount in euro cents
-     * @param email email where the payment receipt will be sent to
-     * @param status transaction status
+     * @param rptId         RPT id
+     * @param description   payment description
+     * @param amount        transaction amount in euro cents
+     * @param email         email where the payment receipt will be sent to
+     * @param status        transaction status
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
@@ -78,6 +79,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
 
     /**
      * Change the transaction status
+     *
      * @param status new status
      * @return a new transaction with the same data except for the status
      */

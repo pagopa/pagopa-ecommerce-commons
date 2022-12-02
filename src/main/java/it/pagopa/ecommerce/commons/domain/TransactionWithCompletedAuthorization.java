@@ -8,11 +8,12 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- *     Transaction with a completed authorization.
+ * Transaction with a completed authorization.
  * </p>
  * <p>
- *     To this class you can apply either a {@link TransactionClosureSentEvent} to get a {@link TransactionClosed}
- *     or a {@link TransactionClosureErrorEvent} to get a {@link TransactionWithClosureError}
+ * To this class you can apply either a {@link TransactionClosureSentEvent} to
+ * get a {@link TransactionClosed} or a {@link TransactionClosureErrorEvent} to
+ * get a {@link TransactionWithClosureError}
  * </p>
  *
  * @see Transaction
@@ -26,8 +27,9 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
     /**
      * Primary constructor
      *
-     * @param baseTransaction base transaction
-     * @param authorizationStatusUpdateData data related to authorization status update
+     * @param baseTransaction               base transaction
+     * @param authorizationStatusUpdateData data related to authorization status
+     *                                      update
      */
     public TransactionWithCompletedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction,
@@ -40,7 +42,9 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())),
+                    this.withStatus(
+                            TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())
+                    ),
                     closureSentEvent.getData()
             );
         } else if (event instanceof TransactionClosureErrorEvent closureErrorEvent) {
@@ -55,6 +59,7 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
 
     /**
      * Change the transaction status
+     *
      * @param status new status
      * @return a new transaction with the same data except for the status
      */
