@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.6.7</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>it.pagopa</groupId>
     <artifactId>pagopa-ecommerce-commons</artifactId>
@@ -27,6 +28,7 @@
         <java.version>17</java.version>
         <spring-cloud-azure.version>4.0.0</spring-cloud-azure.version>
         <jacoco.version>0.8.8</jacoco.version>
+        <spotless.version>2.27.2</spotless.version>
     </properties>
     <dependencies>
         <dependency>
@@ -73,6 +75,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -242,6 +245,146 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>6.2.1</version>
+                <executions>
+                    <execution>
+                        <id>transactions-dtos</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/specs/transactions-dtos.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <configOptions>
+                                <basePackage>it.pagopa.generated.transactions.server</basePackage>
+                                <modelPackage>it.pagopa.generated.transactions.server.model</modelPackage>
+                                <interfaceOnly>true</interfaceOnly>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSwaggerUI>false</useSwaggerUI>
+                                <reactive>true</reactive>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>nodo-rest-api-v2</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                https://raw.githubusercontent.com/pagopa/pagopa-infra/2d3db67b9638dc53ff2c04b1fc4fd2bc0f54763e/src/core/api/nodopagamenti_api/nodoPerPM/v2/_swagger.json.tpl
+                            </inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <configOptions>
+                                <swaggerAnnotations>false</swaggerAnnotations>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                            <modelPackage>it.pagopa.generated.ecommerce.nodo.v2.dto</modelPackage>
+                            <apiPackage>it.pagopa.generated.ecommerce.nodo.v2.api</apiPackage>
+                            <modelNameSuffix>dto</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <formats>
+                        <!-- you can define as many formats as you want, each is independent -->
+                        <format>
+                            <!-- define the files to apply to -->
+                            <includes>
+                                <include>*.md</include>
+                                <include>.gitignore</include>
+                            </includes>
+                            <!-- define the steps to apply to those files -->
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                            <indent>
+                                <tabs>true</tabs>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                    <!-- define a language-specific format -->
+                    <java>
+                        <toggleOffOn/>
+
+                        <eclipse>
+                            <file>${project.basedir}/eclipse-style.xml</file>
+                        </eclipse>
+
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jsonschema2pojo</groupId>
+                <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                <version>1.1.2</version>
+                <executions>
+                    <execution>
+                        <id>event-schemas</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourcePaths>
+                                <sourcePath>${basedir}/src/main/resources/schemas/events/v1/event_version.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_activated_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_activation_requested_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_authorization_requested_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_authorization_status_updated_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_closure_sent_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_user_receipt_added_event.json
+                                </sourcePath>
+                                <sourcePath>
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_closure_error_event.json
+                                </sourcePath>
+                            </sourcePaths>
+                            <targetPackage>it.pagopa.ecommerce.commons.generated.events.v1</targetPackage>
+                            <includeConstructors>true</includeConstructors>
+                            <generateBuilders>true</generateBuilders>
+                            <usePrimitives>true</usePrimitives>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -260,6 +403,10 @@
                 </reportSets>
                 <configuration>
                     <failOnWarnings>true</failOnWarnings>
+                    <additionalOptions>
+                        <additionalOption>--enable-preview</additionalOption>
+                    </additionalOptions>
+                    <excludePackageNames>org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>

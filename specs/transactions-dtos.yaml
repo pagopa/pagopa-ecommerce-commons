@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: Specification for eCommerce transaction status
+  description: Specification for eCommerce transaction status
+  version: 1.0.0
+paths:
+  /required-for-openapi-validation:
+    get:
+      operationId: required-for-openapi-validation
+      responses:
+        '200':
+          description: required-for-openapi-validation
+components:
+  schemas:
+    TransactionStatus:
+      type: string
+      description: Possible statuses a transaction can be in
+      enum:
+        - ACTIVATION_REQUESTED
+        - ACTIVATED
+        - AUTHORIZATION_REQUESTED
+        - AUTHORIZED
+        - AUTHORIZATION_FAILED
+        - CLOSED
+        - CLOSURE_FAILED
+        - CLOSURE_ERROR
+        - NOTIFIED
+        - NOTIFIED_FAILED
+    AuthorizationResult:
+      description: Authorization result
+      type: string
+      enum:
+        - OK
+        - KO

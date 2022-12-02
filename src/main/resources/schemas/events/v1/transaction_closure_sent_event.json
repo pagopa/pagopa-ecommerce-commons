@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "templates/events/transaction_closure_sent_event/schema.json",
+  "description": "Business event corresponding to a transaction closure being sent. This action notifies Nodo that the transaction has been finalized.",
+  "properties": {
+    "version": {
+      "$ref": "event_version.json"
+    },
+    "id": {
+      "type": "string"
+    },
+    "transactionId": {
+      "type": "string"
+    },
+    "rptId": {
+      "type": "string"
+    },
+    "paymentToken": {
+      "type": "string"
+    },
+    "transactionEventCode": {
+      "type": "string",
+      "enum": ["TRANSACTION_CLOSURE_SENT_EVENT"]
+    },
+    "creationDate": {
+      "type": "string",
+      "format": "date-time",
+      "existingJavaType": "java.time.ZonedDateTime"
+    },
+    "data": {
+      "type": "object",
+      "javaType" : "it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSendData",
+      "properties": {
+        "nodeClosePaymentOutcome": {
+          "$ref": "closepayment_response_outcome.json"
+        },
+        "newTransactionStatus": {
+          "$ref": "transaction_status.json"
+        },
+        "authorizationCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nodeClosePaymentOutcome",
+        "newTransactionStatus",
+        "authorizationCode"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "transactionId",
+    "rptId",
+    "paymentToken",
+    "transactionEventCode",
+    "creationDate",
+    "data"
+  ],
+  "additionalProperties": false
+}
