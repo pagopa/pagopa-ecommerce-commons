@@ -31,6 +31,19 @@ public class TransactionUtils {
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
     @Nonnull
+    public static TransactionActivationRequested transactionActivationRequested(String creationDate) {
+        return new TransactionActivationRequested(
+                new TransactionId(UUID.fromString(TRANSACTION_ID)),
+                new RptId(RPT_ID),
+                new TransactionDescription(DESCRIPTION),
+                new TransactionAmount(AMOUNT),
+                new Email(EMAIL),
+                ZonedDateTime.parse(creationDate),
+                TransactionStatusDto.ACTIVATION_REQUESTED
+        );
+    }
+
+    @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
                 Version.V_1,

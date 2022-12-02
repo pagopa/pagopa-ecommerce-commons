@@ -308,6 +308,27 @@ class TransactionTest {
     }
 
     @Test
+    void shouldTransactionActivationRequestedIgnoreNonActivationEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivationRequestedEvent activationRequestedEvent = TransactionUtils
+                .transactionActivationRequestedEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
+                .transactionAuthorizationRequestedEvent();
+
+        Flux<Object> events = Flux.just(activationRequestedEvent, authorizationRequestedEvent);
+
+        TransactionActivationRequested expected = TransactionUtils
+                .transactionActivationRequested(activationRequestedEvent.getCreationDate().toString());
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
     void transactionClosedStatusChangeWorks() {
         EmptyTransaction transaction = new EmptyTransaction();
 
