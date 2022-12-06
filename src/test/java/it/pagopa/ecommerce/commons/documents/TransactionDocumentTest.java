@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents;
 
 import it.pagopa.ecommerce.commons.TransactionUtils;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
+import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,8 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionDocumentTest {
@@ -66,6 +66,21 @@ class TransactionDocumentTest {
                 transactionDocument.getPaymentToken(),
                 transaction.getTransactionActivatedData().getPaymentToken()
         );
+        assertEquals(transactionDocument.getRptId(), transaction.getRptId().value());
+        assertEquals(transactionDocument.getDescription(), transaction.getDescription().value());
+        assertEquals(transactionDocument.getAmount(), transaction.getAmount().value());
+        assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
+        assertEquals(transactionDocument.getStatus(), transaction.getStatus());
+    }
+
+    @Test
+    void shouldConstructTransactionDocumentFromTransactionWithRequestedActivation() {
+        TransactionActivationRequested transaction = TransactionUtils
+                .transactionActivationRequested(ZonedDateTime.now().toString());
+
+        Transaction transactionDocument = Transaction.from(transaction);
+
+        assertNull(transactionDocument.getPaymentToken());
         assertEquals(transactionDocument.getRptId(), transaction.getRptId().value());
         assertEquals(transactionDocument.getDescription(), transaction.getDescription().value());
         assertEquals(transactionDocument.getAmount(), transaction.getAmount().value());
