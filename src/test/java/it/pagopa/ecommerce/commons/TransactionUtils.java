@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons;
 
+import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.events.v1.*;
@@ -226,6 +227,23 @@ public class TransactionUtils {
                         FAULT_CODE_STRING,
                         "paymentContextCode"
                 )
+        );
+    }
+
+    @Nonnull
+    public static Transaction transactionDocument(
+                                                  TransactionStatusDto transactionStatus,
+                                                  ZonedDateTime creationDateTime
+    ) {
+        return new Transaction(
+                TRANSACTION_ID,
+                PAYMENT_TOKEN,
+                RPT_ID,
+                DESCRIPTION,
+                AMOUNT,
+                EMAIL,
+                transactionStatus,
+                creationDateTime
         );
     }
 }
