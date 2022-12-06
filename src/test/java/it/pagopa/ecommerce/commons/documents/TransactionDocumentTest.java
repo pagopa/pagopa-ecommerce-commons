@@ -75,7 +75,8 @@ class TransactionDocumentTest {
 
     @Test
     void shouldConstructTransactionDocumentFromTransactionWithRequestedActivation() {
-        TransactionActivationRequested transaction = TransactionUtils.transactionActivationRequested(ZonedDateTime.now().toString());
+        TransactionActivationRequested transaction = TransactionUtils
+                .transactionActivationRequested(ZonedDateTime.now().toString());
 
         Transaction transactionDocument = Transaction.from(transaction);
 
