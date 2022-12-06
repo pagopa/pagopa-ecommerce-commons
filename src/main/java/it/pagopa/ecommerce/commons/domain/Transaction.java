@@ -53,14 +53,14 @@ import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
  * <ul>
  * <li>You can apply a non-error events from the corresponding error events
  * (e.g. if you have applied a
- * {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent
  * TransactionClosureErrorEvent} you can still apply a
- * {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent
  * TransactionClosureSentEvent} afterwards)</li>
  * <li>Events in streams that do not follow the flow above are ignored (e.g. a
- * {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
  * TransactionActivatedEvent} after a
- * {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureSentEvent
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent
  * TransactionClosureSentEvent})</li>
  * </ul>
  *

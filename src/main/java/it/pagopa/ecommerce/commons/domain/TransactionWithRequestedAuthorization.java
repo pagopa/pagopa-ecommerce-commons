@@ -1,8 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestData;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
-import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 

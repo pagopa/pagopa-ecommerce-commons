@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionClosureErrorEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

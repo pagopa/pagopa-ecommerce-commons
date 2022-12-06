@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 

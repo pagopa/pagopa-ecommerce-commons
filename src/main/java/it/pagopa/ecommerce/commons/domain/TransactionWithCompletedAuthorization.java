@@ -1,8 +1,10 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData;
+import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
-import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -42,9 +44,7 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(
-                            TransactionStatusDto.fromValue(closureSentEvent.getData().getNewTransactionStatus().value())
-                    ),
+                    this.withStatus(closureSentEvent.getData().getNewTransactionStatus()),
                     closureSentEvent.getData()
             );
         } else if (event instanceof TransactionClosureErrorEvent closureErrorEvent) {

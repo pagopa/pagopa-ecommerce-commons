@@ -1,11 +1,10 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivationRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -35,7 +34,7 @@ public final class EmptyTransaction implements Transaction {
                 new Email(event.getData().getEmail()),
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
-                ZonedDateTime.ofInstant(event.getCreationDate().toInstant(), ZoneId.systemDefault()),
+                ZonedDateTime.parse(event.getCreationDate()),
                 TransactionStatusDto.ACTIVATED
         );
     }
@@ -47,7 +46,7 @@ public final class EmptyTransaction implements Transaction {
                 new TransactionDescription(event.getData().getDescription()),
                 new TransactionAmount(event.getData().getAmount()),
                 new Email(event.getData().getEmail()),
-                ZonedDateTime.ofInstant(event.getCreationDate().toInstant(), ZoneId.systemDefault()),
+                ZonedDateTime.parse(event.getCreationDate()),
                 TransactionStatusDto.ACTIVATION_REQUESTED
         );
     }

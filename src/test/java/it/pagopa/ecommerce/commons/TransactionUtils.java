@@ -1,15 +1,15 @@
 package it.pagopa.ecommerce.commons;
 
 import it.pagopa.ecommerce.commons.documents.Transaction;
+import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.generated.events.v1.*;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
+import it.pagopa.generated.transactions.server.model.AuthorizationResultDto;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 public class TransactionUtils {
@@ -47,13 +47,9 @@ public class TransactionUtils {
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                TransactionActivatedEvent.TransactionEventCode.TRANSACTION_ACTIVATED_EVENT,
-                ZonedDateTime.now(),
                 new TransactionActivatedData(DESCRIPTION, AMOUNT, EMAIL, FAULT_CODE, FAULT_CODE_STRING, PAYMENT_TOKEN)
         );
     }
@@ -88,13 +84,9 @@ public class TransactionUtils {
     @Nonnull
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
         return new TransactionAuthorizationRequestedEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                TransactionAuthorizationRequestedEvent.TransactionEventCode.TRANSACTION_AUTHORIZATION_REQUESTED,
-                ZonedDateTime.now(),
                 new TransactionAuthorizationRequestData(
                         AMOUNT,
                         10,
@@ -112,23 +104,19 @@ public class TransactionUtils {
 
     @Nonnull
     public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
-                                                                                                        TransactionAuthorizationStatusUpdateData.AuthorizationResult authorizationResult
+                                                                                                        AuthorizationResultDto authorizationResult
     ) {
-        TransactionAuthorizationStatusUpdateData.TransactionStatus newStatus;
+        TransactionStatusDto newStatus;
         switch (authorizationResult) {
-            case OK -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.AUTHORIZED;
-            case KO -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.AUTHORIZATION_FAILED;
+            case OK -> newStatus = TransactionStatusDto.AUTHORIZED;
+            case KO -> newStatus = TransactionStatusDto.AUTHORIZATION_FAILED;
             default -> throw new IllegalStateException("Unexpected value: " + authorizationResult);
         }
 
         return new TransactionAuthorizationStatusUpdatedEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                TransactionAuthorizationStatusUpdatedEvent.TransactionEventCode.TRANSACTION_AUTHORIZATION_STATUS_UPDATED,
-                ZonedDateTime.now(),
                 new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus)
         );
     }
@@ -148,38 +136,27 @@ public class TransactionUtils {
     public static TransactionClosureSentEvent transactionClosureSentEvent(
                                                                           ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
     ) {
-        TransactionAuthorizationStatusUpdateData.TransactionStatus newStatus;
-        TransactionClosureSendData.ClosepaymentResponseOutcome transactionClosePaymentOutcome = TransactionClosureSendData.ClosepaymentResponseOutcome
-                .fromValue(closePaymentOutcome.getValue());
-        switch (transactionClosePaymentOutcome) {
-            case OK -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.CLOSED;
-            case KO -> newStatus = TransactionAuthorizationStatusUpdateData.TransactionStatus.CLOSURE_FAILED;
+        TransactionStatusDto newStatus;
+        switch (closePaymentOutcome) {
+            case OK -> newStatus = TransactionStatusDto.CLOSED;
+            case KO -> newStatus = TransactionStatusDto.CLOSURE_FAILED;
             default -> throw new IllegalStateException("Unexpected value: " + closePaymentOutcome);
         }
 
         return new TransactionClosureSentEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                TransactionClosureSentEvent.TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT,
-                ZonedDateTime.now(),
-                new TransactionClosureSendData(transactionClosePaymentOutcome, newStatus, "authorizationCode")
+                new TransactionClosureSendData(closePaymentOutcome, newStatus, "authorizationCode")
         );
     }
 
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
-                RPT_ID,
                 PAYMENT_TOKEN,
-                TransactionClosureErrorEvent.TransactionEventCode.TRANSACTION_CLOSURE_ERROR_EVENT,
-                ZonedDateTime.now(),
-                null
+                RPT_ID
         );
     }
 
@@ -199,8 +176,7 @@ public class TransactionUtils {
                                                       TransactionClosureSentEvent closureSentEvent,
                                                       BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
-        TransactionStatusDto newStatus = TransactionStatusDto
-                .fromValue(closureSentEvent.getData().getNewTransactionStatus().value());
+        TransactionStatusDto newStatus = closureSentEvent.getData().getNewTransactionStatus();
 
         return new TransactionClosed(
                 ((BaseTransactionWithCompletedAuthorization) transactionWithCompletedAuthorization
@@ -212,14 +188,10 @@ public class TransactionUtils {
     @Nonnull
     public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
         return new TransactionActivationRequestedEvent(
-                Version.V_1,
-                UUID.randomUUID().toString(),
                 TRANSACTION_ID,
                 RPT_ID,
-                PAYMENT_TOKEN,
-                TransactionActivationRequestedEvent.TransactionEventCode.TRANSACTION_ACTIVATION_REQUESTED,
-                ZonedDateTime.now(),
-                new TransactionActivationRequestData(
+                ZonedDateTime.now().toString(),
+                new TransactionActivationRequestedData(
                         DESCRIPTION,
                         AMOUNT,
                         EMAIL,

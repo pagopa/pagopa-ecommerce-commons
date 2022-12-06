@@ -2,24 +2,16 @@ package it.pagopa.ecommerce.commons.documents;
 
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
-import java.time.ZonedDateTime;
-
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.ZonedDateTime;
+
 /**
- * <p>
- * A transaction view persisted on a data store (view as in CQRS). Provides
- * basic access to common transaction attributes.
- * <p>
- * If you want to manipulate transactions, prefer reading from the event store
- * and using
- * {@link it.pagopa.ecommerce.commons.domain.Transaction#applyEvent(Object)
- * Transaction.applyEvent(Object)} instead.
- * </p>
+ * Base persistence view for transactions.
  */
 @Data
 @Document(collection = "view")
@@ -37,17 +29,15 @@ public class Transaction {
     private String creationDate;
 
     /**
-     * Convenience constructor which defaults the creation date to now.
+     * Convenience contructor which sets the transaction creation date to now
      *
-     * @param transactionId the transaction unique id. Should be the string
-     *                      representation of a UUID
-     * @param paymentToken  the payment token associated to the transaction
-     * @param rptId         the RPT id associated to the transaction. See
-     *                      {@link it.pagopa.ecommerce.commons.domain.RptId}
-     * @param description   the transaction description
-     * @param amount        the transaction amount in euro cents
-     * @param email         the email where the transaction receipt will be sent to
-     * @param status        the current transaction status
+     * @param transactionId transaction unique id
+     * @param paymentToken  payment token associated to the transaction
+     * @param rptId         RPT id associated to the transaction
+     * @param description   transaction description
+     * @param amount        transaction amount in euro cents
+     * @param email         user email where the payment receipt will be sent to
+     * @param status        transaction status
      */
     public Transaction(
             String transactionId,
@@ -62,18 +52,16 @@ public class Transaction {
     }
 
     /**
-     * Primary constructor.
+     * Primary constructor
      *
-     * @param transactionId the transaction unique id. Should be the string
-     *                      representation of a UUID
-     * @param paymentToken  the payment token associated to the transaction
-     * @param rptId         the RPT id associated to the transaction. See
-     *                      {@link it.pagopa.ecommerce.commons.domain.RptId}
-     * @param description   the transaction description
-     * @param amount        the transaction amount in euro cents
-     * @param email         the email where the transaction receipt will be sent to
-     * @param status        the current transaction status
-     * @param creationDate  the transaction creation date
+     * @param transactionId transaction unique id
+     * @param paymentToken  payment token associated to the transaction
+     * @param rptId         RPT id associated to the transaction
+     * @param description   transaction description
+     * @param amount        transaction amount in euro cents
+     * @param email         user email where the payment receipt will be sent to
+     * @param status        transaction status
+     * @param creationDate  transaction creation date
      */
     public Transaction(
             String transactionId,
@@ -89,18 +77,16 @@ public class Transaction {
     }
 
     /**
-     * Persistence constructor. Prefer calling the other constructors instead.
+     * Primary persistence constructor
      *
-     * @param transactionId the transaction unique id. Should be the string
-     *                      representation of a UUID
-     * @param paymentToken  the payment token associated to the transaction
-     * @param rptId         the RPT id associated to the transaction. See
-     *                      {@link it.pagopa.ecommerce.commons.domain.RptId}
-     * @param description   the transaction description
-     * @param amount        the transaction amount in euro cents
-     * @param email         the email where the transaction receipt will be sent to
-     * @param status        the current transaction status
-     * @param creationDate  the transaction creation date
+     * @param transactionId transaction unique id
+     * @param paymentToken  payment token associated to the transaction
+     * @param rptId         RPT id associated to the transaction
+     * @param description   transaction description
+     * @param amount        transaction amount in euro cents
+     * @param email         user email where the payment receipt will be sent to
+     * @param status        transaction status
+     * @param creationDate  transaction creation date
      */
     @PersistenceConstructor
     public Transaction(
@@ -124,10 +110,10 @@ public class Transaction {
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivated}
+     * Conversion constructor from a {@link TransactionActivated} to a Transaction
      *
      * @param transaction the transaction
-     * @return a transaction document with the same data as the domain object
+     * @return a transaction document with the same data
      */
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
@@ -143,10 +129,11 @@ public class Transaction {
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivationRequested}
+     * Conversion constructor from a {@link TransactionActivationRequested} to a
+     * Transaction
      *
      * @param transaction the transaction
-     * @return a transaction document with the same data as the domain object
+     * @return a transaction document with the same data
      */
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
