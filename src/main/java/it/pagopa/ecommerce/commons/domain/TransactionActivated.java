@@ -127,7 +127,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
-                    this,
+                    this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
                     ((TransactionAuthorizationRequestedEvent) event).getData()
             );
         } else {
@@ -153,7 +153,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),
                 this.getCreationDate(),
-                this.getStatus()
+                status
         );
     }
 }
