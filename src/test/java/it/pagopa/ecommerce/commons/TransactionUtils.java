@@ -117,7 +117,7 @@ public class TransactionUtils {
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus)
+                new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
         );
     }
 
@@ -147,7 +147,7 @@ public class TransactionUtils {
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                new TransactionClosureSendData(closePaymentOutcome, newStatus, "authorizationCode")
+                new TransactionClosureSendData(closePaymentOutcome, newStatus)
         );
     }
 
