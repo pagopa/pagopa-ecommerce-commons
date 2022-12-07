@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document
 public class TransactionAuthorizationStatusUpdateData {
-
     private AuthorizationResultDto authorizationResult;
     private TransactionStatusDto newTransactionStatus;
+    private String authorizationCode;
 }
