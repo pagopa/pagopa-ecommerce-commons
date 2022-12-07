@@ -1,9 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedData;
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionAuthorizationRequestedEvent;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
@@ -127,7 +127,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
-                    this,
+                    this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
                     ((TransactionAuthorizationRequestedEvent) event).getData()
             );
         } else {
@@ -153,7 +153,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),
                 this.getCreationDate(),
-                this.getStatus()
+                status
         );
     }
 }

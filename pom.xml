@@ -356,25 +356,7 @@
                                 <sourcePath>${basedir}/src/main/resources/schemas/events/v1/event_version.json
                                 </sourcePath>
                                 <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_activated_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_activation_requested_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_authorization_requested_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_authorization_status_updated_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_closure_sent_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_user_receipt_added_event.json
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_closure_error_event.json
+                                    ${basedir}/src/main/resources/schemas/events/v1/transaction_status.json
                                 </sourcePath>
                             </sourcePaths>
                             <targetPackage>it.pagopa.ecommerce.commons.generated.events.v1</targetPackage>

@@ -1,16 +1,12 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import it.pagopa.ecommerce.commons.domain.RptId;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)

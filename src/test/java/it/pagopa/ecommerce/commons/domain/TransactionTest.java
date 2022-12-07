@@ -1,8 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.TransactionUtils;
-import it.pagopa.ecommerce.commons.generated.events.v1.*;
+import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
+import it.pagopa.generated.transactions.server.model.AuthorizationResultDto;
 import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -58,7 +59,7 @@ class TransactionTest {
 
         Flux<Object> events = Flux.just(event);
 
-        TransactionActivated expected = TransactionUtils.transactionActivated(event.getCreationDate().toString());
+        TransactionActivated expected = TransactionUtils.transactionActivated(event.getCreationDate());
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -75,7 +76,7 @@ class TransactionTest {
 
         Flux<Object> events = Flux.just(event, event);
 
-        TransactionActivated expected = TransactionUtils.transactionActivated(event.getCreationDate().toString());
+        TransactionActivated expected = TransactionUtils.transactionActivated(event.getCreationDate());
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -95,7 +96,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(transactionActivatedEvent, authorizationRequestedEvent);
 
         TransactionActivated transactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization expected = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
@@ -121,7 +122,7 @@ class TransactionTest {
         );
 
         TransactionActivated transactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization expected = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
@@ -141,7 +142,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
 
         Flux<Object> events = Flux.just(
@@ -151,7 +152,7 @@ class TransactionTest {
         );
 
         TransactionActivated transactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionWithCompletedAuthorization expected = TransactionUtils.transactionWithCompletedAuthorization(
@@ -175,7 +176,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
 
         Flux<Object> events = Flux.just(
@@ -186,7 +187,7 @@ class TransactionTest {
         );
 
         TransactionActivated transactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionWithCompletedAuthorization expected = TransactionUtils.transactionWithCompletedAuthorization(
@@ -210,7 +211,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
@@ -223,7 +224,7 @@ class TransactionTest {
         );
 
         TransactionActivated TransactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionWithCompletedAuthorization transactionWithCompletedAuthorization = TransactionUtils
@@ -253,7 +254,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
@@ -267,7 +268,7 @@ class TransactionTest {
         );
 
         TransactionActivated transactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionWithCompletedAuthorization transactionWithCompletedAuthorization = TransactionUtils
@@ -298,7 +299,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(activationRequestedEvent, activatedEvent);
 
         TransactionActivated expected = TransactionUtils
-                .transactionActivated(activationRequestedEvent.getCreationDate().toString());
+                .transactionActivated(activationRequestedEvent.getCreationDate());
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -319,7 +320,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(activationRequestedEvent, authorizationRequestedEvent);
 
         TransactionActivationRequested expected = TransactionUtils
-                .transactionActivationRequested(activationRequestedEvent.getCreationDate().toString());
+                .transactionActivationRequested(activationRequestedEvent.getCreationDate());
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -337,7 +338,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
@@ -370,7 +371,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
 
@@ -382,7 +383,7 @@ class TransactionTest {
         );
 
         TransactionActivated TransactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionWithCompletedAuthorization transactionWithCompletedAuthorization = TransactionUtils
@@ -408,7 +409,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
 
@@ -421,7 +422,7 @@ class TransactionTest {
         );
 
         TransactionActivated TransactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionWithCompletedAuthorization transactionWithCompletedAuthorization = TransactionUtils
@@ -449,7 +450,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionUtils
                 .transactionAuthorizationStatusUpdatedEvent(
-                        TransactionAuthorizationStatusUpdateData.AuthorizationResult.OK
+                        AuthorizationResultDto.OK
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
@@ -464,7 +465,7 @@ class TransactionTest {
         );
 
         TransactionActivated TransactionActivated = TransactionUtils
-                .transactionActivated(transactionActivatedEvent.getCreationDate().toString());
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionWithCompletedAuthorization transactionWithCompletedAuthorization = TransactionUtils

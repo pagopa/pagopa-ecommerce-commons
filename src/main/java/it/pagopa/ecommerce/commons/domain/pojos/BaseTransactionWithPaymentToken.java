@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * For simplicity we currently include all data associated to
- * {@link it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
  * TransactionActivatedEvent}.
  * </p>
  * <p>
@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
- * @see it.pagopa.ecommerce.commons.generated.events.v1.TransactionActivatedEvent
+ * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
  *      TransactionActivatedEvent
  */
 @ToString
