@@ -26,6 +26,8 @@ components:
         - CLOSURE_ERROR
         - NOTIFIED
         - NOTIFIED_FAILED
+        - EXPIRED
+        - REFUNDED
     AuthorizationResult:
       description: Authorization result
       type: string
