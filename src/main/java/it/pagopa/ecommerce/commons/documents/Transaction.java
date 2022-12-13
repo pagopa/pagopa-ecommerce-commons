@@ -9,6 +9,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
@@ -19,14 +22,13 @@ public class Transaction {
 
     @Id
     private String transactionId;
-
-    private String paymentToken;
-    private String rptId;
-    private String description;
-    private int amount;
+    private String origin; //TODO Enum of CHECKOUT/CHECKOUT_CART/IO
     private String email;
     private TransactionStatusDto status;
+    private int amountTotal;
+    private int feeTotal;
     private String creationDate;
+    private List<NoticeCode> noticeCodes;
 
     /**
      * Convenience contructor which sets the transaction creation date to now
@@ -39,6 +41,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      */
+    @Deprecated
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -63,6 +66,8 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      */
+
+    @Deprecated
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -88,7 +93,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      */
-    @PersistenceConstructor
+    @Deprecated
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -99,13 +104,36 @@ public class Transaction {
             TransactionStatusDto status,
             String creationDate
     ) {
+        this(
+                transactionId,
+                Arrays.asList(new NoticeCode(paymentToken,rptId,description,amount)),
+                amount,
+                0,
+                email,
+                status,
+                null,
+                creationDate
+        );
+    }
+
+    @PersistenceConstructor
+    public Transaction(
+            String transactionId,
+            List<NoticeCode> noticeCodes,
+            int amountTotal,
+            int feeTotal,
+            String email,
+            TransactionStatusDto status,
+            String origin,
+            String creationDate
+    ) {
         this.transactionId = transactionId;
-        this.rptId = rptId;
-        this.description = description;
-        this.paymentToken = paymentToken;
-        this.amount = amount;
         this.email = email;
         this.status = status;
+        this.noticeCodes = noticeCodes;
+        this.amountTotal = amountTotal;
+        this.feeTotal = feeTotal;
+        this.origin = origin;
         this.creationDate = creationDate;
     }
 
@@ -118,12 +146,12 @@ public class Transaction {
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getTransactionActivatedData().getPaymentToken(),
-                transaction.getRptId().value(),
-                transaction.getDescription().value(),
-                transaction.getAmount().value(),
-                transaction.getEmail().value(),
+                transaction.getTransactionActivatedData().getNoticeCodes(),
+                transaction.getTransactionActivatedData().getNoticeCodes().stream().mapToInt(n -> n.getAmount()).sum(),
+                0,
+                transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
+                null,
                 transaction.getCreationDate().toString()
         );
     }
@@ -138,12 +166,12 @@ public class Transaction {
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                null,
-                transaction.getRptId().value(),
-                transaction.getDescription().value(),
-                transaction.getAmount().value(),
+                transaction.getNoticeCodes().stream().map(n -> new NoticeCode(n.paymentToken().value(),n.rptId().value(),n.transactionDescription().value(),n.transactionAmount().value())).collect(Collectors.toList()),
+                transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
+                0,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
+                null,
                 transaction.getCreationDate().toString()
         );
     }

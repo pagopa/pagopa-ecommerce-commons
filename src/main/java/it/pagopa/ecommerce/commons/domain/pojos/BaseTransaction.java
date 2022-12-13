@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain.pojos;
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.domain.*;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.*;
@@ -59,9 +60,7 @@ public abstract class BaseTransaction {
     @AggregateRootId
     TransactionId transactionId;
 
-    RptId rptId;
-    TransactionDescription description;
-    TransactionAmount amount;
+    List<NoticeCode> noticeCodes;
     Email email;
     ZonedDateTime creationDate;
 

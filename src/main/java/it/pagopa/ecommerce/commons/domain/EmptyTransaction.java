@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.NoticeCode;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -27,10 +28,7 @@ public final class EmptyTransaction implements Transaction {
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
-                new PaymentToken(event.getPaymentToken()),
-                new RptId(event.getRptId()),
-                new TransactionDescription(event.getData().getDescription()),
-                new TransactionAmount(event.getData().getAmount()),
+                event.getData().getNoticeCodes().stream().map(n -> new NoticeCode(n.getPaymentToken(),))
                 new Email(event.getData().getEmail()),
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),

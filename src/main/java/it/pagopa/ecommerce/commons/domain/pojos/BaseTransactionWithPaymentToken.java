@@ -46,9 +46,7 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
     ) {
         super(
                 baseTransaction.getTransactionId(),
-                baseTransaction.getRptId(),
-                baseTransaction.getDescription(),
-                baseTransaction.getAmount(),
+                baseTransaction.getNoticeCodes(),
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
                 baseTransaction.getStatus()
