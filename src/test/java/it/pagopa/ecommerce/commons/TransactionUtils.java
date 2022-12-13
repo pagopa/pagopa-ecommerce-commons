@@ -134,7 +134,8 @@ public class TransactionUtils {
 
     @Nonnull
     public static TransactionClosureSentEvent transactionClosureSentEvent(
-                                                                          ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
+                                                                          ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome,
+                                                                          String authorizationCode
     ) {
         TransactionStatusDto newStatus;
         switch (closePaymentOutcome) {
@@ -147,7 +148,7 @@ public class TransactionUtils {
                 TRANSACTION_ID,
                 RPT_ID,
                 PAYMENT_TOKEN,
-                new TransactionClosureSendData(closePaymentOutcome, newStatus)
+                new TransactionClosureSendData(closePaymentOutcome, newStatus, authorizationCode)
         );
     }
 

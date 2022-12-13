@@ -214,7 +214,7 @@ class TransactionTest {
                         AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
-                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
+                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK, "authorizationCode");
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -248,7 +248,6 @@ class TransactionTest {
     @Test
     void shouldConstructTransactionFromClosureSentEventStreamIgnoringInvalidEvents() {
         EmptyTransaction transaction = new EmptyTransaction();
-
         TransactionActivatedEvent transactionActivatedEvent = TransactionUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionUtils
                 .transactionAuthorizationRequestedEvent();
@@ -257,7 +256,7 @@ class TransactionTest {
                         AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
-                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
+                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK, "authorizationCode");
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -341,7 +340,7 @@ class TransactionTest {
                         AuthorizationResultDto.OK
                 );
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
-                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
+                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK, "authorizationCode");
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -454,7 +453,7 @@ class TransactionTest {
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionUtils.transactionClosureErrorEvent();
         TransactionClosureSentEvent closureSentEvent = TransactionUtils
-                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
+                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK, "authorizationCode");
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
