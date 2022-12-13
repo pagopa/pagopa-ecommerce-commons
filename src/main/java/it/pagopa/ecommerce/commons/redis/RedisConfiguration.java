@@ -13,7 +13,6 @@ import org.springframework.data.redis.core.convert.RedisCustomConversions;
  * {@link it.pagopa.ecommerce.commons.domain.RptId}
  */
 @Configuration
-@ConditionalOnBean(type = "org.springframework.data.redis.core.RedisTemplate")
 @ComponentScan
 public class RedisConfiguration {
 
