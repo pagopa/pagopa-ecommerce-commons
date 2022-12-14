@@ -125,10 +125,10 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionAuthorizationRequestedEvent) {
+        if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
                     this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
-                    ((TransactionAuthorizationRequestedEvent) event).getData()
+                    transactionAuthorizationRequestedEvent.getData()
             );
         } else {
             return this;
