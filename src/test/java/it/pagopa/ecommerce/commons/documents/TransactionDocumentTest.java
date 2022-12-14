@@ -38,17 +38,17 @@ class TransactionDocumentTest {
                 ZonedDateTime.now()
         );
 
-        differentTransaction.setPaymentToken(TransactionUtils.PAYMENT_TOKEN);
-        differentTransaction.setRptId(TransactionUtils.RPT_ID);
-        differentTransaction.setDescription(TransactionUtils.DESCRIPTION);
-        differentTransaction.setAmount(TransactionUtils.AMOUNT);
+        differentTransaction.getNoticeCodes().get(0).setPaymentToken(TransactionUtils.PAYMENT_TOKEN);
+        differentTransaction.getNoticeCodes().get(0).setRptId(TransactionUtils.RPT_ID);
+        differentTransaction.getNoticeCodes().get(0).setDescription(TransactionUtils.DESCRIPTION);
+        differentTransaction.getNoticeCodes().get(0).setAmount(TransactionUtils.AMOUNT);
         differentTransaction.setStatus(transactionStatus);
 
         /* Assertions */
-        assertEquals(TransactionUtils.PAYMENT_TOKEN, transaction.getPaymentToken());
-        assertEquals(TransactionUtils.RPT_ID, transaction.getRptId());
-        assertEquals(TransactionUtils.DESCRIPTION, transaction.getDescription());
-        assertEquals(TransactionUtils.AMOUNT, transaction.getAmount());
+        assertEquals(TransactionUtils.PAYMENT_TOKEN, transaction.getNoticeCodes().get(0).getPaymentToken());
+        assertEquals(TransactionUtils.RPT_ID, transaction.getNoticeCodes().get(0).getRptId());
+        assertEquals(TransactionUtils.DESCRIPTION, transaction.getNoticeCodes().get(0).getDescription());
+        assertEquals(TransactionUtils.AMOUNT, transaction.getNoticeCodes().get(0).getAmount());
         assertEquals(transactionStatus, transaction.getStatus());
 
         assertNotEquals(transaction, differentTransaction);
@@ -63,12 +63,21 @@ class TransactionDocumentTest {
         Transaction transactionDocument = Transaction.from(transaction);
 
         assertEquals(
-                transactionDocument.getPaymentToken(),
-                transaction.getTransactionActivatedData().getPaymentToken()
+                transactionDocument.getNoticeCodes().get(0).getPaymentToken(),
+                transaction.getTransactionActivatedData().getNoticeCodes().get(0).getPaymentToken()
         );
-        assertEquals(transactionDocument.getRptId(), transaction.getRptId().value());
-        assertEquals(transactionDocument.getDescription(), transaction.getDescription().value());
-        assertEquals(transactionDocument.getAmount(), transaction.getAmount().value());
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getRptId(),
+                transaction.getNoticeCodes().get(0).rptId().value()
+        );
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getDescription(),
+                transaction.getNoticeCodes().get(0).transactionDescription().value()
+        );
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getAmount(),
+                transaction.getNoticeCodes().get(0).transactionAmount().value()
+        );
         assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
     }
@@ -80,10 +89,19 @@ class TransactionDocumentTest {
 
         Transaction transactionDocument = Transaction.from(transaction);
 
-        assertNull(transactionDocument.getPaymentToken());
-        assertEquals(transactionDocument.getRptId(), transaction.getRptId().value());
-        assertEquals(transactionDocument.getDescription(), transaction.getDescription().value());
-        assertEquals(transactionDocument.getAmount(), transaction.getAmount().value());
+        assertNull(transactionDocument.getNoticeCodes().get(0).getPaymentToken());
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getRptId(),
+                transaction.getNoticeCodes().get(0).rptId().value()
+        );
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getDescription(),
+                transaction.getNoticeCodes().get(0).transactionDescription().value()
+        );
+        assertEquals(
+                transactionDocument.getNoticeCodes().get(0).getAmount(),
+                transaction.getNoticeCodes().get(0).transactionAmount().value()
+        );
         assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
     }

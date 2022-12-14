@@ -6,6 +6,9 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Base persistence view for notice code.
+ */
 @Data
 @Document
 @AllArgsConstructor
@@ -13,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 public class NoticeCode {
     private String paymentToken;
-    private String rptId; //TODO To be splitted
+    private String rptId; // TODO To be splitted
     private String description;
-    private int amount;
+    private Integer amount;
 }

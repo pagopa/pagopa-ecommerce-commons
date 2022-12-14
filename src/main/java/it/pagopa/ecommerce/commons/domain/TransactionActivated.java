@@ -44,8 +44,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            TransactionStatusDto status,
-            TransactionAmount amountTotal
+            TransactionStatusDto status
     ) {
         super(
                 new TransactionActivationRequested(
@@ -57,7 +56,15 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 ),
                 new TransactionActivatedData(
                         email.value(),
-                        noticeCodes.stream().map(n -> new it.pagopa.ecommerce.commons.documents.NoticeCode(n.paymentToken().value(),n.rptId().value(),n.transactionDescription().value(),n.transactionAmount().value())).collect(Collectors.toList()),
+                        noticeCodes.stream()
+                                .map(
+                                        n -> new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                                n.paymentToken().value(),
+                                                n.rptId().value(),
+                                                n.transactionDescription().value(),
+                                                n.transactionAmount().value()
+                                        )
+                                ).collect(Collectors.toList()),
                         faultCode,
                         faultCodeString
                 )

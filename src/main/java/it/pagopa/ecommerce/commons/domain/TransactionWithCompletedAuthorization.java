@@ -8,6 +8,10 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuth
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * <p>
  * Transaction with a completed authorization.
@@ -69,10 +73,25 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
                 new TransactionWithRequestedAuthorization(
                         new TransactionActivated(
                                 this.getTransactionId(),
-                                new PaymentToken(this.getTransactionActivatedData().getPaymentToken()),
-                                this.getRptId(),
-                                this.getDescription(),
-                                this.getAmount(),
+                                this.getNoticeCodes().stream().filter(
+                                        noticeCode -> this.getTransactionActivatedData().getNoticeCodes().stream()
+                                                .map(n -> n.getRptId()).collect(Collectors.toList())
+                                                .contains(noticeCode.rptId().value())
+                                ).map(
+                                        noticeCode -> new NoticeCode(
+                                                new PaymentToken(
+                                                        this.getTransactionActivatedData().getNoticeCodes().stream()
+                                                                .filter(
+                                                                        n -> n.getRptId()
+                                                                                .equals(noticeCode.rptId().value())
+                                                                ).findFirst().get().getPaymentToken()
+                                                ),
+                                                noticeCode.rptId(),
+                                                noticeCode.transactionAmount(),
+                                                noticeCode.transactionDescription()
+                                        )
+                                )
+                                        .collect(Collectors.toList()),
                                 this.getEmail(),
                                 this.getTransactionActivatedData().getFaultCode(),
                                 this.getTransactionActivatedData().getFaultCodeString(),

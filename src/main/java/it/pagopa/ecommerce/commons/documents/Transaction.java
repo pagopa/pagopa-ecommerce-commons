@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
+import it.pagopa.ecommerce.commons.domain.PaymentToken;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -11,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +25,7 @@ public class Transaction {
 
     @Id
     private String transactionId;
-    private String origin; //TODO Enum of CHECKOUT/CHECKOUT_CART/IO
+    private String origin; // TODO Enum of CHECKOUT/CHECKOUT_CART/IO
     private String email;
     private TransactionStatusDto status;
     private int amountTotal;
@@ -106,7 +109,7 @@ public class Transaction {
     ) {
         this(
                 transactionId,
-                Arrays.asList(new NoticeCode(paymentToken,rptId,description,amount)),
+                Arrays.asList(new NoticeCode(paymentToken, rptId, description, amount)),
                 amount,
                 0,
                 email,
@@ -116,6 +119,18 @@ public class Transaction {
         );
     }
 
+    /**
+     * Primary persistence constructor
+     *
+     * @param transactionId transaction unique id
+     * @param noticeCodes   notice code list
+     * @param email         user email where the payment receipt will be sent to
+     * @param status        transaction status
+     * @param origin        transaction origin
+     * @param amountTotal   transaction total amount
+     * @param feeTotal      transaction total fee
+     * @param creationDate  transaction creation date
+     */
     @PersistenceConstructor
     public Transaction(
             String transactionId,
@@ -166,7 +181,15 @@ public class Transaction {
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getNoticeCodes().stream().map(n -> new NoticeCode(n.paymentToken().value(),n.rptId().value(),n.transactionDescription().value(),n.transactionAmount().value())).collect(Collectors.toList()),
+                transaction.getNoticeCodes().stream().filter(Objects::nonNull)
+                        .map(
+                                n -> new NoticeCode(
+                                        Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
+                                        n.rptId().value(),
+                                        n.transactionDescription().value(),
+                                        n.transactionAmount().value()
+                                )
+                        ).collect(Collectors.toList()),
                 transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
                 0,
                 transaction.getEmail().value(),

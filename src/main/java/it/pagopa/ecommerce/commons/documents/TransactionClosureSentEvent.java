@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Business event corresponding to a transaction closure being sent. This action
  * notifies Nodo that the transaction has been finalized.
@@ -18,16 +20,14 @@ public final class TransactionClosureSentEvent extends TransactionEvent<Transact
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param rptId         RPT id associated to the transaction
-     * @param paymentToken  payment token related to this transaction
+     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionClosureSentEvent(
             String transactionId,
-            String rptId,
-            String paymentToken,
+            List<NoticeCode> noticeCodes,
             TransactionClosureSendData data
     ) {
-        super(transactionId, rptId, paymentToken, TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT, data);
+        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT, data);
     }
 }

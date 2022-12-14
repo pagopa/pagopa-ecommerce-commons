@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.NoticeCode;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -8,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -28,7 +28,15 @@ public final class EmptyTransaction implements Transaction {
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
-                event.getData().getNoticeCodes().stream().map(n -> new NoticeCode(n.getPaymentToken(),))
+                event.getData().getNoticeCodes().stream()
+                        .map(
+                                n -> new NoticeCode(
+                                        new PaymentToken(n.getPaymentToken()),
+                                        new RptId(n.getRptId()),
+                                        new TransactionAmount(n.getAmount()),
+                                        new TransactionDescription(n.getDescription())
+                                )
+                        ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
@@ -40,9 +48,15 @@ public final class EmptyTransaction implements Transaction {
     private TransactionActivationRequested applyActivationRequested(TransactionActivationRequestedEvent event) {
         return new TransactionActivationRequested(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
-                new RptId(event.getRptId()),
-                new TransactionDescription(event.getData().getDescription()),
-                new TransactionAmount(event.getData().getAmount()),
+                event.getData().getNoticeCodes().stream()
+                        .map(
+                                n -> new NoticeCode(
+                                        null,
+                                        new RptId(n.getRptId()),
+                                        new TransactionAmount(n.getAmount()),
+                                        new TransactionDescription(n.getDescription())
+                                )
+                        ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
                 ZonedDateTime.parse(event.getCreationDate()),
                 TransactionStatusDto.ACTIVATION_REQUESTED

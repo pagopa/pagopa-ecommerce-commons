@@ -4,6 +4,8 @@ import static java.time.ZonedDateTime.now;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.Generated;
@@ -30,41 +32,36 @@ public abstract sealed class TransactionEvent<T> permits TransactionActivatedEve
     @PartitionKey
     private String transactionId;
 
-    private String rptId;
-    private String paymentToken;
+    List<NoticeCode> noticeCodes;
     private TransactionEventCode eventCode;
     private String creationDate;
     private T data;
 
     TransactionEvent(
             String transactionId,
-            String rptId,
-            String paymentToken,
+            List<NoticeCode> noticeCodes,
             TransactionEventCode eventCode,
             String creationDate,
             T data
     ) {
         this.id = UUID.randomUUID().toString();
         this.transactionId = transactionId;
-        this.rptId = rptId;
+        this.noticeCodes = noticeCodes;
         this.eventCode = eventCode;
-        this.paymentToken = paymentToken;
         this.data = data;
         this.creationDate = creationDate;
     }
 
     TransactionEvent(
             String transactionId,
-            String rptId,
-            String paymentToken,
+            List<NoticeCode> noticeCodes,
             TransactionEventCode eventCode,
             T data
     ) {
         this.id = UUID.randomUUID().toString();
         this.transactionId = transactionId;
-        this.rptId = rptId;
+        this.noticeCodes = noticeCodes;
         this.eventCode = eventCode;
-        this.paymentToken = paymentToken;
         this.data = data;
         this.creationDate = now().toString();
     }
