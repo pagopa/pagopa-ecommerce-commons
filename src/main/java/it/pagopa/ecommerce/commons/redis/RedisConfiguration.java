@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.redis;
 
 import java.util.Arrays;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
