@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.documents;
 
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
-import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
