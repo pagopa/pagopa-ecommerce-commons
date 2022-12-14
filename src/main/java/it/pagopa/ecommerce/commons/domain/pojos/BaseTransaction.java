@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.domain.*;
 import java.time.ZonedDateTime;
 
-import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

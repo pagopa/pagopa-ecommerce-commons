@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

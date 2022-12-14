@@ -263,8 +263,8 @@
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
                             <configOptions>
-                                <basePackage>it.pagopa.generated.transactions.server</basePackage>
-                                <modelPackage>it.pagopa.generated.transactions.server.model</modelPackage>
+                                <basePackage>it.pagopa.ecommerce.commons.generated.server</basePackage>
+                                <modelPackage>it.pagopa.ecommerce.commons.generated.server.model</modelPackage>
                                 <interfaceOnly>true</interfaceOnly>
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <skipDefaultInterface>true</skipDefaultInterface>
@@ -389,7 +389,7 @@
                     <additionalOptions>
                         <additionalOption>--enable-preview</additionalOption>
                     </additionalOptions>
-                    <excludePackageNames>org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.events.*:it.pagopa.generated.transactions.*</excludePackageNames>
+                    <excludePackageNames>org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.*</excludePackageNames>
                 </configuration>
             </plugin>
             <plugin>

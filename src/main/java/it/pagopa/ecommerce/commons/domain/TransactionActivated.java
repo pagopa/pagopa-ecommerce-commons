@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
-import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
@@ -125,10 +125,10 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionAuthorizationRequestedEvent) {
+        if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
                     this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
-                    ((TransactionAuthorizationRequestedEvent) event).getData()
+                    transactionAuthorizationRequestedEvent.getData()
             );
         } else {
             return this;

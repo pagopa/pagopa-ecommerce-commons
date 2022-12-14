@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestData
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
-import it.pagopa.generated.transactions.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 /**
