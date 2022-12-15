@@ -105,4 +105,13 @@ class TransactionDocumentTest {
         assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
     }
+
+    @Test
+    void shouldConvertTransactionOriginEnumerationCorrectly() {
+        assertEquals(Transaction.OriginType.fromString("").toString(), Transaction.OriginType.UNKNOWN.toString());
+        assertEquals(Transaction.OriginType.fromString(null).toString(), Transaction.OriginType.UNKNOWN.toString());
+        for (Transaction.OriginType originType : Transaction.OriginType.values()) {
+            assertEquals(Transaction.OriginType.fromString(originType.toString()).toString(), originType.toString());
+        }
+    }
 }

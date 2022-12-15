@@ -10,10 +10,8 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -25,13 +23,36 @@ public class Transaction {
 
     @Id
     private String transactionId;
-    private String origin; // TODO Enum of CHECKOUT/CHECKOUT_CART/IO
+    private OriginType origin;
     private String email;
     private TransactionStatusDto status;
     private int amountTotal;
     private int feeTotal;
     private String creationDate;
     private List<NoticeCode> noticeCodes;
+
+    public enum OriginType {
+        CHECKOUT,
+        CHECKOUT_CART,
+        IO,
+        UNKNOWN;
+
+        private static final Map<String, OriginType> lookupMap = Collections.unmodifiableMap(
+                Arrays.stream(OriginType.values()).collect(Collectors.toMap(OriginType::toString, Function.identity()))
+        );;
+
+        /**
+         *
+         * @param enumValue - the enumeration value to be converted to
+         *                  {@link OriginType} enumeration instance
+         * @return the converted {@link OriginType} enumeration instance or
+         *         {@link OriginType#UNKNOWN} if the input value is not assignable to an
+         *         enumeration value
+         */
+        public static OriginType fromString(String enumValue) {
+            return lookupMap.getOrDefault(enumValue, UNKNOWN);
+        }
+    }
 
     /**
      * Convenience contructor which sets the transaction creation date to now
@@ -44,7 +65,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -70,7 +91,7 @@ public class Transaction {
      * @param creationDate  transaction creation date
      */
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -96,7 +117,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -109,7 +130,7 @@ public class Transaction {
     ) {
         this(
                 transactionId,
-                Arrays.asList(new NoticeCode(paymentToken, rptId, description, amount)),
+                List.of(new NoticeCode(paymentToken, rptId, description, amount)),
                 amount,
                 0,
                 email,
@@ -139,7 +160,7 @@ public class Transaction {
             int feeTotal,
             String email,
             TransactionStatusDto status,
-            String origin,
+            OriginType origin,
             String creationDate
     ) {
         this.transactionId = transactionId;

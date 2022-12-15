@@ -487,4 +487,5 @@ class TransactionTest {
                 .expectNext(expected)
                 .verifyComplete();
     }
+
 }
