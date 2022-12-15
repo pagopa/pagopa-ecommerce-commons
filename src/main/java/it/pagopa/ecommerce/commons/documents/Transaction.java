@@ -31,15 +31,31 @@ public class Transaction {
     private String creationDate;
     private List<NoticeCode> noticeCodes;
 
+    /**
+     * Enumeration of transaction origin
+     */
     public enum OriginType {
+        /**
+         * Transaction originated by checkout frontend with notice information input by
+         * user
+         */
         CHECKOUT,
+        /**
+         * Transaction originated by E.C. through cart functionality
+         */
         CHECKOUT_CART,
+        /**
+         * Transaction originated by IO app
+         */
         IO,
+        /**
+         * Transaction origin is not an above ones
+         */
         UNKNOWN;
 
         private static final Map<String, OriginType> lookupMap = Collections.unmodifiableMap(
                 Arrays.stream(OriginType.values()).collect(Collectors.toMap(OriginType::toString, Function.identity()))
-        );;
+        );
 
         /**
          *
@@ -64,6 +80,8 @@ public class Transaction {
      * @param amount        transaction amount in euro cents
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -89,6 +107,8 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @param creationDate  transaction creation date
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -116,6 +136,8 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @param creationDate  transaction creation date
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
