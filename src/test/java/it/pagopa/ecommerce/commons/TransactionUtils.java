@@ -234,7 +234,8 @@ public class TransactionUtils {
                         ),
                         EMAIL,
                         FAULT_CODE,
-                        FAULT_CODE_STRING
+                        FAULT_CODE_STRING,
+                        "paymentContextCode"
                 )
         );
     }
