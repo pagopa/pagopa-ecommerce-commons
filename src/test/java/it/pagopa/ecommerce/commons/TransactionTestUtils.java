@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class TransactionUtils {
+public class TransactionTestUtils {
 
     public static final String RPT_ID = "77777777777111111111111111111";
     public static final String PAYMENT_TOKEN = "paymentToken";
