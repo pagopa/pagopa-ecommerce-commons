@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
-import it.pagopa.ecommerce.commons.TransactionUtils;
+import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -21,9 +21,9 @@ class TransactionDocumentTest {
         TransactionStatusDto transactionStatus = TransactionStatusDto.ACTIVATED;
 
         /* Test */
-        Transaction transaction = TransactionUtils.transactionDocument(transactionStatus, creationDateTime);
+        Transaction transaction = TransactionTestUtils.transactionDocument(transactionStatus, creationDateTime);
 
-        Transaction sameTransaction = TransactionUtils.transactionDocument(transactionStatus, creationDateTime);
+        Transaction sameTransaction = TransactionTestUtils.transactionDocument(transactionStatus, creationDateTime);
         sameTransaction.setCreationDate(transaction.getCreationDate());
 
         // Different transaction (creation date)
@@ -38,17 +38,17 @@ class TransactionDocumentTest {
                 ZonedDateTime.now()
         );
 
-        differentTransaction.setPaymentToken(TransactionUtils.PAYMENT_TOKEN);
-        differentTransaction.setRptId(TransactionUtils.RPT_ID);
-        differentTransaction.setDescription(TransactionUtils.DESCRIPTION);
-        differentTransaction.setAmount(TransactionUtils.AMOUNT);
+        differentTransaction.setPaymentToken(TransactionTestUtils.PAYMENT_TOKEN);
+        differentTransaction.setRptId(TransactionTestUtils.RPT_ID);
+        differentTransaction.setDescription(TransactionTestUtils.DESCRIPTION);
+        differentTransaction.setAmount(TransactionTestUtils.AMOUNT);
         differentTransaction.setStatus(transactionStatus);
 
         /* Assertions */
-        assertEquals(TransactionUtils.PAYMENT_TOKEN, transaction.getPaymentToken());
-        assertEquals(TransactionUtils.RPT_ID, transaction.getRptId());
-        assertEquals(TransactionUtils.DESCRIPTION, transaction.getDescription());
-        assertEquals(TransactionUtils.AMOUNT, transaction.getAmount());
+        assertEquals(TransactionTestUtils.PAYMENT_TOKEN, transaction.getPaymentToken());
+        assertEquals(TransactionTestUtils.RPT_ID, transaction.getRptId());
+        assertEquals(TransactionTestUtils.DESCRIPTION, transaction.getDescription());
+        assertEquals(TransactionTestUtils.AMOUNT, transaction.getAmount());
         assertEquals(transactionStatus, transaction.getStatus());
 
         assertNotEquals(transaction, differentTransaction);
@@ -58,7 +58,7 @@ class TransactionDocumentTest {
 
     @Test
     void shouldConstructTransactionDocumentFromTransaction() {
-        TransactionActivated transaction = TransactionUtils.transactionActivated(ZonedDateTime.now().toString());
+        TransactionActivated transaction = TransactionTestUtils.transactionActivated(ZonedDateTime.now().toString());
 
         Transaction transactionDocument = Transaction.from(transaction);
 
@@ -75,7 +75,7 @@ class TransactionDocumentTest {
 
     @Test
     void shouldConstructTransactionDocumentFromTransactionWithRequestedActivation() {
-        TransactionActivationRequested transaction = TransactionUtils
+        TransactionActivationRequested transaction = TransactionTestUtils
                 .transactionActivationRequested(ZonedDateTime.now().toString());
 
         Transaction transactionDocument = Transaction.from(transaction);
