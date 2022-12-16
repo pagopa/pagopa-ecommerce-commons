@@ -54,15 +54,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
                         new TransactionWithRequestedAuthorization(
                                 new TransactionActivated(
                                         this.getTransactionId(),
-                                        this.getNoticeCodes().stream().map(
-                                                noticeCode -> new NoticeCode(
-                                                        noticeCode.paymentToken(),
-                                                        noticeCode.rptId(),
-                                                        noticeCode.transactionAmount(),
-                                                        noticeCode.transactionDescription()
-                                                )
-                                        )
-                                                .collect(Collectors.toList()),
+                                        this.getNoticeCodes(),
                                         this.getEmail(),
                                         this.getTransactionActivatedData().getFaultCode(),
                                         this.getTransactionActivatedData().getFaultCodeString(),
