@@ -54,29 +54,14 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
                         new TransactionWithRequestedAuthorization(
                                 new TransactionActivated(
                                         this.getTransactionId(),
-                                        this.getNoticeCodes().stream()
-                                                .filter(
-                                                        noticeCode -> this.getTransactionActivatedData()
-                                                                .getNoticeCodes().stream().map(n -> n.getRptId())
-                                                                .collect(Collectors.toList())
-                                                                .contains(noticeCode.rptId().value())
-                                                ).map(
-                                                        noticeCode -> new NoticeCode(
-                                                                new PaymentToken(
-                                                                        this.getTransactionActivatedData()
-                                                                                .getNoticeCodes().stream()
-                                                                                .filter(
-                                                                                        n -> n.getRptId().equals(
-                                                                                                noticeCode.rptId()
-                                                                                                        .value()
-                                                                                        )
-                                                                                ).findFirst().get().getPaymentToken()
-                                                                ),
-                                                                noticeCode.rptId(),
-                                                                noticeCode.transactionAmount(),
-                                                                noticeCode.transactionDescription()
-                                                        )
+                                        this.getNoticeCodes().stream().map(
+                                                noticeCode -> new NoticeCode(
+                                                        noticeCode.paymentToken(),
+                                                        noticeCode.rptId(),
+                                                        noticeCode.transactionAmount(),
+                                                        noticeCode.transactionDescription()
                                                 )
+                                        )
                                                 .collect(Collectors.toList()),
                                         this.getEmail(),
                                         this.getTransactionActivatedData().getFaultCode(),

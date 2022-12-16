@@ -51,7 +51,7 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getNoticeCodes().stream()
                         .map(
                                 n -> new NoticeCode(
-                                        null,
+                                        new PaymentToken(null),
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),
                                         new TransactionDescription(n.getDescription())
