@@ -67,26 +67,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         return new TransactionWithRequestedAuthorization(
                 new TransactionActivated(
                         this.getTransactionId(),
-                        this.getNoticeCodes().stream()
-                                .filter(
-                                        noticeCode -> this.getTransactionActivatedData().getNoticeCodes().stream()
-                                                .map(n -> n.getRptId()).collect(Collectors.toList())
-                                                .contains(noticeCode.rptId().value())
-                                ).map(
-                                        noticeCode -> new NoticeCode(
-                                                new PaymentToken(
-                                                        this.getTransactionActivatedData().getNoticeCodes().stream()
-                                                                .filter(
-                                                                        n -> n.getRptId()
-                                                                                .equals(noticeCode.rptId().value())
-                                                                ).findFirst().get().getPaymentToken()
-                                                ),
-                                                noticeCode.rptId(),
-                                                noticeCode.transactionAmount(),
-                                                noticeCode.transactionDescription()
-                                        )
-                                )
-                                .collect(Collectors.toList()),
+                        this.getNoticeCodes(),
                         this.getEmail(),
                         this.getTransactionActivatedData().getFaultCode(),
                         this.getTransactionActivatedData().getFaultCodeString(),
