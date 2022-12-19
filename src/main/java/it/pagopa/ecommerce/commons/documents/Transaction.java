@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
+import it.pagopa.ecommerce.commons.domain.PaymentToken;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -9,6 +10,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
@@ -19,14 +23,52 @@ public class Transaction {
 
     @Id
     private String transactionId;
-
-    private String paymentToken;
-    private String rptId;
-    private String description;
-    private int amount;
+    private OriginType origin;
     private String email;
     private TransactionStatusDto status;
+    private int amountTotal;
+    private int feeTotal;
     private String creationDate;
+    private List<NoticeCode> noticeCodes;
+
+    /**
+     * Enumeration of transaction origin
+     */
+    public enum OriginType {
+        /**
+         * Transaction originated by checkout frontend with notice information input by
+         * user
+         */
+        CHECKOUT,
+        /**
+         * Transaction originated by E.C. through cart functionality
+         */
+        CHECKOUT_CART,
+        /**
+         * Transaction originated by IO app
+         */
+        IO,
+        /**
+         * Transaction origin is not an above ones
+         */
+        UNKNOWN;
+
+        private static final Map<String, OriginType> lookupMap = Collections.unmodifiableMap(
+                Arrays.stream(OriginType.values()).collect(Collectors.toMap(OriginType::toString, Function.identity()))
+        );
+
+        /**
+         *
+         * @param enumValue - the enumeration value to be converted to
+         *                  {@link OriginType} enumeration instance
+         * @return the converted {@link OriginType} enumeration instance or
+         *         {@link OriginType#UNKNOWN} if the input value is not assignable to an
+         *         enumeration value
+         */
+        public static OriginType fromString(String enumValue) {
+            return lookupMap.getOrDefault(enumValue, UNKNOWN);
+        }
+    }
 
     /**
      * Convenience contructor which sets the transaction creation date to now
@@ -38,7 +80,10 @@ public class Transaction {
      * @param amount        transaction amount in euro cents
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -62,7 +107,11 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @param creationDate  transaction creation date
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
+
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -87,8 +136,10 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @param creationDate  transaction creation date
+     * @deprecated use
+     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
      */
-    @PersistenceConstructor
+    @Deprecated(forRemoval = true)
     public Transaction(
             String transactionId,
             String paymentToken,
@@ -99,13 +150,48 @@ public class Transaction {
             TransactionStatusDto status,
             String creationDate
     ) {
+        this(
+                transactionId,
+                List.of(new NoticeCode(paymentToken, rptId, description, amount)),
+                amount,
+                0,
+                email,
+                status,
+                null,
+                creationDate
+        );
+    }
+
+    /**
+     * Primary persistence constructor
+     *
+     * @param transactionId transaction unique id
+     * @param noticeCodes   notice code list
+     * @param email         user email where the payment receipt will be sent to
+     * @param status        transaction status
+     * @param origin        transaction origin
+     * @param amountTotal   transaction total amount
+     * @param feeTotal      transaction total fee
+     * @param creationDate  transaction creation date
+     */
+    @PersistenceConstructor
+    public Transaction(
+            String transactionId,
+            List<NoticeCode> noticeCodes,
+            int amountTotal,
+            int feeTotal,
+            String email,
+            TransactionStatusDto status,
+            OriginType origin,
+            String creationDate
+    ) {
         this.transactionId = transactionId;
-        this.rptId = rptId;
-        this.description = description;
-        this.paymentToken = paymentToken;
-        this.amount = amount;
         this.email = email;
         this.status = status;
+        this.noticeCodes = noticeCodes;
+        this.amountTotal = amountTotal;
+        this.feeTotal = feeTotal;
+        this.origin = origin;
         this.creationDate = creationDate;
     }
 
@@ -118,12 +204,12 @@ public class Transaction {
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getTransactionActivatedData().getPaymentToken(),
-                transaction.getRptId().value(),
-                transaction.getDescription().value(),
-                transaction.getAmount().value(),
-                transaction.getEmail().value(),
+                transaction.getTransactionActivatedData().getNoticeCodes(),
+                transaction.getTransactionActivatedData().getNoticeCodes().stream().mapToInt(n -> n.getAmount()).sum(),
+                0,
+                transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
+                null,
                 transaction.getCreationDate().toString()
         );
     }
@@ -138,12 +224,20 @@ public class Transaction {
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                null,
-                transaction.getRptId().value(),
-                transaction.getDescription().value(),
-                transaction.getAmount().value(),
+                transaction.getNoticeCodes().stream().filter(Objects::nonNull)
+                        .map(
+                                n -> new NoticeCode(
+                                        Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
+                                        n.rptId().value(),
+                                        n.transactionDescription().value(),
+                                        n.transactionAmount().value()
+                                )
+                        ).collect(Collectors.toList()),
+                transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
+                0,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
+                null,
                 transaction.getCreationDate().toString()
         );
     }

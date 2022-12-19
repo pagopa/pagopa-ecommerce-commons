@@ -6,6 +6,8 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Data related to the requesting of an activation.
  */
@@ -17,8 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class TransactionActivationRequestedData {
 
     // TODO Add other fields?
-    private String description;
-    private Integer amount;
+    private List<NoticeCode> noticeCodes;
     private String email;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;

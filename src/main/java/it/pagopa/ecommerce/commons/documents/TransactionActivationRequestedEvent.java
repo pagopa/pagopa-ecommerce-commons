@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Event for the request of an activation. Note that this event can happen only
  * in a legacy flow.
@@ -23,21 +25,20 @@ public final class TransactionActivationRequestedEvent extends TransactionEvent<
      * Primary constructor
      *
      * @param transactionId transaction unique id
-     * @param rptId         RPT id associated to the transaction
+     * @param noticeCodes   notice code list
      * @param creationDate  event creation date
      * @param data          event-specific data
      */
     @PersistenceConstructor
     public TransactionActivationRequestedEvent(
             String transactionId,
-            String rptId,
+            List<NoticeCode> noticeCodes,
             String creationDate,
             TransactionActivationRequestedData data
     ) {
         super(
                 transactionId,
-                rptId,
-                null,
+                noticeCodes,
                 TransactionEventCode.TRANSACTION_ACTIVATION_REQUESTED_EVENT,
                 creationDate,
                 data
@@ -48,15 +49,15 @@ public final class TransactionActivationRequestedEvent extends TransactionEvent<
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param rptId         RPT id associated to the transaction
+     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     @PersistenceConstructor
     public TransactionActivationRequestedEvent(
             String transactionId,
-            String rptId,
+            List<NoticeCode> noticeCodes,
             TransactionActivationRequestedData data
     ) {
-        super(transactionId, rptId, null, TransactionEventCode.TRANSACTION_ACTIVATION_REQUESTED_EVENT, data);
+        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_ACTIVATION_REQUESTED_EVENT, data);
     }
 }

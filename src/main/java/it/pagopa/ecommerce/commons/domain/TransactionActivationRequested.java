@@ -1,11 +1,13 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.domain.NoticeCode;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static java.time.ZonedDateTime.now;
 
@@ -28,44 +30,36 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * Primary constructor
      *
      * @param transactionId transaction id
-     * @param rptId         RPT id
-     * @param description   payment description
-     * @param amount        transaction amount in euro cents
+     * @param noticeCodes   notice codes list
      * @param email         email where the payment receipt will be sent to
      * @param creationDate  creation date of this transaction
      * @param status        transaction status
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
-            RptId rptId,
-            TransactionDescription description,
-            TransactionAmount amount,
+            List<NoticeCode> noticeCodes,
             Email email,
             ZonedDateTime creationDate,
             TransactionStatusDto status
     ) {
-        super(transactionId, rptId, description, amount, email, creationDate, status);
+        super(transactionId, noticeCodes, email, creationDate, status);
     }
 
     /**
      * Convenience constructor that sets the transaction creation date to now.
      *
      * @param transactionId transaction id
-     * @param rptId         RPT id
-     * @param description   payment description
-     * @param amount        transaction amount in euro cents
+     * @param noticeCodes   notice codes list
      * @param email         email where the payment receipt will be sent to
      * @param status        transaction status
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
-            RptId rptId,
-            TransactionDescription description,
-            TransactionAmount amount,
+            List<NoticeCode> noticeCodes,
             Email email,
             TransactionStatusDto status
     ) {
-        super(transactionId, rptId, description, amount, email, now(), status);
+        super(transactionId, noticeCodes, email, now(), status);
     }
 
     @Override
@@ -87,9 +81,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
     public TransactionActivationRequested withStatus(TransactionStatusDto status) {
         return new TransactionActivationRequested(
                 this.getTransactionId(),
-                this.getRptId(),
-                this.getDescription(),
-                this.getAmount(),
+                this.getNoticeCodes(),
                 this.getEmail(),
                 this.getCreationDate(),
                 status

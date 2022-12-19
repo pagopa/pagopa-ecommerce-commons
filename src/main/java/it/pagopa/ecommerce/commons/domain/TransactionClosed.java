@@ -6,6 +6,8 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuth
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
+import java.util.stream.Collectors;
+
 /**
  * <p>
  * Closed transaction.
@@ -52,10 +54,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
                         new TransactionWithRequestedAuthorization(
                                 new TransactionActivated(
                                         this.getTransactionId(),
-                                        new PaymentToken(this.getTransactionActivatedData().getPaymentToken()),
-                                        this.getRptId(),
-                                        this.getDescription(),
-                                        this.getAmount(),
+                                        this.getNoticeCodes(),
                                         this.getEmail(),
                                         this.getTransactionActivatedData().getFaultCode(),
                                         this.getTransactionActivatedData().getFaultCodeString(),

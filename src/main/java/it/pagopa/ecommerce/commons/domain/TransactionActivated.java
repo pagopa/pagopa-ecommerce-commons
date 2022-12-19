@@ -8,6 +8,9 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -28,10 +31,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * Primary constructor
      *
      * @param transactionId   transaction id
-     * @param paymentToken    payment token
-     * @param rptId           RPT id
-     * @param description     payment description
-     * @param amount          transaction amount in euro cents
+     * @param noticeCodes     notice code list
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
@@ -40,10 +40,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            PaymentToken paymentToken,
-            RptId rptId,
-            TransactionDescription description,
-            TransactionAmount amount,
+            List<NoticeCode> noticeCodes,
             Email email,
             String faultCode,
             String faultCodeString,
@@ -53,20 +50,24 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
         super(
                 new TransactionActivationRequested(
                         transactionId,
-                        rptId,
-                        description,
-                        amount,
+                        noticeCodes,
                         email,
                         creationDate,
                         status
                 ),
                 new TransactionActivatedData(
-                        description.value(),
-                        amount.value(),
                         email.value(),
+                        noticeCodes.stream()
+                                .map(
+                                        n -> new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                                n.paymentToken().value(),
+                                                n.rptId().value(),
+                                                n.transactionDescription().value(),
+                                                n.transactionAmount().value()
+                                        )
+                                ).toList(),
                         faultCode,
-                        faultCodeString,
-                        paymentToken.value()
+                        faultCodeString
                 )
         );
     }
@@ -75,10 +76,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * Convenience constructor with creation date set to now.
      *
      * @param transactionId   transaction id
-     * @param paymentToken    payment token
-     * @param rptId           RPT id
-     * @param description     payment description
-     * @param amount          transaction amount in euro cents
+     * @param noticeCodes     notice code list
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
@@ -86,10 +84,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            PaymentToken paymentToken,
-            RptId rptId,
-            TransactionDescription description,
-            TransactionAmount amount,
+            List<NoticeCode> noticeCodes,
             Email email,
             String faultCode,
             String faultCodeString,
@@ -97,10 +92,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     ) {
         this(
                 transactionId,
-                paymentToken,
-                rptId,
-                description,
-                amount,
+                noticeCodes,
                 email,
                 faultCode,
                 faultCodeString,
@@ -145,10 +137,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public TransactionActivated withStatus(TransactionStatusDto status) {
         return new TransactionActivated(
                 this.getTransactionId(),
-                new PaymentToken(this.getTransactionActivatedData().getPaymentToken()),
-                this.getRptId(),
-                this.getDescription(),
-                this.getAmount(),
+                this.getNoticeCodes(),
                 this.getEmail(),
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),

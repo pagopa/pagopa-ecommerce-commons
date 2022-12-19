@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Business event corresponding to a transaction refund.
  */
@@ -16,16 +18,14 @@ public final class TransactionRefundedEvent extends TransactionEvent<Transaction
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param rptId         RPT id associated to the transaction
-     * @param paymentToken  payment token related to this transaction
+     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionRefundedEvent(
             String transactionId,
-            String rptId,
-            String paymentToken,
+            List<NoticeCode> noticeCodes,
             TransactionRefundedData data
     ) {
-        super(transactionId, rptId, paymentToken, TransactionEventCode.TRANSACTION_REFUNDED_EVENT, data);
+        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_REFUNDED_EVENT, data);
     }
 }

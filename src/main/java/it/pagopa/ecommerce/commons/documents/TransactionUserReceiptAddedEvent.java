@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Business event generated when sending a payment receipt to a user.
  */
@@ -17,16 +19,14 @@ public final class TransactionUserReceiptAddedEvent extends TransactionEvent<Tra
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param rptId         RPT id associated to the transaction
-     * @param paymentToken  payment token related to this transaction
+     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionUserReceiptAddedEvent(
             String transactionId,
-            String rptId,
-            String paymentToken,
+            List<NoticeCode> noticeCodes,
             TransactionAddReceiptData data
     ) {
-        super(transactionId, rptId, paymentToken, TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT, data);
+        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT, data);
     }
 }

@@ -26,10 +26,13 @@ class TransactionTest {
 
         TransactionActivated transaction = TransactionTestUtils.transactionActivated(ZonedDateTime.now().toString());
 
-        assertEquals(new PaymentToken(transaction.getTransactionActivatedData().getPaymentToken()), paymentToken);
-        assertEquals(transaction.getRptId(), rptId);
-        assertEquals(transaction.getDescription(), description);
-        assertEquals(transaction.getAmount(), amount);
+        assertEquals(
+                new PaymentToken(transaction.getTransactionActivatedData().getNoticeCodes().get(0).getPaymentToken()),
+                paymentToken
+        );
+        assertEquals(transaction.getNoticeCodes().get(0).rptId(), rptId);
+        assertEquals(transaction.getNoticeCodes().get(0).transactionDescription(), description);
+        assertEquals(transaction.getNoticeCodes().get(0).transactionAmount(), amount);
         assertEquals(transaction.getStatus(), status);
     }
 
@@ -485,4 +488,5 @@ class TransactionTest {
                 .expectNext(expected)
                 .verifyComplete();
     }
+
 }
