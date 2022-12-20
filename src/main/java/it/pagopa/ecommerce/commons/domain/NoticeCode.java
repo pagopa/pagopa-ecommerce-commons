@@ -17,6 +17,7 @@ public record NoticeCode(
         PaymentToken paymentToken,
         RptId rptId,
         TransactionAmount transactionAmount,
-        TransactionDescription transactionDescription
+        TransactionDescription transactionDescription,
+        PaymentContextCode paymentContextCode
 ) {
 }

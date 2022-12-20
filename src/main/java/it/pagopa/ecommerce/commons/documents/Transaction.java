@@ -152,12 +152,12 @@ public class Transaction {
     ) {
         this(
                 transactionId,
-                List.of(new NoticeCode(paymentToken, rptId, description, amount)),
+                List.of(new NoticeCode(paymentToken, rptId, description, amount, null)),
                 amount,
                 0,
                 email,
                 status,
-                null,
+                OriginType.UNKNOWN,
                 creationDate
         );
     }
@@ -209,7 +209,7 @@ public class Transaction {
                 0,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                null,
+                OriginType.UNKNOWN,
                 transaction.getCreationDate().toString()
         );
     }
@@ -230,14 +230,15 @@ public class Transaction {
                                         Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
                                         n.rptId().value(),
                                         n.transactionDescription().value(),
-                                        n.transactionAmount().value()
+                                        n.transactionAmount().value(),
+                                        n.paymentContextCode().value()
                                 )
                         ).collect(Collectors.toList()),
                 transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
                 0,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                null,
+                OriginType.UNKNOWN,
                 transaction.getCreationDate().toString()
         );
     }

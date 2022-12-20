@@ -2,10 +2,7 @@ package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.documents.NoticeCode;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
-import it.pagopa.ecommerce.commons.domain.PaymentToken;
-import it.pagopa.ecommerce.commons.domain.RptId;
-import it.pagopa.ecommerce.commons.domain.TransactionAmount;
-import it.pagopa.ecommerce.commons.domain.TransactionDescription;
+import it.pagopa.ecommerce.commons.domain.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -60,7 +57,8 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                                         new PaymentToken(noticeCode.getPaymentToken()),
                                         new RptId(noticeCode.getRptId()),
                                         new TransactionAmount(noticeCode.getAmount()),
-                                        new TransactionDescription(noticeCode.getDescription())
+                                        new TransactionDescription(noticeCode.getDescription()),
+                                        new PaymentContextCode(noticeCode.getPaymentContextCode())
                                 )
                         ).collect(Collectors.toList()),
                 baseTransaction.getEmail(),

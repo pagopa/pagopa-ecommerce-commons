@@ -34,7 +34,8 @@ public final class EmptyTransaction implements Transaction {
                                         new PaymentToken(n.getPaymentToken()),
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),
-                                        new TransactionDescription(n.getDescription())
+                                        new TransactionDescription(n.getDescription()),
+                                        new PaymentContextCode(n.getPaymentContextCode())
                                 )
                         ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
@@ -54,7 +55,8 @@ public final class EmptyTransaction implements Transaction {
                                         new PaymentToken(null),
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),
-                                        new TransactionDescription(n.getDescription())
+                                        new TransactionDescription(n.getDescription()),
+                                        new PaymentContextCode(n.getPaymentContextCode())
                                 )
                         ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
