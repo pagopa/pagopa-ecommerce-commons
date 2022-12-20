@@ -26,6 +26,7 @@ public class TransactionTestUtils {
     public static final String PAYMENT_INSTRUMENT_ID = "paymentInstrumentId";
     public static final String PSP_ID = "pspId";
     public static final String PAYMENT_TYPE_CODE = "paymentTypeCode";
+    public static final String PAYMENT_CONTEXT_CODE = "paymentContextCode";
     public static final String BROKER_NAME = "brokerName";
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
@@ -42,7 +43,8 @@ public class TransactionTestUtils {
                                 new PaymentToken(null),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
-                                new TransactionDescription(DESCRIPTION)
+                                new TransactionDescription(DESCRIPTION),
+                                new PaymentContextCode(PAYMENT_CONTEXT_CODE)
                         )
                 ),
                 new Email(EMAIL),
@@ -56,7 +58,13 @@ public class TransactionTestUtils {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(PAYMENT_TOKEN, RPT_ID, DESCRIPTION, AMOUNT)
+                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                PAYMENT_TOKEN,
+                                RPT_ID,
+                                DESCRIPTION,
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
+                        )
                 ),
                 new TransactionActivatedData(
                         EMAIL,
@@ -65,7 +73,8 @@ public class TransactionTestUtils {
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
-                                        AMOUNT
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE
                                 )
                         ),
                         FAULT_CODE,
@@ -83,7 +92,8 @@ public class TransactionTestUtils {
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
-                                new TransactionDescription(DESCRIPTION)
+                                new TransactionDescription(DESCRIPTION),
+                                new PaymentContextCode(PAYMENT_CONTEXT_CODE)
                         )
                 ),
                 new Email(EMAIL),
@@ -110,7 +120,13 @@ public class TransactionTestUtils {
         return new TransactionAuthorizationRequestedEvent(
                 TRANSACTION_ID,
                 Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(PAYMENT_TOKEN, RPT_ID, DESCRIPTION, AMOUNT)
+                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                PAYMENT_TOKEN,
+                                RPT_ID,
+                                DESCRIPTION,
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
+                        )
                 ),
                 new TransactionAuthorizationRequestData(
                         AMOUNT,
@@ -141,7 +157,13 @@ public class TransactionTestUtils {
         return new TransactionAuthorizationStatusUpdatedEvent(
                 TRANSACTION_ID,
                 Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(RPT_ID, PAYMENT_TOKEN, DESCRIPTION, AMOUNT)
+                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                RPT_ID,
+                                PAYMENT_TOKEN,
+                                DESCRIPTION,
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
+                        )
                 ),
                 new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
         );
@@ -176,7 +198,8 @@ public class TransactionTestUtils {
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,
-                                AMOUNT
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
                         )
                 ),
                 new TransactionClosureSendData(closePaymentOutcome, newStatus)
@@ -192,7 +215,8 @@ public class TransactionTestUtils {
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,
-                                AMOUNT
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
                         )
                 )
         );
@@ -227,21 +251,23 @@ public class TransactionTestUtils {
     public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
         return new TransactionActivationRequestedEvent(
                 TRANSACTION_ID,
-                Arrays.asList(new it.pagopa.ecommerce.commons.documents.NoticeCode(null, RPT_ID, DESCRIPTION, AMOUNT)),
+                Arrays.asList(
+                        new it.pagopa.ecommerce.commons.documents.NoticeCode(null, RPT_ID, DESCRIPTION, AMOUNT, null)
+                ),
                 ZonedDateTime.now().toString(),
                 new TransactionActivationRequestedData(
                         Arrays.asList(
                                 new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                        "paymentContextCode",
+                                        null,
                                         RPT_ID,
                                         DESCRIPTION,
-                                        AMOUNT
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE
                                 )
                         ),
                         EMAIL,
                         FAULT_CODE,
-                        FAULT_CODE_STRING,
-                        "paymentContextCode"
+                        FAULT_CODE_STRING
                 )
         );
     }

@@ -19,4 +19,5 @@ public class NoticeCode {
     private String rptId; // TODO To be splitted
     private String description;
     private Integer amount;
+    private String paymentContextCode;
 }

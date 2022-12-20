@@ -63,7 +63,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                                 n.paymentToken().value(),
                                                 n.rptId().value(),
                                                 n.transactionDescription().value(),
-                                                n.transactionAmount().value()
+                                                n.transactionAmount().value(),
+                                                n.paymentContextCode().value()
                                         )
                                 ).toList(),
                         faultCode,
