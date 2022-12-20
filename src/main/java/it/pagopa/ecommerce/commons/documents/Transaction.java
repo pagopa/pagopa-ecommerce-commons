@@ -157,7 +157,7 @@ public class Transaction {
                 0,
                 email,
                 status,
-                null,
+                OriginType.UNKNOWN,
                 creationDate
         );
     }
@@ -209,7 +209,7 @@ public class Transaction {
                 0,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                null,
+                OriginType.UNKNOWN,
                 transaction.getCreationDate().toString()
         );
     }
@@ -238,7 +238,7 @@ public class Transaction {
                 0,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                null,
+                OriginType.UNKNOWN,
                 transaction.getCreationDate().toString()
         );
     }
