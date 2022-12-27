@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
-public class NoticeCode {
+public class PaymentNotice {
     private String paymentToken;
     private String rptId; // TODO To be splitted
     private String description;

@@ -28,9 +28,9 @@ public final class EmptyTransaction implements Transaction {
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
-                event.getData().getNoticeCodes().stream()
+                event.getData().getPaymentNotices().stream()
                         .map(
-                                n -> new NoticeCode(
+                                n -> new PaymentNotice(
                                         new PaymentToken(n.getPaymentToken()),
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),
@@ -49,9 +49,9 @@ public final class EmptyTransaction implements Transaction {
     private TransactionActivationRequested applyActivationRequested(TransactionActivationRequestedEvent event) {
         return new TransactionActivationRequested(
                 new TransactionId(UUID.fromString(event.getTransactionId())),
-                event.getData().getNoticeCodes().stream()
+                event.getData().getPaymentNotices().stream()
                         .map(
-                                n -> new NoticeCode(
+                                n -> new PaymentNotice(
                                         new PaymentToken(null),
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),

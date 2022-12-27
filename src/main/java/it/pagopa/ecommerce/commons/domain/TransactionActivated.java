@@ -29,7 +29,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * Primary constructor
      *
      * @param transactionId   transaction id
-     * @param noticeCodes     notice code list
+     * @param paymentNotices  notice code list
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
@@ -38,7 +38,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            List<NoticeCode> noticeCodes,
+            List<PaymentNotice> paymentNotices,
             Email email,
             String faultCode,
             String faultCodeString,
@@ -48,16 +48,16 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
         super(
                 new TransactionActivationRequested(
                         transactionId,
-                        noticeCodes,
+                        paymentNotices,
                         email,
                         creationDate,
                         status
                 ),
                 new TransactionActivatedData(
                         email.value(),
-                        noticeCodes.stream()
+                        paymentNotices.stream()
                                 .map(
-                                        n -> new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                        n -> new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                                 n.paymentToken().value(),
                                                 n.rptId().value(),
                                                 n.transactionDescription().value(),
@@ -75,7 +75,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * Convenience constructor with creation date set to now.
      *
      * @param transactionId   transaction id
-     * @param noticeCodes     notice code list
+     * @param paymentNotices  notice code list
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
@@ -83,7 +83,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            List<NoticeCode> noticeCodes,
+            List<PaymentNotice> paymentNotices,
             Email email,
             String faultCode,
             String faultCodeString,
@@ -91,7 +91,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     ) {
         this(
                 transactionId,
-                noticeCodes,
+                paymentNotices,
                 email,
                 faultCode,
                 faultCodeString,
@@ -136,7 +136,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public TransactionActivated withStatus(TransactionStatusDto status) {
         return new TransactionActivated(
                 this.getTransactionId(),
-                this.getNoticeCodes(),
+                this.getPaymentNotices(),
                 this.getEmail(),
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),

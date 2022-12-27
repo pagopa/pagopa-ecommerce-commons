@@ -13,7 +13,7 @@ import it.pagopa.ecommerce.commons.annotations.ValueObject;
  * @param rptId                  notice code rptId
  */
 @ValueObject
-public record NoticeCode(
+public record PaymentNotice(
         PaymentToken paymentToken,
         RptId rptId,
         TransactionAmount transactionAmount,

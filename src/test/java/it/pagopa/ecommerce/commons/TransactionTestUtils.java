@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons;
 import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
-import it.pagopa.ecommerce.commons.domain.NoticeCode;
+import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
@@ -39,7 +39,7 @@ public class TransactionTestUtils {
         return new TransactionActivationRequested(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
                 Arrays.asList(
-                        new NoticeCode(
+                        new PaymentNotice(
                                 new PaymentToken(null),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -60,7 +60,7 @@ public class TransactionTestUtils {
                 new TransactionActivatedData(
                         EMAIL,
                         Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -79,7 +79,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
                 Arrays.asList(
-                        new NoticeCode(
+                        new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -209,7 +209,7 @@ public class TransactionTestUtils {
                 ZonedDateTime.now().toString(),
                 new TransactionActivationRequestedData(
                         Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         null,
                                         RPT_ID,
                                         DESCRIPTION,

@@ -60,7 +60,7 @@ public abstract class BaseTransaction {
     @AggregateRootId
     TransactionId transactionId;
 
-    List<NoticeCode> noticeCodes;
+    List<PaymentNotice> paymentNotices;
     Email email;
     ZonedDateTime creationDate;
 

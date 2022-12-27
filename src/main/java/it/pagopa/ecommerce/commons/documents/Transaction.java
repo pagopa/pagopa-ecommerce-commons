@@ -28,7 +28,7 @@ public class Transaction {
     private TransactionStatusDto status;
     private int feeTotal;
     private String creationDate;
-    private List<NoticeCode> noticeCodes;
+    private List<PaymentNotice> paymentNotices;
 
     /**
      * Enumeration of transaction origin
@@ -151,7 +151,7 @@ public class Transaction {
     ) {
         this(
                 transactionId,
-                List.of(new NoticeCode(paymentToken, rptId, description, amount, null)),
+                List.of(new PaymentNotice(paymentToken, rptId, description, amount, null)),
                 0,
                 email,
                 status,
@@ -163,18 +163,18 @@ public class Transaction {
     /**
      * Primary persistence constructor
      *
-     * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
-     * @param email         user email where the payment receipt will be sent to
-     * @param status        transaction status
-     * @param origin        transaction origin
-     * @param feeTotal      transaction total fee
-     * @param creationDate  transaction creation date
+     * @param transactionId  transaction unique id
+     * @param paymentNotices notice code list
+     * @param email          user email where the payment receipt will be sent to
+     * @param status         transaction status
+     * @param origin         transaction origin
+     * @param feeTotal       transaction total fee
+     * @param creationDate   transaction creation date
      */
     @PersistenceConstructor
     public Transaction(
             String transactionId,
-            List<NoticeCode> noticeCodes,
+            List<PaymentNotice> paymentNotices,
             int feeTotal,
             String email,
             TransactionStatusDto status,
@@ -184,7 +184,7 @@ public class Transaction {
         this.transactionId = transactionId;
         this.email = email;
         this.status = status;
-        this.noticeCodes = noticeCodes;
+        this.paymentNotices = paymentNotices;
         this.feeTotal = feeTotal;
         this.origin = origin;
         this.creationDate = creationDate;
@@ -199,7 +199,7 @@ public class Transaction {
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getTransactionActivatedData().getNoticeCodes(),
+                transaction.getTransactionActivatedData().getPaymentNotices(),
                 0,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
@@ -218,9 +218,9 @@ public class Transaction {
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getNoticeCodes().stream().filter(Objects::nonNull)
+                transaction.getPaymentNotices().stream().filter(Objects::nonNull)
                         .map(
-                                n -> new NoticeCode(
+                                n -> new PaymentNotice(
                                         Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
                                         n.rptId().value(),
                                         n.transactionDescription().value(),
