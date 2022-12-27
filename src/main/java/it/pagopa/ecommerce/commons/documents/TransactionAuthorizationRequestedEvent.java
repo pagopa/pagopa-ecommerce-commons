@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Business event corresponding to the user requesting a payment authorization
  * from a PSP (Payments Service Provider).

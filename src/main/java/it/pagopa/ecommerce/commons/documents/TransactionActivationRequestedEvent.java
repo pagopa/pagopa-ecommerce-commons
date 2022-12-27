@@ -7,8 +7,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Event for the request of an activation. Note that this event can happen only
  * in a legacy flow.

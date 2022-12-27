@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Business event corresponding to the reception of an authorization response by
  * a PSP (Payment Service Provider), either positive (i.e. the payment has been

@@ -5,7 +5,6 @@ import static java.time.ZonedDateTime.now;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
 
-import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.Generated;

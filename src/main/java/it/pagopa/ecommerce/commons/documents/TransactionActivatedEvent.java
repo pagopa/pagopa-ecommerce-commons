@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Activation event. Semantically this event blocks modification on payment data
  * by public entities for some time and allows citizen to authorize a payment.
