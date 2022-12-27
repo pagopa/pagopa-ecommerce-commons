@@ -22,31 +22,27 @@ public final class TransactionActivatedEvent extends TransactionEvent<Transactio
      * Primary constructor
      *
      * @param transactionId transaction unique id
-     * @param noticeCode    notice code list
      * @param creationDate  event creation date
      * @param data          event-specific data
      */
     public TransactionActivatedEvent(
             String transactionId,
-            List<NoticeCode> noticeCode,
             String creationDate,
             TransactionActivatedData data
     ) {
-        super(transactionId, noticeCode, TransactionEventCode.TRANSACTION_ACTIVATED_EVENT, creationDate, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_ACTIVATED_EVENT, creationDate, data);
     }
 
     /**
      * Convenience constructor, sets creation date to now.
      *
      * @param transactionId transaction unique id
-     * @param noticeCode    notice code list
      * @param data          event-specific data
      */
     public TransactionActivatedEvent(
             String transactionId,
-            List<NoticeCode> noticeCode,
             TransactionActivatedData data
     ) {
-        super(transactionId, noticeCode, TransactionEventCode.TRANSACTION_ACTIVATED_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_ACTIVATED_EVENT, data);
     }
 }

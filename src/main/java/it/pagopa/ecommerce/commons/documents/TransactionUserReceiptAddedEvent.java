@@ -19,14 +19,12 @@ public final class TransactionUserReceiptAddedEvent extends TransactionEvent<Tra
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionUserReceiptAddedEvent(
             String transactionId,
-            List<NoticeCode> noticeCodes,
             TransactionAddReceiptData data
     ) {
-        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT, data);
     }
 }

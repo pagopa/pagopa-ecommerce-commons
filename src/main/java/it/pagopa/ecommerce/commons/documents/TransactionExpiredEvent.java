@@ -18,14 +18,12 @@ public final class TransactionExpiredEvent extends TransactionEvent<TransactionE
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionExpiredEvent(
             String transactionId,
-            List<NoticeCode> noticeCodes,
             TransactionExpiredData data
     ) {
-        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_EXPIRED_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_EXPIRED_EVENT, data);
     }
 }

@@ -18,14 +18,12 @@ public final class TransactionRefundedEvent extends TransactionEvent<Transaction
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionRefundedEvent(
             String transactionId,
-            List<NoticeCode> noticeCodes,
             TransactionRefundedData data
     ) {
-        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_REFUNDED_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_REFUNDED_EVENT, data);
     }
 }

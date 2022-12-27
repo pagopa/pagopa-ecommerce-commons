@@ -26,7 +26,6 @@ public class Transaction {
     private OriginType origin;
     private String email;
     private TransactionStatusDto status;
-    private int amountTotal;
     private int feeTotal;
     private String creationDate;
     private List<NoticeCode> noticeCodes;
@@ -81,7 +80,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -108,7 +107,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -137,7 +136,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -153,7 +152,6 @@ public class Transaction {
         this(
                 transactionId,
                 List.of(new NoticeCode(paymentToken, rptId, description, amount, null)),
-                amount,
                 0,
                 email,
                 status,
@@ -170,7 +168,6 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @param origin        transaction origin
-     * @param amountTotal   transaction total amount
      * @param feeTotal      transaction total fee
      * @param creationDate  transaction creation date
      */
@@ -178,7 +175,6 @@ public class Transaction {
     public Transaction(
             String transactionId,
             List<NoticeCode> noticeCodes,
-            int amountTotal,
             int feeTotal,
             String email,
             TransactionStatusDto status,
@@ -189,7 +185,6 @@ public class Transaction {
         this.email = email;
         this.status = status;
         this.noticeCodes = noticeCodes;
-        this.amountTotal = amountTotal;
         this.feeTotal = feeTotal;
         this.origin = origin;
         this.creationDate = creationDate;
@@ -205,7 +200,6 @@ public class Transaction {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
                 transaction.getTransactionActivatedData().getNoticeCodes(),
-                transaction.getTransactionActivatedData().getNoticeCodes().stream().mapToInt(n -> n.getAmount()).sum(),
                 0,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
@@ -234,7 +228,6 @@ public class Transaction {
                                         n.paymentContextCode().value()
                                 )
                         ).collect(Collectors.toList()),
-                transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
                 0,
                 transaction.getEmail().value(),
                 transaction.getStatus(),

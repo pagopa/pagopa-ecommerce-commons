@@ -20,14 +20,12 @@ public final class TransactionClosureSentEvent extends TransactionEvent<Transact
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionClosureSentEvent(
             String transactionId,
-            List<NoticeCode> noticeCodes,
             TransactionClosureSendData data
     ) {
-        super(transactionId, noticeCodes, TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT, data);
     }
 }

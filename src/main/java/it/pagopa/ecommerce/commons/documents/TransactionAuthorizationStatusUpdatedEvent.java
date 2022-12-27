@@ -24,17 +24,14 @@ public final class TransactionAuthorizationStatusUpdatedEvent
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
      * @param data          event-specific data
      */
     public TransactionAuthorizationStatusUpdatedEvent(
             String transactionId,
-            List<NoticeCode> noticeCodes,
             TransactionAuthorizationStatusUpdateData data
     ) {
         super(
                 transactionId,
-                noticeCodes,
                 TransactionEventCode.TRANSACTION_AUTHORIZATION_STATUS_UPDATED_EVENT,
                 data
         );
