@@ -26,7 +26,7 @@ public class Transaction {
     private OriginType origin;
     private String email;
     private TransactionStatusDto status;
-    private int feeTotal;
+    private Integer feeTotal;
     private String creationDate;
     private List<PaymentNotice> paymentNotices;
 
@@ -80,7 +80,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -107,7 +107,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -136,7 +136,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -152,7 +152,7 @@ public class Transaction {
         this(
                 transactionId,
                 List.of(new PaymentNotice(paymentToken, rptId, description, amount, null)),
-                0,
+                null,
                 email,
                 status,
                 OriginType.UNKNOWN,
@@ -175,7 +175,7 @@ public class Transaction {
     public Transaction(
             String transactionId,
             List<PaymentNotice> paymentNotices,
-            int feeTotal,
+            Integer feeTotal,
             String email,
             TransactionStatusDto status,
             OriginType origin,
@@ -200,7 +200,7 @@ public class Transaction {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
                 transaction.getTransactionActivatedData().getPaymentNotices(),
-                0,
+                null,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
                 OriginType.UNKNOWN,
@@ -228,7 +228,7 @@ public class Transaction {
                                         n.paymentContextCode().value()
                                 )
                         ).collect(Collectors.toList()),
-                0,
+                null,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
                 OriginType.UNKNOWN,
