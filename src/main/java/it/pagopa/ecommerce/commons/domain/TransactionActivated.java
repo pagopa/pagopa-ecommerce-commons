@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
@@ -43,7 +44,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         super(
                 new TransactionActivationRequested(
@@ -66,7 +68,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                         )
                                 ).toList(),
                         faultCode,
-                        faultCodeString
+                        faultCodeString,
+                        originType
                 )
         );
     }
@@ -87,7 +90,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             Email email,
             String faultCode,
             String faultCodeString,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         this(
                 transactionId,
@@ -96,7 +100,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCode,
                 faultCodeString,
                 ZonedDateTime.now(),
-                status
+                status,
+                originType
         );
     }
 
@@ -141,7 +146,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),
                 this.getCreationDate(),
-                status
+                status,
+                this.getTransactionActivatedData().getOriginType()
         );
     }
 }

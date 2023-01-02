@@ -203,7 +203,7 @@ public class Transaction {
                 null,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getTransactionActivatedData().getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }
@@ -231,7 +231,7 @@ public class Transaction {
                 null,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }

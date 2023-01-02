@@ -21,5 +21,6 @@ public class TransactionActivatedData {
     private List<PaymentNotice> paymentNotices;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
+    private Transaction.OriginType originType;
 
 }

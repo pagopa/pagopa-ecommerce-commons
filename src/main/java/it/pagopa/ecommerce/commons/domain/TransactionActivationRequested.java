@@ -3,7 +3,9 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -23,7 +25,10 @@ import static java.time.ZonedDateTime.now;
  * @see BaseTransaction
  */
 @EqualsAndHashCode(callSuper = true)
+@Getter
 public final class TransactionActivationRequested extends BaseTransaction implements Transaction {
+
+    private OriginType originType;
 
     /**
      * Primary constructor
@@ -39,9 +44,11 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             List<PaymentNotice> paymentNotices,
             Email email,
             ZonedDateTime creationDate,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         super(transactionId, paymentNotices, email, creationDate, status);
+        this.originType = originType;
     }
 
     /**
@@ -56,9 +63,11 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Email email,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         super(transactionId, paymentNotices, email, now(), status);
+        this.originType = originType;
     }
 
     @Override
@@ -83,7 +92,8 @@ public final class TransactionActivationRequested extends BaseTransaction implem
                 this.getPaymentNotices(),
                 this.getEmail(),
                 this.getCreationDate(),
-                status
+                status,
+                this.getOriginType()
         );
     }
 }
