@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -27,6 +28,7 @@ public class Transaction {
     private OriginType origin;
     private String email;
     private TransactionStatusDto status;
+    @Nullable
     private Integer feeTotal;
     private String creationDate;
     private List<PaymentNotice> paymentNotices;
