@@ -13,8 +13,9 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply an
- * {@link TransactionAuthorizationStatusUpdatedEvent} to get a
- * {@link TransactionWithCompletedAuthorization}
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent}
+ * to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithCompletedAuthorization}
  * </p>
  *
  * @see Transaction
@@ -38,6 +39,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         super(transaction, authorizationRequestData);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
@@ -55,10 +57,9 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionWithRequestedAuthorization withStatus(TransactionStatusDto status) {
@@ -70,7 +71,8 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
                         this.getTransactionActivatedData().getFaultCode(),
                         this.getTransactionActivatedData().getFaultCodeString(),
                         this.getCreationDate(),
-                        status
+                        status,
+                        this.getOriginType()
                 ),
                 this.getTransactionAuthorizationRequestData()
         );

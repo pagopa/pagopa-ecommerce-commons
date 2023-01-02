@@ -3,7 +3,9 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -15,14 +17,16 @@ import static java.time.ZonedDateTime.now;
  * Transaction with an activation requested.
  * </p>
  * <p>
- * To this class you can apply an {@link TransactionActivatedEvent} to get a
- * {@link TransactionActivated}
+ * To this class you can apply an
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionActivated}
  * </p>
  *
  * @see Transaction
  * @see BaseTransaction
  */
 @EqualsAndHashCode(callSuper = true)
+@Getter
 public final class TransactionActivationRequested extends BaseTransaction implements Transaction {
 
     /**
@@ -33,15 +37,17 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param email          email where the payment receipt will be sent to
      * @param creationDate   creation date of this transaction
      * @param status         transaction status
+     * @param originType     the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Email email,
             ZonedDateTime creationDate,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
-        super(transactionId, paymentNotices, email, creationDate, status);
+        super(transactionId, paymentNotices, email, creationDate, status, originType);
     }
 
     /**
@@ -51,16 +57,19 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param paymentNotices notice codes list
      * @param email          email where the payment receipt will be sent to
      * @param status         transaction status
+     * @param originType     the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Email email,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
-        super(transactionId, paymentNotices, email, now(), status);
+        super(transactionId, paymentNotices, email, now(), status, originType);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
@@ -71,10 +80,9 @@ public final class TransactionActivationRequested extends BaseTransaction implem
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionActivationRequested withStatus(TransactionStatusDto status) {
@@ -83,7 +91,8 @@ public final class TransactionActivationRequested extends BaseTransaction implem
                 this.getPaymentNotices(),
                 this.getEmail(),
                 this.getCreationDate(),
-                status
+                status,
+                this.getOriginType()
         );
     }
 }

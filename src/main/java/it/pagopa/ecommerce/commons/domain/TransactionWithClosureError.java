@@ -12,9 +12,11 @@ import lombok.EqualsAndHashCode;
  * Transaction with a closure error.
  * </p>
  * <p>
- * To this class you can apply a {@link TransactionClosureSentEvent} to get a
- * {@link TransactionClosed}. Semantically this means that the transaction has
- * recovered from the closure error.
+ * To this class you can apply a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed}.
+ * Semantically this means that the transaction has recovered from the closure
+ * error.
  * </p>
  *
  * @see Transaction
@@ -36,6 +38,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
         super(baseTransaction, event);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
@@ -49,10 +52,9 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionWithClosureError withStatus(TransactionStatusDto status) {
@@ -66,7 +68,8 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                                         this.getTransactionActivatedData().getFaultCode(),
                                         this.getTransactionActivatedData().getFaultCodeString(),
                                         this.getCreationDate(),
-                                        status
+                                        status,
+                                        this.getOriginType()
                                 ),
                                 this.getTransactionAuthorizationRequestData()
                         ),

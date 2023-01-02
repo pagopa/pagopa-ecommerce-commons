@@ -8,11 +8,14 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Redis converter from {@link RptId} to a byte array.
+ * Redis converter from {@link it.pagopa.ecommerce.commons.domain.RptId} to a
+ * byte array.
+ *
  */
 @Component
 @WritingConverter
 public class RptIdWritingByteConverter implements Converter<RptId, byte[]> {
+    /** {@inheritDoc} */
     @Override
     public byte[] convert(RptId source) {
         return source.value().getBytes(StandardCharsets.UTF_8);

@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
+ *
  */
 @Data
 @Document(collection = "view")
@@ -26,6 +28,7 @@ public class Transaction {
     private OriginType origin;
     private String email;
     private TransactionStatusDto status;
+    @Nullable
     private Integer feeTotal;
     private String creationDate;
     private List<PaymentNotice> paymentNotices;
@@ -80,7 +83,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -107,7 +110,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -136,7 +139,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -191,7 +194,9 @@ public class Transaction {
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivated} to a Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivated} to a
+     * Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data
@@ -203,14 +208,15 @@ public class Transaction {
                 null,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getTransactionActivatedData().getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivationRequested} to a
-     * Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested} to
+     * a Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data
@@ -231,7 +237,7 @@ public class Transaction {
                 null,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }

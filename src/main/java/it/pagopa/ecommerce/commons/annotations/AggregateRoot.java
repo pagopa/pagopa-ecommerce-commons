@@ -12,8 +12,9 @@ import static java.lang.annotation.ElementType.TYPE;
  * responsible for maintaining business logic invariants.
  * </p>
  * <p>
- * Each aggregate root has an identifier (an {@link AggregateRootId}) which can
- * be used to refer to this aggregate root by other aggregate roots. Entities
+ * Each aggregate root has an identifier (an
+ * {@link it.pagopa.ecommerce.commons.annotations.AggregateRootId}) which can be
+ * used to refer to this aggregate root by other aggregate roots. Entities
  * inside aggregate roots should never be referenced by external aggregate
  * roots.
  * </p>

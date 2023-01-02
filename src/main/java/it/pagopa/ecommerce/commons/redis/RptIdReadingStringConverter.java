@@ -7,11 +7,13 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
- * Redis converter from a {@link String} to an {@link RptId}.
+ * Redis converter from a {@link java.lang.String} to an
+ * {@link it.pagopa.ecommerce.commons.domain.RptId}.
  */
 @Component
 @ReadingConverter
 public class RptIdReadingStringConverter implements Converter<String, RptId> {
+    /** {@inheritDoc} */
     @Override
     public RptId convert(@NonNull String source) {
         return new RptId(source);

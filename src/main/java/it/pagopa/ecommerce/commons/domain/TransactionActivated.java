@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
@@ -15,8 +16,10 @@ import java.util.List;
  * Activated transaction.
  * </p>
  * <p>
- * To this class you can apply an {@link TransactionAuthorizationRequestedEvent}
- * to get a {@link TransactionWithRequestedAuthorization}
+ * To this class you can apply an
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent}
+ * to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithRequestedAuthorization}
  * </p>
  *
  * @see Transaction
@@ -35,6 +38,9 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCodeString fault code auxiliary description
      * @param creationDate    creation date of this transaction
      * @param status          transaction status
+     * @param originType      a
+     *                        {@link it.pagopa.ecommerce.commons.documents.Transaction.OriginType}
+     *                        object
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -43,7 +49,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         super(
                 new TransactionActivationRequested(
@@ -51,7 +58,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         paymentNotices,
                         email,
                         creationDate,
-                        status
+                        status,
+                        originType
                 ),
                 new TransactionActivatedData(
                         email.value(),
@@ -66,7 +74,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                         )
                                 ).toList(),
                         faultCode,
-                        faultCodeString
+                        faultCodeString,
+                        originType
                 )
         );
     }
@@ -80,6 +89,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
      * @param status          transaction status
+     * @param originType      the origin from which the transaction started from
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -87,7 +97,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             Email email,
             String faultCode,
             String faultCodeString,
-            TransactionStatusDto status
+            TransactionStatusDto status,
+            OriginType originType
     ) {
         this(
                 transactionId,
@@ -96,13 +107,14 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCode,
                 faultCodeString,
                 ZonedDateTime.now(),
-                status
+                status,
+                originType
         );
     }
 
     /**
      * Conversion constructor to construct an activated transaction from a
-     * {@link TransactionActivationRequested}
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested}
      *
      * @param transactionActivationRequested transaction
      * @param event                          activation event
@@ -114,6 +126,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
         super(transactionActivationRequested, event.getData());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
@@ -127,10 +140,9 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionActivated withStatus(TransactionStatusDto status) {
@@ -141,7 +153,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 this.getTransactionActivatedData().getFaultCode(),
                 this.getTransactionActivatedData().getFaultCodeString(),
                 this.getCreationDate(),
-                status
+                status,
+                this.getTransactionActivatedData().getOriginType()
         );
     }
 }

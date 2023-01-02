@@ -13,9 +13,11 @@ import lombok.EqualsAndHashCode;
  * Transaction with a completed authorization.
  * </p>
  * <p>
- * To this class you can apply either a {@link TransactionClosureSentEvent} to
- * get a {@link TransactionClosed} or a {@link TransactionClosureErrorEvent} to
- * get a {@link TransactionWithClosureError}
+ * To this class you can apply either a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed} or a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionWithClosureError}
  * </p>
  *
  * @see Transaction
@@ -40,6 +42,7 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
         super(baseTransaction, authorizationStatusUpdateData);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
@@ -58,10 +61,9 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionWithCompletedAuthorization withStatus(TransactionStatusDto status) {
@@ -74,7 +76,8 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
                                 this.getTransactionActivatedData().getFaultCode(),
                                 this.getTransactionActivatedData().getFaultCodeString(),
                                 this.getCreationDate(),
-                                status
+                                status,
+                                this.getOriginType()
                         ),
                         this.getTransactionAuthorizationRequestData()
                 ),
