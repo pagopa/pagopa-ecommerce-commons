@@ -17,8 +17,9 @@ import static java.time.ZonedDateTime.now;
  * Transaction with an activation requested.
  * </p>
  * <p>
- * To this class you can apply an {@link TransactionActivatedEvent} to get a
- * {@link TransactionActivated}
+ * To this class you can apply an
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionActivated}
  * </p>
  *
  * @see Transaction
@@ -28,8 +29,6 @@ import static java.time.ZonedDateTime.now;
 @Getter
 public final class TransactionActivationRequested extends BaseTransaction implements Transaction {
 
-    private OriginType originType;
-
     /**
      * Primary constructor
      *
@@ -38,6 +37,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param email          email where the payment receipt will be sent to
      * @param creationDate   creation date of this transaction
      * @param status         transaction status
+     * @param originType     the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
@@ -47,8 +47,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             TransactionStatusDto status,
             OriginType originType
     ) {
-        super(transactionId, paymentNotices, email, creationDate, status);
-        this.originType = originType;
+        super(transactionId, paymentNotices, email, creationDate, status, originType);
     }
 
     /**
@@ -58,6 +57,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param paymentNotices notice codes list
      * @param email          email where the payment receipt will be sent to
      * @param status         transaction status
+     * @param originType     the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
@@ -66,10 +66,10 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             TransactionStatusDto status,
             OriginType originType
     ) {
-        super(transactionId, paymentNotices, email, now(), status);
-        this.originType = originType;
+        super(transactionId, paymentNotices, email, now(), status, originType);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
@@ -80,10 +80,9 @@ public final class TransactionActivationRequested extends BaseTransaction implem
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionActivationRequested withStatus(TransactionStatusDto status) {

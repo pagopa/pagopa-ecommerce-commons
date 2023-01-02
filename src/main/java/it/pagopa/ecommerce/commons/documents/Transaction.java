@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
+ *
  */
 @Data
 @Document(collection = "view")
@@ -80,7 +81,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -107,7 +108,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -136,7 +137,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -191,7 +192,9 @@ public class Transaction {
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivated} to a Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivated} to a
+     * Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data
@@ -209,8 +212,9 @@ public class Transaction {
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivationRequested} to a
-     * Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested} to
+     * a Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data

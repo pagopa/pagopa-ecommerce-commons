@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
  * </p>
  * <p>
  * To this class you can apply either an
- * {@link TransactionActivationRequestedEvent} (and get a
- * {@link TransactionActivationRequested} or a {@link TransactionActivatedEvent}
- * (and get a {@link TransactionActivated})
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent}
+ * (and get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested} or
+ * a {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent}
+ * (and get a {@link it.pagopa.ecommerce.commons.domain.TransactionActivated})
  * </p>
  *
  * @see Transaction
@@ -42,7 +44,8 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
                 ZonedDateTime.parse(event.getCreationDate()),
-                TransactionStatusDto.ACTIVATED
+                TransactionStatusDto.ACTIVATED,
+                event.getData().getOriginType()
         );
     }
 
@@ -61,10 +64,12 @@ public final class EmptyTransaction implements Transaction {
                         ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
                 ZonedDateTime.parse(event.getCreationDate()),
-                TransactionStatusDto.ACTIVATION_REQUESTED
+                TransactionStatusDto.ACTIVATION_REQUESTED,
+                event.getData().getOriginType()
         );
     }
 
+    /** {@inheritDoc} */
     @Override
 	public Transaction applyEvent(Object event) {
 		return switch (event) {
