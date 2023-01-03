@@ -6,8 +6,6 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuth
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
-import java.util.stream.Collectors;
-
 /**
  * <p>
  * Closed transaction.
@@ -36,16 +34,16 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
         super(baseTransaction, closureSentEventData);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         return this;
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionClosed withStatus(TransactionStatusDto status) {
@@ -54,12 +52,13 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
                         new TransactionWithRequestedAuthorization(
                                 new TransactionActivated(
                                         this.getTransactionId(),
-                                        this.getNoticeCodes(),
+                                        this.getPaymentNotices(),
                                         this.getEmail(),
                                         this.getTransactionActivatedData().getFaultCode(),
                                         this.getTransactionActivatedData().getFaultCodeString(),
                                         this.getCreationDate(),
-                                        status
+                                        status,
+                                        this.getOriginType()
                                 ),
                                 this.getTransactionAuthorizationRequestData()
                         ),

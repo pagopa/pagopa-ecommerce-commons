@@ -54,6 +54,7 @@ public enum TransactionEventCode {
         this.code = code;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return code;

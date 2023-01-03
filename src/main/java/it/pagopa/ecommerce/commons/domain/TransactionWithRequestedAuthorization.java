@@ -7,16 +7,15 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuth
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
-import java.util.stream.Collectors;
-
 /**
  * <p>
  * Transaction with a requested authorization.
  * </p>
  * <p>
  * To this class you can apply an
- * {@link TransactionAuthorizationStatusUpdatedEvent} to get a
- * {@link TransactionWithCompletedAuthorization}
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent}
+ * to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithCompletedAuthorization}
  * </p>
  *
  * @see Transaction
@@ -40,6 +39,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         super(transaction, authorizationRequestData);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
@@ -57,22 +57,22 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     }
 
     /**
-     * Change the transaction status
+     * {@inheritDoc}
      *
-     * @param status new status
-     * @return a new transaction with the same data except for the status
+     * Change the transaction status
      */
     @Override
     public TransactionWithRequestedAuthorization withStatus(TransactionStatusDto status) {
         return new TransactionWithRequestedAuthorization(
                 new TransactionActivated(
                         this.getTransactionId(),
-                        this.getNoticeCodes(),
+                        this.getPaymentNotices(),
                         this.getEmail(),
                         this.getTransactionActivatedData().getFaultCode(),
                         this.getTransactionActivatedData().getFaultCodeString(),
                         this.getCreationDate(),
-                        status
+                        status,
+                        this.getOriginType()
                 ),
                 this.getTransactionAuthorizationRequestData()
         );

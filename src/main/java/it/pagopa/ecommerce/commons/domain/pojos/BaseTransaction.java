@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.domain.*;
+import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import lombok.experimental.FieldDefaults;
  * Given that application of events can only accumulate attributes, attribute
  * inheritance is realized via each POJO inheriting from the one corresponding
  * to the previous state (the transaction state flowchart is described in
- * {@link Transaction}).
+ * {@link it.pagopa.ecommerce.commons.domain.Transaction}).
  * </p>
  * <p>
  * This POJOs are implemented as abstract classes and are meant to be used only
@@ -60,10 +61,12 @@ public abstract class BaseTransaction {
     @AggregateRootId
     TransactionId transactionId;
 
-    List<NoticeCode> noticeCodes;
+    List<PaymentNotice> paymentNotices;
     Email email;
     ZonedDateTime creationDate;
 
     @With
     TransactionStatusDto status;
+
+    OriginType originType;
 }

@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons;
 import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
-import it.pagopa.ecommerce.commons.domain.NoticeCode;
+import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
@@ -39,7 +39,7 @@ public class TransactionTestUtils {
         return new TransactionActivationRequested(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
                 Arrays.asList(
-                        new NoticeCode(
+                        new PaymentNotice(
                                 new PaymentToken(null),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -49,7 +49,8 @@ public class TransactionTestUtils {
                 ),
                 new Email(EMAIL),
                 ZonedDateTime.parse(creationDate),
-                TransactionStatusDto.ACTIVATION_REQUESTED
+                TransactionStatusDto.ACTIVATION_REQUESTED,
+                Transaction.OriginType.UNKNOWN
         );
     }
 
@@ -57,19 +58,10 @@ public class TransactionTestUtils {
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                PAYMENT_TOKEN,
-                                RPT_ID,
-                                DESCRIPTION,
-                                AMOUNT,
-                                PAYMENT_CONTEXT_CODE
-                        )
-                ),
                 new TransactionActivatedData(
                         EMAIL,
                         Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -78,7 +70,8 @@ public class TransactionTestUtils {
                                 )
                         ),
                         FAULT_CODE,
-                        FAULT_CODE_STRING
+                        FAULT_CODE_STRING,
+                        Transaction.OriginType.UNKNOWN
                 )
         );
     }
@@ -88,7 +81,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
                 Arrays.asList(
-                        new NoticeCode(
+                        new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -100,7 +93,8 @@ public class TransactionTestUtils {
                 FAULT_CODE,
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
-                TransactionStatusDto.ACTIVATED
+                TransactionStatusDto.ACTIVATED,
+                Transaction.OriginType.UNKNOWN
         );
     }
 
@@ -119,15 +113,6 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
         return new TransactionAuthorizationRequestedEvent(
                 TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                PAYMENT_TOKEN,
-                                RPT_ID,
-                                DESCRIPTION,
-                                AMOUNT,
-                                PAYMENT_CONTEXT_CODE
-                        )
-                ),
                 new TransactionAuthorizationRequestData(
                         AMOUNT,
                         10,
@@ -156,15 +141,6 @@ public class TransactionTestUtils {
 
         return new TransactionAuthorizationStatusUpdatedEvent(
                 TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                RPT_ID,
-                                PAYMENT_TOKEN,
-                                DESCRIPTION,
-                                AMOUNT,
-                                PAYMENT_CONTEXT_CODE
-                        )
-                ),
                 new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
         );
     }
@@ -193,15 +169,6 @@ public class TransactionTestUtils {
 
         return new TransactionClosureSentEvent(
                 TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                PAYMENT_TOKEN,
-                                RPT_ID,
-                                DESCRIPTION,
-                                AMOUNT,
-                                PAYMENT_CONTEXT_CODE
-                        )
-                ),
                 new TransactionClosureSendData(closePaymentOutcome, newStatus)
         );
     }
@@ -209,16 +176,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(
-                                PAYMENT_TOKEN,
-                                RPT_ID,
-                                DESCRIPTION,
-                                AMOUNT,
-                                PAYMENT_CONTEXT_CODE
-                        )
-                )
+                TRANSACTION_ID
         );
     }
 
@@ -251,13 +209,10 @@ public class TransactionTestUtils {
     public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
         return new TransactionActivationRequestedEvent(
                 TRANSACTION_ID,
-                Arrays.asList(
-                        new it.pagopa.ecommerce.commons.documents.NoticeCode(null, RPT_ID, DESCRIPTION, AMOUNT, null)
-                ),
                 ZonedDateTime.now().toString(),
                 new TransactionActivationRequestedData(
                         Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.NoticeCode(
+                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         null,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -267,7 +222,8 @@ public class TransactionTestUtils {
                         ),
                         EMAIL,
                         FAULT_CODE,
-                        FAULT_CODE_STRING
+                        FAULT_CODE_STRING,
+                        Transaction.OriginType.UNKNOWN
                 )
         );
     }

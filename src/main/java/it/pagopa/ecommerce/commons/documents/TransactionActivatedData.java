@@ -18,8 +18,9 @@ import java.util.List;
 @Generated
 public class TransactionActivatedData {
     private String email;
-    private List<NoticeCode> noticeCodes;
+    private List<PaymentNotice> paymentNotices;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
+    private Transaction.OriginType originType;
 
 }

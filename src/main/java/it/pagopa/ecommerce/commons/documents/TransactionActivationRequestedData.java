@@ -19,8 +19,9 @@ import java.util.List;
 public class TransactionActivationRequestedData {
 
     // TODO Add other fields?
-    private List<NoticeCode> noticeCodes;
+    private List<PaymentNotice> paymentNotices;
     private String email;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
+    private Transaction.OriginType originType;
 }

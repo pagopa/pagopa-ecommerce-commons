@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.NoticeCode;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.domain.*;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,9 +49,9 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
     ) {
         super(
                 baseTransaction.getTransactionId(),
-                transactionActivatedData.getNoticeCodes().stream()
+                transactionActivatedData.getPaymentNotices().stream()
                         .map(
-                                noticeCode -> new it.pagopa.ecommerce.commons.domain.NoticeCode(
+                                noticeCode -> new PaymentNotice(
                                         new PaymentToken(noticeCode.getPaymentToken()),
                                         new RptId(noticeCode.getRptId()),
                                         new TransactionAmount(noticeCode.getAmount()),
@@ -63,7 +61,8 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                         ).collect(Collectors.toList()),
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
-                baseTransaction.getStatus()
+                baseTransaction.getStatus(),
+                baseTransaction.getOriginType()
         );
         this.transactionActivatedData = transactionActivatedData;
     }

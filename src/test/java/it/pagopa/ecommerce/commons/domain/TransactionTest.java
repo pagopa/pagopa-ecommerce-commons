@@ -27,12 +27,14 @@ class TransactionTest {
         TransactionActivated transaction = TransactionTestUtils.transactionActivated(ZonedDateTime.now().toString());
 
         assertEquals(
-                new PaymentToken(transaction.getTransactionActivatedData().getNoticeCodes().get(0).getPaymentToken()),
+                new PaymentToken(
+                        transaction.getTransactionActivatedData().getPaymentNotices().get(0).getPaymentToken()
+                ),
                 paymentToken
         );
-        assertEquals(transaction.getNoticeCodes().get(0).rptId(), rptId);
-        assertEquals(transaction.getNoticeCodes().get(0).transactionDescription(), description);
-        assertEquals(transaction.getNoticeCodes().get(0).transactionAmount(), amount);
+        assertEquals(transaction.getPaymentNotices().get(0).rptId(), rptId);
+        assertEquals(transaction.getPaymentNotices().get(0).transactionDescription(), description);
+        assertEquals(transaction.getPaymentNotices().get(0).transactionAmount(), amount);
         assertEquals(transaction.getStatus(), status);
     }
 

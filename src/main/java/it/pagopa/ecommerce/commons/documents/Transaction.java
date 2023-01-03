@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
+ *
  */
 @Data
 @Document(collection = "view")
@@ -26,10 +28,10 @@ public class Transaction {
     private OriginType origin;
     private String email;
     private TransactionStatusDto status;
-    private int amountTotal;
-    private int feeTotal;
+    @Nullable
+    private Integer feeTotal;
     private String creationDate;
-    private List<NoticeCode> noticeCodes;
+    private List<PaymentNotice> paymentNotices;
 
     /**
      * Enumeration of transaction origin
@@ -81,7 +83,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -108,7 +110,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -137,7 +139,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link Transaction#Transaction(String, List, int, int, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -152,9 +154,8 @@ public class Transaction {
     ) {
         this(
                 transactionId,
-                List.of(new NoticeCode(paymentToken, rptId, description, amount, null)),
-                amount,
-                0,
+                List.of(new PaymentNotice(paymentToken, rptId, description, amount, null)),
+                null,
                 email,
                 status,
                 OriginType.UNKNOWN,
@@ -165,21 +166,19 @@ public class Transaction {
     /**
      * Primary persistence constructor
      *
-     * @param transactionId transaction unique id
-     * @param noticeCodes   notice code list
-     * @param email         user email where the payment receipt will be sent to
-     * @param status        transaction status
-     * @param origin        transaction origin
-     * @param amountTotal   transaction total amount
-     * @param feeTotal      transaction total fee
-     * @param creationDate  transaction creation date
+     * @param transactionId  transaction unique id
+     * @param paymentNotices notice code list
+     * @param email          user email where the payment receipt will be sent to
+     * @param status         transaction status
+     * @param origin         transaction origin
+     * @param feeTotal       transaction total fee
+     * @param creationDate   transaction creation date
      */
     @PersistenceConstructor
     public Transaction(
             String transactionId,
-            List<NoticeCode> noticeCodes,
-            int amountTotal,
-            int feeTotal,
+            List<PaymentNotice> paymentNotices,
+            Integer feeTotal,
             String email,
             TransactionStatusDto status,
             OriginType origin,
@@ -188,15 +187,16 @@ public class Transaction {
         this.transactionId = transactionId;
         this.email = email;
         this.status = status;
-        this.noticeCodes = noticeCodes;
-        this.amountTotal = amountTotal;
+        this.paymentNotices = paymentNotices;
         this.feeTotal = feeTotal;
         this.origin = origin;
         this.creationDate = creationDate;
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivated} to a Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivated} to a
+     * Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data
@@ -204,19 +204,19 @@ public class Transaction {
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getTransactionActivatedData().getNoticeCodes(),
-                transaction.getTransactionActivatedData().getNoticeCodes().stream().mapToInt(n -> n.getAmount()).sum(),
-                0,
+                transaction.getTransactionActivatedData().getPaymentNotices(),
+                null,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getTransactionActivatedData().getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }
 
     /**
-     * Conversion constructor from a {@link TransactionActivationRequested} to a
-     * Transaction
+     * Conversion constructor from a
+     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested} to
+     * a Transaction
      *
      * @param transaction the transaction
      * @return a transaction document with the same data
@@ -224,9 +224,9 @@ public class Transaction {
     public static Transaction from(TransactionActivationRequested transaction) {
         return new Transaction(
                 transaction.getTransactionId().value().toString(),
-                transaction.getNoticeCodes().stream().filter(Objects::nonNull)
+                transaction.getPaymentNotices().stream().filter(Objects::nonNull)
                         .map(
-                                n -> new NoticeCode(
+                                n -> new PaymentNotice(
                                         Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
                                         n.rptId().value(),
                                         n.transactionDescription().value(),
@@ -234,11 +234,10 @@ public class Transaction {
                                         n.paymentContextCode().value()
                                 )
                         ).collect(Collectors.toList()),
-                transaction.getNoticeCodes().stream().mapToInt(n -> n.transactionAmount().value()).sum(),
-                0,
+                null,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                OriginType.UNKNOWN,
+                transaction.getOriginType(),
                 transaction.getCreationDate().toString()
         );
     }
