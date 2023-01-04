@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.domain.*;
-import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
+import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -68,5 +68,5 @@ public abstract class BaseTransaction {
     @With
     TransactionStatusDto status;
 
-    OriginType originType;
+    ClientId clientId;
 }

@@ -107,11 +107,11 @@ class TransactionDocumentTest {
     }
 
     @Test
-    void shouldConvertTransactionOriginEnumerationCorrectly() {
-        assertEquals(Transaction.OriginType.fromString("").toString(), Transaction.OriginType.UNKNOWN.toString());
-        assertEquals(Transaction.OriginType.fromString(null).toString(), Transaction.OriginType.UNKNOWN.toString());
-        for (Transaction.OriginType originType : Transaction.OriginType.values()) {
-            assertEquals(Transaction.OriginType.fromString(originType.toString()).toString(), originType.toString());
+    void shouldConvertTransactionClientIdEnumerationCorrectly() {
+        assertEquals(Transaction.ClientId.fromString("").toString(), Transaction.ClientId.UNKNOWN.toString());
+        assertEquals(Transaction.ClientId.fromString(null).toString(), Transaction.ClientId.UNKNOWN.toString());
+        for (Transaction.ClientId clientId : Transaction.ClientId.values()) {
+            assertEquals(Transaction.ClientId.fromString(clientId.toString()).toString(), clientId.toString());
         }
     }
 }

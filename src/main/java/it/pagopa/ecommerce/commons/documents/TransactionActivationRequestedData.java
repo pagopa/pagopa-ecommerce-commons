@@ -23,5 +23,5 @@ public class TransactionActivationRequestedData {
     private String email;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
-    private Transaction.OriginType originType;
+    private Transaction.ClientId clientId;
 }

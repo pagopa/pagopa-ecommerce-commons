@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
+import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -37,7 +37,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param email          email where the payment receipt will be sent to
      * @param creationDate   creation date of this transaction
      * @param status         transaction status
-     * @param originType     the origin from which the transaction started from
+     * @param clientId       the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
@@ -45,9 +45,9 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             Email email,
             ZonedDateTime creationDate,
             TransactionStatusDto status,
-            OriginType originType
+            ClientId clientId
     ) {
-        super(transactionId, paymentNotices, email, creationDate, status, originType);
+        super(transactionId, paymentNotices, email, creationDate, status, clientId);
     }
 
     /**
@@ -57,16 +57,16 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param paymentNotices notice codes list
      * @param email          email where the payment receipt will be sent to
      * @param status         transaction status
-     * @param originType     the origin from which the transaction started from
+     * @param clientId       the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Email email,
             TransactionStatusDto status,
-            OriginType originType
+            ClientId clientId
     ) {
-        super(transactionId, paymentNotices, email, now(), status, originType);
+        super(transactionId, paymentNotices, email, now(), status, clientId);
     }
 
     /** {@inheritDoc} */
@@ -92,7 +92,7 @@ public final class TransactionActivationRequested extends BaseTransaction implem
                 this.getEmail(),
                 this.getCreationDate(),
                 status,
-                this.getOriginType()
+                this.getClientId()
         );
     }
 }

@@ -5,7 +5,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.documents.Transaction.OriginType;
+import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
@@ -38,9 +38,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCodeString fault code auxiliary description
      * @param creationDate    creation date of this transaction
      * @param status          transaction status
-     * @param originType      a
-     *                        {@link it.pagopa.ecommerce.commons.documents.Transaction.OriginType}
-     *                        object
+     * @param clientId        a {@link ClientId} object
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -50,7 +48,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ZonedDateTime creationDate,
             TransactionStatusDto status,
-            OriginType originType
+            ClientId clientId
     ) {
         super(
                 new TransactionActivationRequested(
@@ -59,7 +57,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         email,
                         creationDate,
                         status,
-                        originType
+                        clientId
                 ),
                 new TransactionActivatedData(
                         email.value(),
@@ -75,7 +73,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                 ).toList(),
                         faultCode,
                         faultCodeString,
-                        originType
+                        clientId
                 )
         );
     }
@@ -89,7 +87,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
      * @param status          transaction status
-     * @param originType      the origin from which the transaction started from
+     * @param clientId        the origin from which the transaction started from
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -98,7 +96,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             TransactionStatusDto status,
-            OriginType originType
+            ClientId clientId
     ) {
         this(
                 transactionId,
@@ -108,7 +106,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCodeString,
                 ZonedDateTime.now(),
                 status,
-                originType
+                clientId
         );
     }
 
@@ -154,7 +152,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 this.getTransactionActivatedData().getFaultCodeString(),
                 this.getCreationDate(),
                 status,
-                this.getTransactionActivatedData().getOriginType()
+                this.getTransactionActivatedData().getClientId()
         );
     }
 }

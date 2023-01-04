@@ -77,7 +77,7 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
                                 this.getTransactionActivatedData().getFaultCodeString(),
                                 this.getCreationDate(),
                                 status,
-                                this.getOriginType()
+                                this.getClientId()
                         ),
                         this.getTransactionAuthorizationRequestData()
                 ),

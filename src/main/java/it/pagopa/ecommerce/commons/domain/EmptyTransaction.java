@@ -45,7 +45,7 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getFaultCodeString(),
                 ZonedDateTime.parse(event.getCreationDate()),
                 TransactionStatusDto.ACTIVATED,
-                event.getData().getOriginType()
+                event.getData().getClientId()
         );
     }
 
@@ -65,7 +65,7 @@ public final class EmptyTransaction implements Transaction {
                 new Email(event.getData().getEmail()),
                 ZonedDateTime.parse(event.getCreationDate()),
                 TransactionStatusDto.ACTIVATION_REQUESTED,
-                event.getData().getOriginType()
+                event.getData().getClientId()
         );
     }
 

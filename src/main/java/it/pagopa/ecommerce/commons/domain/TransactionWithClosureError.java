@@ -69,7 +69,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                                         this.getTransactionActivatedData().getFaultCodeString(),
                                         this.getCreationDate(),
                                         status,
-                                        this.getOriginType()
+                                        this.getClientId()
                                 ),
                                 this.getTransactionAuthorizationRequestData()
                         ),
