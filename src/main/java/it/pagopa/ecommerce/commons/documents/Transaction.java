@@ -34,7 +34,7 @@ public class Transaction {
     private List<PaymentNotice> paymentNotices;
 
     /**
-     * Enumeration of transaction clients initializers
+     * Enumeration of transaction client initiators
      */
     public enum ClientId {
         /**
