@@ -62,7 +62,7 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
                 baseTransaction.getStatus(),
-                baseTransaction.getOriginType()
+                baseTransaction.getClientId()
         );
         this.transactionActivatedData = transactionActivatedData;
     }

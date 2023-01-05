@@ -25,7 +25,7 @@ public class Transaction {
 
     @Id
     private String transactionId;
-    private OriginType origin;
+    private ClientId clientId;
     private String email;
     private TransactionStatusDto status;
     @Nullable
@@ -34,9 +34,9 @@ public class Transaction {
     private List<PaymentNotice> paymentNotices;
 
     /**
-     * Enumeration of transaction origin
+     * Enumeration of transaction client initiators
      */
-    public enum OriginType {
+    public enum ClientId {
         /**
          * Transaction originated by checkout frontend with notice information input by
          * user
@@ -55,19 +55,19 @@ public class Transaction {
          */
         UNKNOWN;
 
-        private static final Map<String, OriginType> lookupMap = Collections.unmodifiableMap(
-                Arrays.stream(OriginType.values()).collect(Collectors.toMap(OriginType::toString, Function.identity()))
+        private static final Map<String, ClientId> lookupMap = Collections.unmodifiableMap(
+                Arrays.stream(ClientId.values()).collect(Collectors.toMap(ClientId::toString, Function.identity()))
         );
 
         /**
          *
-         * @param enumValue - the enumeration value to be converted to
-         *                  {@link OriginType} enumeration instance
-         * @return the converted {@link OriginType} enumeration instance or
-         *         {@link OriginType#UNKNOWN} if the input value is not assignable to an
+         * @param enumValue - the enumeration value to be converted to {@link ClientId}
+         *                  enumeration instance
+         * @return the converted {@link ClientId} enumeration instance or
+         *         {@link ClientId#UNKNOWN} if the input value is not assignable to an
          *         enumeration value
          */
-        public static OriginType fromString(String enumValue) {
+        public static ClientId fromString(String enumValue) {
             return lookupMap.getOrDefault(enumValue, UNKNOWN);
         }
     }
@@ -83,7 +83,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -110,7 +110,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -139,7 +139,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, OriginType, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -158,7 +158,7 @@ public class Transaction {
                 null,
                 email,
                 status,
-                OriginType.UNKNOWN,
+                ClientId.UNKNOWN,
                 creationDate
         );
     }
@@ -170,7 +170,7 @@ public class Transaction {
      * @param paymentNotices notice code list
      * @param email          user email where the payment receipt will be sent to
      * @param status         transaction status
-     * @param origin         transaction origin
+     * @param clientId       the client identifier
      * @param feeTotal       transaction total fee
      * @param creationDate   transaction creation date
      */
@@ -181,7 +181,7 @@ public class Transaction {
             Integer feeTotal,
             String email,
             TransactionStatusDto status,
-            OriginType origin,
+            ClientId clientId,
             String creationDate
     ) {
         this.transactionId = transactionId;
@@ -189,7 +189,7 @@ public class Transaction {
         this.status = status;
         this.paymentNotices = paymentNotices;
         this.feeTotal = feeTotal;
-        this.origin = origin;
+        this.clientId = clientId;
         this.creationDate = creationDate;
     }
 
@@ -208,7 +208,7 @@ public class Transaction {
                 null,
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
-                transaction.getTransactionActivatedData().getOriginType(),
+                transaction.getTransactionActivatedData().getClientId(),
                 transaction.getCreationDate().toString()
         );
     }
@@ -237,7 +237,7 @@ public class Transaction {
                 null,
                 transaction.getEmail().value(),
                 transaction.getStatus(),
-                transaction.getOriginType(),
+                transaction.getClientId(),
                 transaction.getCreationDate().toString()
         );
     }

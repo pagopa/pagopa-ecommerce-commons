@@ -50,7 +50,7 @@ public class TransactionTestUtils {
                 new Email(EMAIL),
                 ZonedDateTime.parse(creationDate),
                 TransactionStatusDto.ACTIVATION_REQUESTED,
-                Transaction.OriginType.UNKNOWN
+                Transaction.ClientId.UNKNOWN
         );
     }
 
@@ -71,7 +71,7 @@ public class TransactionTestUtils {
                         ),
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.OriginType.UNKNOWN
+                        Transaction.ClientId.UNKNOWN
                 )
         );
     }
@@ -94,7 +94,7 @@ public class TransactionTestUtils {
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
                 TransactionStatusDto.ACTIVATED,
-                Transaction.OriginType.UNKNOWN
+                Transaction.ClientId.UNKNOWN
         );
     }
 
@@ -223,7 +223,7 @@ public class TransactionTestUtils {
                         EMAIL,
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.OriginType.UNKNOWN
+                        Transaction.ClientId.UNKNOWN
                 )
         );
     }
