@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.repositories;
 
 import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
 import it.pagopa.ecommerce.commons.domain.RptId;
-import javax.validation.constraints.Pattern;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.redis.core.RedisHash;
@@ -32,10 +31,10 @@ import org.springframework.lang.Nullable;
 public record PaymentRequestInfo(
         @NonNull @Id RptId id,
         @NonNull String paFiscalCode,
-        @NonNull String paName,
-        @NonNull String description,
+        @Nullable String paName,
+        @Nullable String description,
         @NonNull Integer amount,
-        @NonNull @Pattern(regexp = "([a-zA-Z\\d]{1,35})|(RF\\d{2}[a-zA-Z\\d]{1,21})") String dueDate,
+        @Nullable String dueDate,
         @NonNull Boolean isNM3,
         @Nullable String paymentToken,
         @NonNull IdempotencyKey idempotencyKey
