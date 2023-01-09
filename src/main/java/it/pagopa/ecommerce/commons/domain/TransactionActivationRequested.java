@@ -36,7 +36,6 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param paymentNotices notice codes list
      * @param email          email where the payment receipt will be sent to
      * @param creationDate   creation date of this transaction
-     * @param status         transaction status
      * @param clientId       the origin from which the transaction started from
      */
     public TransactionActivationRequested(
@@ -44,10 +43,9 @@ public final class TransactionActivationRequested extends BaseTransaction implem
             List<PaymentNotice> paymentNotices,
             Email email,
             ZonedDateTime creationDate,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
-        super(transactionId, paymentNotices, email, creationDate, status, clientId);
+        super(transactionId, paymentNotices, email, creationDate, clientId);
     }
 
     /**
@@ -56,43 +54,30 @@ public final class TransactionActivationRequested extends BaseTransaction implem
      * @param transactionId  transaction id
      * @param paymentNotices notice codes list
      * @param email          email where the payment receipt will be sent to
-     * @param status         transaction status
      * @param clientId       the origin from which the transaction started from
      */
     public TransactionActivationRequested(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Email email,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
-        super(transactionId, paymentNotices, email, now(), status, clientId);
+        super(transactionId, paymentNotices, email, now(), clientId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TransactionStatusDto getStatus() {
+        return TransactionStatusDto.ACTIVATION_REQUESTED;
     }
 
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
-            return new TransactionActivated(this.withStatus(TransactionStatusDto.ACTIVATED), transactionActivatedEvent);
+            return new TransactionActivated(this, transactionActivatedEvent);
         } else {
             return this;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
-    @Override
-    public TransactionActivationRequested withStatus(TransactionStatusDto status) {
-        return new TransactionActivationRequested(
-                this.getTransactionId(),
-                this.getPaymentNotices(),
-                this.getEmail(),
-                this.getCreationDate(),
-                status,
-                this.getClientId()
-        );
     }
 }

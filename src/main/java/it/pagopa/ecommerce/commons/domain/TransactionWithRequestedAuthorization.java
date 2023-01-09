@@ -44,11 +44,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
             return new TransactionWithCompletedAuthorization(
-                    this.withStatus(
-                            TransactionStatusDto.fromValue(
-                                    authorizationStatusUpdatedEvent.getData().getNewTransactionStatus().toString()
-                            )
-                    ),
+                    this,
                     authorizationStatusUpdatedEvent.getData()
             );
         } else {
@@ -56,25 +52,9 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
+    /** {@inheritDoc} */
     @Override
-    public TransactionWithRequestedAuthorization withStatus(TransactionStatusDto status) {
-        return new TransactionWithRequestedAuthorization(
-                new TransactionActivated(
-                        this.getTransactionId(),
-                        this.getPaymentNotices(),
-                        this.getEmail(),
-                        this.getTransactionActivatedData().getFaultCode(),
-                        this.getTransactionActivatedData().getFaultCodeString(),
-                        this.getCreationDate(),
-                        status,
-                        this.getClientId()
-                ),
-                this.getTransactionAuthorizationRequestData()
-        );
+    public TransactionStatusDto getStatus() {
+        return TransactionStatusDto.AUTHORIZATION_REQUESTED;
     }
 }

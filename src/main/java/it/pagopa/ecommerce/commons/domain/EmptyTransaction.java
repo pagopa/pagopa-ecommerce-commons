@@ -64,7 +64,6 @@ public final class EmptyTransaction implements Transaction {
                         ).collect(Collectors.toList()),
                 new Email(event.getData().getEmail()),
                 ZonedDateTime.parse(event.getCreationDate()),
-                TransactionStatusDto.ACTIVATION_REQUESTED,
                 event.getData().getClientId()
         );
     }

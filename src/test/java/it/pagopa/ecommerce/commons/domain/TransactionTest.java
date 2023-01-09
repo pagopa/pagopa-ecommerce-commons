@@ -335,39 +335,6 @@ class TransactionTest {
     }
 
     @Test
-    void transactionClosedStatusChangeWorks() {
-        EmptyTransaction transaction = new EmptyTransaction();
-
-        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
-        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent = TransactionTestUtils
-                .transactionAuthorizationStatusUpdatedEvent(
-                        AuthorizationResultDto.OK
-                );
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
-                .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
-
-        Flux<Object> events = Flux.just(
-                transactionActivatedEvent,
-                authorizationRequestedEvent,
-                authorizationStatusUpdatedEvent,
-                closureSentEvent,
-                closureSentEvent
-        );
-
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
-
-        StepVerifier.create(actual)
-                .expectNextMatches(
-                        t -> t instanceof TransactionClosed && ((TransactionClosed) t)
-                                .withStatus(TransactionStatusDto.AUTHORIZED)
-                                .getStatus() == TransactionStatusDto.AUTHORIZED
-                )
-                .verifyComplete();
-    }
-
-    @Test
     void shouldConstructTransactionFromClosureErrorEventStream() {
         EmptyTransaction transaction = new EmptyTransaction();
 

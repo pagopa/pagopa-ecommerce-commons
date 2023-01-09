@@ -56,7 +56,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         paymentNotices,
                         email,
                         creationDate,
-                        status,
                         clientId
                 ),
                 new TransactionActivatedData(
@@ -126,33 +125,20 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
 
     /** {@inheritDoc} */
     @Override
+    public TransactionStatusDto getStatus() {
+        return TransactionStatusDto.ACTIVATED;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
-                    this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
+                    this,
                     transactionAuthorizationRequestedEvent.getData()
             );
         } else {
             return this;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
-    @Override
-    public TransactionActivated withStatus(TransactionStatusDto status) {
-        return new TransactionActivated(
-                this.getTransactionId(),
-                this.getPaymentNotices(),
-                this.getEmail(),
-                this.getTransactionActivatedData().getFaultCode(),
-                this.getTransactionActivatedData().getFaultCodeString(),
-                this.getCreationDate(),
-                status,
-                this.getTransactionActivatedData().getClientId()
-        );
     }
 }

@@ -65,8 +65,12 @@ public abstract class BaseTransaction {
     Email email;
     ZonedDateTime creationDate;
 
-    @With
-    TransactionStatusDto status;
-
     ClientId clientId;
+
+    /**
+     * Retrieves the current transaction status
+     *
+     * @return the transaction status
+     */
+    public abstract TransactionStatusDto getStatus();
 }

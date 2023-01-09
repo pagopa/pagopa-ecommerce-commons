@@ -49,7 +49,6 @@ public class TransactionTestUtils {
                 ),
                 new Email(EMAIL),
                 ZonedDateTime.parse(creationDate),
-                TransactionStatusDto.ACTIVATION_REQUESTED,
                 Transaction.ClientId.UNKNOWN
         );
     }
@@ -104,7 +103,7 @@ public class TransactionTestUtils {
                                                                                               TransactionActivated transactionActivated
     ) {
         return new TransactionWithRequestedAuthorization(
-                transactionActivated.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
+                transactionActivated,
                 authorizationRequestedEvent.getData()
         );
     }
@@ -151,7 +150,7 @@ public class TransactionTestUtils {
                                                                                               TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionWithCompletedAuthorization(
-                transactionWithRequestedAuthorization.withStatus(TransactionStatusDto.AUTHORIZED),
+                transactionWithRequestedAuthorization,
                 authorizationStatusUpdatedEvent.getData()
         );
     }
@@ -186,7 +185,7 @@ public class TransactionTestUtils {
                                                                           TransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
-                transaction.withStatus(TransactionStatusDto.CLOSURE_ERROR),
+                transaction,
                 transactionClosureErrorEvent
         );
     }
@@ -196,11 +195,8 @@ public class TransactionTestUtils {
                                                       TransactionClosureSentEvent closureSentEvent,
                                                       BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
-        TransactionStatusDto newStatus = closureSentEvent.getData().getNewTransactionStatus();
-
         return new TransactionClosed(
-                ((BaseTransactionWithCompletedAuthorization) transactionWithCompletedAuthorization
-                        .withStatus(newStatus)),
+                transactionWithCompletedAuthorization,
                 closureSentEvent.getData()
         );
     }
