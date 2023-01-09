@@ -40,31 +40,9 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
+    /** {@inheritDoc} */
     @Override
-    public TransactionClosed withStatus(TransactionStatusDto status) {
-        return new TransactionClosed(
-                new TransactionWithCompletedAuthorization(
-                        new TransactionWithRequestedAuthorization(
-                                new TransactionActivated(
-                                        this.getTransactionId(),
-                                        this.getPaymentNotices(),
-                                        this.getEmail(),
-                                        this.getTransactionActivatedData().getFaultCode(),
-                                        this.getTransactionActivatedData().getFaultCodeString(),
-                                        this.getCreationDate(),
-                                        status,
-                                        this.getClientId()
-                                ),
-                                this.getTransactionAuthorizationRequestData()
-                        ),
-                        this.getTransactionAuthorizationStatusUpdateData()
-                ),
-                this.getTransactionClosureSendData()
-        );
+    public TransactionStatusDto getStatus() {
+        return this.getTransactionClosureSendData().getNewTransactionStatus();
     }
 }

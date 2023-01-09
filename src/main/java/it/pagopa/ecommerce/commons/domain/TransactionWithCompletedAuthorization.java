@@ -47,12 +47,12 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionClosureSentEvent closureSentEvent) {
             return new TransactionClosed(
-                    this.withStatus(closureSentEvent.getData().getNewTransactionStatus()),
+                    this,
                     closureSentEvent.getData()
             );
         } else if (event instanceof TransactionClosureErrorEvent closureErrorEvent) {
             return new TransactionWithClosureError(
-                    this.withStatus(TransactionStatusDto.CLOSURE_ERROR),
+                    this,
                     closureErrorEvent
             );
         } else {
@@ -60,28 +60,9 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
+    /** {@inheritDoc} */
     @Override
-    public TransactionWithCompletedAuthorization withStatus(TransactionStatusDto status) {
-        return new TransactionWithCompletedAuthorization(
-                new TransactionWithRequestedAuthorization(
-                        new TransactionActivated(
-                                this.getTransactionId(),
-                                this.getPaymentNotices(),
-                                this.getEmail(),
-                                this.getTransactionActivatedData().getFaultCode(),
-                                this.getTransactionActivatedData().getFaultCodeString(),
-                                this.getCreationDate(),
-                                status,
-                                this.getClientId()
-                        ),
-                        this.getTransactionAuthorizationRequestData()
-                ),
-                this.getTransactionAuthorizationStatusUpdateData()
-        );
+    public TransactionStatusDto getStatus() {
+        return this.getTransactionAuthorizationStatusUpdateData().getNewTransactionStatus();
     }
 }
