@@ -4,6 +4,7 @@ import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
@@ -144,6 +145,41 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
+        return new TransactionAuthorizedEvent(
+                TRANSACTION_ID,
+                new TransactionAuthorizedData("authorizationCode")
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationFailedEvent transactionAuthorizationFailedEvent() {
+        return new TransactionAuthorizationFailedEvent(TRANSACTION_ID);
+    }
+
+    @Nonnull
+    public static TransactionAuthorized transactionAuthorized(
+            TransactionAuthorizedEvent authorizedEvent,
+            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    ) {
+        return new TransactionAuthorized(
+                transactionWithRequestedAuthorization,
+                authorizedEvent.getData()
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
+            TransactionAuthorizationFailedEvent authorizationFailedEvent,
+            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    ) {
+        return new TransactionWithFailedAuthorization(
+                transactionWithRequestedAuthorization,
+                authorizationFailedEvent
+        );
+    }
+
+    @Nonnull
     public static TransactionWithCompletedAuthorization transactionWithCompletedAuthorization(
                                                                                               TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent,
                                                                                               TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
@@ -181,7 +217,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          TransactionWithCompletedAuthorization transaction
+                                                                          BaseTransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,

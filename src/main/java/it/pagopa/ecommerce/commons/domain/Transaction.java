@@ -68,7 +68,7 @@ import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
  * information on how to retrieve the reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionActivationRequested,TransactionWithRequestedAuthorization,TransactionWithCompletedAuthorization,TransactionClosed,TransactionWithClosureError {
+public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionActivationRequested,TransactionWithRequestedAuthorization,TransactionAuthorized,TransactionWithFailedAuthorization,TransactionWithCompletedAuthorization,TransactionClosed,TransactionWithClosureError {
     /**
      * Applies an event to a transaction
      *

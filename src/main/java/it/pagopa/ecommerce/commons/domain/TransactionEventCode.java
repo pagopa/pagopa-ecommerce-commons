@@ -18,6 +18,14 @@ public enum TransactionEventCode {
      */
     TRANSACTION_AUTHORIZATION_REQUESTED_EVENT("TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"),
     /**
+     * Transaction authorized
+     */
+    TRANSACTION_AUTHORIZED("TRANSACTION_AUTHORIZED"),
+    /**
+     * Transaction authorization failed
+     */
+    TRANSACTION_AUTHORIZATION_FAILED("TRANSACTION_AUTHORIZED"),
+    /**
      * Authorization status update event
      */
     TRANSACTION_AUTHORIZATION_STATUS_UPDATED_EVENT("TRANSACTION_AUTHORIZATION_STATUS_UPDATED_EVENT"),
