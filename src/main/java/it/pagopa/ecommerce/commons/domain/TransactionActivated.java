@@ -37,7 +37,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
      * @param creationDate    creation date of this transaction
-     * @param status          transaction status
      * @param clientId        a {@link ClientId} object
      */
     public TransactionActivated(
@@ -47,7 +46,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
         super(
@@ -56,7 +54,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         paymentNotices,
                         email,
                         creationDate,
-                        status,
                         clientId
                 ),
                 new TransactionActivatedData(
@@ -86,7 +83,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
-     * @param status          transaction status
      * @param clientId        the origin from which the transaction started from
      */
     public TransactionActivated(
@@ -95,7 +91,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             Email email,
             String faultCode,
             String faultCodeString,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
         this(
@@ -105,7 +100,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCode,
                 faultCodeString,
                 ZonedDateTime.now(),
-                status,
                 clientId
         );
     }
@@ -126,33 +120,20 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
 
     /** {@inheritDoc} */
     @Override
+    public TransactionStatusDto getStatus() {
+        return TransactionStatusDto.ACTIVATED;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
             return new TransactionWithRequestedAuthorization(
-                    this.withStatus(TransactionStatusDto.AUTHORIZATION_REQUESTED),
+                    this,
                     transactionAuthorizationRequestedEvent.getData()
             );
         } else {
             return this;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Change the transaction status
-     */
-    @Override
-    public TransactionActivated withStatus(TransactionStatusDto status) {
-        return new TransactionActivated(
-                this.getTransactionId(),
-                this.getPaymentNotices(),
-                this.getEmail(),
-                this.getTransactionActivatedData().getFaultCode(),
-                this.getTransactionActivatedData().getFaultCodeString(),
-                this.getCreationDate(),
-                status,
-                this.getTransactionActivatedData().getClientId()
-        );
     }
 }
