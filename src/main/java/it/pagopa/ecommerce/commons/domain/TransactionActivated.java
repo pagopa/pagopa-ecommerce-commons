@@ -37,7 +37,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
      * @param creationDate    creation date of this transaction
-     * @param status          transaction status
      * @param clientId        a {@link ClientId} object
      */
     public TransactionActivated(
@@ -47,7 +46,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
         super(
@@ -85,7 +83,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param email           email where the payment receipt will be sent to
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
-     * @param status          transaction status
      * @param clientId        the origin from which the transaction started from
      */
     public TransactionActivated(
@@ -94,7 +91,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             Email email,
             String faultCode,
             String faultCodeString,
-            TransactionStatusDto status,
             ClientId clientId
     ) {
         this(
@@ -104,7 +100,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCode,
                 faultCodeString,
                 ZonedDateTime.now(),
-                status,
                 clientId
         );
     }

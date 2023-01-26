@@ -92,7 +92,6 @@ public class TransactionTestUtils {
                 FAULT_CODE,
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
-                TransactionStatusDto.ACTIVATED,
                 Transaction.ClientId.UNKNOWN
         );
     }
