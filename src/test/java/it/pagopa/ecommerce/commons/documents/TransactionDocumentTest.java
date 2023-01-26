@@ -108,8 +108,8 @@ class TransactionDocumentTest {
 
     @Test
     void shouldConvertTransactionClientIdEnumerationCorrectly() {
-        assertEquals(Transaction.ClientId.fromString("").toString(), Transaction.ClientId.UNKNOWN.toString());
-        assertEquals(Transaction.ClientId.fromString(null).toString(), Transaction.ClientId.UNKNOWN.toString());
+        assertEquals(Transaction.ClientId.fromString(""), null);
+        assertEquals(Transaction.ClientId.fromString(null), null);
         for (Transaction.ClientId clientId : Transaction.ClientId.values()) {
             assertEquals(Transaction.ClientId.fromString(clientId.toString()).toString(), clientId.toString());
         }
