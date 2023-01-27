@@ -128,23 +128,6 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
-                                                                                                        AuthorizationResultDto authorizationResult
-    ) {
-        TransactionStatusDto newStatus;
-        switch (authorizationResult) {
-            case OK -> newStatus = TransactionStatusDto.AUTHORIZED;
-            case KO -> newStatus = TransactionStatusDto.AUTHORIZATION_FAILED;
-            default -> throw new IllegalStateException("Unexpected value: " + authorizationResult);
-        }
-
-        return new TransactionAuthorizationStatusUpdatedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
-        );
-    }
-
-    @Nonnull
     public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
         return new TransactionAuthorizedEvent(
                 TRANSACTION_ID,
@@ -176,17 +159,6 @@ public class TransactionTestUtils {
         return new TransactionWithFailedAuthorization(
                 transactionWithRequestedAuthorization,
                 authorizationFailedEvent
-        );
-    }
-
-    @Nonnull
-    public static TransactionWithCompletedAuthorization transactionWithCompletedAuthorization(
-                                                                                              TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent,
-                                                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
-    ) {
-        return new TransactionWithCompletedAuthorization(
-                transactionWithRequestedAuthorization,
-                authorizationStatusUpdatedEvent.getData()
         );
     }
 
