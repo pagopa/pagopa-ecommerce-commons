@@ -36,8 +36,7 @@ public abstract class BaseTransactionWithFailedAuthorization extends BaseTransac
                 baseTransaction,
                 new TransactionAuthorizationStatusUpdateData(
                         AuthorizationResultDto.KO,
-                        TransactionStatusDto.AUTHORIZATION_FAILED,
-                        null
+                        TransactionStatusDto.AUTHORIZATION_FAILED
                 )
         );
 
