@@ -48,10 +48,6 @@ public enum TransactionEventCode {
      */
     TRANSACTION_REFUNDED_EVENT("TRANSACTION_REFUNDED_EVENT"),
     /**
-     * Retry event for transaction refunds
-     */
-    TRANSACTION_REFUND_RETRY_EVENT("TRANSACTION_REFUND_RETRY_EVENT"),
-    /**
      * Event when transaction refund is retried
      */
     TRANSACTION_REFUND_RETRIED_EVENT("TRANSACTION_REFUND_RETRIED_EVENT");
