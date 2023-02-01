@@ -142,8 +142,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorized transactionAuthorized(
-            TransactionAuthorizedEvent authorizedEvent,
-            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+                                                              TransactionAuthorizedEvent authorizedEvent,
+                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionAuthorized(
                 transactionWithRequestedAuthorization,
@@ -153,8 +153,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
-            TransactionAuthorizationFailedEvent authorizationFailedEvent,
-            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+                                                                                        TransactionAuthorizationFailedEvent authorizationFailedEvent,
+                                                                                        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionWithFailedAuthorization(
                 transactionWithRequestedAuthorization,

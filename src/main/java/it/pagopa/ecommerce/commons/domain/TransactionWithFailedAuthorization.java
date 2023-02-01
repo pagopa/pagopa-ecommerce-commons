@@ -32,7 +32,10 @@ public final class TransactionWithFailedAuthorization extends BaseTransactionWit
      * @param baseTransaction base transaction
      * @param event           transaction authorization failure event
      */
-    public TransactionWithFailedAuthorization(BaseTransactionWithRequestedAuthorization baseTransaction, TransactionAuthorizationFailedEvent event) {
+    public TransactionWithFailedAuthorization(
+            BaseTransactionWithRequestedAuthorization baseTransaction,
+            TransactionAuthorizationFailedEvent event
+    ) {
         super(baseTransaction, event);
     }
 

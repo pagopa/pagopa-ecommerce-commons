@@ -12,10 +12,9 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply an
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizedEvent}
- * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionAuthorized}
- * or a {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent}
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizedEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionAuthorized} or a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent}
  * to get a
  * {@link it.pagopa.ecommerce.commons.domain.TransactionWithFailedAuthorization}
  * </p>

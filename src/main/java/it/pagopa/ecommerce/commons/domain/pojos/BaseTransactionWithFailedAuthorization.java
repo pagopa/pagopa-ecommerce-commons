@@ -31,7 +31,10 @@ public abstract class BaseTransactionWithFailedAuthorization extends BaseTransac
      * @param baseTransaction base transaction
      * @param event           failed authorization event
      */
-    protected BaseTransactionWithFailedAuthorization(BaseTransactionWithRequestedAuthorization baseTransaction, TransactionAuthorizationFailedEvent event) {
+    protected BaseTransactionWithFailedAuthorization(
+            BaseTransactionWithRequestedAuthorization baseTransaction,
+            TransactionAuthorizationFailedEvent event
+    ) {
         super(
                 baseTransaction,
                 new TransactionAuthorizationStatusUpdateData(
