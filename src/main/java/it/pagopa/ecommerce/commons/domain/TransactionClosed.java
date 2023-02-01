@@ -12,10 +12,11 @@ import lombok.EqualsAndHashCode;
  * Closed transaction.
  * </p>
  * <p>
- To this class you can apply a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent} to
- *  get a {@link it.pagopa.ecommerce.commons.domain.TransactionWithUserReceipt}.
- *  </p>
+ * To this class you can apply a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent}
+ * to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithUserReceipt}.
+ * </p>
  *
  * @see Transaction
  * @see BaseTransactionWithCompletedAuthorization
