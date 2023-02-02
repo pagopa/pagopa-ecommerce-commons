@@ -239,6 +239,22 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
+        return new TransactionRefundRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
+        return new TransactionClosureRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
     public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
         return new TransactionActivationRequestedEvent(
                 TRANSACTION_ID,
