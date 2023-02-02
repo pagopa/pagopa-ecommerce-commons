@@ -27,7 +27,7 @@ public final class TransactionAuthorizationFailedEvent
     ) {
         super(
                 transactionId,
-                TransactionEventCode.TRANSACTION_AUTHORIZED,
+                TransactionEventCode.TRANSACTION_AUTHORIZATION_FAILED,
                 null
         );
     }
