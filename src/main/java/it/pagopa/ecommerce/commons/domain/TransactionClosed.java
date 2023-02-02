@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionClosureSendData;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
+import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -12,8 +12,10 @@ import lombok.EqualsAndHashCode;
  * Closed transaction.
  * </p>
  * <p>
- * Given that this is a terminal state for a transaction, there are no events
- * that you can meaningfully apply to it. Any event application is thus ignored.
+ * To this class you can apply a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent}
+ * to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithUserReceipt}.
  * </p>
  *
  * @see Transaction
@@ -38,7 +40,14 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
-        return this;
+        switch (event) {
+            case TransactionUserReceiptAddedEvent e -> {
+                return new TransactionWithUserReceipt(this, e.getData());
+            }
+            default -> {
+                return this;
+            }
+        }
     }
 
     /** {@inheritDoc} */
