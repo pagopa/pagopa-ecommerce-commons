@@ -4,6 +4,7 @@ import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
@@ -13,6 +14,8 @@ import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class TransactionTestUtils {
 
@@ -197,6 +200,49 @@ public class TransactionTestUtils {
         return new TransactionClosed(
                 transactionWithCompletedAuthorization,
                 closureSentEvent.getData()
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithUserReceipt transactionWithUserReceipt(
+                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent,
+                                                                        BaseTransactionClosed baseTransactionClosed
+    ) {
+        return new TransactionWithUserReceipt(
+                baseTransactionClosed,
+                transactionUserReceiptAddedEvent.getData()
+        );
+    }
+
+    @Nonnull
+    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
+                                                                                    TransactionStatusDto transactionStatusDto
+    ) {
+        return new TransactionUserReceiptAddedEvent(
+                TRANSACTION_ID,
+                new TransactionAddReceiptData(
+                        Stream.of(transactionStatusDto)
+                                .filter(
+                                        transactionStatus -> transactionStatus.equals(TransactionStatusDto.NOTIFIED)
+                                                || transactionStatus.equals(TransactionStatusDto.NOTIFIED_FAILED)
+                                ).findFirst().orElseThrow()
+                )
+        );
+    }
+
+    @Nonnull
+    public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
+        return new TransactionRefundRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
+        return new TransactionClosureRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
         );
     }
 

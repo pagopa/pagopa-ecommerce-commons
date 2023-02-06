@@ -31,6 +31,10 @@ public enum TransactionEventCode {
      */
     TRANSACTION_CLOSURE_ERROR_EVENT("TRANSACTION_CLOSURE_ERROR_EVENT"),
     /**
+     * Event when transaction closure is retried
+     */
+    TRANSACTION_CLOSURE_RETRIED_EVENT("TRANSACTION_CLOSURE_RETRIED_EVENT"),
+    /**
      * User receipt notification event
      */
     TRANSACTION_USER_RECEIPT_ADDED_EVENT("TRANSACTION_USER_RECEIPT_ADDED_EVENT"),
@@ -44,9 +48,9 @@ public enum TransactionEventCode {
      */
     TRANSACTION_REFUNDED_EVENT("TRANSACTION_REFUNDED_EVENT"),
     /**
-     * Retry event for transaction refunds
+     * Event when transaction refund is retried
      */
-    TRANSACTION_REFUND_RETRY_EVENT("TRANSACTION_REFUND_RETRY_EVENT");
+    TRANSACTION_REFUND_RETRIED_EVENT("TRANSACTION_REFUND_RETRIED_EVENT");
 
     private final String code;
 
