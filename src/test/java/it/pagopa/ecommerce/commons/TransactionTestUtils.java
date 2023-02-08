@@ -4,6 +4,7 @@ import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
@@ -130,30 +131,37 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
-                                                                                                        AuthorizationResultDto authorizationResult
-    ) {
-        TransactionStatusDto newStatus;
-        switch (authorizationResult) {
-            case OK -> newStatus = TransactionStatusDto.AUTHORIZED;
-            case KO -> newStatus = TransactionStatusDto.AUTHORIZATION_FAILED;
-            default -> throw new IllegalStateException("Unexpected value: " + authorizationResult);
-        }
-
-        return new TransactionAuthorizationStatusUpdatedEvent(
+    public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
+        return new TransactionAuthorizedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
+                new TransactionAuthorizedData("authorizationCode")
         );
     }
 
     @Nonnull
-    public static TransactionWithCompletedAuthorization transactionWithCompletedAuthorization(
-                                                                                              TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent,
-                                                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    public static TransactionAuthorizationFailedEvent transactionAuthorizationFailedEvent() {
+        return new TransactionAuthorizationFailedEvent(TRANSACTION_ID);
+    }
+
+    @Nonnull
+    public static TransactionAuthorized transactionAuthorized(
+                                                              TransactionAuthorizedEvent authorizedEvent,
+                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
-        return new TransactionWithCompletedAuthorization(
+        return new TransactionAuthorized(
                 transactionWithRequestedAuthorization,
-                authorizationStatusUpdatedEvent.getData()
+                authorizedEvent.getData()
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
+                                                                                        TransactionAuthorizationFailedEvent authorizationFailedEvent,
+                                                                                        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    ) {
+        return new TransactionWithFailedAuthorization(
+                transactionWithRequestedAuthorization,
+                authorizationFailedEvent
         );
     }
 
@@ -184,7 +192,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          TransactionWithCompletedAuthorization transaction
+                                                                          BaseTransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,

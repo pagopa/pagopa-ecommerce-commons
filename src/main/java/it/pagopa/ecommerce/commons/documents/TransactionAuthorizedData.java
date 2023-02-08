@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Data
 @Document
-public class TransactionAuthorizationStatusUpdateData {
-    private AuthorizationResultDto authorizationResult;
-    private TransactionStatusDto newTransactionStatus;
+public class TransactionAuthorizedData {
+    private String authorizationCode;
 }
