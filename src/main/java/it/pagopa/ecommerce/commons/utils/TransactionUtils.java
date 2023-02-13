@@ -1,7 +1,11 @@
 package it.pagopa.ecommerce.commons.utils;
 
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -39,4 +43,19 @@ public class TransactionUtils {
                 || TransactionStatusDto.CLOSURE_FAILED == status;
     }
 
+    /**
+     * Gets a transaction fee from a generic transaction
+     *
+     * @param transaction the transaction
+     * @return an {@link Optional} containing the transaction fee if the user
+     *         requested an authorization, empty otherwise
+     */
+    public static Optional<Integer> getTransactionFee(BaseTransaction transaction) {
+        if (transaction instanceof BaseTransactionWithRequestedAuthorization baseTransactionWithRequestedAuthorization) {
+            return Optional
+                    .of(baseTransactionWithRequestedAuthorization.getTransactionAuthorizationRequestData().getFee());
+        } else {
+            return Optional.empty();
+        }
+    }
 }
