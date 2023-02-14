@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionClosureSendData;
+import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
@@ -40,14 +41,11 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
-        switch (event) {
-            case TransactionUserReceiptAddedEvent e -> {
-                return new TransactionWithUserReceipt(this, e.getData());
-            }
-            default -> {
-                return this;
-            }
-        }
+        return switch (event) {
+            case TransactionUserReceiptAddedEvent e -> new TransactionWithUserReceipt(this, e.getData());
+            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
+            default -> this;
+        };
     }
 
     /** {@inheritDoc} */

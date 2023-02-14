@@ -4,6 +4,7 @@ import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.*;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -236,6 +237,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionExpired transactionExpired(
+                                                        TransactionExpiredEvent expiredEvent,
+                                                        BaseTransaction transaction
+    ) {
+        return new TransactionExpired(transaction, expiredEvent);
+    }
+
+    @Nonnull
     public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
@@ -271,6 +280,14 @@ public class TransactionTestUtils {
                         FAULT_CODE_STRING,
                         Transaction.ClientId.UNKNOWN
                 )
+        );
+    }
+
+    @Nonnull
+    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
+        return new TransactionExpiredEvent(
+                TRANSACTION_ID,
+                new TransactionExpiredData(previousStatus)
         );
     }
 

@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizedData;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -49,6 +50,8 @@ public final class TransactionAuthorized extends BaseTransactionAuthorized imple
                     this,
                     closureErrorEvent
             );
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
             default -> this;
         };
     }
