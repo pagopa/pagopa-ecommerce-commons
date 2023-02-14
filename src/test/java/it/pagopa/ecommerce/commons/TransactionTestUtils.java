@@ -2,20 +2,17 @@ package it.pagopa.ecommerce.commons;
 
 import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
-import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
+import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
-import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class TransactionTestUtils {
@@ -35,7 +32,7 @@ public class TransactionTestUtils {
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
-    public static final String AUTHORIZATION_REQUEST_ID = "authorizationRequestId";
+    public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
     @Nonnull
