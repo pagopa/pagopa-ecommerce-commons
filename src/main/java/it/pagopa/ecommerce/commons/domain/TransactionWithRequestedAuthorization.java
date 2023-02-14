@@ -46,6 +46,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         return switch (event) {
             case TransactionAuthorizedEvent authorizedEvent -> new TransactionAuthorized(this, authorizedEvent.getData());
             case TransactionAuthorizationFailedEvent authorizationFailedEvent -> new TransactionWithFailedAuthorization(this, authorizationFailedEvent);
+            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
             default -> this;
         };
     }

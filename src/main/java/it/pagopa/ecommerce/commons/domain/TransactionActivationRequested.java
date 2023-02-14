@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
@@ -74,10 +75,12 @@ public final class TransactionActivationRequested extends BaseTransaction implem
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
-            return new TransactionActivated(this, transactionActivatedEvent);
-        } else {
-            return this;
-        }
+        return switch (event) {
+            case TransactionActivatedEvent transactionActivatedEvent ->
+                    new TransactionActivated(this, transactionActivatedEvent);
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
+            case default -> this;
+        };
     }
 }

@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
@@ -127,13 +128,15 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
-            return new TransactionWithRequestedAuthorization(
-                    this,
-                    transactionAuthorizationRequestedEvent.getData()
-            );
-        } else {
-            return this;
-        }
+        return switch (event) {
+            case TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent ->
+                    new TransactionWithRequestedAuthorization(
+                            this,
+                            transactionAuthorizationRequestedEvent.getData()
+                    );
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
+            default -> this;
+        };
     }
 }
