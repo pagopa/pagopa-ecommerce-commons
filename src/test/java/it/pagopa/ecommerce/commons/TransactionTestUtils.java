@@ -2,19 +2,18 @@ package it.pagopa.ecommerce.commons;
 
 import it.pagopa.ecommerce.commons.documents.Transaction;
 import it.pagopa.ecommerce.commons.documents.*;
-import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.*;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
-import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class TransactionTestUtils {
@@ -34,7 +33,7 @@ public class TransactionTestUtils {
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
-    public static final String AUTHORIZATION_REQUEST_ID = "authorizationRequestId";
+    public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
     @Nonnull
@@ -130,30 +129,37 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationStatusUpdatedEvent transactionAuthorizationStatusUpdatedEvent(
-                                                                                                        AuthorizationResultDto authorizationResult
-    ) {
-        TransactionStatusDto newStatus;
-        switch (authorizationResult) {
-            case OK -> newStatus = TransactionStatusDto.AUTHORIZED;
-            case KO -> newStatus = TransactionStatusDto.AUTHORIZATION_FAILED;
-            default -> throw new IllegalStateException("Unexpected value: " + authorizationResult);
-        }
-
-        return new TransactionAuthorizationStatusUpdatedEvent(
+    public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
+        return new TransactionAuthorizedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationStatusUpdateData(authorizationResult, newStatus, "authorizationCode")
+                new TransactionAuthorizedData("authorizationCode")
         );
     }
 
     @Nonnull
-    public static TransactionWithCompletedAuthorization transactionWithCompletedAuthorization(
-                                                                                              TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent,
-                                                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    public static TransactionAuthorizationFailedEvent transactionAuthorizationFailedEvent() {
+        return new TransactionAuthorizationFailedEvent(TRANSACTION_ID);
+    }
+
+    @Nonnull
+    public static TransactionAuthorized transactionAuthorized(
+                                                              TransactionAuthorizedEvent authorizedEvent,
+                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
-        return new TransactionWithCompletedAuthorization(
+        return new TransactionAuthorized(
                 transactionWithRequestedAuthorization,
-                authorizationStatusUpdatedEvent.getData()
+                authorizedEvent.getData()
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
+                                                                                        TransactionAuthorizationFailedEvent authorizationFailedEvent,
+                                                                                        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    ) {
+        return new TransactionWithFailedAuthorization(
+                transactionWithRequestedAuthorization,
+                authorizationFailedEvent
         );
     }
 
@@ -184,7 +190,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          TransactionWithCompletedAuthorization transaction
+                                                                          BaseTransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
@@ -231,6 +237,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionExpired transactionExpired(
+                                                        TransactionExpiredEvent expiredEvent,
+                                                        BaseTransaction transaction
+    ) {
+        return new TransactionExpired(transaction, expiredEvent);
+    }
+
+    @Nonnull
     public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
@@ -266,6 +280,14 @@ public class TransactionTestUtils {
                         FAULT_CODE_STRING,
                         Transaction.ClientId.CHECKOUT
                 )
+        );
+    }
+
+    @Nonnull
+    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
+        return new TransactionExpiredEvent(
+                TRANSACTION_ID,
+                new TransactionExpiredData(previousStatus)
         );
     }
 

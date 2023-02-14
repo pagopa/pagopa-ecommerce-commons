@@ -1,17 +1,17 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizedData;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * Transaction with a completed authorization.
+ * Transaction with a successful authorization.
  * </p>
  * <p>
  * To this class you can apply either a
@@ -22,28 +22,23 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionAuthorized
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionWithCompletedAuthorization extends BaseTransactionWithCompletedAuthorization
-        implements
-        Transaction {
-
+public final class TransactionAuthorized extends BaseTransactionAuthorized implements Transaction {
     /**
      * Primary constructor
      *
-     * @param baseTransaction               base transaction
-     * @param authorizationStatusUpdateData data related to authorization status
-     *                                      update
+     * @param baseTransaction           base transaction
+     * @param transactionAuthorizedData transaction authorization data
      */
-    public TransactionWithCompletedAuthorization(
+    public TransactionAuthorized(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationStatusUpdateData authorizationStatusUpdateData
+            TransactionAuthorizedData transactionAuthorizedData
     ) {
-        super(baseTransaction, authorizationStatusUpdateData);
+        super(baseTransaction, transactionAuthorizedData);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
@@ -61,9 +56,8 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
         };
     }
 
-    /** {@inheritDoc} */
     @Override
     public TransactionStatusDto getStatus() {
-        return this.getTransactionAuthorizationStatusUpdateData().getNewTransactionStatus();
+        return TransactionStatusDto.AUTHORIZED;
     }
 }

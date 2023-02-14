@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestData;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent;
+import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -13,9 +12,11 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply an
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdatedEvent}
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizedEvent} to
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionAuthorized} or a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent}
  * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionWithCompletedAuthorization}
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionWithFailedAuthorization}
  * </p>
  *
  * @see Transaction
@@ -42,14 +43,12 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     /** {@inheritDoc} */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionAuthorizationStatusUpdatedEvent authorizationStatusUpdatedEvent) {
-            return new TransactionWithCompletedAuthorization(
-                    this,
-                    authorizationStatusUpdatedEvent.getData()
-            );
-        } else {
-            return this;
-        }
+        return switch (event) {
+            case TransactionAuthorizedEvent authorizedEvent -> new TransactionAuthorized(this, authorizedEvent.getData());
+            case TransactionAuthorizationFailedEvent authorizationFailedEvent -> new TransactionWithFailedAuthorization(this, authorizationFailedEvent);
+            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
+            default -> this;
+        };
     }
 
     /** {@inheritDoc} */

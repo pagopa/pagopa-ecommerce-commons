@@ -1,17 +1,17 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithFailedAuthorization;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * Transaction with a completed authorization.
+ * Transaction with a failed authorization.
  * </p>
  * <p>
  * To this class you can apply either a
@@ -22,28 +22,29 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionWithFailedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionWithCompletedAuthorization extends BaseTransactionWithCompletedAuthorization
-        implements
-        Transaction {
-
+public final class TransactionWithFailedAuthorization extends BaseTransactionWithFailedAuthorization
+        implements Transaction {
     /**
      * Primary constructor
      *
-     * @param baseTransaction               base transaction
-     * @param authorizationStatusUpdateData data related to authorization status
-     *                                      update
+     * @param baseTransaction base transaction
+     * @param event           transaction authorization failure event
      */
-    public TransactionWithCompletedAuthorization(
+    public TransactionWithFailedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationStatusUpdateData authorizationStatusUpdateData
+            TransactionAuthorizationFailedEvent event
     ) {
-        super(baseTransaction, authorizationStatusUpdateData);
+        super(baseTransaction, event);
     }
 
-    /** {@inheritDoc} */
+    @Override
+    public TransactionStatusDto getStatus() {
+        return TransactionStatusDto.AUTHORIZATION_FAILED;
+    }
+
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
@@ -59,11 +60,5 @@ public final class TransactionWithCompletedAuthorization extends BaseTransaction
                     new TransactionExpired(this, transactionExpiredEvent);
             default -> this;
         };
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public TransactionStatusDto getStatus() {
-        return this.getTransactionAuthorizationStatusUpdateData().getNewTransactionStatus();
     }
 }
