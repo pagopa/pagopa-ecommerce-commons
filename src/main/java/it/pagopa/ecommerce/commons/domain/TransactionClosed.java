@@ -28,8 +28,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
     /**
      * Primary constructor
      *
-     * @param baseTransaction      base transaction
-     * @param closureSentEventData data related to closure sending event
+     * @param baseTransaction base transaction
      */
     public TransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction

@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -21,13 +20,7 @@ public final class TransactionRefunded extends BaseTransaction implements Transa
     /**
      * Primary constructor
      *
-     * @param transactionId   transaction id
-     * @param paymentNotices  notice code list
-     * @param email           email where the payment receipt will be sent to
-     * @param faultCode       fault code generated during activation
-     * @param faultCodeString fault code auxiliary description
-     * @param creationDate    creation date of this transaction
-     * @param clientId        a {@link ClientId} object
+     * @param baseTransaction the base transaction
      */
     public TransactionRefunded(
             BaseTransaction baseTransaction

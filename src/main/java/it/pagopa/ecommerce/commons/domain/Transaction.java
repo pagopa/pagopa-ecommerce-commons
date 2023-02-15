@@ -67,7 +67,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
  * information on how to retrieve the reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithClosureError,TransactionWithCompletedAuthorization,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
+public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithClosureError,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
     /**
      * Applies an event to a transaction
      *

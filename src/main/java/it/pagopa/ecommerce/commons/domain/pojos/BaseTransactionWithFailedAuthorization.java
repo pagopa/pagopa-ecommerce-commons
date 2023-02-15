@@ -27,7 +27,6 @@ public abstract class BaseTransactionWithFailedAuthorization extends BaseTransac
      * Primary constructor
      *
      * @param baseTransaction base transaction
-     * @param event           failed authorization event
      */
     protected BaseTransactionWithFailedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction

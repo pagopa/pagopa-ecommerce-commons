@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.documents.*;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -143,13 +144,13 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent("00");
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent("00");
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent
+                transactionAuthorizationCompletedEvent
         );
 
         TransactionActivated transactionActivated = TransactionTestUtils
@@ -157,7 +158,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted expected = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -173,14 +177,14 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
-                transactionAuthorizedEvent
+                transactionAuthorizationCompletedEvent,
+                transactionAuthorizationCompletedEvent
         );
 
         TransactionActivated transactionActivated = TransactionTestUtils
@@ -188,7 +192,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted expected = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -198,21 +205,21 @@ class TransactionTest {
     }
 
     @Test
-    void shouldConstructTransactionFromClosureSentEventStream() {
+    void shouldConstructTransactionFromClosedEventStream() {
         EmptyTransaction transaction = new EmptyTransaction();
 
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 closureSentEvent
         );
 
@@ -221,7 +228,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         TransactionClosed expected = TransactionTestUtils.transactionClosed(
 
@@ -242,7 +252,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
 
@@ -262,7 +273,7 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(
+                .transactionAuthorizationCompleted(
                         authorizedEvent,
                         transactionWithRequestedAuthorization
                 );
@@ -283,21 +294,21 @@ class TransactionTest {
     }
 
     @Test
-    void shouldConstructTransactionFromClosureSentEventStreamIgnoringInvalidEvents() {
+    void shouldConstructTransactionFromClosedEventStreamIgnoringInvalidEvents() {
         EmptyTransaction transaction = new EmptyTransaction();
 
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 closureSentEvent,
                 closureSentEvent
         );
@@ -307,7 +318,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
         TransactionClosed expected = TransactionTestUtils.transactionClosed(
                 transactionAuthorizationCompleted
         );
@@ -327,7 +341,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+                .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
 
@@ -348,7 +362,7 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionWithCompletedAuthorization = TransactionTestUtils
-                .transactionAuthorized(authorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(authorizedEvent, transactionWithRequestedAuthorization);
         TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
 
                 transactionWithCompletedAuthorization
@@ -372,14 +386,14 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent
         );
 
@@ -388,7 +402,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         TransactionWithClosureError expected = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
@@ -405,16 +422,16 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent,
-                transactionAuthorizedEvent
+                transactionAuthorizationCompletedEvent
         );
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -422,7 +439,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         TransactionWithClosureError expected = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
@@ -441,8 +461,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
@@ -450,7 +470,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent,
                 closureSentEvent
         );
@@ -460,7 +480,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
@@ -546,15 +569,15 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 expiredEvent
         );
 
@@ -563,7 +586,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
 
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(expiredEvent, transactionAuthorizationCompleted);
@@ -586,8 +612,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
@@ -596,7 +622,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 closureSentEvent,
                 expiredEvent
         );
@@ -606,7 +632,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
         TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(transactionAuthorizationCompleted);
 
@@ -630,15 +659,15 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
         TransactionClosedEvent closedEvent = TransactionTestUtils.transactionClosedEvent();
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 closedEvent,
                 expiredEvent
         );
@@ -648,7 +677,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
         TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(transactionAuthorizationCompleted);
 
@@ -672,8 +704,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
@@ -681,7 +713,7 @@ class TransactionTest {
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
-                transactionAuthorizedEvent,
+                transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent,
                 expiredEvent
         );
@@ -691,7 +723,10 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(transactionAuthorizedEvent, transactionWithRequestedAuthorization);
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
@@ -728,16 +763,16 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(
-                        transactionAuthorizedEvent,
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
 
@@ -757,8 +792,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -766,8 +801,8 @@ class TransactionTest {
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(
-                        transactionAuthorizedEvent,
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
 
@@ -782,16 +817,16 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionWithCompletedAuthorization = TransactionTestUtils
-                .transactionAuthorized(
-                        transactionAuthorizedEvent,
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
 
@@ -807,14 +842,14 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
-                .transactionAuthorizedEvent();
+                .transactionAuthorizationCompletedEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
-                .transactionAuthorized(
+                .transactionAuthorizationCompleted(
                         authorizedEvent,
                         transactionWithRequestedAuthorization
                 );
@@ -828,4 +863,810 @@ class TransactionTest {
         assertEquals(TransactionStatusDto.NOTIFIED, transactionWithUserReceipt.getStatus());
     }
 
+    @Test
+    void shouldConstructTransactionRefundFromClosureErrorEventStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.CLOSURE_ERROR);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionRefundedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionWithClosureError transactionWithClosureError = TransactionTestUtils.transactionWithClosureError(
+                transactionClosureErrorEvent,
+                transactionAuthorizationCompleted
+        );
+
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionWithClosureError);
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionRefundFromClosureErrorEventStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.CLOSURE_ERROR);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionClosureErrorEvent,
+                transactionRefundedEvent,
+                transactionRefundedEvent,
+                transactionClosureErrorEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionWithClosureError transactionWithClosureError = TransactionTestUtils.transactionWithClosureError(
+                transactionClosureErrorEvent,
+                transactionAuthorizationCompleted
+        );
+
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionWithClosureError);
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionRefundFromClosedEventStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.CLOSED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent,
+                transactionRefundedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
+                transactionAuthorizationCompleted
+        );
+
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionClosed);
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionRefundFromClosedEventStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.CLOSED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                authorizationRequestedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent,
+                transactionRefundedEvent,
+                transactionClosedEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
+                transactionAuthorizationCompleted
+        );
+
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionClosed);
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionRefundFromExpiredEventStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionExpiredEvent,
+                transactionRefundedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionExpired transactionExpired = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionExpired);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionRefundFromExpiredEventStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionExpiredEvent,
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionRefundedEvent,
+                transactionAuthorizationCompletedEvent,
+                authorizationRequestedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionExpired transactionExpired = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
+        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionExpired);
+
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromClosedEventStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CLOSED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent,
+                transactionExpiredEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(transactionAuthorizationCompleted);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionClosed);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromClosedEventStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CLOSED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                authorizationRequestedEvent,
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent,
+                transactionActivatedEvent,
+                transactionExpiredEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(transactionAuthorizationCompleted);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionClosed);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromClosureErrorEventStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CLOSURE_ERROR);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionExpiredEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
+                .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromClosureErrorEventStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CLOSURE_ERROR);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionAuthorizationCompletedEvent,
+                authorizationRequestedEvent,
+                transactionExpiredEvent,
+                transactionClosureErrorEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
+                .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromAuthorizationCompletedStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionExpiredEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromAuthorizationCompletedStreamIgnoringInvalidEventsIgnoringInvalidEvents() {
+
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                authorizationRequestedEvent,
+                transactionActivatedEvent,
+                transactionExpiredEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromAuthorizationRequestedStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_REQUESTED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionExpiredEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionWithRequestedAuthorization);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromAuthorizationRequestedStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_REQUESTED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionActivatedEvent,
+                transactionExpiredEvent,
+                authorizationRequestedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionExpiredEvent, transactionWithRequestedAuthorization);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredNotAuthorizedFromActivatedStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionExpiredEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionExpiredNotAuthorized expected = TransactionTestUtils
+                .transactionExpiredNotAuthorized(transactionActivated);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED_NOT_AUTHORIZED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredNotAuthorizedFromActivatedStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionClosedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionExpiredEvent,
+                transactionClosedEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionExpiredNotAuthorized expected = TransactionTestUtils
+                .transactionExpiredNotAuthorized(transactionActivated);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.EXPIRED_NOT_AUTHORIZED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionUserCanceledFromActivatedStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionUserCanceledEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(transactionActivated);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionUserCanceledFromActivatedStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils.transactionClosedEvent();
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionUserCanceledEvent,
+                transactionClosedEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(transactionActivated);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionUnauthorizedFromAuthorizationCompletedStream() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent();
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureFailedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionUnauthorized expected = TransactionTestUtils
+                .transactionUnauthorized(transactionAuthorizationCompleted);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionUnauthorizedFromAuthorizationCompletedStreamIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.UNAUTHORIZED);
+        TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent();
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionUserCanceledEvent,
+                transactionClosureFailedEvent,
+                transactionExpiredEvent,
+                transactionUserCanceledEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionUnauthorized expected = TransactionTestUtils
+                .transactionUnauthorized(transactionAuthorizationCompleted);
+        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                )
+                .verifyComplete();
+    }
 }

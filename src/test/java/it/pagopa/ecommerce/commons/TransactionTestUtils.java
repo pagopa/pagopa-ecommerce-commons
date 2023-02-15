@@ -112,7 +112,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent() {
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
                 new TransactionAuthorizedData(AUTHORIZATION_CODE, AUTHORIZATION_OUTCOME)
@@ -120,7 +120,9 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent(String authorizationOutcome) {
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
+                                                                                                String authorizationOutcome
+    ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
                 new TransactionAuthorizedData(AUTHORIZATION_CODE, authorizationOutcome)
@@ -128,9 +130,9 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompleted transactionAuthorized(
-                                                                          TransactionAuthorizationCompletedEvent authorizedEvent,
-                                                                          TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    public static TransactionAuthorizationCompleted transactionAuthorizationCompleted(
+                                                                                      TransactionAuthorizationCompletedEvent authorizedEvent,
+                                                                                      TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
@@ -259,6 +261,14 @@ public class TransactionTestUtils {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,
                 new TransactionExpiredData(previousStatus)
+        );
+    }
+
+    @Nonnull
+    public static TransactionRefundedEvent transactionRefundedEvent(TransactionStatusDto statusBeforeRefunded) {
+        return new TransactionRefundedEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(statusBeforeRefunded)
         );
     }
 

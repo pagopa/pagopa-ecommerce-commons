@@ -27,8 +27,7 @@ public abstract class BaseTransactionClosed extends BaseTransactionWithCompleted
     /**
      * Primary constructor
      *
-     * @param baseTransaction            base transaction
-     * @param transactionClosureSendData data related to closure sending event
+     * @param baseTransaction base transaction
      */
     protected BaseTransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction

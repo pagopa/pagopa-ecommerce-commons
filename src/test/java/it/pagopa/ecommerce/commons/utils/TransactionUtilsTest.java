@@ -79,8 +79,6 @@ public class TransactionUtilsTest {
 
     @Test
     void getFeeReturnsEmptyForTransactionWithoutRequestedAuthorization() {
-        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(ZonedDateTime.now().toString());
 

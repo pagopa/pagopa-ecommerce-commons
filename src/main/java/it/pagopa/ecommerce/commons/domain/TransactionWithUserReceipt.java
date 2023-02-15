@@ -22,8 +22,7 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithUserRec
     /**
      * Main constructor.
      *
-     * @param baseTransaction           transaction to extend with receipt data
-     * @param transactionAddReceiptData receipt data
+     * @param baseTransaction transaction to extend with receipt data
      */
     public TransactionWithUserReceipt(
             BaseTransactionClosed baseTransaction

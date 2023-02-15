@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionExpired;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
@@ -36,7 +37,7 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefunded) {
+        if (event instanceof TransactionRefundedEvent) {
             return new TransactionRefunded(this);
         }
         return this;

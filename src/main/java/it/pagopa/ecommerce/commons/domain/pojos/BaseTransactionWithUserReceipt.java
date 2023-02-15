@@ -25,9 +25,7 @@ public abstract class BaseTransactionWithUserReceipt extends BaseTransactionClos
     /**
      * Main constructor.
      *
-     * @param baseTransaction           transaction to extend with authorization
-     *                                  data
-     * @param transactionAddReceiptData authorization data
+     * @param baseTransaction transaction to extend with authorization data
      */
     protected BaseTransactionWithUserReceipt(
             BaseTransactionClosed baseTransaction

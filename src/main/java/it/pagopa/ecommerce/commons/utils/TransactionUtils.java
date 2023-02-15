@@ -46,8 +46,8 @@ public class TransactionUtils {
      * Gets a transaction fee from a generic transaction
      *
      * @param transaction the transaction
-     * @return an {@link Optional} containing the transaction fee if the user
-     *         requested an authorization, empty otherwise
+     * @return an {@link java.util.Optional} containing the transaction fee if the
+     *         user requested an authorization, empty otherwise
      */
     public static Optional<Integer> getTransactionFee(BaseTransaction transaction) {
         if (transaction instanceof BaseTransactionWithRequestedAuthorization baseTransactionWithRequestedAuthorization) {

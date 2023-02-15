@@ -18,7 +18,6 @@ public final class TransactionClosureFailedEvent extends TransactionEvent<Void> 
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param data          event-specific data
      */
     public TransactionClosureFailedEvent(
             String transactionId
