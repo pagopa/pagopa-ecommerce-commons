@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent} to
+ * {@link TransactionClosedEvent} to
  * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed}.
  * Semantically this means that the transaction has recovered from the closure
  * error.
@@ -43,7 +43,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionClosureSentEvent closureSentEvent -> new TransactionClosed(
+            case TransactionClosedEvent closureSentEvent -> new TransactionClosed(
                     this,
                     closureSentEvent.getData()
             );

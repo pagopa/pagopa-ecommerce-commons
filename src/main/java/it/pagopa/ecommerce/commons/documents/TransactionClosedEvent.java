@@ -6,12 +6,13 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event generated when sending a payment receipt to a user.
+ * Business event corresponding to a transaction closure being sent. This action
+ * notifies Nodo that the transaction has been finalized.
  */
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionUserReceiptAddedEvent extends TransactionEvent<Void> {
+public final class TransactionClosedEvent extends TransactionEvent<Void> {
 
     /**
      * Convenience constructor which sets the creation date to now
@@ -19,9 +20,9 @@ public final class TransactionUserReceiptAddedEvent extends TransactionEvent<Voi
      * @param transactionId transaction unique id
      * @param data          event-specific data
      */
-    public TransactionUserReceiptAddedEvent(
+    public TransactionClosedEvent(
             String transactionId
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT, null);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSED_EVENT,null);
     }
 }

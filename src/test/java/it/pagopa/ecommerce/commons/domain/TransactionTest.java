@@ -144,7 +144,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -173,7 +173,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -270,8 +270,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         Flux<Object> events = Flux.just(
@@ -307,8 +307,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent authorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
@@ -354,8 +354,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         Flux<Object> events = Flux.just(
@@ -393,7 +393,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationFailedEvent authorizationFailedEvent = TransactionTestUtils
                 .transactionAuthorizationFailedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         Flux<Object> events = Flux.just(
@@ -431,7 +431,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationFailedEvent authorizationFailedEvent = TransactionTestUtils
                 .transactionAuthorizationFailedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         Flux<Object> events = Flux.just(
@@ -468,9 +468,9 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent authorizedEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
@@ -555,7 +555,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
@@ -587,7 +587,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
@@ -622,9 +622,9 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         Flux<Object> events = Flux.just(
@@ -725,7 +725,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
 
@@ -807,8 +807,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
@@ -850,8 +850,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent closureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.KO);
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
@@ -893,7 +893,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
         TransactionExpiredEvent expiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
@@ -955,7 +955,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -996,7 +996,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1020,8 +1020,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent transactionClosureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent transactionClosureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1045,8 +1045,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
-        TransactionClosureSentEvent transactionClosureSentEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent transactionAuthorizedEvent = TransactionTestUtils.transactionAuthorizedEvent();
+        TransactionClosedEvent transactionClosureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.KO);
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1070,9 +1070,9 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent authorizedEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizedEvent();
-        TransactionClosureSentEvent transactionClosureSentEvent = TransactionTestUtils
+        TransactionClosedEvent transactionClosureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.OK);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
@@ -1102,9 +1102,9 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizedEvent authorizedEvent = TransactionTestUtils
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizedEvent();
-        TransactionClosureSentEvent transactionClosureSentEvent = TransactionTestUtils
+        TransactionClosedEvent transactionClosureSentEvent = TransactionTestUtils
                 .transactionClosureSentEvent(ClosePaymentResponseDto.OutcomeEnum.KO);
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(TransactionStatusDto.NOTIFIED_FAILED);

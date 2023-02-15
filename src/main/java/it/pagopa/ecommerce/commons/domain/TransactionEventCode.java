@@ -9,31 +9,28 @@ public enum TransactionEventCode {
      * Activation event
      */
     TRANSACTION_ACTIVATED_EVENT("TRANSACTION_ACTIVATED_EVENT"),
-    /**
-     * Activation request event
-     */
-    TRANSACTION_ACTIVATION_REQUESTED_EVENT("TRANSACTION_ACTIVATION_REQUESTED_EVENT"),
+
     /**
      * Payment authorization request event
      */
     TRANSACTION_AUTHORIZATION_REQUESTED_EVENT("TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"),
     /**
-     * Transaction authorized
+     * Payment authorization process completed event.
      */
-    TRANSACTION_AUTHORIZED("TRANSACTION_AUTHORIZED"),
+    TRANSACTION_AUTHORIZATION_COMPLETED_EVENT("TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"),
     /**
-     * Transaction authorization failed
+     * Transaction closure OK event
      */
-    TRANSACTION_AUTHORIZATION_FAILED("TRANSACTION_AUTHORIZED"),
-    /**
-     * Transaction closure event
-     */
-    TRANSACTION_CLOSURE_SENT_EVENT("TRANSACTION_CLOSURE_SENT_EVENT"),
+    TRANSACTION_CLOSED_EVENT("TRANSACTION_CLOSED_EVENT"),
 
     /**
      * Error event when transaction closure fails
      */
     TRANSACTION_CLOSURE_ERROR_EVENT("TRANSACTION_CLOSURE_ERROR_EVENT"),
+    /**
+     * Transaction closure KO event
+     */
+    TRANSACTION_CLOSURE_FAILED_EVENT("TRANSACTION_CLOSURE_FAILED_EVENT"),
     /**
      * Event when transaction closure is retried
      */
@@ -54,7 +51,12 @@ public enum TransactionEventCode {
     /**
      * Event when transaction refund is retried
      */
-    TRANSACTION_REFUND_RETRIED_EVENT("TRANSACTION_REFUND_RETRIED_EVENT");
+    TRANSACTION_REFUND_RETRIED_EVENT("TRANSACTION_REFUND_RETRIED_EVENT"),
+    /**
+     * The transaction is canceled by user
+     */
+    TRANSACTION_USER_CANCELED_EVENT("TRANSACTION_USER_CANCELED_EVENT"),
+    ;
 
     private final String code;
 

@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply an
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizedEvent} to
+ * {@link TransactionAuthorizationCompletedEvent} to
  * get a {@link it.pagopa.ecommerce.commons.domain.TransactionAuthorized} or a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent}
  * to get a
@@ -44,7 +44,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionAuthorizedEvent authorizedEvent -> new TransactionAuthorized(this, authorizedEvent.getData());
+            case TransactionAuthorizationCompletedEvent authorizedEvent -> new TransactionAuthorized(this, authorizedEvent.getData());
             case TransactionAuthorizationFailedEvent authorizationFailedEvent -> new TransactionWithFailedAuthorization(this, authorizationFailedEvent);
             case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
             default -> this;

@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizedData;
 import it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  * <p>
  * To this class you can apply either a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent} to
+ * {@link TransactionClosedEvent} to
  * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed} or a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent} to
  * get a {@link it.pagopa.ecommerce.commons.domain.TransactionWithClosureError}
@@ -42,7 +42,7 @@ public final class TransactionAuthorized extends BaseTransactionAuthorized imple
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionClosureSentEvent closureSentEvent -> new TransactionClosed(
+            case TransactionClosedEvent closureSentEvent -> new TransactionClosed(
                     this,
                     closureSentEvent.getData()
             );

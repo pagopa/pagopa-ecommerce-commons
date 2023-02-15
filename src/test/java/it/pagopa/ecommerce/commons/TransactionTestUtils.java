@@ -129,8 +129,8 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
-        return new TransactionAuthorizedEvent(
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent() {
+        return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
                 new TransactionAuthorizedData("authorizationCode")
         );
@@ -143,7 +143,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorized transactionAuthorized(
-                                                              TransactionAuthorizedEvent authorizedEvent,
+                                                              TransactionAuthorizationCompletedEvent authorizedEvent,
                                                               TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionAuthorized(
@@ -164,7 +164,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureSentEvent transactionClosureSentEvent(
+    public static TransactionClosedEvent transactionClosureSentEvent(
                                                                           ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
     ) {
         TransactionStatusDto newStatus;
@@ -174,7 +174,7 @@ public class TransactionTestUtils {
             default -> throw new IllegalStateException("Unexpected value: " + closePaymentOutcome);
         }
 
-        return new TransactionClosureSentEvent(
+        return new TransactionClosedEvent(
                 TRANSACTION_ID,
                 new TransactionClosureSendData(closePaymentOutcome, newStatus)
         );
@@ -200,7 +200,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      TransactionClosureSentEvent closureSentEvent,
+                                                      TransactionClosedEvent closureSentEvent,
                                                       BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
         return new TransactionClosed(

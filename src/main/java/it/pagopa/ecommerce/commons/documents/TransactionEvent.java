@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString
-public abstract sealed class TransactionEvent<T> permits TransactionActivatedEvent,TransactionActivationRequestedEvent,TransactionAuthorizationRequestedEvent,TransactionAuthorizedEvent,TransactionAuthorizationFailedEvent,TransactionClosureErrorEvent,TransactionClosureSentEvent,TransactionExpiredEvent,TransactionRefundedEvent,TransactionUserReceiptAddedEvent,TransactionClosureRetriedEvent,TransactionRefundRetriedEvent {
+public abstract sealed class TransactionEvent<T> permits TransactionAuthorizationFailedEvent, TransactionActivatedEvent, TransactionAuthorizationCompletedEvent, TransactionAuthorizationRequestedEvent, TransactionClosedEvent, TransactionClosureErrorEvent, TransactionClosureFailedEvent, TransactionClosureRetriedEvent, TransactionExpiredEvent, TransactionRefundRetriedEvent, TransactionRefundedEvent, TransactionUserCanceledEvent, TransactionUserReceiptAddedEvent {
 
     @Id
     private String id;

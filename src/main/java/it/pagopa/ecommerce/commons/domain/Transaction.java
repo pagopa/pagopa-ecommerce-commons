@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 
 /**
  * <p>
@@ -55,12 +56,12 @@ import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
  * (e.g. if you have applied a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent
  * TransactionClosureErrorEvent} you can still apply a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent
+ * {@link TransactionClosedEvent
  * TransactionClosureSentEvent} afterwards)</li>
  * <li>Events in streams that do not follow the flow above are ignored (e.g. a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
  * TransactionActivatedEvent} after a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent
+ * {@link TransactionClosedEvent
  * TransactionClosureSentEvent})</li>
  * </ul>
  *

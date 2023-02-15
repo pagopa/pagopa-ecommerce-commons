@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.documents.TransactionAddReceiptData;
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see BaseTransaction
- * @see it.pagopa.ecommerce.commons.documents.TransactionClosureSentEvent
+ * @see TransactionClosedEvent
  *      TransactionClosureSentEvent
  */
 @ToString
