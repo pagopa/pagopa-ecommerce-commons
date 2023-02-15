@@ -61,6 +61,9 @@ createMachine(
             target: "REFUNDED",
           },
           CLOSURE_RETRIED: {},
+          CLOSED: {
+            target: "CLOSED",
+          },
         },
       },
       NOTIFIED: {
