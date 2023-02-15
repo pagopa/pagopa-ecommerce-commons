@@ -24,18 +24,17 @@ public class TransactionUtilsTest {
 
     List<TransactionStatusDto> transientStatusList = List.of(
             TransactionStatusDto.ACTIVATED,
-            TransactionStatusDto.AUTHORIZED,
             TransactionStatusDto.AUTHORIZATION_REQUESTED,
-            TransactionStatusDto.AUTHORIZATION_FAILED,
-            TransactionStatusDto.CLOSURE_FAILED,
-            TransactionStatusDto.CLOSED
+            TransactionStatusDto.AUTHORIZATION_COMPLETED,
+            TransactionStatusDto.CLOSURE_ERROR,
+            TransactionStatusDto.CLOSED,
+            TransactionStatusDto.EXPIRED
     );
 
     List<TransactionStatusDto> refaundableStatusList = List.of(
-            TransactionStatusDto.AUTHORIZED,
-            TransactionStatusDto.AUTHORIZATION_REQUESTED,
-            TransactionStatusDto.AUTHORIZATION_FAILED,
-            TransactionStatusDto.CLOSURE_FAILED
+            TransactionStatusDto.CLOSED,
+            TransactionStatusDto.CLOSURE_ERROR,
+            TransactionStatusDto.EXPIRED
     );
 
     @Test

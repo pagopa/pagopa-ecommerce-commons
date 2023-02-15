@@ -33,6 +33,8 @@ public class TransactionTestUtils {
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
 
     public static final String AUTHORIZATION_CODE = "authorizationCode";
+
+    public static final String AUTHORIZATION_OUTCOME = "authorizationOutcome";
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
@@ -107,6 +109,14 @@ public class TransactionTestUtils {
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID
                 )
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent() {
+        return new TransactionAuthorizationCompletedEvent(
+                TRANSACTION_ID,
+                new TransactionAuthorizedData(AUTHORIZATION_CODE, AUTHORIZATION_OUTCOME)
         );
     }
 
