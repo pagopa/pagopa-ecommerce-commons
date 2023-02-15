@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * Transaction expired before requesting authorization.
- * This is a final state so any event applied to this class will be discarded
+ * Transaction expired before requesting authorization. This is a final state so
+ * any event applied to this class will be discarded
  * </p>
  *
  * @see Transaction
@@ -39,7 +39,6 @@ public final class TransactionExpiredNotAuthorized extends BaseTransaction imple
                 baseTransaction.getClientId()
         );
     }
-
 
     /**
      * {@inheritDoc}

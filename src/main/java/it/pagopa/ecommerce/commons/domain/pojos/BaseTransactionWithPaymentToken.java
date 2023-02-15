@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  *
  * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
  * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- * TransactionActivatedEvent
+ *      TransactionActivatedEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)

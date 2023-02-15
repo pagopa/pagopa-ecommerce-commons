@@ -14,9 +14,8 @@ import lombok.EqualsAndHashCode;
  * Transaction with a completed authorization.
  * </p>
  * <p>
- * To this class you can apply either a
- * {@link TransactionClosedEvent} to
- * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed} or a
+ * To this class you can apply either a {@link TransactionClosedEvent} to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionClosed} or a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent} to
  * get a {@link it.pagopa.ecommerce.commons.domain.TransactionWithClosureError}
  * </p>

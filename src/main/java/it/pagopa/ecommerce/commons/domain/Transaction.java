@@ -56,12 +56,10 @@ import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
  * (e.g. if you have applied a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent
  * TransactionClosureErrorEvent} you can still apply a
- * {@link TransactionClosedEvent
- * TransactionClosureSentEvent} afterwards)</li>
+ * {@link TransactionClosedEvent TransactionClosureSentEvent} afterwards)</li>
  * <li>Events in streams that do not follow the flow above are ignored (e.g. a
  * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- * TransactionActivatedEvent} after a
- * {@link TransactionClosedEvent
+ * TransactionActivatedEvent} after a {@link TransactionClosedEvent
  * TransactionClosureSentEvent})</li>
  * </ul>
  * <p>
@@ -69,7 +67,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
  * information on how to retrieve the reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction, TransactionActivated, TransactionAuthorizationCompleted, TransactionClosed, TransactionExpired, TransactionExpiredNotAuthorized, TransactionRefunded, TransactionUnauthorized, TransactionUserCanceled, TransactionWithClosureError, TransactionWithCompletedAuthorization, TransactionWithRequestedAuthorization, TransactionWithUserReceipt {
+public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithClosureError,TransactionWithCompletedAuthorization,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
     /**
      * Applies an event to a transaction
      *

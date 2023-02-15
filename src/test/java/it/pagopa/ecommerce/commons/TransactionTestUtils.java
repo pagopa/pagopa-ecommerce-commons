@@ -38,7 +38,6 @@ public class TransactionTestUtils {
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
-
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
@@ -84,8 +83,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithRequestedAuthorization transactionWithRequestedAuthorization(
-            TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
-            TransactionActivated transactionActivated
+                                                                                              TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
+                                                                                              TransactionActivated transactionActivated
     ) {
         return new TransactionWithRequestedAuthorization(
                 transactionActivated,
@@ -130,8 +129,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationCompleted transactionAuthorized(
-            TransactionAuthorizationCompletedEvent authorizedEvent,
-            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+                                                                          TransactionAuthorizationCompletedEvent authorizedEvent,
+                                                                          TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
@@ -139,10 +138,8 @@ public class TransactionTestUtils {
         );
     }
 
-
     @Nonnull
-    public static TransactionClosedEvent transactionClosedEvent(
-    ) {
+    public static TransactionClosedEvent transactionClosedEvent() {
         return new TransactionClosedEvent(
                 TRANSACTION_ID
         );
@@ -157,8 +154,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
-            TransactionClosureErrorEvent transactionClosureErrorEvent,
-            BaseTransactionWithCompletedAuthorization transaction
+                                                                          TransactionClosureErrorEvent transactionClosureErrorEvent,
+                                                                          BaseTransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
@@ -168,7 +165,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-            BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
+                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
         return new TransactionClosed(
                 transactionWithCompletedAuthorization
@@ -177,7 +174,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceipt transactionWithUserReceipt(
-            BaseTransactionClosed baseTransactionClosed
+                                                                        BaseTransactionClosed baseTransactionClosed
     ) {
         return new TransactionWithUserReceipt(
                 baseTransactionClosed
@@ -185,8 +182,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-    ) {
+    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent() {
         return new TransactionUserReceiptAddedEvent(
                 TRANSACTION_ID
         );
@@ -194,36 +190,36 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-            TransactionExpiredEvent expiredEvent,
-            BaseTransaction transaction
+                                                        TransactionExpiredEvent expiredEvent,
+                                                        BaseTransaction transaction
     ) {
         return new TransactionExpired(transaction, expiredEvent);
     }
 
     @Nonnull
     public static TransactionRefunded transactionRefunded(
-            BaseTransaction transaction
+                                                          BaseTransaction transaction
     ) {
         return new TransactionRefunded(transaction);
     }
 
     @Nonnull
     public static TransactionUnauthorized transactionUnauthorized(
-            BaseTransaction transaction
+                                                                  BaseTransaction transaction
     ) {
         return new TransactionUnauthorized(transaction);
     }
 
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
-            BaseTransaction transaction
+                                                                  BaseTransaction transaction
     ) {
         return new TransactionUserCanceled(transaction);
     }
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-            BaseTransaction transaction
+                                                                                  BaseTransaction transaction
     ) {
         return new TransactionExpiredNotAuthorized(transaction);
     }
@@ -237,16 +233,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionUserCanceledEvent transactionUserCanceledEvent(
-    ) {
+    public static TransactionUserCanceledEvent transactionUserCanceledEvent() {
         return new TransactionUserCanceledEvent(
                 TRANSACTION_ID
         );
     }
 
     @Nonnull
-    public static TransactionClosureFailedEvent transactionClosureFailedEvent(
-    ) {
+    public static TransactionClosureFailedEvent transactionClosureFailedEvent() {
         return new TransactionClosureFailedEvent(
                 TRANSACTION_ID
         );
@@ -260,7 +254,6 @@ public class TransactionTestUtils {
         );
     }
 
-
     @Nonnull
     public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
         return new TransactionExpiredEvent(
@@ -271,8 +264,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static Transaction transactionDocument(
-            TransactionStatusDto transactionStatus,
-            ZonedDateTime creationDateTime
+                                                  TransactionStatusDto transactionStatus,
+                                                  ZonedDateTime creationDateTime
     ) {
         return new Transaction(
                 TRANSACTION_ID,

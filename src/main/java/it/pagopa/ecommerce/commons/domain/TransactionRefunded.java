@@ -7,8 +7,9 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * Transaction refunded. This state means that the transaction is not completed successfully requiring a refund to be performed to the user
- * This is a final state so any event applied to this class will be discarded
+ * Transaction refunded. This state means that the transaction is not completed
+ * successfully requiring a refund to be performed to the user This is a final
+ * state so any event applied to this class will be discarded
  * </p>
  *
  * @see Transaction
@@ -39,7 +40,6 @@ public final class TransactionRefunded extends BaseTransaction implements Transa
                 baseTransaction.getClientId()
         );
     }
-
 
     /**
      * {@inheritDoc}

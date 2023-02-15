@@ -23,7 +23,7 @@ import static java.time.ZonedDateTime.now;
 @Generated
 @NoArgsConstructor
 @ToString
-public abstract sealed class TransactionEvent<T> permits TransactionActivatedEvent, TransactionAuthorizationCompletedEvent, TransactionAuthorizationRequestedEvent, TransactionClosedEvent, TransactionClosureErrorEvent, TransactionClosureFailedEvent, TransactionClosureRetriedEvent, TransactionExpiredEvent, TransactionRefundRetriedEvent, TransactionRefundedEvent, TransactionUserCanceledEvent, TransactionUserReceiptAddedEvent {
+public abstract sealed class TransactionEvent<T> permits TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosedEvent,TransactionClosureErrorEvent,TransactionClosureFailedEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddedEvent {
 
     @Id
     private String id;

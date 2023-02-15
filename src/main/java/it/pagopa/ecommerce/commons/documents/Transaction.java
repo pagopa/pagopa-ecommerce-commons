@@ -63,8 +63,8 @@ public class Transaction {
          * @param enumValue - the enumeration value to be converted to {@link ClientId}
          *                  enumeration instance
          * @return the converted {@link ClientId} enumeration instance or
-         * {@link ClientId#UNKNOWN} if the input value is not assignable to an
-         * enumeration value
+         *         {@link ClientId#UNKNOWN} if the input value is not assignable to an
+         *         enumeration value
          */
         public static ClientId fromString(String enumValue) {
             return lookupMap.getOrDefault(enumValue, UNKNOWN);
@@ -82,7 +82,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -109,7 +109,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -138,7 +138,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(

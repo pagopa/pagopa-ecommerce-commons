@@ -13,12 +13,10 @@ import lombok.EqualsAndHashCode;
  * Transaction with a requested authorization.
  * </p>
  * <p>
- * To this class you can apply an
- * {@link TransactionAuthorizationCompletedEvent} to
- * get a {@link TransactionAuthorizationCompleted} or a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent}
- * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionExpired}
+ * To this class you can apply an {@link TransactionAuthorizationCompletedEvent}
+ * to get a {@link TransactionAuthorizationCompleted} or a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent} to get
+ * a {@link it.pagopa.ecommerce.commons.domain.TransactionExpired}
  * </p>
  *
  * @see Transaction

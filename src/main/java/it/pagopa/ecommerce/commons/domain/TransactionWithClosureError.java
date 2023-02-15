@@ -14,11 +14,9 @@ import lombok.EqualsAndHashCode;
  * Transaction with a closure error.
  * </p>
  * <p>
- * To this class you can apply a
- * {@link TransactionClosedEvent} to
- * get a {@link it.pagopa.ecommerce.commons.domain.TransactionClosed}.
- * Semantically this means that the transaction has recovered from the closure
- * error.
+ * To this class you can apply a {@link TransactionClosedEvent} to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionClosed}. Semantically
+ * this means that the transaction has recovered from the closure error.
  * </p>
  *
  * @see Transaction

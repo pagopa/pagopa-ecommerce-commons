@@ -7,7 +7,8 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * Transaction canceled by user. This is a final state, so any event applied to this class will be discarded
+ * Transaction canceled by user. This is a final state, so any event applied to
+ * this class will be discarded
  * </p>
  *
  * @see Transaction
@@ -38,7 +39,6 @@ public final class TransactionUserCanceled extends BaseTransaction implements Tr
                 baseTransaction.getClientId()
         );
     }
-
 
     /**
      * {@inheritDoc}

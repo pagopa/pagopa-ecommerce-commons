@@ -14,15 +14,13 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see BaseTransaction
- * @see TransactionClosedEvent
- * TransactionClosureSentEvent
+ * @see TransactionClosedEvent TransactionClosureSentEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public abstract class BaseTransactionWithUserReceipt extends BaseTransactionClosed {
-
 
     /**
      * Main constructor.

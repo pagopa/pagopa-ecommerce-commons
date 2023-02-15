@@ -23,6 +23,6 @@ public final class TransactionClosureFailedEvent extends TransactionEvent<Void> 
     public TransactionClosureFailedEvent(
             String transactionId
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT,null);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT, null);
     }
 }

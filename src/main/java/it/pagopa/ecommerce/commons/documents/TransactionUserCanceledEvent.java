@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
- /**
+/**
  * Business event generated when the user cancel the current payment process
  */
 @Document(collection = "eventstore")

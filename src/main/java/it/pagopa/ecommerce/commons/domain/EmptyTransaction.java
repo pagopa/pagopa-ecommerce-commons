@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
  * to.
  * </p>
  * <p>
- * To this class you can apply
- * a {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent}
- * (and get a {@link it.pagopa.ecommerce.commons.domain.TransactionActivated})
+ * To this class you can apply a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent} (and
+ * get a {@link it.pagopa.ecommerce.commons.domain.TransactionActivated})
  * </p>
  *
  * @see Transaction
@@ -42,8 +42,6 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getClientId()
         );
     }
-
-
 
     /** {@inheritDoc} */
     @Override

@@ -40,7 +40,6 @@ public final class TransactionUnauthorized extends BaseTransaction implements Tr
         );
     }
 
-
     /**
      * {@inheritDoc}
      */

@@ -82,7 +82,6 @@ class TransactionDocumentTest {
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
     }
 
-
     @Test
     void shouldConvertTransactionClientIdEnumerationCorrectly() {
         assertEquals(Transaction.ClientId.fromString("").toString(), Transaction.ClientId.UNKNOWN.toString());

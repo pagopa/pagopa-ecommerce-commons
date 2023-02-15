@@ -23,6 +23,6 @@ public final class TransactionClosedEvent extends TransactionEvent<Void> {
     public TransactionClosedEvent(
             String transactionId
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSED_EVENT,null);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSED_EVENT, null);
     }
 }
