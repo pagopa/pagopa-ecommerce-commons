@@ -235,9 +235,9 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionUserCanceledEvent transactionUserCanceledEvent(
+    public static TransactionClosureFailedEvent transactionClosureFailedEvent(
     ) {
-        return new TransactionUserCanceledEvent(
+        return new TransactionClosureFailedEvent(
                 TRANSACTION_ID
         );
     }
