@@ -31,13 +31,20 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
         super(baseTransaction, event.getData());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
+        if (event instanceof TransactionRefunded) {
+            return new TransactionRefunded(this);
+        }
         return this;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionStatusDto getStatus() {
         return TransactionStatusDto.EXPIRED;

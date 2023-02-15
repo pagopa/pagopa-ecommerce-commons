@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAddReceiptData;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -27,10 +26,9 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithUserRec
      * @param transactionAddReceiptData receipt data
      */
     public TransactionWithUserReceipt(
-            BaseTransactionClosed baseTransaction,
-            TransactionAddReceiptData transactionAddReceiptData
+            BaseTransactionClosed baseTransaction
     ) {
-        super(baseTransaction, transactionAddReceiptData);
+        super(baseTransaction);
     }
 
     @Override
@@ -40,6 +38,6 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithUserRec
 
     @Override
     public TransactionStatusDto getStatus() {
-        return this.getTransactionAddReceiptData().getNewTransactionStatus();
+        return TransactionStatusDto.NOTIFIED;
     }
 }

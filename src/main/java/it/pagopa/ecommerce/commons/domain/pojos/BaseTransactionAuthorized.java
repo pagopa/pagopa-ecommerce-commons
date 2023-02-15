@@ -47,7 +47,7 @@ public abstract class BaseTransactionAuthorized extends BaseTransactionWithCompl
                 baseTransaction,
                 new TransactionAuthorizationStatusUpdateData(
                         AuthorizationResultDto.OK,
-                        TransactionStatusDto.AUTHORIZED
+                        TransactionStatusDto.AUTHORIZATION_COMPLETED
                 )
         );
         this.transactionAuthorizedData = transactionAuthorizedData;

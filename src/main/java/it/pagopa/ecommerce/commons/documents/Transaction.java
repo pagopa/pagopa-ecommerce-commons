@@ -1,8 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
-import it.pagopa.ecommerce.commons.domain.PaymentToken;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
-import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -11,13 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Base persistence view for transactions.
- *
  */
 @Data
 @Document(collection = "view")
@@ -60,12 +60,11 @@ public class Transaction {
         );
 
         /**
-         *
          * @param enumValue - the enumeration value to be converted to {@link ClientId}
          *                  enumeration instance
          * @return the converted {@link ClientId} enumeration instance or
-         *         {@link ClientId#UNKNOWN} if the input value is not assignable to an
-         *         enumeration value
+         * {@link ClientId#UNKNOWN} if the input value is not assignable to an
+         * enumeration value
          */
         public static ClientId fromString(String enumValue) {
             return lookupMap.getOrDefault(enumValue, UNKNOWN);
@@ -83,7 +82,7 @@ public class Transaction {
      * @param email         user email where the payment receipt will be sent to
      * @param status        transaction status
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -110,7 +109,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
 
     @Deprecated(forRemoval = true)
@@ -139,7 +138,7 @@ public class Transaction {
      * @param status        transaction status
      * @param creationDate  transaction creation date
      * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
+     * {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
      */
     @Deprecated(forRemoval = true)
     public Transaction(
@@ -213,32 +212,4 @@ public class Transaction {
         );
     }
 
-    /**
-     * Conversion constructor from a
-     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested} to
-     * a Transaction
-     *
-     * @param transaction the transaction
-     * @return a transaction document with the same data
-     */
-    public static Transaction from(TransactionActivationRequested transaction) {
-        return new Transaction(
-                transaction.getTransactionId().value().toString(),
-                transaction.getPaymentNotices().stream().filter(Objects::nonNull)
-                        .map(
-                                n -> new PaymentNotice(
-                                        Optional.ofNullable(n.paymentToken()).orElse(new PaymentToken(null)).value(),
-                                        n.rptId().value(),
-                                        n.transactionDescription().value(),
-                                        n.transactionAmount().value(),
-                                        n.paymentContextCode().value()
-                                )
-                        ).collect(Collectors.toList()),
-                null,
-                transaction.getEmail().value(),
-                transaction.getStatus(),
-                transaction.getClientId(),
-                transaction.getCreationDate().toString()
-        );
-    }
 }

@@ -64,12 +64,12 @@ import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
  * {@link TransactionClosedEvent
  * TransactionClosureSentEvent})</li>
  * </ul>
- *
+ * <p>
  * See also {@link it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction} for
  * information on how to retrieve the reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionActivationRequested,TransactionWithRequestedAuthorization,TransactionAuthorized,TransactionWithFailedAuthorization,TransactionWithCompletedAuthorization,TransactionClosed,TransactionWithClosureError,TransactionWithUserReceipt,TransactionExpired {
+public sealed interface Transaction permits EmptyTransaction, TransactionActivated, TransactionAuthorizationCompleted, TransactionClosed, TransactionExpired, TransactionExpiredNotAuthorized, TransactionRefunded, TransactionUnauthorized, TransactionUserCanceled, TransactionWithClosureError, TransactionWithCompletedAuthorization, TransactionWithRequestedAuthorization, TransactionWithUserReceipt {
     /**
      * Applies an event to a transaction
      *

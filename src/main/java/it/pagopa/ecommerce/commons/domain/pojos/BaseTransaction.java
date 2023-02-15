@@ -48,7 +48,7 @@ import lombok.experimental.FieldDefaults;
  * the same way you can get other attributes by casting the transaction to other
  * POJOs.
  *
- * @see it.pagopa.ecommerce.commons.documents.TransactionActivationRequestedEvent
+ * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
  *      TransactionActivationRequestedEvent
  */
 @ToString

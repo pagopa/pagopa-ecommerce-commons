@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -16,14 +15,13 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see BaseTransaction
- * @see it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent
+ * @see it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public abstract class BaseTransactionWithFailedAuthorization extends BaseTransactionWithCompletedAuthorization {
-    private final TransactionAuthorizationFailedEvent event;
 
     /**
      * Primary constructor
@@ -32,17 +30,15 @@ public abstract class BaseTransactionWithFailedAuthorization extends BaseTransac
      * @param event           failed authorization event
      */
     protected BaseTransactionWithFailedAuthorization(
-            BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationFailedEvent event
+            BaseTransactionWithRequestedAuthorization baseTransaction
     ) {
         super(
                 baseTransaction,
                 new TransactionAuthorizationStatusUpdateData(
                         AuthorizationResultDto.KO,
-                        TransactionStatusDto.AUTHORIZATION_FAILED
+                        TransactionStatusDto.UNAUTHORIZED
                 )
         );
 
-        this.event = event;
     }
 }

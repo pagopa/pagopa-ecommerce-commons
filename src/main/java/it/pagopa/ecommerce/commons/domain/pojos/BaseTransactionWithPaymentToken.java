@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
  *
  * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
  * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- *      TransactionActivatedEvent
+ * TransactionActivatedEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -62,6 +64,24 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
+        );
+        this.transactionActivatedData = transactionActivatedData;
+    }
+
+    protected BaseTransactionWithPaymentToken(
+            TransactionId transactionId,
+            List<PaymentNotice> paymentNotices,
+            Email email,
+            ZonedDateTime creationDate,
+            it.pagopa.ecommerce.commons.documents.Transaction.ClientId clientId,
+            TransactionActivatedData transactionActivatedData
+    ) {
+        super(
+                transactionId,
+                paymentNotices,
+                email,
+                creationDate,
+                clientId
         );
         this.transactionActivatedData = transactionActivatedData;
     }

@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionClosureSendData;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
@@ -32,25 +32,30 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
      * @param closureSentEventData data related to closure sending event
      */
     public TransactionClosed(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
-            TransactionClosureSendData closureSentEventData
+            BaseTransactionWithCompletedAuthorization baseTransaction
     ) {
-        super(baseTransaction, closureSentEventData);
+        super(baseTransaction);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent e -> new TransactionWithUserReceipt(this, e.getData());
-            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
+            case TransactionUserReceiptAddedEvent e -> new TransactionWithUserReceipt(this);
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
+            case TransactionRefundedEvent transactionRefundedEvent -> new TransactionRefunded(this);
             default -> this;
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionStatusDto getStatus() {
-        return this.getTransactionClosureSendData().getNewTransactionStatus();
+        return TransactionStatusDto.CLOSED;
     }
 }

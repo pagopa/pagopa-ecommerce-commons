@@ -8,13 +8,11 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class TransactionTestUtils {
 
@@ -33,27 +31,11 @@ public class TransactionTestUtils {
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
+
+    public static final String AUTHORIZATION_CODE = "authorizationCode";
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
-    @Nonnull
-    public static TransactionActivationRequested transactionActivationRequested(String creationDate) {
-        return new TransactionActivationRequested(
-                new TransactionId(UUID.fromString(TRANSACTION_ID)),
-                Arrays.asList(
-                        new PaymentNotice(
-                                new PaymentToken(null),
-                                new RptId(RPT_ID),
-                                new TransactionAmount(AMOUNT),
-                                new TransactionDescription(DESCRIPTION),
-                                new PaymentContextCode(PAYMENT_CONTEXT_CODE)
-                        )
-                ),
-                new Email(EMAIL),
-                ZonedDateTime.parse(creationDate),
-                Transaction.ClientId.UNKNOWN
-        );
-    }
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -100,8 +82,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithRequestedAuthorization transactionWithRequestedAuthorization(
-                                                                                              TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
-                                                                                              TransactionActivated transactionActivated
+            TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
+            TransactionActivated transactionActivated
     ) {
         return new TransactionWithRequestedAuthorization(
                 transactionActivated,
@@ -129,54 +111,30 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent() {
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizedEvent(String authorizationOutcome) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizedData("authorizationCode")
+                new TransactionAuthorizedData(AUTHORIZATION_CODE, authorizationOutcome)
         );
     }
 
     @Nonnull
-    public static TransactionAuthorizationFailedEvent transactionAuthorizationFailedEvent() {
-        return new TransactionAuthorizationFailedEvent(TRANSACTION_ID);
-    }
-
-    @Nonnull
-    public static TransactionAuthorized transactionAuthorized(
-                                                              TransactionAuthorizationCompletedEvent authorizedEvent,
-                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    public static TransactionAuthorizationCompleted transactionAuthorized(
+            TransactionAuthorizationCompletedEvent authorizedEvent,
+            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
-        return new TransactionAuthorized(
+        return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
                 authorizedEvent.getData()
         );
     }
 
-    @Nonnull
-    public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
-                                                                                        TransactionAuthorizationFailedEvent authorizationFailedEvent,
-                                                                                        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
-    ) {
-        return new TransactionWithFailedAuthorization(
-                transactionWithRequestedAuthorization,
-                authorizationFailedEvent
-        );
-    }
 
     @Nonnull
-    public static TransactionClosedEvent transactionClosureSentEvent(
-                                                                          ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
+    public static TransactionClosedEvent transactionClosedEvent(
     ) {
-        TransactionStatusDto newStatus;
-        switch (closePaymentOutcome) {
-            case OK -> newStatus = TransactionStatusDto.CLOSED;
-            case KO -> newStatus = TransactionStatusDto.CLOSURE_FAILED;
-            default -> throw new IllegalStateException("Unexpected value: " + closePaymentOutcome);
-        }
-
         return new TransactionClosedEvent(
-                TRANSACTION_ID,
-                new TransactionClosureSendData(closePaymentOutcome, newStatus)
+                TRANSACTION_ID
         );
     }
 
@@ -189,8 +147,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
-                                                                          TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          BaseTransactionWithCompletedAuthorization transaction
+            TransactionClosureErrorEvent transactionClosureErrorEvent,
+            BaseTransactionWithCompletedAuthorization transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
@@ -200,48 +158,64 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      TransactionClosedEvent closureSentEvent,
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
+            BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
     ) {
         return new TransactionClosed(
-                transactionWithCompletedAuthorization,
-                closureSentEvent.getData()
+                transactionWithCompletedAuthorization
         );
     }
 
     @Nonnull
     public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent,
-                                                                        BaseTransactionClosed baseTransactionClosed
+            BaseTransactionClosed baseTransactionClosed
     ) {
         return new TransactionWithUserReceipt(
-                baseTransactionClosed,
-                transactionUserReceiptAddedEvent.getData()
+                baseTransactionClosed
         );
     }
 
     @Nonnull
     public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-                                                                                    TransactionStatusDto transactionStatusDto
     ) {
         return new TransactionUserReceiptAddedEvent(
-                TRANSACTION_ID,
-                new TransactionAddReceiptData(
-                        Stream.of(transactionStatusDto)
-                                .filter(
-                                        transactionStatus -> transactionStatus.equals(TransactionStatusDto.NOTIFIED)
-                                                || transactionStatus.equals(TransactionStatusDto.NOTIFIED_FAILED)
-                                ).findFirst().orElseThrow()
-                )
+                TRANSACTION_ID
         );
     }
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-                                                        TransactionExpiredEvent expiredEvent,
-                                                        BaseTransaction transaction
+            TransactionExpiredEvent expiredEvent,
+            BaseTransaction transaction
     ) {
         return new TransactionExpired(transaction, expiredEvent);
+    }
+
+    @Nonnull
+    public static TransactionRefunded transactionRefunded(
+            BaseTransaction transaction
+    ) {
+        return new TransactionRefunded(transaction);
+    }
+
+    @Nonnull
+    public static TransactionUnauthorized transactionUnauthorized(
+            BaseTransaction transaction
+    ) {
+        return new TransactionUnauthorized(transaction);
+    }
+
+    @Nonnull
+    public static TransactionUserCanceled transactionUserCanceled(
+            BaseTransaction transaction
+    ) {
+        return new TransactionUserCanceled(transaction);
+    }
+
+    @Nonnull
+    public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
+            BaseTransaction transaction
+    ) {
+        return new TransactionExpiredNotAuthorized(transaction);
     }
 
     @Nonnull
@@ -253,6 +227,22 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionUserCanceledEvent transactionUserCanceledEvent(
+    ) {
+        return new TransactionUserCanceledEvent(
+                TRANSACTION_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionUserCanceledEvent transactionUserCanceledEvent(
+    ) {
+        return new TransactionUserCanceledEvent(
+                TRANSACTION_ID
+        );
+    }
+
+    @Nonnull
     public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
         return new TransactionClosureRetriedEvent(
                 TRANSACTION_ID,
@@ -260,28 +250,6 @@ public class TransactionTestUtils {
         );
     }
 
-    @Nonnull
-    public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
-        return new TransactionActivationRequestedEvent(
-                TRANSACTION_ID,
-                ZonedDateTime.now().toString(),
-                new TransactionActivationRequestedData(
-                        Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
-                                        null,
-                                        RPT_ID,
-                                        DESCRIPTION,
-                                        AMOUNT,
-                                        PAYMENT_CONTEXT_CODE
-                                )
-                        ),
-                        EMAIL,
-                        FAULT_CODE,
-                        FAULT_CODE_STRING,
-                        Transaction.ClientId.UNKNOWN
-                )
-        );
-    }
 
     @Nonnull
     public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
@@ -293,8 +261,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static Transaction transactionDocument(
-                                                  TransactionStatusDto transactionStatus,
-                                                  ZonedDateTime creationDateTime
+            TransactionStatusDto transactionStatus,
+            ZonedDateTime creationDateTime
     ) {
         return new Transaction(
                 TRANSACTION_ID,
