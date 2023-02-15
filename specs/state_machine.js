@@ -1,4 +1,3 @@
-/* State machine defined via xstate library. Viewable on stately.ai/viz */
 import { createMachine, assign } from "xstate";
 
 createMachine(
@@ -8,35 +7,22 @@ createMachine(
     states: {
       AUTH_REQUESTED: {
         on: {
-          AUTHORIZED: {
-            target: "AUTHORIZED",
-          },
-          AUTHORIZATION_FAILED: {
-            target: "AUTHORIZATION_FAILED",
+          AUTHORIZATION_COMPLETED: {
+            target: "AUTHORIZATION_COMPLETED",
           },
           EXPIRE: {
             target: "EXPIRED",
           },
         },
       },
-      AUTHORIZED: {
-        entry: assign({ previously_authorized: true }),
+      AUTHORIZATION_COMPLETED: {
+        entry: assign({ auth_outcome: "KO" }),
         on: {
-          CLOSURE_SENT: {
+          CLOSED: {
             target: "CLOSED",
           },
-          CLOSURE_ERROR: {
-            target: "CLOSURE_ERROR",
-          },
-          EXPIRE: {
-            target: "EXPIRED",
-          },
-        },
-      },
-      AUTHORIZATION_FAILED: {
-        on: {
           CLOSURE_FAILED: {
-            target: "CLOSURE_FAILED",
+            target: "UNAUTHORIZED",
           },
           CLOSURE_ERROR: {
             target: "CLOSURE_ERROR",
@@ -47,20 +33,11 @@ createMachine(
         },
       },
       CLOSED: {
+        entry: assign({ closepayment_outcome: "KO" }),
         on: {
-          ADD_USER_RECEIPT_OK: {
+          ADD_USER_RECEIPT: {
             target: "NOTIFIED",
           },
-          EXPIRE: {
-            target: "EXPIRED",
-          },
-          ADD_USER_RECEIPT_KO: {
-            target: "NOTIFIED_FAILED",
-          },
-        },
-      },
-      CLOSURE_FAILED: {
-        on: {
           EXPIRE: {
             target: "EXPIRED",
           },
@@ -68,6 +45,12 @@ createMachine(
             target: "REFUNDED",
           },
         },
+      },
+      CANCELED: {
+        type: "final",
+      },
+      UNAUTHORIZED: {
+        type: "final",
       },
       CLOSURE_ERROR: {
         on: {
@@ -76,9 +59,6 @@ createMachine(
           },
           REFUND: {
             target: "REFUNDED",
-          },
-          CLOSURE_SENT: {
-            target: "CLOSED",
           },
           CLOSURE_RETRIED: {},
         },
@@ -92,7 +72,10 @@ createMachine(
             target: "AUTH_REQUESTED",
           },
           EXPIRE: {
-            target: "EXPIRED",
+            target: "EXPIRED_NOT_AUTHORIZED",
+          },
+          USER_CANCELED: {
+            target: "CANCELED",
           },
         },
       },
@@ -100,24 +83,32 @@ createMachine(
         on: {
           REFUND: {
             target: "REFUNDED",
-            cond: "previously_authorized",
           },
         },
+      },
+      EXPIRED_NOT_AUTHORIZED: {
+        type: "final",
       },
       REFUNDED: {
         type: "final",
       },
-      NOTIFIED_FAILED: {
-        type: "final",
-      },
     },
-    context: { previously_authorized: false },
+    context: {
+      auth_requested: false,
+      closepayment_outcome: null,
+      auth_outcome: null,
+    },
     predictableActionArguments: true,
     preserveActionOrder: true,
   },
   {
     guards: {
-      previously_authorized: (context, event) => context.previously_authorized,
+      auth_requested: (context, event) => context.auth_requested,
+      closepayment_outcome_ok: (context, event) =>
+        context.closepayment_outcome == "OK",
+      closepayment_outcome_ko: (context, event) =>
+        context.closepayment_outcome == "KO",
+      auth_outcome_ok: (context, event) => context.auth_outcome == "OK",
     },
   }
 );
