@@ -1,10 +1,14 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.*;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionAuthorized;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
@@ -18,36 +22,46 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionAuthorized
+ * @see BaseTransactionWithCompletedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionAuthorizationCompleted extends BaseTransactionAuthorized implements Transaction {
+@ToString
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+public final class TransactionAuthorizationCompleted extends BaseTransactionWithCompletedAuthorization
+        implements Transaction {
+
+    TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent;
+
     /**
      * Primary constructor
      *
-     * @param baseTransaction           base transaction
-     * @param transactionAuthorizedData transaction authorization data
+     * @param baseTransaction                        base transaction
+     * @param transactionAuthorizationCompletedEvent the transaction authorization
+     *                                               requested event
      */
     public TransactionAuthorizationCompleted(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizedData transactionAuthorizedData
+            TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent
     ) {
-        super(baseTransaction, transactionAuthorizedData);
+        super(baseTransaction, transactionAuthorizationCompletedEvent.getData());
+        this.transactionAuthorizationCompletedEvent = transactionAuthorizationCompletedEvent;
     }
 
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
             case TransactionClosedEvent closureSentEvent -> new TransactionClosed(
-                    this
-            );
+                    this,
+                    closureSentEvent);
             case TransactionClosureErrorEvent closureErrorEvent -> new TransactionWithClosureError(
                     this,
                     closureErrorEvent
             );
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionClosureFailedEvent transactionClosureFailedEvent -> new TransactionUnauthorized(this);
+            case TransactionClosureFailedEvent transactionClosureFailedEvent ->
+                    new TransactionUnauthorized(this, transactionClosureFailedEvent);
             default -> this;
         };
     }

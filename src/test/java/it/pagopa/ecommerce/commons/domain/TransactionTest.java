@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -145,7 +146,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent("00");
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -235,7 +236,8 @@ class TransactionTest {
 
         TransactionClosed expected = TransactionTestUtils.transactionClosed(
 
-                transactionAuthorizationCompleted
+                transactionAuthorizationCompleted,
+                closureSentEvent
         );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -279,11 +281,13 @@ class TransactionTest {
                 );
         TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
 
-                transactionAuthorizationCompleted
+                transactionAuthorizationCompleted,
+                closureSentEvent
         );
         TransactionWithUserReceipt expected = TransactionTestUtils.transactionWithUserReceipt(
 
-                transactionClosed
+                transactionClosed,
+                transactionUserReceiptAddedEvent
         );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -323,7 +327,8 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
         TransactionClosed expected = TransactionTestUtils.transactionClosed(
-                transactionAuthorizationCompleted
+                transactionAuthorizationCompleted,
+                closureSentEvent
         );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -365,11 +370,13 @@ class TransactionTest {
                 .transactionAuthorizationCompleted(authorizedEvent, transactionWithRequestedAuthorization);
         TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
 
-                transactionWithCompletedAuthorization
+                transactionWithCompletedAuthorization,
+                closureSentEvent
         );
         TransactionWithUserReceipt expected = TransactionTestUtils.transactionWithUserReceipt(
 
-                transactionClosed
+                transactionClosed,
+                transactionUserReceiptAddedEvent
         );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -488,7 +495,10 @@ class TransactionTest {
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
         TransactionClosed expected = TransactionTestUtils
-                .transactionClosed(transactionWithClosureError);
+                .transactionClosed(
+                        transactionWithClosureError,
+                        closureSentEvent
+                );
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -514,7 +524,7 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
 
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
-                .transactionExpiredNotAuthorized(transactionActivated);
+                .transactionExpiredNotAuthorized(transactionActivated, expiredEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -637,7 +647,10 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
         TransactionClosed transactionClosed = TransactionTestUtils
-                .transactionClosed(transactionAuthorizationCompleted);
+                .transactionClosed(
+                        transactionAuthorizationCompleted,
+                        closureSentEvent
+                );
 
         TransactionExpired expected = TransactionTestUtils.transactionExpired(expiredEvent, transactionClosed);
 
@@ -682,7 +695,7 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
         TransactionClosed transactionClosed = TransactionTestUtils
-                .transactionClosed(transactionAuthorizationCompleted);
+                .transactionClosed(transactionAuthorizationCompleted, closedEvent);
 
         TransactionExpired expected = TransactionTestUtils.transactionExpired(expiredEvent, transactionClosed);
 
@@ -779,11 +792,11 @@ class TransactionTest {
         assertEquals(TransactionStatusDto.AUTHORIZATION_COMPLETED, transactionAuthorizationCompleted.getStatus());
         assertEquals(
                 TransactionTestUtils.AUTHORIZATION_CODE,
-                transactionAuthorizationCompleted.getTransactionAuthorizedData().getAuthorizationCode()
+                transactionAuthorizationCompleted.getTransactionAuthorizationCompletedData().getAuthorizationCode()
         );
         assertEquals(
-                TransactionTestUtils.AUTHORIZATION_OUTCOME,
-                transactionAuthorizationCompleted.getTransactionAuthorizedData().getAuthorizationOutcome()
+                TransactionTestUtils.AUTHORIZATION_RESULT_DTO,
+                transactionAuthorizationCompleted.getTransactionAuthorizationCompletedData().getAuthorizationResultDto()
         );
     }
 
@@ -831,7 +844,10 @@ class TransactionTest {
                 );
 
         TransactionClosed transactionClosed = TransactionTestUtils
-                .transactionClosed(transactionWithCompletedAuthorization);
+                .transactionClosed(
+                        transactionWithCompletedAuthorization,
+                        TransactionTestUtils.transactionClosedEvent()
+                );
 
         assertEquals(TransactionStatusDto.CLOSED, transactionClosed.getStatus());
     }
@@ -855,10 +871,13 @@ class TransactionTest {
                 );
 
         TransactionClosed transactionClosed = TransactionTestUtils
-                .transactionClosed(transactionAuthorizationCompleted);
+                .transactionClosed(
+                        transactionAuthorizationCompleted,
+                        TransactionTestUtils.transactionClosedEvent()
+                );
 
         TransactionWithUserReceipt transactionWithUserReceipt = TransactionTestUtils
-                .transactionWithUserReceipt(transactionClosed);
+                .transactionWithUserReceipt(transactionClosed, TransactionTestUtils.transactionUserReceiptAddedEvent());
 
         assertEquals(TransactionStatusDto.NOTIFIED, transactionWithUserReceipt.getStatus());
     }
@@ -899,7 +918,8 @@ class TransactionTest {
                 transactionAuthorizationCompleted
         );
 
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionWithClosureError);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -952,7 +972,8 @@ class TransactionTest {
                 transactionAuthorizationCompleted
         );
 
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionWithClosureError);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -995,10 +1016,12 @@ class TransactionTest {
                 );
 
         TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
-                transactionAuthorizationCompleted
+                transactionAuthorizationCompleted,
+                transactionClosedEvent
         );
 
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionClosed);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionClosed, transactionRefundedEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -1045,10 +1068,12 @@ class TransactionTest {
                 );
 
         TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
-                transactionAuthorizationCompleted
+                transactionAuthorizationCompleted,
+                transactionClosedEvent
         );
 
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionClosed);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionClosed, transactionRefundedEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -1092,7 +1117,8 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionExpired);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionExpired, transactionRefundedEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1140,7 +1166,8 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
-        TransactionRefunded expected = TransactionTestUtils.transactionRefunded(transactionExpired);
+        TransactionRefunded expected = TransactionTestUtils
+                .transactionRefunded(transactionExpired, transactionRefundedEvent);
 
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
@@ -1181,7 +1208,10 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(transactionAuthorizationCompleted);
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
+                transactionAuthorizationCompleted,
+                transactionClosedEvent
+        );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionClosed);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -1227,7 +1257,10 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(transactionAuthorizationCompleted);
+        TransactionClosed transactionClosed = TransactionTestUtils.transactionClosed(
+                transactionAuthorizationCompleted,
+                transactionClosedEvent
+        );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionClosed);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
@@ -1491,7 +1524,7 @@ class TransactionTest {
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
-                .transactionExpiredNotAuthorized(transactionActivated);
+                .transactionExpiredNotAuthorized(transactionActivated, transactionExpiredEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1524,7 +1557,7 @@ class TransactionTest {
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
-                .transactionExpiredNotAuthorized(transactionActivated);
+                .transactionExpiredNotAuthorized(transactionActivated, transactionExpiredEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1547,7 +1580,8 @@ class TransactionTest {
 
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
-        TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(transactionActivated);
+        TransactionUserCanceled expected = TransactionTestUtils
+                .transactionUserCanceled(transactionActivated, transactionUserCanceledEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1575,7 +1609,8 @@ class TransactionTest {
 
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
-        TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(transactionActivated);
+        TransactionUserCanceled expected = TransactionTestUtils
+                .transactionUserCanceled(transactionActivated, transactionUserCanceledEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1614,7 +1649,7 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
         TransactionUnauthorized expected = TransactionTestUtils
-                .transactionUnauthorized(transactionAuthorizationCompleted);
+                .transactionUnauthorized(transactionAuthorizationCompleted, transactionClosureFailedEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
@@ -1659,7 +1694,7 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
         TransactionUnauthorized expected = TransactionTestUtils
-                .transactionUnauthorized(transactionAuthorizationCompleted);
+                .transactionUnauthorized(transactionAuthorizationCompleted, transactionClosureFailedEvent);
         Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual)

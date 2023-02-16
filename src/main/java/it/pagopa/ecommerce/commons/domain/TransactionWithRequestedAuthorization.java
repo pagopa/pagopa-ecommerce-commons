@@ -7,6 +7,7 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * <p>
@@ -23,6 +24,7 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithRequestedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionWithRequestedAuthorization extends BaseTransactionWithRequestedAuthorization
         implements
         Transaction {
@@ -47,7 +49,7 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
     public Transaction applyEvent(Object event) {
         return switch (event) {
             case TransactionAuthorizationCompletedEvent authorizedEvent ->
-                    new TransactionAuthorizationCompleted(this, authorizedEvent.getData());
+                    new TransactionAuthorizationCompleted(this, authorizedEvent);
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpired(this, transactionExpiredEvent);
             default -> this;

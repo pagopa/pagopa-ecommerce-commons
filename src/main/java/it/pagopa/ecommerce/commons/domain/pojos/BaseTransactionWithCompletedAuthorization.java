@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,19 +13,13 @@ import lombok.experimental.FieldDefaults;
  * successfully or not.
  * </p>
  * <p>
- * This POJO is needed to abstract inheritance and operations over both
- * {@link BaseTransactionAuthorized} and
- * {@link BaseTransactionWithRequestedAuthorization}, and should not be extended
- * by an aggregate class.
- * </p>
- * <p>
  * Generic authorization data is exposed through
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData
  * TransactionAuthorizationStatusUpdateData}.
  * </p>
  *
  * @see BaseTransaction
- * @see it.pagopa.ecommerce.commons.documents.TransactionAuthorizationStatusUpdateData
+ * @see it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -33,19 +27,19 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public abstract class BaseTransactionWithCompletedAuthorization extends BaseTransactionWithRequestedAuthorization {
 
-    TransactionAuthorizationStatusUpdateData transactionAuthorizationStatusUpdateData;
+    TransactionAuthorizationCompletedData transactionAuthorizationCompletedData;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction                          base transaction
-     * @param transactionAuthorizationStatusUpdateData data related to authorization
+     * @param baseTransaction                       base transaction
+     * @param transactionAuthorizationCompletedData data related to authorization
      */
     protected BaseTransactionWithCompletedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationStatusUpdateData transactionAuthorizationStatusUpdateData
+            TransactionAuthorizationCompletedData transactionAuthorizationCompletedData
     ) {
         super(baseTransaction, baseTransaction.getTransactionAuthorizationRequestData());
-        this.transactionAuthorizationStatusUpdateData = transactionAuthorizationStatusUpdateData;
+        this.transactionAuthorizationCompletedData = transactionAuthorizationCompletedData;
     }
 }

@@ -1,8 +1,14 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionClosureFailedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
@@ -14,23 +20,29 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransaction
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionUnauthorized extends BaseTransaction implements Transaction {
+@ToString
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+public final class TransactionUnauthorized extends BaseTransactionWithCompletedAuthorization implements Transaction {
+
+    TransactionClosureFailedEvent transactionClosureFailedEvent;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction the base transaction
+     * @param baseTransaction               the base transaction with completed
+     *                                      authorization information
+     * @param transactionClosureFailedEvent the transaction expired event
      */
     public TransactionUnauthorized(
-            BaseTransaction baseTransaction
+            BaseTransactionWithCompletedAuthorization baseTransaction,
+            TransactionClosureFailedEvent transactionClosureFailedEvent
     ) {
         super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
+                baseTransaction,
+                baseTransaction.getTransactionAuthorizationCompletedData()
         );
+        this.transactionClosureFailedEvent = transactionClosureFailedEvent;
     }
 
     /**

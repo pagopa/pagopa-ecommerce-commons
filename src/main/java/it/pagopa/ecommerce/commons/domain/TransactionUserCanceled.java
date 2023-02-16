@@ -1,8 +1,13 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
@@ -14,15 +19,22 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransaction
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
 public final class TransactionUserCanceled extends BaseTransaction implements Transaction {
+
+    TransactionUserCanceledEvent transactionUserCanceledEvent;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction the base transaction
+     * @param baseTransaction              the base transaction
+     * @param transactionUserCanceledEvent the transaction expired event
      */
     public TransactionUserCanceled(
-            BaseTransaction baseTransaction
+            BaseTransaction baseTransaction,
+            TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
         super(
                 baseTransaction.getTransactionId(),
@@ -31,6 +43,7 @@ public final class TransactionUserCanceled extends BaseTransaction implements Tr
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
         );
+        this.transactionUserCanceledEvent = transactionUserCanceledEvent;
     }
 
     /**

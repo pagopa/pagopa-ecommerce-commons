@@ -6,6 +6,7 @@ import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,7 @@ public class TransactionTestUtils {
 
     public static final String AUTHORIZATION_CODE = "authorizationCode";
 
-    public static final String AUTHORIZATION_OUTCOME = "authorizationOutcome";
+    public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
@@ -118,17 +119,17 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizedData(AUTHORIZATION_CODE, AUTHORIZATION_OUTCOME)
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, AUTHORIZATION_RESULT_DTO)
         );
     }
 
     @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                String authorizationOutcome
+                                                                                                AuthorizationResultDto authorizationResultDto
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizedData(AUTHORIZATION_CODE, authorizationOutcome)
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, authorizationResultDto)
         );
     }
 
@@ -139,7 +140,7 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
-                authorizedEvent.getData()
+                authorizedEvent
         );
     }
 
@@ -170,19 +171,23 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
+                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+                                                      TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionClosed(
-                transactionWithCompletedAuthorization
+                transactionWithCompletedAuthorization,
+                transactionClosedEvent
         );
     }
 
     @Nonnull
     public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed
+                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceipt(
-                baseTransactionClosed
+                baseTransactionClosed,
+                transactionUserReceiptAddedEvent
         );
     }
 
@@ -203,30 +208,34 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefunded transactionRefunded(
-                                                          BaseTransaction transaction
+                                                          BaseTransaction transaction,
+                                                          TransactionRefundedEvent transactionRefundedEvent
     ) {
-        return new TransactionRefunded(transaction);
+        return new TransactionRefunded(transaction, transactionRefundedEvent);
     }
 
     @Nonnull
     public static TransactionUnauthorized transactionUnauthorized(
-                                                                  BaseTransaction transaction
+                                                                  BaseTransactionWithCompletedAuthorization transaction,
+                                                                  TransactionClosureFailedEvent transactionClosureFailedEven
     ) {
-        return new TransactionUnauthorized(transaction);
+        return new TransactionUnauthorized(transaction, transactionClosureFailedEven);
     }
 
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
-                                                                  BaseTransaction transaction
+                                                                  BaseTransaction transaction,
+                                                                  TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
-        return new TransactionUserCanceled(transaction);
+        return new TransactionUserCanceled(transaction, transactionUserCanceledEvent);
     }
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-                                                                                  BaseTransaction transaction
+                                                                                  BaseTransaction transaction,
+                                                                                  TransactionExpiredEvent transactionExpiredEvent
     ) {
-        return new TransactionExpiredNotAuthorized(transaction);
+        return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
     }
 
     @Nonnull

@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * <p>
@@ -23,6 +24,7 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithClosureError
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionWithClosureError extends BaseTransactionWithClosureError implements Transaction {
 
     /**
@@ -45,11 +47,12 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     public Transaction applyEvent(Object event) {
         return switch (event) {
             case TransactionClosedEvent closureSentEvent -> new TransactionClosed(
-                    this
-            );
+                    this,
+                    closureSentEvent);
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionRefundedEvent transactionRefundedEvent -> new TransactionRefunded(this);
+            case TransactionRefundedEvent transactionRefundedEvent ->
+                    new TransactionRefunded(this, transactionRefundedEvent);
             default -> this;
         };
     }

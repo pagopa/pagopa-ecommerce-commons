@@ -1,11 +1,16 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
@@ -22,17 +27,25 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithCompletedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
 public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization implements Transaction {
+
+    TransactionClosedEvent transactionClosedEvent;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction base transaction
+     * @param baseTransaction        base transaction
+     * @param transactionClosedEvent the transaction closed event
      */
     public TransactionClosed(
-            BaseTransactionWithCompletedAuthorization baseTransaction
+            BaseTransactionWithCompletedAuthorization baseTransaction,
+            TransactionClosedEvent transactionClosedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationStatusUpdateData());
+        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
+        this.transactionClosedEvent = transactionClosedEvent;
     }
 
     /**
@@ -41,10 +54,12 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent e -> new TransactionWithUserReceipt(this);
+            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent ->
+                    new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionRefundedEvent transactionRefundedEvent -> new TransactionRefunded(this);
+            case TransactionRefundedEvent transactionRefundedEvent ->
+                    new TransactionRefunded(this, transactionRefundedEvent);
             default -> this;
         };
     }

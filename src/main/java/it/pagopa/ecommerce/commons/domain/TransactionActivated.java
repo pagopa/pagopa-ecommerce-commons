@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.documents.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
  * @see BaseTransactionWithPaymentToken
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionActivated extends BaseTransactionWithPaymentToken implements Transaction {
 
     /**
@@ -124,8 +126,10 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                             this,
                             transactionAuthorizationRequestedEvent.getData()
                     );
-            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpiredNotAuthorized(this);
-            case TransactionUserCanceledEvent transactionUserCanceledEvent -> new TransactionUserCanceled(this);
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
+            case TransactionUserCanceledEvent transactionUserCanceledEvent ->
+                    new TransactionUserCanceled(this, transactionUserCanceledEvent);
             default -> this;
         };
     }
