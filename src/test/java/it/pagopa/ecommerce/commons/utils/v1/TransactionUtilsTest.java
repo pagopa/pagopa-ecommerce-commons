@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequeste
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.utils.TransactionUtils;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.ecommerce.commons.utils.TransactionUtils.getTransactionFee;
+import static it.pagopa.ecommerce.commons.utils.v1.TransactionUtils.getTransactionFee;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

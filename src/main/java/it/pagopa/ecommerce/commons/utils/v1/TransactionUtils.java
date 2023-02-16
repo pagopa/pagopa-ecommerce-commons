@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.utils;
+package it.pagopa.ecommerce.commons.utils.v1;
 
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
