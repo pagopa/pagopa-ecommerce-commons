@@ -15,8 +15,8 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * This POJO is needed to abstract inheritance and operations over both
  * {@link BaseTransactionAuthorized} and
- * {@link BaseTransactionWithFailedAuthorization}, and should not be extended by
- * an aggregate class.
+ * {@link BaseTransactionWithRequestedAuthorization}, and should not be extended
+ * by an aggregate class.
  * </p>
  * <p>
  * Generic authorization data is exposed through
