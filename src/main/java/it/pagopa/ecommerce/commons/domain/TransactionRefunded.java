@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionRefunded;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -23,28 +24,19 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionRefunded extends BaseTransaction implements Transaction {
-
-    TransactionRefundedEvent transactionRefundedEvent;
+public final class TransactionRefunded extends BaseTransactionRefunded implements Transaction {
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction          the base transaction
-     * @param transactionRefundedEvent the transaction expired event
+     * @param baseTransaction the base transaction
+     * @param event           the transaction refunded event
      */
     public TransactionRefunded(
             BaseTransaction baseTransaction,
-            TransactionRefundedEvent transactionRefundedEvent
+            TransactionRefundedEvent event
     ) {
-        super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
-        );
-        this.transactionRefundedEvent = transactionRefundedEvent;
+        super(baseTransaction, event.getData());
     }
 
     /**
