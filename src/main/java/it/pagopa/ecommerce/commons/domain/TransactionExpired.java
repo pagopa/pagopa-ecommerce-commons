@@ -1,11 +1,13 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionExpired;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * <p>
@@ -16,6 +18,7 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithClosureError
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionExpired extends BaseTransactionExpired implements Transaction {
 
     /**
@@ -31,13 +34,20 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
         super(baseTransaction, event.getData());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
+        if (event instanceof TransactionRefundedEvent transactionRefundedEvent) {
+            return new TransactionRefunded(this, transactionRefundedEvent);
+        }
         return this;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionStatusDto getStatus() {
         return TransactionStatusDto.EXPIRED;

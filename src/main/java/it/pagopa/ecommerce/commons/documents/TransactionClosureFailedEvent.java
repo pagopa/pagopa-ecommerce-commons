@@ -6,29 +6,22 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to the reception of a negative authorization
- * response by a PSP (Payment Service Provider) (i.e. the payment authorization
- * has been rejected).
+ * Business event corresponding to a transaction closure being sent. Closing a
+ * transaction notifies Nodo that the transaction has been finalized.
  */
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionAuthorizationFailedEvent
-        extends
-        TransactionEvent<Void> {
+public final class TransactionClosureFailedEvent extends TransactionEvent<Void> {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
      */
-    public TransactionAuthorizationFailedEvent(
+    public TransactionClosureFailedEvent(
             String transactionId
     ) {
-        super(
-                transactionId,
-                TransactionEventCode.TRANSACTION_AUTHORIZATION_FAILED,
-                null
-        );
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT, null);
     }
 }

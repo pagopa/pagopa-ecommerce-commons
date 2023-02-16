@@ -13,9 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionAuthorizedEvent
+public final class TransactionAuthorizationCompletedEvent
         extends
-        TransactionEvent<TransactionAuthorizedData> {
+        TransactionEvent<TransactionAuthorizationCompletedData> {
 
     /**
      * Convenience constructor which sets the creation date to now
@@ -23,13 +23,13 @@ public final class TransactionAuthorizedEvent
      * @param transactionId transaction unique id
      * @param data          event-specific data
      */
-    public TransactionAuthorizedEvent(
+    public TransactionAuthorizationCompletedEvent(
             String transactionId,
-            TransactionAuthorizedData data
+            TransactionAuthorizationCompletedData data
     ) {
         super(
                 transactionId,
-                TransactionEventCode.TRANSACTION_AUTHORIZED,
+                TransactionEventCode.TRANSACTION_AUTHORIZATION_COMPLETED_EVENT,
                 data
         );
     }

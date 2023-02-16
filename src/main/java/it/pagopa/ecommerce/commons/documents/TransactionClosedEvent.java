@@ -12,18 +12,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureSentEvent extends TransactionEvent<TransactionClosureSendData> {
+public final class TransactionClosedEvent extends TransactionEvent<Void> {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
-     * @param data          event-specific data
      */
-    public TransactionClosureSentEvent(
-            String transactionId,
-            TransactionClosureSendData data
+    public TransactionClosedEvent(
+            String transactionId
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_SENT_EVENT, data);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSED_EVENT, null);
     }
 }

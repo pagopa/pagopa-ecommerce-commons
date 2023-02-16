@@ -35,7 +35,7 @@ public abstract class BaseTransactionWithClosureError extends BaseTransactionWit
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosureErrorEvent event
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationStatusUpdateData());
+        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
         this.event = event;
     }
 }

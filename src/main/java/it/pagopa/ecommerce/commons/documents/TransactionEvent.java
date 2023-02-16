@@ -1,17 +1,17 @@
 package it.pagopa.ecommerce.commons.documents;
 
-import static java.time.ZonedDateTime.now;
-
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
-
-import java.util.UUID;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.UUID;
+
+import static java.time.ZonedDateTime.now;
 
 /**
  * Hierarchy root for transaction events.
@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString
-public abstract sealed class TransactionEvent<T> permits TransactionActivatedEvent,TransactionActivationRequestedEvent,TransactionAuthorizationRequestedEvent,TransactionAuthorizedEvent,TransactionAuthorizationFailedEvent,TransactionClosureErrorEvent,TransactionClosureSentEvent,TransactionExpiredEvent,TransactionRefundedEvent,TransactionUserReceiptAddedEvent,TransactionClosureRetriedEvent,TransactionRefundRetriedEvent {
+public abstract sealed class TransactionEvent<T> permits TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosedEvent,TransactionClosureErrorEvent,TransactionClosureFailedEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddedEvent {
 
     @Id
     private String id;

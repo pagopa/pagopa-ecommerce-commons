@@ -1,12 +1,16 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionClosureSendData;
+import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
@@ -23,34 +27,48 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithCompletedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionClosed extends BaseTransactionClosed implements Transaction {
+@ToString
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization implements Transaction {
+
+    TransactionClosedEvent transactionClosedEvent;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction      base transaction
-     * @param closureSentEventData data related to closure sending event
+     * @param baseTransaction        base transaction
+     * @param transactionClosedEvent the transaction closed event
      */
     public TransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction,
-            TransactionClosureSendData closureSentEventData
+            TransactionClosedEvent transactionClosedEvent
     ) {
-        super(baseTransaction, closureSentEventData);
+        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
+        this.transactionClosedEvent = transactionClosedEvent;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent e -> new TransactionWithUserReceipt(this, e.getData());
-            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
+            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent ->
+                    new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
+            case TransactionRefundedEvent transactionRefundedEvent ->
+                    new TransactionRefunded(this, transactionRefundedEvent);
             default -> this;
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionStatusDto getStatus() {
-        return this.getTransactionClosureSendData().getNewTransactionStatus();
+        return TransactionStatusDto.CLOSED;
     }
 }

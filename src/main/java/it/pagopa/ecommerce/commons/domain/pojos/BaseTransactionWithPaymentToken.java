@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +40,7 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
     TransactionActivatedData transactionActivatedData;
 
     /**
-     * Main constructor.
+     * Constructor from base transaction
      *
      * @param baseTransaction          base transaction to be extended
      * @param transactionActivatedData data generated with the activation event
@@ -62,6 +64,35 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
+        );
+        this.transactionActivatedData = transactionActivatedData;
+    }
+
+    /**
+     * Constructors this {@link BaseTransactionWithPaymentToken} with the given
+     * information
+     *
+     * @param transactionId            the transaction id
+     * @param paymentNotices           a list of transaction payment notices
+     * @param email                    the user email
+     * @param creationDate             the transaction creation date
+     * @param clientId                 the transaction originated client id
+     * @param transactionActivatedData the transaction activated data
+     */
+    protected BaseTransactionWithPaymentToken(
+            TransactionId transactionId,
+            List<PaymentNotice> paymentNotices,
+            Email email,
+            ZonedDateTime creationDate,
+            it.pagopa.ecommerce.commons.documents.Transaction.ClientId clientId,
+            TransactionActivatedData transactionActivatedData
+    ) {
+        super(
+                transactionId,
+                paymentNotices,
+                email,
+                creationDate,
+                clientId
         );
         this.transactionActivatedData = transactionActivatedData;
     }

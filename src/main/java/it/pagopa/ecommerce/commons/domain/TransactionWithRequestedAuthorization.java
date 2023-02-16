@@ -1,28 +1,30 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.*;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestData;
+import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * <p>
  * Transaction with a requested authorization.
  * </p>
  * <p>
- * To this class you can apply an
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizedEvent} to
- * get a {@link it.pagopa.ecommerce.commons.domain.TransactionAuthorized} or a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationFailedEvent}
- * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionWithFailedAuthorization}
+ * To this class you can apply an {@link TransactionAuthorizationCompletedEvent}
+ * to get a {@link TransactionAuthorizationCompleted} or a
+ * {@link it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent} to get
+ * a {@link it.pagopa.ecommerce.commons.domain.TransactionExpired}
  * </p>
  *
  * @see Transaction
  * @see BaseTransactionWithRequestedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionWithRequestedAuthorization extends BaseTransactionWithRequestedAuthorization
         implements
         Transaction {
@@ -40,18 +42,23 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
         super(transaction, authorizationRequestData);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionAuthorizedEvent authorizedEvent -> new TransactionAuthorized(this, authorizedEvent.getData());
-            case TransactionAuthorizationFailedEvent authorizationFailedEvent -> new TransactionWithFailedAuthorization(this, authorizationFailedEvent);
-            case TransactionExpiredEvent transactionExpiredEvent -> new TransactionExpired(this, transactionExpiredEvent);
+            case TransactionAuthorizationCompletedEvent authorizedEvent ->
+                    new TransactionAuthorizationCompleted(this, authorizedEvent);
+            case TransactionExpiredEvent transactionExpiredEvent ->
+                    new TransactionExpired(this, transactionExpiredEvent);
             default -> this;
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionStatusDto getStatus() {
         return TransactionStatusDto.AUTHORIZATION_REQUESTED;

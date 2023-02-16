@@ -5,18 +5,20 @@ import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class TransactionTestUtils {
+
+    private TransactionTestUtils() {
+        // helper class with only static methods, no need to instantiate it
+    }
 
     public static final String RPT_ID = "77777777777111111111111111111";
     public static final String PAYMENT_TOKEN = "paymentToken";
@@ -33,27 +35,12 @@ public class TransactionTestUtils {
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
+
+    public static final String AUTHORIZATION_CODE = "authorizationCode";
+
+    public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
-
-    @Nonnull
-    public static TransactionActivationRequested transactionActivationRequested(String creationDate) {
-        return new TransactionActivationRequested(
-                new TransactionId(UUID.fromString(TRANSACTION_ID)),
-                Arrays.asList(
-                        new PaymentNotice(
-                                new PaymentToken(null),
-                                new RptId(RPT_ID),
-                                new TransactionAmount(AMOUNT),
-                                new TransactionDescription(DESCRIPTION),
-                                new PaymentContextCode(PAYMENT_CONTEXT_CODE)
-                        )
-                ),
-                new Email(EMAIL),
-                ZonedDateTime.parse(creationDate),
-                Transaction.ClientId.UNKNOWN
-        );
-    }
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -61,7 +48,7 @@ public class TransactionTestUtils {
                 TRANSACTION_ID,
                 new TransactionActivatedData(
                         EMAIL,
-                        Arrays.asList(
+                        List.of(
                                 new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
@@ -81,7 +68,7 @@ public class TransactionTestUtils {
     public static TransactionActivated transactionActivated(String creationDate) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
-                Arrays.asList(
+                List.of(
                         new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
@@ -129,54 +116,38 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizedEvent transactionAuthorizedEvent() {
-        return new TransactionAuthorizedEvent(
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
+        return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizedData("authorizationCode")
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, AUTHORIZATION_RESULT_DTO)
         );
     }
 
     @Nonnull
-    public static TransactionAuthorizationFailedEvent transactionAuthorizationFailedEvent() {
-        return new TransactionAuthorizationFailedEvent(TRANSACTION_ID);
-    }
-
-    @Nonnull
-    public static TransactionAuthorized transactionAuthorized(
-                                                              TransactionAuthorizedEvent authorizedEvent,
-                                                              TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
+                                                                                                AuthorizationResultDto authorizationResultDto
     ) {
-        return new TransactionAuthorized(
-                transactionWithRequestedAuthorization,
-                authorizedEvent.getData()
-        );
-    }
-
-    @Nonnull
-    public static TransactionWithFailedAuthorization transactionWithFailedAuthorization(
-                                                                                        TransactionAuthorizationFailedEvent authorizationFailedEvent,
-                                                                                        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
-    ) {
-        return new TransactionWithFailedAuthorization(
-                transactionWithRequestedAuthorization,
-                authorizationFailedEvent
-        );
-    }
-
-    @Nonnull
-    public static TransactionClosureSentEvent transactionClosureSentEvent(
-                                                                          ClosePaymentResponseDto.OutcomeEnum closePaymentOutcome
-    ) {
-        TransactionStatusDto newStatus;
-        switch (closePaymentOutcome) {
-            case OK -> newStatus = TransactionStatusDto.CLOSED;
-            case KO -> newStatus = TransactionStatusDto.CLOSURE_FAILED;
-            default -> throw new IllegalStateException("Unexpected value: " + closePaymentOutcome);
-        }
-
-        return new TransactionClosureSentEvent(
+        return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureSendData(closePaymentOutcome, newStatus)
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, authorizationResultDto)
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationCompleted transactionAuthorizationCompleted(
+                                                                                      TransactionAuthorizationCompletedEvent authorizedEvent,
+                                                                                      TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+    ) {
+        return new TransactionAuthorizationCompleted(
+                transactionWithRequestedAuthorization,
+                authorizedEvent
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosedEvent transactionClosedEvent() {
+        return new TransactionClosedEvent(
+                TRANSACTION_ID
         );
     }
 
@@ -200,39 +171,30 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      TransactionClosureSentEvent closureSentEvent,
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization
+                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+                                                      TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionClosed(
                 transactionWithCompletedAuthorization,
-                closureSentEvent.getData()
+                transactionClosedEvent
         );
     }
 
     @Nonnull
     public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent,
-                                                                        BaseTransactionClosed baseTransactionClosed
+                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceipt(
                 baseTransactionClosed,
-                transactionUserReceiptAddedEvent.getData()
+                transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
-    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-                                                                                    TransactionStatusDto transactionStatusDto
-    ) {
+    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent() {
         return new TransactionUserReceiptAddedEvent(
-                TRANSACTION_ID,
-                new TransactionAddReceiptData(
-                        Stream.of(transactionStatusDto)
-                                .filter(
-                                        transactionStatus -> transactionStatus.equals(TransactionStatusDto.NOTIFIED)
-                                                || transactionStatus.equals(TransactionStatusDto.NOTIFIED_FAILED)
-                                ).findFirst().orElseThrow()
-                )
+                TRANSACTION_ID
         );
     }
 
@@ -245,10 +207,56 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionRefunded transactionRefunded(
+                                                          BaseTransaction transaction,
+                                                          TransactionRefundedEvent transactionRefundedEvent
+    ) {
+        return new TransactionRefunded(transaction, transactionRefundedEvent);
+    }
+
+    @Nonnull
+    public static TransactionUnauthorized transactionUnauthorized(
+                                                                  BaseTransactionWithCompletedAuthorization transaction,
+                                                                  TransactionClosureFailedEvent transactionClosureFailedEven
+    ) {
+        return new TransactionUnauthorized(transaction, transactionClosureFailedEven);
+    }
+
+    @Nonnull
+    public static TransactionUserCanceled transactionUserCanceled(
+                                                                  BaseTransaction transaction,
+                                                                  TransactionUserCanceledEvent transactionUserCanceledEvent
+    ) {
+        return new TransactionUserCanceled(transaction, transactionUserCanceledEvent);
+    }
+
+    @Nonnull
+    public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
+                                                                                  BaseTransaction transaction,
+                                                                                  TransactionExpiredEvent transactionExpiredEvent
+    ) {
+        return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
+    }
+
+    @Nonnull
     public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
                 new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
+    public static TransactionUserCanceledEvent transactionUserCanceledEvent() {
+        return new TransactionUserCanceledEvent(
+                TRANSACTION_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosureFailedEvent transactionClosureFailedEvent() {
+        return new TransactionClosureFailedEvent(
+                TRANSACTION_ID
         );
     }
 
@@ -261,33 +269,18 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionActivationRequestedEvent transactionActivationRequestedEvent() {
-        return new TransactionActivationRequestedEvent(
-                TRANSACTION_ID,
-                ZonedDateTime.now().toString(),
-                new TransactionActivationRequestedData(
-                        Arrays.asList(
-                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
-                                        null,
-                                        RPT_ID,
-                                        DESCRIPTION,
-                                        AMOUNT,
-                                        PAYMENT_CONTEXT_CODE
-                                )
-                        ),
-                        EMAIL,
-                        FAULT_CODE,
-                        FAULT_CODE_STRING,
-                        Transaction.ClientId.UNKNOWN
-                )
-        );
-    }
-
-    @Nonnull
     public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,
                 new TransactionExpiredData(previousStatus)
+        );
+    }
+
+    @Nonnull
+    public static TransactionRefundedEvent transactionRefundedEvent(TransactionStatusDto statusBeforeRefunded) {
+        return new TransactionRefundedEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(statusBeforeRefunded)
         );
     }
 
@@ -298,13 +291,20 @@ public class TransactionTestUtils {
     ) {
         return new Transaction(
                 TRANSACTION_ID,
-                PAYMENT_TOKEN,
-                RPT_ID,
-                DESCRIPTION,
-                AMOUNT,
+                List.of(
+                        new it.pagopa.ecommerce.commons.documents.PaymentNotice(
+                                PAYMENT_TOKEN,
+                                RPT_ID,
+                                DESCRIPTION,
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
+                        )
+                ),
+                null,
                 EMAIL,
                 transactionStatus,
-                creationDateTime
+                Transaction.ClientId.UNKNOWN,
+                creationDateTime.toString()
         );
     }
 }

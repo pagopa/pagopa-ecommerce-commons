@@ -18,24 +18,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionUtilsTest {
+class TransactionUtilsTest {
 
     private TransactionUtils transactionUtils;
 
     List<TransactionStatusDto> transientStatusList = List.of(
             TransactionStatusDto.ACTIVATED,
-            TransactionStatusDto.AUTHORIZED,
             TransactionStatusDto.AUTHORIZATION_REQUESTED,
-            TransactionStatusDto.AUTHORIZATION_FAILED,
-            TransactionStatusDto.CLOSURE_FAILED,
-            TransactionStatusDto.CLOSED
+            TransactionStatusDto.AUTHORIZATION_COMPLETED,
+            TransactionStatusDto.CLOSURE_ERROR,
+            TransactionStatusDto.CLOSED,
+            TransactionStatusDto.EXPIRED
     );
 
     List<TransactionStatusDto> refaundableStatusList = List.of(
-            TransactionStatusDto.AUTHORIZED,
-            TransactionStatusDto.AUTHORIZATION_REQUESTED,
-            TransactionStatusDto.AUTHORIZATION_FAILED,
-            TransactionStatusDto.CLOSURE_FAILED
+            TransactionStatusDto.CLOSED,
+            TransactionStatusDto.CLOSURE_ERROR,
+            TransactionStatusDto.EXPIRED
     );
 
     @Test
@@ -80,8 +79,6 @@ public class TransactionUtilsTest {
 
     @Test
     void getFeeReturnsEmptyForTransactionWithoutRequestedAuthorization() {
-        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(ZonedDateTime.now().toString());
 

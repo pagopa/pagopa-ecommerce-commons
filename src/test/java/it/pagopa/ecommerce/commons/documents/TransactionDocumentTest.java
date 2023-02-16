@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.documents;
 
 import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
-import it.pagopa.ecommerce.commons.domain.TransactionActivationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionDocumentTest {
@@ -27,22 +27,8 @@ class TransactionDocumentTest {
         sameTransaction.setCreationDate(transaction.getCreationDate());
 
         // Different transaction (creation date)
-        Transaction differentTransaction = new Transaction(
-                "",
-                "",
-                "",
-                "",
-                1,
-                "",
-                null,
-                ZonedDateTime.now()
-        );
-
-        differentTransaction.getPaymentNotices().get(0).setPaymentToken(TransactionTestUtils.PAYMENT_TOKEN);
-        differentTransaction.getPaymentNotices().get(0).setRptId(TransactionTestUtils.RPT_ID);
-        differentTransaction.getPaymentNotices().get(0).setDescription(TransactionTestUtils.DESCRIPTION);
-        differentTransaction.getPaymentNotices().get(0).setAmount(TransactionTestUtils.AMOUNT);
-        differentTransaction.setStatus(transactionStatus);
+        Transaction differentTransaction = TransactionTestUtils
+                .transactionDocument(transactionStatus, ZonedDateTime.now());
 
         /* Assertions */
         assertEquals(TransactionTestUtils.PAYMENT_TOKEN, transaction.getPaymentNotices().get(0).getPaymentToken());
@@ -66,30 +52,6 @@ class TransactionDocumentTest {
                 transactionDocument.getPaymentNotices().get(0).getPaymentToken(),
                 transaction.getTransactionActivatedData().getPaymentNotices().get(0).getPaymentToken()
         );
-        assertEquals(
-                transactionDocument.getPaymentNotices().get(0).getRptId(),
-                transaction.getPaymentNotices().get(0).rptId().value()
-        );
-        assertEquals(
-                transactionDocument.getPaymentNotices().get(0).getDescription(),
-                transaction.getPaymentNotices().get(0).transactionDescription().value()
-        );
-        assertEquals(
-                transactionDocument.getPaymentNotices().get(0).getAmount(),
-                transaction.getPaymentNotices().get(0).transactionAmount().value()
-        );
-        assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
-        assertEquals(transactionDocument.getStatus(), transaction.getStatus());
-    }
-
-    @Test
-    void shouldConstructTransactionDocumentFromTransactionWithRequestedActivation() {
-        TransactionActivationRequested transaction = TransactionTestUtils
-                .transactionActivationRequested(ZonedDateTime.now().toString());
-
-        Transaction transactionDocument = Transaction.from(transaction);
-
-        assertNull(transactionDocument.getPaymentNotices().get(0).getPaymentToken());
         assertEquals(
                 transactionDocument.getPaymentNotices().get(0).getRptId(),
                 transaction.getPaymentNotices().get(0).rptId().value()

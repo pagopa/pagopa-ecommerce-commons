@@ -1,13 +1,14 @@
 package it.pagopa.ecommerce.commons.domain;
 
+import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
-import it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
  * @see BaseTransactionWithPaymentToken
  */
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class TransactionActivated extends BaseTransactionWithPaymentToken implements Transaction {
 
     /**
@@ -50,13 +52,13 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ClientId clientId
     ) {
         super(
-                new TransactionActivationRequested(
-                        transactionId,
-                        paymentNotices,
-                        email,
-                        creationDate,
-                        clientId
-                ),
+
+                transactionId,
+                paymentNotices,
+                email,
+                creationDate,
+                clientId,
+
                 new TransactionActivatedData(
                         email.value(),
                         paymentNotices.stream()
@@ -106,26 +108,16 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     }
 
     /**
-     * Conversion constructor to construct an activated transaction from a
-     * {@link it.pagopa.ecommerce.commons.domain.TransactionActivationRequested}
-     *
-     * @param transactionActivationRequested transaction
-     * @param event                          activation event
+     * {@inheritDoc}
      */
-    public TransactionActivated(
-            TransactionActivationRequested transactionActivationRequested,
-            TransactionActivatedEvent event
-    ) {
-        super(transactionActivationRequested, event.getData());
-    }
-
-    /** {@inheritDoc} */
     @Override
     public TransactionStatusDto getStatus() {
         return TransactionStatusDto.ACTIVATED;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
@@ -135,7 +127,9 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                             transactionAuthorizationRequestedEvent.getData()
                     );
             case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpired(this, transactionExpiredEvent);
+                    new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
+            case TransactionUserCanceledEvent transactionUserCanceledEvent ->
+                    new TransactionUserCanceled(this, transactionUserCanceledEvent);
             default -> this;
         };
     }
