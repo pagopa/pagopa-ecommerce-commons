@@ -3,7 +3,6 @@ package it.pagopa.ecommerce.commons.domain;
 import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -23,7 +22,7 @@ import lombok.EqualsAndHashCode;
  * @see BaseTransactionWithCompletedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
-public final class TransactionClosed extends BaseTransactionClosed implements Transaction {
+public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization implements Transaction {
 
     /**
      * Primary constructor
@@ -33,7 +32,7 @@ public final class TransactionClosed extends BaseTransactionClosed implements Tr
     public TransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction
     ) {
-        super(baseTransaction);
+        super(baseTransaction, baseTransaction.getTransactionAuthorizationStatusUpdateData());
     }
 
     /**

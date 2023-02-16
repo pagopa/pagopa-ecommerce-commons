@@ -5,13 +5,11 @@ import it.pagopa.ecommerce.commons.documents.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +47,7 @@ public class TransactionTestUtils {
                 TRANSACTION_ID,
                 new TransactionActivatedData(
                         EMAIL,
-                        Arrays.asList(
+                        List.of(
                                 new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
@@ -69,7 +67,7 @@ public class TransactionTestUtils {
     public static TransactionActivated transactionActivated(String creationDate) {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
-                Arrays.asList(
+                List.of(
                         new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
@@ -181,7 +179,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        BaseTransactionClosed baseTransactionClosed
+                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed
     ) {
         return new TransactionWithUserReceipt(
                 baseTransactionClosed

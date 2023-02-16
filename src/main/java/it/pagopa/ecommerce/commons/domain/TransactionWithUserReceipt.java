@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionClosed;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithUserReceipt;
+import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 /**
@@ -14,10 +13,10 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
  * that you can meaningfully apply to it. Any event application is thus ignored.
  *
  * @see Transaction
- * @see BaseTransactionClosed
+ * @see BaseTransactionWithCompletedAuthorization
  */
 
-public final class TransactionWithUserReceipt extends BaseTransactionWithUserReceipt implements Transaction {
+public final class TransactionWithUserReceipt extends BaseTransactionWithCompletedAuthorization implements Transaction {
 
     /**
      * Main constructor.
@@ -25,9 +24,9 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithUserRec
      * @param baseTransaction transaction to extend with receipt data
      */
     public TransactionWithUserReceipt(
-            BaseTransactionClosed baseTransaction
+            BaseTransactionWithCompletedAuthorization baseTransaction
     ) {
-        super(baseTransaction);
+        super(baseTransaction, baseTransaction.getTransactionAuthorizationStatusUpdateData());
     }
 
     @Override
