@@ -27,22 +27,8 @@ class TransactionDocumentTest {
         sameTransaction.setCreationDate(transaction.getCreationDate());
 
         // Different transaction (creation date)
-        Transaction differentTransaction = new Transaction(
-                "",
-                "",
-                "",
-                "",
-                1,
-                "",
-                null,
-                ZonedDateTime.now()
-        );
-
-        differentTransaction.getPaymentNotices().get(0).setPaymentToken(TransactionTestUtils.PAYMENT_TOKEN);
-        differentTransaction.getPaymentNotices().get(0).setRptId(TransactionTestUtils.RPT_ID);
-        differentTransaction.getPaymentNotices().get(0).setDescription(TransactionTestUtils.DESCRIPTION);
-        differentTransaction.getPaymentNotices().get(0).setAmount(TransactionTestUtils.AMOUNT);
-        differentTransaction.setStatus(transactionStatus);
+        Transaction differentTransaction = TransactionTestUtils
+                .transactionDocument(transactionStatus, ZonedDateTime.now());
 
         /* Assertions */
         assertEquals(TransactionTestUtils.PAYMENT_TOKEN, transaction.getPaymentNotices().get(0).getPaymentToken());

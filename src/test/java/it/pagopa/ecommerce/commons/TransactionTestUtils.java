@@ -12,9 +12,14 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class TransactionTestUtils {
+
+    private TransactionTestUtils() {
+        // helper class with only static methods, no need to instantiate it
+    }
 
     public static final String RPT_ID = "77777777777111111111111111111";
     public static final String PAYMENT_TOKEN = "paymentToken";
@@ -279,13 +284,20 @@ public class TransactionTestUtils {
     ) {
         return new Transaction(
                 TRANSACTION_ID,
-                PAYMENT_TOKEN,
-                RPT_ID,
-                DESCRIPTION,
-                AMOUNT,
+                List.of(
+                        new it.pagopa.ecommerce.commons.documents.PaymentNotice(
+                                PAYMENT_TOKEN,
+                                RPT_ID,
+                                DESCRIPTION,
+                                AMOUNT,
+                                PAYMENT_CONTEXT_CODE
+                        )
+                ),
+                null,
                 EMAIL,
                 transactionStatus,
-                creationDateTime
+                Transaction.ClientId.UNKNOWN,
+                creationDateTime.toString()
         );
     }
 }

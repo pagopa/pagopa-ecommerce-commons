@@ -8,7 +8,6 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -72,97 +71,6 @@ public class Transaction {
     }
 
     /**
-     * Convenience contructor which sets the transaction creation date to now
-     *
-     * @param transactionId transaction unique id
-     * @param paymentToken  payment token associated to the transaction
-     * @param rptId         RPT id associated to the transaction
-     * @param description   transaction description
-     * @param amount        transaction amount in euro cents
-     * @param email         user email where the payment receipt will be sent to
-     * @param status        transaction status
-     * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
-     */
-    @Deprecated(forRemoval = true)
-    public Transaction(
-            String transactionId,
-            String paymentToken,
-            String rptId,
-            String description,
-            int amount,
-            String email,
-            TransactionStatusDto status
-    ) {
-        this(transactionId, paymentToken, rptId, description, amount, email, status, ZonedDateTime.now().toString());
-    }
-
-    /**
-     * Primary constructor
-     *
-     * @param transactionId transaction unique id
-     * @param paymentToken  payment token associated to the transaction
-     * @param rptId         RPT id associated to the transaction
-     * @param description   transaction description
-     * @param amount        transaction amount in euro cents
-     * @param email         user email where the payment receipt will be sent to
-     * @param status        transaction status
-     * @param creationDate  transaction creation date
-     * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
-     */
-
-    @Deprecated(forRemoval = true)
-    public Transaction(
-            String transactionId,
-            String paymentToken,
-            String rptId,
-            String description,
-            int amount,
-            String email,
-            TransactionStatusDto status,
-            ZonedDateTime creationDate
-    ) {
-        this(transactionId, paymentToken, rptId, description, amount, email, status, creationDate.toString());
-    }
-
-    /**
-     * Primary persistence constructor
-     *
-     * @param transactionId transaction unique id
-     * @param paymentToken  payment token associated to the transaction
-     * @param rptId         RPT id associated to the transaction
-     * @param description   transaction description
-     * @param amount        transaction amount in euro cents
-     * @param email         user email where the payment receipt will be sent to
-     * @param status        transaction status
-     * @param creationDate  transaction creation date
-     * @deprecated use
-     *             {@link it.pagopa.ecommerce.commons.documents.Transaction#Transaction(String, List, Integer, String, TransactionStatusDto, ClientId, String)}
-     */
-    @Deprecated(forRemoval = true)
-    public Transaction(
-            String transactionId,
-            String paymentToken,
-            String rptId,
-            String description,
-            int amount,
-            String email,
-            TransactionStatusDto status,
-            String creationDate
-    ) {
-        this(
-                transactionId,
-                List.of(new PaymentNotice(paymentToken, rptId, description, amount, null)),
-                null,
-                email,
-                status,
-                ClientId.UNKNOWN,
-                creationDate
-        );
-    }
-
-    /**
      * Primary persistence constructor
      *
      * @param transactionId  transaction unique id
@@ -177,7 +85,7 @@ public class Transaction {
     public Transaction(
             String transactionId,
             List<PaymentNotice> paymentNotices,
-            Integer feeTotal,
+            @Nullable Integer feeTotal,
             String email,
             TransactionStatusDto status,
             ClientId clientId,
