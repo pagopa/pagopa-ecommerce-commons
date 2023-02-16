@@ -1,15 +1,15 @@
 package it.pagopa.ecommerce.commons.redis;
 
-import java.util.Arrays;
-
+import it.pagopa.ecommerce.commons.domain.v1.RptId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.convert.RedisCustomConversions;
 
+import java.util.Arrays;
+
 /**
- * Redis configuration enabling automatic conversion from/to
- * {@link it.pagopa.ecommerce.commons.domain.RptId}
+ * Redis configuration enabling automatic conversion from/to {@link RptId}
  */
 @Configuration
 @ComponentScan
@@ -22,8 +22,7 @@ public class RedisConfiguration {
      * @param writingByteConverter   RptId -> byte[] converter
      * @param readingStringConverter String -> RptId converter
      * @param writingStringConverter RptId -> String converter
-     * @return redis conversions bean configured for
-     *         {@link it.pagopa.ecommerce.commons.domain.RptId}
+     * @return redis conversions bean configured for {@link RptId}
      */
     @Bean
     public RedisCustomConversions redisCustomConversions(
