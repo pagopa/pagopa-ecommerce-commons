@@ -1,11 +1,12 @@
-package it.pagopa.ecommerce.commons.domain.pojos;
+package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.domain.Email;
-import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
+import it.pagopa.ecommerce.commons.domain.v1.Email;
+import it.pagopa.ecommerce.commons.domain.v1.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.v1.Transaction;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +19,7 @@ import java.util.List;
  * Base POJO for transaction attributes.
  * </p>
  * <p>
- * Each POJO in the {@link it.pagopa.ecommerce.commons.domain.pojos} package
+ * Each POJO in the {@link it.pagopa.ecommerce.commons.domain.v1.pojos} package
  * corresponds logically to a transaction in a specific state (thus with a
  * specific set of attributes).
  * </p>
@@ -26,7 +27,7 @@ import java.util.List;
  * Given that application of events can only accumulate attributes, attribute
  * inheritance is realized via each POJO inheriting from the one corresponding
  * to the previous state (the transaction state flowchart is described in
- * {@link it.pagopa.ecommerce.commons.domain.Transaction}).
+ * {@link Transaction}).
  * </p>
  * <p>
  * This POJOs are implemented as abstract classes and are meant to be used only

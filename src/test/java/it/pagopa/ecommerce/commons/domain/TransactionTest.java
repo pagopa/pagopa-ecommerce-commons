@@ -2,7 +2,9 @@ package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.Transaction;
+import it.pagopa.ecommerce.commons.domain.v1.*;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.junit.jupiter.api.Test;
@@ -49,7 +51,8 @@ class TransactionTest {
 
         EmptyTransaction expected = new EmptyTransaction();
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -66,7 +69,8 @@ class TransactionTest {
 
         TransactionActivated expected = TransactionTestUtils.transactionActivated(event.getCreationDate());
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -83,7 +87,8 @@ class TransactionTest {
 
         TransactionActivated expected = TransactionTestUtils.transactionActivated(event.getCreationDate());
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -105,7 +110,8 @@ class TransactionTest {
         TransactionWithRequestedAuthorization expected = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -131,7 +137,8 @@ class TransactionTest {
         TransactionWithRequestedAuthorization expected = TransactionTestUtils
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -164,7 +171,8 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -198,7 +206,8 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -240,7 +249,8 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -290,7 +300,8 @@ class TransactionTest {
                 transactionUserReceiptAddedEvent
         );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -331,7 +342,8 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -379,7 +391,8 @@ class TransactionTest {
                 transactionUserReceiptAddedEvent
         );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -417,7 +430,8 @@ class TransactionTest {
         TransactionWithClosureError expected = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(e -> e.equals(expected)).verifyComplete();
     }
@@ -454,7 +468,8 @@ class TransactionTest {
         TransactionWithClosureError expected = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -500,7 +515,8 @@ class TransactionTest {
                         closureSentEvent
                 );
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNext(expected)
@@ -526,7 +542,8 @@ class TransactionTest {
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
                 .transactionExpiredNotAuthorized(transactionActivated, expiredEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -561,7 +578,8 @@ class TransactionTest {
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(expiredEvent, transactionWithRequestedAuthorization);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -604,7 +622,8 @@ class TransactionTest {
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(expiredEvent, transactionAuthorizationCompleted);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -654,7 +673,8 @@ class TransactionTest {
 
         TransactionExpired expected = TransactionTestUtils.transactionExpired(expiredEvent, transactionClosed);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -699,7 +719,8 @@ class TransactionTest {
 
         TransactionExpired expected = TransactionTestUtils.transactionExpired(expiredEvent, transactionClosed);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -746,7 +767,8 @@ class TransactionTest {
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(expiredEvent, transactionWithClosureError);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
@@ -921,7 +943,8 @@ class TransactionTest {
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -975,7 +998,8 @@ class TransactionTest {
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1023,7 +1047,8 @@ class TransactionTest {
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionClosed, transactionRefundedEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1075,7 +1100,8 @@ class TransactionTest {
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionClosed, transactionRefundedEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1119,7 +1145,8 @@ class TransactionTest {
                 .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionExpired, transactionRefundedEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1169,7 +1196,8 @@ class TransactionTest {
         TransactionRefunded expected = TransactionTestUtils
                 .transactionRefunded(transactionExpired, transactionRefundedEvent);
 
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1214,7 +1242,8 @@ class TransactionTest {
         );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionClosed);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1263,7 +1292,8 @@ class TransactionTest {
         );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionClosed);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1306,7 +1336,8 @@ class TransactionTest {
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1353,7 +1384,8 @@ class TransactionTest {
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1392,7 +1424,8 @@ class TransactionTest {
                 );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1435,7 +1468,8 @@ class TransactionTest {
                 );
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionAuthorizationCompleted);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1466,7 +1500,8 @@ class TransactionTest {
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionWithRequestedAuthorization);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1499,7 +1534,8 @@ class TransactionTest {
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(transactionExpiredEvent, transactionWithRequestedAuthorization);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1525,7 +1561,8 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
                 .transactionExpiredNotAuthorized(transactionActivated, transactionExpiredEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1558,7 +1595,8 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionExpiredNotAuthorized expected = TransactionTestUtils
                 .transactionExpiredNotAuthorized(transactionActivated, transactionExpiredEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1582,7 +1620,8 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionUserCanceled expected = TransactionTestUtils
                 .transactionUserCanceled(transactionActivated, transactionUserCanceledEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1611,7 +1650,8 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionUserCanceled expected = TransactionTestUtils
                 .transactionUserCanceled(transactionActivated, transactionUserCanceledEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1650,7 +1690,8 @@ class TransactionTest {
                 );
         TransactionUnauthorized expected = TransactionTestUtils
                 .transactionUnauthorized(transactionAuthorizationCompleted, transactionClosureFailedEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
@@ -1695,7 +1736,8 @@ class TransactionTest {
                 );
         TransactionUnauthorized expected = TransactionTestUtils
                 .transactionUnauthorized(transactionAuthorizationCompleted, transactionClosureFailedEvent);
-        Mono<Transaction> actual = events.reduce(transaction, Transaction::applyEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(

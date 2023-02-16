@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * </p>
  * <p>
  * To this class you can apply a {@link TransactionActivatedEvent} (and get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionActivated})
+ * {@link TransactionActivated})
  * </p>
  *
  * @see Transaction

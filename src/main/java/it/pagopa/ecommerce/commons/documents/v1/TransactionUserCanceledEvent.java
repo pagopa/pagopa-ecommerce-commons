@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
-import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;

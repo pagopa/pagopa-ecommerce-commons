@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain.pojos;
+package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;

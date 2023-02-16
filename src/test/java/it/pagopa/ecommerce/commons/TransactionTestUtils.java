@@ -2,10 +2,9 @@ package it.pagopa.ecommerce.commons;
 
 import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.*;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.*;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
@@ -69,7 +68,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(UUID.fromString(TRANSACTION_ID)),
                 List.of(
-                        new PaymentNotice(
+                        new it.pagopa.ecommerce.commons.domain.v1.PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),

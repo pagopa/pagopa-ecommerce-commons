@@ -1,10 +1,10 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionExpired;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithClosureError;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionExpired;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

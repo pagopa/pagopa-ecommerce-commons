@@ -1,8 +1,8 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -16,9 +16,8 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * To this class you can apply either a {@link TransactionClosedEvent} to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionClosed} or a
- * {@link TransactionClosureErrorEvent} to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionWithClosureError}
+ * {@link TransactionClosed} or a {@link TransactionClosureErrorEvent} to get a
+ * {@link TransactionWithClosureError}
  * </p>
  *
  * @see Transaction

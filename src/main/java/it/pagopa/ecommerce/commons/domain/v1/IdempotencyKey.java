@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
 import org.springframework.data.annotation.PersistenceConstructor;

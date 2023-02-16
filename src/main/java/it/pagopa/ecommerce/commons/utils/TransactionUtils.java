@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import org.springframework.stereotype.Component;
 

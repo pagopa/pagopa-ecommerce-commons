@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 /**
  * Event code identifying event type
@@ -64,7 +64,9 @@ public enum TransactionEventCode {
         this.code = code;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return code;

@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.repositories;
 
-import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
-import it.pagopa.ecommerce.commons.domain.RptId;
+import it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey;
+import it.pagopa.ecommerce.commons.domain.v1.RptId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.redis.core.RedisHash;
@@ -24,7 +24,7 @@ import org.springframework.lang.Nullable;
  *                       one.
  * @param paymentToken   Payment token associated to this payment request. May
  *                       be null iff {@code
- *     isNM3}         is {@code false}
+ *                       isNM3} is {@code false}
  * @param idempotencyKey Idempotency key associated to the payment request
  */
 @RedisHash(value = "keys", timeToLive = 10 * 60)
@@ -55,7 +55,7 @@ public record PaymentRequestInfo(
      *                       one.
      * @param paymentToken   Payment token associated to this payment request. May
      *                       be null iff {@code
-     *     isNM3}         is {@code false}
+     *                       isNM3} is {@code false}
      * @param idempotencyKey Idempotency key associated to the payment request
      */
     @PersistenceConstructor

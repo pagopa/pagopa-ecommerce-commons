@@ -1,11 +1,11 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
-import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -19,8 +19,7 @@ import java.util.List;
  * </p>
  * <p>
  * To this class you can apply an {@link TransactionAuthorizationRequestedEvent}
- * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionWithRequestedAuthorization}
+ * to get a {@link TransactionWithRequestedAuthorization}
  * </p>
  *
  * @see Transaction

@@ -1,9 +1,10 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 
 /**
  * <p>
@@ -11,7 +12,7 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
  * </p>
  * <p>
  * Together with the POJOs defined under
- * {@link it.pagopa.ecommerce.commons.domain.pojos} it defines a mechanism to
+ * {@link it.pagopa.ecommerce.commons.domain.v1.pojos} it defines a mechanism to
  * reconstruct a transaction from event streams, e.g.
  * </p>
  *
@@ -63,8 +64,8 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
  * {@link TransactionClosedEvent TransactionClosureSentEvent})</li>
  * </ul>
  * <p>
- * See also {@link it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction} for
- * information on how to retrieve the reconstructed transaction data
+ * See also {@link BaseTransaction} for information on how to retrieve the
+ * reconstructed transaction data
  */
 @AggregateRoot
 public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithClosureError,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {

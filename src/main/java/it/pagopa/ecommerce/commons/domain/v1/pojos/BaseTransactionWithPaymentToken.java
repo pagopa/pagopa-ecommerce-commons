@@ -1,8 +1,8 @@
-package it.pagopa.ecommerce.commons.domain.pojos;
+package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.domain.*;
+import it.pagopa.ecommerce.commons.domain.v1.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,7 +26,7 @@ import java.util.List;
  * {@code BaseTransaction.getTransactionActivatedData().getPaymentToken()}
  * </p>
  *
- * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
+ * @see BaseTransaction
  * @see TransactionActivatedEvent TransactionActivatedEvent
  */
 @ToString
