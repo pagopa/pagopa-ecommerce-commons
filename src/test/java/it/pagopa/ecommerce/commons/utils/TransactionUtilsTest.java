@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.TransactionTestUtils;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.TransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -41,12 +41,10 @@ class TransactionUtilsTest {
     void shouldHaveBeenTransientStatus() {
         transactionUtils = new TransactionUtils();
         transientStatusList.forEach(
-                transactionStatusDto -> {
-                    assertTrue(
-                            transactionUtils.isTransientStatus(transactionStatusDto),
-                            "Error! The status is not transient"
-                    );
-                }
+                transactionStatusDto -> assertTrue(
+                        transactionUtils.isTransientStatus(transactionStatusDto),
+                        "Error! The status is not transient"
+                )
         );
     }
 
@@ -54,12 +52,10 @@ class TransactionUtilsTest {
     void shouldHaveBeenRefundableTransactionStatus() {
         transactionUtils = new TransactionUtils();
         refaundableStatusList.forEach(
-                transactionStatusDto -> {
-                    assertTrue(
-                            transactionUtils.isRefundableTransaction(transactionStatusDto),
-                            "Error! The status is not refundable transaction"
-                    );
-                }
+                transactionStatusDto -> assertTrue(
+                        transactionUtils.isRefundableTransaction(transactionStatusDto),
+                        "Error! The status is not refundable transaction"
+                )
         );
     }
 

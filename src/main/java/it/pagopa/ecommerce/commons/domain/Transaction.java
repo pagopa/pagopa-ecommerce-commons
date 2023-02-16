@@ -1,7 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRoot;
-import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
 
 /**
  * <p>
@@ -53,14 +55,12 @@ import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
  * Also, application of events has the following properties:
  * <ul>
  * <li>You can apply a non-error events from the corresponding error events
- * (e.g. if you have applied a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionClosureErrorEvent
+ * (e.g. if you have applied a {@link TransactionClosureErrorEvent
  * TransactionClosureErrorEvent} you can still apply a
  * {@link TransactionClosedEvent TransactionClosureSentEvent} afterwards)</li>
  * <li>Events in streams that do not follow the flow above are ignored (e.g. a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- * TransactionActivatedEvent} after a {@link TransactionClosedEvent
- * TransactionClosureSentEvent})</li>
+ * {@link TransactionActivatedEvent TransactionActivatedEvent} after a
+ * {@link TransactionClosedEvent TransactionClosureSentEvent})</li>
  * </ul>
  * <p>
  * See also {@link it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction} for

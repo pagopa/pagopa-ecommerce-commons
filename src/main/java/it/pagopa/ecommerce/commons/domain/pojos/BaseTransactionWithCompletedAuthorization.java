@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationCompletedData;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,12 +14,12 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * Generic authorization data is exposed through
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData
+ * {@link TransactionAuthorizationCompletedData
  * TransactionAuthorizationStatusUpdateData}.
  * </p>
  *
  * @see BaseTransaction
- * @see it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedData
+ * @see TransactionAuthorizationCompletedData
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)

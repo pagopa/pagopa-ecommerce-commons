@@ -1,9 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionClosedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -17,10 +17,8 @@ import lombok.experimental.FieldDefaults;
  * Closed transaction.
  * </p>
  * <p>
- * To this class you can apply a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionUserReceiptAddedEvent}
- * to get a
- * {@link it.pagopa.ecommerce.commons.domain.TransactionWithUserReceipt}.
+ * To this class you can apply a {@link TransactionUserReceiptAddedEvent} to get
+ * a {@link it.pagopa.ecommerce.commons.domain.TransactionWithUserReceipt}.
  * </p>
  *
  * @see Transaction

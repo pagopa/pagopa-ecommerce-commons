@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationCompletedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestData;
-import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationCompletedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestData;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -16,8 +16,8 @@ import lombok.ToString;
  * <p>
  * To this class you can apply an {@link TransactionAuthorizationCompletedEvent}
  * to get a {@link TransactionAuthorizationCompleted} or a
- * {@link it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent} to get
- * a {@link it.pagopa.ecommerce.commons.domain.TransactionExpired}
+ * {@link TransactionExpiredEvent} to get a
+ * {@link it.pagopa.ecommerce.commons.domain.TransactionExpired}
  * </p>
  *
  * @see Transaction

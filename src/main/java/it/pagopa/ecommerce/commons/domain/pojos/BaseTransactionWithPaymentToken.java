@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
-import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -10,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
  * </p>
  * <p>
  * For simplicity we currently include all data associated to
- * {@link it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- * TransactionActivatedEvent}.
+ * {@link TransactionActivatedEvent TransactionActivatedEvent}.
  * </p>
  * <p>
  * To get the payment token, call
@@ -28,8 +27,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @see it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction
- * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
- *      TransactionActivatedEvent
+ * @see TransactionActivatedEvent TransactionActivatedEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -60,7 +58,7 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                                         new TransactionDescription(noticeCode.getDescription()),
                                         new PaymentContextCode(noticeCode.getPaymentContextCode())
                                 )
-                        ).collect(Collectors.toList()),
+                        ).toList(),
                 baseTransaction.getEmail(),
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
@@ -84,7 +82,7 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
             List<PaymentNotice> paymentNotices,
             Email email,
             ZonedDateTime creationDate,
-            it.pagopa.ecommerce.commons.documents.Transaction.ClientId clientId,
+            it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId clientId,
             TransactionActivatedData transactionActivatedData
     ) {
         super(

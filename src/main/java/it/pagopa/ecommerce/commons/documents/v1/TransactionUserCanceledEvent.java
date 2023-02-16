@@ -1,29 +1,26 @@
-package it.pagopa.ecommerce.commons.documents;
+package it.pagopa.ecommerce.commons.documents.v1;
 
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a transaction closure incurring in an error.
- * This event maps to a transient state for transactions.
+ * Business event generated when the user cancel the current payment process
  */
 @Document(collection = "eventstore")
-@Generated
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureErrorEvent extends TransactionEvent<Void> {
+public final class TransactionUserCanceledEvent extends TransactionEvent<Void> {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId transaction unique id
      */
-    public TransactionClosureErrorEvent(
+    public TransactionUserCanceledEvent(
             String transactionId
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_ERROR_EVENT, null);
+        super(transactionId, TransactionEventCode.TRANSACTION_USER_CANCELED_EVENT, null);
     }
 }

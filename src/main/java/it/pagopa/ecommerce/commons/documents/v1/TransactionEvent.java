@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents;
+package it.pagopa.ecommerce.commons.documents.v1;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;

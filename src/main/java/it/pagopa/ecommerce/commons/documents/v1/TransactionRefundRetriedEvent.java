@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents;
+package it.pagopa.ecommerce.commons.documents.v1;
 
 import it.pagopa.ecommerce.commons.domain.TransactionEventCode;
 import lombok.Generated;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureRetriedEvent extends TransactionEvent<TransactionRetriedData> {
+public final class TransactionRefundRetriedEvent extends TransactionEvent<TransactionRetriedData> {
 
     /**
      * Convenience constructor which sets the creation date to now
@@ -22,10 +22,10 @@ public final class TransactionClosureRetriedEvent extends TransactionEvent<Trans
      * @param transactionId          transaction unique id
      * @param transactionRetriedData retry count data
      */
-    public TransactionClosureRetriedEvent(
+    public TransactionRefundRetriedEvent(
             String transactionId,
             TransactionRetriedData transactionRetriedData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_RETRIED_EVENT, transactionRetriedData);
+        super(transactionId, TransactionEventCode.TRANSACTION_REFUND_RETRIED_EVENT, transactionRetriedData);
     }
 }

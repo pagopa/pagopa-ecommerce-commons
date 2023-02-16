@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.TransactionRefundedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionRefunded;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;

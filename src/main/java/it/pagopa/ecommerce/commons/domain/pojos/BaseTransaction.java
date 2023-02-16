@@ -1,7 +1,8 @@
 package it.pagopa.ecommerce.commons.domain.pojos;
 
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
-import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.Email;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.TransactionId;
@@ -50,7 +51,7 @@ import java.util.List;
  * the same way you can get other attributes by casting the transaction to other
  * POJOs.
  *
- * @see it.pagopa.ecommerce.commons.documents.TransactionActivatedEvent
+ * @see TransactionActivatedEvent
  */
 @ToString
 @EqualsAndHashCode

@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons;
 
-import it.pagopa.ecommerce.commons.documents.Transaction;
-import it.pagopa.ecommerce.commons.documents.*;
+import it.pagopa.ecommerce.commons.documents.v1.Transaction;
+import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransaction;
@@ -49,7 +49,7 @@ public class TransactionTestUtils {
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
-                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
+                                new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -292,7 +292,7 @@ public class TransactionTestUtils {
         return new Transaction(
                 TRANSACTION_ID,
                 List.of(
-                        new it.pagopa.ecommerce.commons.documents.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,

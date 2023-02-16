@@ -1,10 +1,10 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import it.pagopa.ecommerce.commons.documents.Transaction.ClientId;
-import it.pagopa.ecommerce.commons.documents.TransactionActivatedData;
-import it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.TransactionUserCanceledEvent;
+import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -18,8 +18,7 @@ import java.util.List;
  * Activated transaction.
  * </p>
  * <p>
- * To this class you can apply an
- * {@link it.pagopa.ecommerce.commons.documents.TransactionAuthorizationRequestedEvent}
+ * To this class you can apply an {@link TransactionAuthorizationRequestedEvent}
  * to get a
  * {@link it.pagopa.ecommerce.commons.domain.TransactionWithRequestedAuthorization}
  * </p>
@@ -63,7 +62,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         email.value(),
                         paymentNotices.stream()
                                 .map(
-                                        n -> new it.pagopa.ecommerce.commons.documents.PaymentNotice(
+                                        n -> new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
                                                 n.paymentToken().value(),
                                                 n.rptId().value(),
                                                 n.transactionDescription().value(),
