@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons;
+package it.pagopa.ecommerce.commons.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;

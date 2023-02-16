@@ -1,10 +1,11 @@
-package it.pagopa.ecommerce.commons.utils;
+package it.pagopa.ecommerce.commons.utils.v1;
 
-import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.utils.TransactionUtils;
+import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

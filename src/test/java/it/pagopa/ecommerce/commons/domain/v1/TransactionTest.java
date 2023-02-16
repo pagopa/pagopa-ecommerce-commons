@@ -1,12 +1,10 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.TransactionTestUtils;
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.v1.Transaction;
-import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

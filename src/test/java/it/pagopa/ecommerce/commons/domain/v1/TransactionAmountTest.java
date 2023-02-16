@@ -1,6 +1,5 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.domain.v1.TransactionAmount;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,6 +1,5 @@
-package it.pagopa.ecommerce.commons.domain;
+package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
