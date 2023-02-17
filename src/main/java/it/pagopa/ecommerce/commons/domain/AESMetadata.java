@@ -1,8 +1,6 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
 import javax.annotation.Nonnull;
@@ -11,6 +9,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -21,8 +20,9 @@ import java.util.Objects;
  * @param iv   the initialization vector used during encryption
  */
 @JsonIgnoreProperties(value = "mode")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record AESMetadata(
-        @Nonnull byte[] salt,
+        @Nonnull Optional<byte[]> salt,
         @Nonnull IvParameterSpec iv
 )
         implements
@@ -40,19 +40,20 @@ public record AESMetadata(
 
     @JsonCreator
     private AESMetadata(
-            @JsonProperty("salt") String salt,
+            @JsonProperty("salt") Optional<String> salt,
             @JsonProperty("iv") String iv
     ) {
-        this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv))); // NOSONAR
+        this(salt.map(Base64.getDecoder()::decode), new IvParameterSpec(Base64.getDecoder().decode(iv))); // NOSONAR
     }
 
     /**
      * {@inheritDoc}
      */
     @Nonnull
+    @JsonTypeId
     @Override
     public ConfidentialDataManager.Mode getMode() {
-        return ConfidentialDataManager.Mode.AES_GCM_NOPAD;
+        return salt.isPresent() ? ConfidentialDataManager.Mode.AES_GCM_NOPAD : ConfidentialDataManager.Mode.AES_GCM_NOPAD_NOSALT;
     }
 
     /**
@@ -60,25 +61,37 @@ public record AESMetadata(
      * generated salt and a randomly generated IV.
      */
     public AESMetadata() {
-        this(generateSalt(), generateIv());
+        this(Optional.of(generateSalt()), generateIv());
+    }
+
+    /**
+     * <p>
+     * Constructs AES metadata without salt. DO NOT USE THIS UNLESS YOU KNOW WHAT
+     * YOU ARE DOING.
+     * </p>
+     *
+     * @return a {@link AESMetadata} instance initialized with an IV only.
+     */
+    public static AESMetadata withoutSalt() {
+        return new AESMetadata(Optional.empty(), generateIv());
     }
 
     @Override
     public boolean equals(Object o) {
         return o instanceof AESMetadata other
-                && Arrays.equals(salt, other.salt)
+                && salt.flatMap(s1 -> other.salt.map(s2 -> Arrays.equals(s1, s2))).orElse(true)
                 && Arrays.equals(iv.getIV(), other.iv.getIV());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.hashCode(salt), Arrays.hashCode(iv.getIV()));
+        return Objects.hash(salt, Arrays.hashCode(iv.getIV()));
     }
 
     @Override
     public String toString() {
         return "AESMetadata{" +
-                "salt=" + Arrays.toString(salt) +
+                "salt=" + salt +
                 ", iv=" + iv +
                 '}';
     }
@@ -109,9 +122,8 @@ public record AESMetadata(
         return Base64.getEncoder().encodeToString(iv.getIV());
     }
 
-    @Nonnull
     @JsonProperty("salt")
     private String getEncodedSalt() {
-        return Base64.getEncoder().encodeToString(salt);
+        return salt.map(Base64.getEncoder()::encodeToString).orElse(null);
     }
 }

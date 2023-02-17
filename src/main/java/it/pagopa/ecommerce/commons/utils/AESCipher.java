@@ -53,12 +53,17 @@ public class AESCipher {
                           String data
     ) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException {
-        Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
+
+        String cipherInstance = aesMetadata.getMode().value;
+        Cipher cipher = Cipher.getInstance(cipherInstance);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
 
         cipher.updateAAD(aesMetadata.iv().getIV());
-        byte[] cipherText = cipher.doFinal(concatBytes(data.getBytes(), aesMetadata.salt()));
+        byte[] cipherInput = aesMetadata.salt()
+                .map(salt -> concatBytes(data.getBytes(), salt))
+                .orElse(data.getBytes());
+        byte[] cipherText = cipher.doFinal(cipherInput);
 
         return Base64.getEncoder().encodeToString(cipherText);
     }
@@ -84,14 +89,16 @@ public class AESCipher {
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
 
-        Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
+        String cipherInstance = aesMetadata.getMode().value;
+        Cipher cipher = Cipher.getInstance(cipherInstance);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
 
         cipher.updateAAD(aesMetadata.iv().getIV());
 
+        int saltLength = aesMetadata.salt().map(salt -> salt.length).orElse(0);
         byte[] decipheredData = cipher.doFinal(Base64.getDecoder().decode(cipherText));
-        byte[] plainText = Arrays.copyOfRange(decipheredData, 0, decipheredData.length - aesMetadata.salt().length);
+        byte[] plainText = Arrays.copyOfRange(decipheredData, 0, decipheredData.length - saltLength);
 
         return new String(plainText);
     }

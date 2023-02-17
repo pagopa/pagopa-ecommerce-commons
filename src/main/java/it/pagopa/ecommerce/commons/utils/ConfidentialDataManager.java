@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.utils;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.pagopa.ecommerce.commons.domain.AESMetadata;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.ConfidentialMetadata;
@@ -40,7 +41,21 @@ public class ConfidentialDataManager {
          * This mode implements encryption with an AES cipher in GCM mode without
          * padding. For more details, see {@link AESCipher}.
          */
-        AES_GCM_NOPAD("AES/GCM/NoPadding");
+        AES_GCM_NOPAD("AES/GCM/NoPadding"),
+
+        /**
+         * <p>
+         * This mode implements encryption with an AES cipher in GCM mode without
+         * padding and without salting.
+         * </p>
+         * <p>
+         * <b>NOTA BENE:</b> No salting has security implications which must be
+         * considered carefully. If you're unsure, use {@code AES_GCM_NOPAD}
+         * </p>
+         * For more details, see {@link AESCipher}.
+         *
+         */
+        AES_GCM_NOPAD_NOSALT("AES/GCM/NoPadding");
 
         /**
          * String representation of the mode. Must be unique for each mode.
@@ -120,6 +135,13 @@ public class ConfidentialDataManager {
                     confidentialMetadata,
                     encryptData(confidentialMetadata, data.toStringRepresentation())
             );
+        } else if (mode == Mode.AES_GCM_NOPAD_NOSALT) {
+            AESMetadata confidentialMetadata = AESMetadata.withoutSalt();
+            return new Confidential<T>(
+                    confidentialMetadata,
+                    encryptData(confidentialMetadata, data.toStringRepresentation())
+            );
+
         } else {
             throw new IllegalArgumentException();
         }

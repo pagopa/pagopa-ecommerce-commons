@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 @JsonSubTypes(
     {
             @JsonSubTypes.Type(value = AESMetadata.class, name = "AES_GCM_NOPAD"),
+            @JsonSubTypes.Type(value = AESMetadata.class, name = "AES_GCM_NOPAD_NOSALT"),
     }
 )
 public sealed interface ConfidentialMetadata permits AESMetadata {
