@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager.Mode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,7 +44,7 @@ public class ConfidentialTest {
     void confidentialJsonRepresentationIsOK() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -57,7 +58,7 @@ public class ConfidentialTest {
     void roundtripEncryptionDecryptionIsSuccessful() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -73,7 +74,7 @@ public class ConfidentialTest {
     void deserializationFailsOnInvalidMetadata() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 

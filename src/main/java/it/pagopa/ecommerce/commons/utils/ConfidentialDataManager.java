@@ -37,8 +37,13 @@ public class ConfidentialDataManager {
     }
 
     @Nonnull
-    public <T extends ConfidentialData> Confidential<T> encrypt(@Nonnull ConfidentialMetadata metadata, @Nonnull T data) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-        return new Confidential<T>(metadata, encryptData(metadata, data.toStringRepresentation()));
+    public <T extends ConfidentialData> Confidential<T> encrypt(Mode mode, @Nonnull T data) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+        if (mode == Mode.AES_GCM_NOPAD) {
+            AESMetadata confidentialMetadata = new AESMetadata();
+            return new Confidential<T>(confidentialMetadata, encryptData(confidentialMetadata, data.toStringRepresentation()));
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Nonnull
