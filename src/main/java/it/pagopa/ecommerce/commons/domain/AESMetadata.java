@@ -75,6 +75,14 @@ public record AESMetadata(
         return Objects.hash(Arrays.hashCode(salt), Arrays.hashCode(iv.getIV()));
     }
 
+    @Override
+    public String toString() {
+        return "AESMetadata{" +
+                "salt=" + Arrays.toString(salt) +
+                ", iv=" + iv +
+                '}';
+    }
+
     @Nonnull
     private static IvParameterSpec generateIv() {
         SecureRandom secureRandom = new SecureRandom();
