@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 public class ConfidentialTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final ConfidentialMetadata confidentialMetadata = new AESMetadata();
     private final ConfidentialDataManager confidentialDataManager;
 
     ConfidentialTest() {
@@ -44,7 +43,7 @@ public class ConfidentialTest {
     void confidentialJsonRepresentationIsOK() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(confidentialMetadata, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -58,7 +57,7 @@ public class ConfidentialTest {
     void roundtripEncryptionDecryptionIsSuccessful() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(confidentialMetadata, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -74,7 +73,7 @@ public class ConfidentialTest {
     void deserializationFailsOnInvalidMetadata() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(confidentialMetadata, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(new AESMetadata(), email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
