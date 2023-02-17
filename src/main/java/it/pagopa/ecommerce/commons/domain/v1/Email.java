@@ -1,7 +1,9 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
+import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
+import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
 
 /**
@@ -16,7 +18,7 @@ import java.util.regex.Pattern;
  * @param value email address
  */
 @ValueObject
-public record Email(String value) {
+public record Email(String value) implements ConfidentialDataManager.ConfidentialData {
     private static final Pattern emailRegex = Pattern.compile(
             "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])" // NOSONAR
     );
@@ -33,5 +35,11 @@ public record Email(String value) {
                     "Ill-formed email: " + value + ". Doesn't match format: " + emailRegex.pattern()
             );
         }
+    }
+
+    @Nonnull
+    @Override
+    public String toStringRepresentation() {
+        return value;
     }
 }
