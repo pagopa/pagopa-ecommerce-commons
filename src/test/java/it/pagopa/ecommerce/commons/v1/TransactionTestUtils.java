@@ -7,6 +7,7 @@ import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 
 import javax.annotation.Nonnull;
 import java.time.ZonedDateTime;
@@ -144,9 +145,10 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosedEvent transactionClosedEvent() {
+    public static TransactionClosedEvent transactionClosedEvent(ClosePaymentResponseDto.OutcomeEnum outcome) {
         return new TransactionClosedEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                new TransactionClosedData(outcome)
         );
     }
 
