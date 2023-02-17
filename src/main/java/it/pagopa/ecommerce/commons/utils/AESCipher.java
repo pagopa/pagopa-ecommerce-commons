@@ -14,14 +14,40 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 
+/**
+ * <p>
+ * Utility class implementing AES encryption.
+ * </p>
+ * <p>
+ * Currently supports only GCM mode.
+ * </p>
+ */
 public class AESCipher {
     private static final int GCM_TAG_BIT_LENGTH = 128;
     private final SecretKeySpec key;
 
+    /**
+     * Constructs a cipher with the given secret key
+     *
+     * @param key the AES secret key
+     */
     public AESCipher(SecretKeySpec key) {
         this.key = key;
     }
 
+    /**
+     * Encrypts a piece of data
+     *
+     * @param aesMetadata algorithm metadata
+     * @param data        the data to be encrypted
+     * @return the encrypted data
+     * @throws IllegalBlockSizeException          See {@link Cipher#doFinal(byte[])}
+     * @throws BadPaddingException                See {@link Cipher#doFinal(byte[])}
+     * @throws NoSuchPaddingException             See {@link Cipher#doFinal(byte[])}
+     * @throws NoSuchAlgorithmException           See {@link Cipher#doFinal(byte[])}
+     * @throws InvalidAlgorithmParameterException See {@link Cipher#doFinal(byte[])}
+     * @throws InvalidKeyException                See {@link Cipher#doFinal(byte[])}
+     */
     public String encrypt(
                           AESMetadata aesMetadata,
                           String data
@@ -37,6 +63,20 @@ public class AESCipher {
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
+    /**
+     * Decrypts a piece of encrypted data
+     *
+     * @param aesMetadata algorithm metadata. Must match the metadata used during
+     *                    encryption.
+     * @param cipherText  the encrypted data
+     * @return the decrypted data
+     * @throws NoSuchPaddingException             See {@link Cipher#doFinal(byte[])}
+     * @throws NoSuchAlgorithmException           See {@link Cipher#doFinal(byte[])}
+     * @throws InvalidAlgorithmParameterException See {@link Cipher#doFinal(byte[])}
+     * @throws InvalidKeyException                See {@link Cipher#doFinal(byte[])}
+     * @throws BadPaddingException                See {@link Cipher#doFinal(byte[])}
+     * @throws IllegalBlockSizeException          See {@link Cipher#doFinal(byte[])}
+     */
     public String decrypt(
                           AESMetadata aesMetadata,
                           String cipherText

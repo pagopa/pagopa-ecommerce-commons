@@ -6,13 +6,22 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
 /**
  * <p>
- * An object holding confidential data.
+ * An object holding confidential opaque data, along with the necessary metadata
+ * to get the original data back.
  * </p>
  */
 public record Confidential<T extends ConfidentialDataManager.ConfidentialData> (
         @JsonProperty("metadata") ConfidentialMetadata confidentialMetadata,
-        @JsonProperty("data") String encodedCipherText
+        @JsonProperty("data") String opaqueData
 ) {
+    /**
+     * Constructs a {@link Confidential} from existing data
+     *
+     * @param confidentialMetadata metadata about how this confidential data was
+     *                             protected
+     * @param opaqueData           opaque data (e.g. a ciphertext, a token to an
+     *                             external service, etc.)
+     */
     @JsonCreator
     public Confidential {
     }
