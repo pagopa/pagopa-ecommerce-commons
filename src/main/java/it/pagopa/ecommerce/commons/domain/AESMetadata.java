@@ -12,6 +12,14 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
+/**
+ * <p>
+ * AES metadata.
+ * </p>
+ *
+ * @param salt the salt used during encryption
+ * @param iv   the initialization vector used during encryption
+ */
 @JsonIgnoreProperties(value = "mode")
 public record AESMetadata(
         @Nonnull byte[] salt,
@@ -20,7 +28,14 @@ public record AESMetadata(
         implements
         ConfidentialMetadata {
 
+    /**
+     * The length of the initialization vector
+     */
     public final static int IV_LENGTH = 12;
+
+    /**
+     * The length of the salt
+     */
     public static final int SALT_LENGTH = 16;
 
     @JsonCreator
@@ -31,12 +46,19 @@ public record AESMetadata(
         this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public ConfidentialDataManager.Mode getMode() {
         return ConfidentialDataManager.Mode.AES_GCM_NOPAD;
     }
 
+    /**
+     * Default constructor. Generates a {@link AESMetadata} with a randomly
+     * generated salt and a randomly generated IV.
+     */
     public AESMetadata() {
         this(generateSalt(), generateIv());
     }
