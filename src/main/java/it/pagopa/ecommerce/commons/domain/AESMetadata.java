@@ -16,14 +16,20 @@ import java.util.Objects;
 public record AESMetadata(
         @Nonnull byte[] salt,
         @Nonnull IvParameterSpec iv
-) implements ConfidentialMetadata {
+)
+        implements
+        ConfidentialMetadata {
+
     public final static int IV_LENGTH = 12;
     public static final int SALT_LENGTH = 16;
 
     @JsonCreator
-    private AESMetadata(@JsonProperty("salt") String salt, @JsonProperty("iv") String iv) {
+    private AESMetadata(
+            @JsonProperty("salt") String salt,
+            @JsonProperty("iv") String iv
+    ) {
         this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv)));
-}
+    }
 
     @Nonnull
     @Override

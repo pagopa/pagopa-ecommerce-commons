@@ -41,28 +41,34 @@ public class ConfidentialTest {
     }
 
     @Test
-    void confidentialJsonRepresentationIsOK() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+    void confidentialJsonRepresentationIsOK() throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
+            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
+            InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
         assertEquals(Set.of("data", "metadata"), jsonData.keySet());
     }
 
     @Test
-    void roundtripEncryptionDecryptionIsSuccessful() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+    void roundtripEncryptionDecryptionIsSuccessful() throws InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
+            InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
-        TypeReference<Confidential<Email>> typeRef = new TypeReference<>() {};
+        TypeReference<Confidential<Email>> typeRef = new TypeReference<>() {
+        };
         Confidential<Email> deserialized = objectMapper.readValue(serialized, typeRef);
 
         Email decryptedEmail = confidentialDataManager.decrypt(deserialized, Email::new);
@@ -71,20 +77,27 @@ public class ConfidentialTest {
     }
 
     @Test
-    void deserializationFailsOnInvalidMetadata() throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+    void deserializationFailsOnInvalidMetadata() throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
+            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
+            InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
         jsonData.put("metadata", Map.of("mode", Mode.AES_GCM_NOPAD.value));
 
         String tamperedValue = objectMapper.writeValueAsString(jsonData);
-        TypeReference<Confidential<Email>> confidentialEmailTypeRef = new TypeReference<>() {};
+        TypeReference<Confidential<Email>> confidentialEmailTypeRef = new TypeReference<>() {
+        };
 
-        assertThrows(ValueInstantiationException.class, () -> objectMapper.readValue(tamperedValue, confidentialEmailTypeRef));
+        assertThrows(
+                ValueInstantiationException.class,
+                () -> objectMapper.readValue(tamperedValue, confidentialEmailTypeRef)
+        );
     }
 }

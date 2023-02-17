@@ -27,7 +27,8 @@ public class ConfidentialDataManager {
     }
 
     public interface ConfidentialData {
-        @Nonnull String toStringRepresentation();
+        @Nonnull
+        String toStringRepresentation();
     }
 
     private final AESCipher aesCipher;
@@ -37,17 +38,28 @@ public class ConfidentialDataManager {
     }
 
     @Nonnull
-    public <T extends ConfidentialData> Confidential<T> encrypt(Mode mode, @Nonnull T data) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+    public <T extends ConfidentialData> Confidential<T> encrypt(
+                                                                Mode mode,
+                                                                @Nonnull T data
+    ) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException,
+            NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         if (mode == Mode.AES_GCM_NOPAD) {
             AESMetadata confidentialMetadata = new AESMetadata();
-            return new Confidential<T>(confidentialMetadata, encryptData(confidentialMetadata, data.toStringRepresentation()));
+            return new Confidential<T>(
+                    confidentialMetadata,
+                    encryptData(confidentialMetadata, data.toStringRepresentation())
+            );
         } else {
             throw new IllegalArgumentException();
         }
     }
 
     @Nonnull
-    public <T extends ConfidentialData> T decrypt(Confidential<T> data, Function<String, T> constructor) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public <T extends ConfidentialData> T decrypt(
+                                                  Confidential<T> data,
+                                                  Function<String, T> constructor
+    ) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return constructor.apply(decrypt(data));
     }
 

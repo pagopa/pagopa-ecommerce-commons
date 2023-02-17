@@ -22,7 +22,11 @@ public class AESCipher {
         this.key = key;
     }
 
-    public String encrypt(AESMetadata aesMetadata, String data) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public String encrypt(
+                          AESMetadata aesMetadata,
+                          String data
+    ) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, InvalidKeyException {
         Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
@@ -33,14 +37,16 @@ public class AESCipher {
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
-    public String decrypt(AESMetadata aesMetadata, String cipherText) throws NoSuchPaddingException, NoSuchAlgorithmException,
+    public String decrypt(
+                          AESMetadata aesMetadata,
+                          String cipherText
+    ) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
-
 
         cipher.updateAAD(aesMetadata.iv().getIV());
 
@@ -50,7 +56,10 @@ public class AESCipher {
         return new String(plainText);
     }
 
-    private static byte[] concatBytes(byte[] array1, byte[] array2) {
+    private static byte[] concatBytes(
+                                      byte[] array1,
+                                      byte[] array2
+    ) {
         byte[] result = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, result, array1.length, array2.length);
         return result;

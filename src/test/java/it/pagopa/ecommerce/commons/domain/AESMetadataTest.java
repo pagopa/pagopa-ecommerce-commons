@@ -23,7 +23,8 @@ public class AESMetadataTest {
         AESMetadata metadata = new AESMetadata();
 
         String serialized = objectMapper.writeValueAsString(metadata);
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
         assertEquals(Set.of("mode", "iv", "salt"), jsonData.keySet());
@@ -35,7 +36,8 @@ public class AESMetadataTest {
 
         String serialized = objectMapper.writeValueAsString(metadata);
 
-        TypeReference<AESMetadata> typeRef = new TypeReference<>() {};
+        TypeReference<AESMetadata> typeRef = new TypeReference<>() {
+        };
         AESMetadata deserialized = objectMapper.readValue(serialized, typeRef);
 
         assertArrayEquals(metadata.salt(), deserialized.salt());
