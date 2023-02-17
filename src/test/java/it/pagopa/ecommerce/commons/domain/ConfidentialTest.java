@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager.Mode;
@@ -80,11 +80,11 @@ public class ConfidentialTest {
 
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
-        jsonData.put("metadata", "{}");
+        jsonData.put("metadata", Map.of("mode", Mode.AES_GCM_NOPAD.value));
 
         String tamperedValue = objectMapper.writeValueAsString(jsonData);
         TypeReference<Confidential<Email>> confidentialEmailTypeRef = new TypeReference<>() {};
 
-        assertThrows(InvalidTypeIdException.class, () -> objectMapper.readValue(tamperedValue, confidentialEmailTypeRef));
+        assertThrows(ValueInstantiationException.class, () -> objectMapper.readValue(tamperedValue, confidentialEmailTypeRef));
     }
 }
