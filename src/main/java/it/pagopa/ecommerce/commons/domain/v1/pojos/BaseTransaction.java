@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain.v1.pojos;
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.v1.Transaction;
@@ -65,7 +66,7 @@ public abstract class BaseTransaction {
     TransactionId transactionId;
 
     List<PaymentNotice> paymentNotices;
-    Email email;
+    Confidential<Email> email;
     ZonedDateTime creationDate;
 
     ClientId clientId;

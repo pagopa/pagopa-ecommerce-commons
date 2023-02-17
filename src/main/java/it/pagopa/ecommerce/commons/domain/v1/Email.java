@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
@@ -40,6 +41,7 @@ public record Email(String value)
     }
 
     @Nonnull
+    @JsonValue
     @Override
     public String toStringRepresentation() {
         return value;

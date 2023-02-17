@@ -1,5 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
@@ -25,7 +27,7 @@ public class Transaction {
     @Id
     private String transactionId;
     private ClientId clientId;
-    private String email;
+    private Confidential<Email> email;
     private TransactionStatusDto status;
     @Nullable
     private Integer feeTotal;
@@ -86,7 +88,7 @@ public class Transaction {
             String transactionId,
             List<PaymentNotice> paymentNotices,
             @Nullable Integer feeTotal,
-            String email,
+            Confidential<Email> email,
             TransactionStatusDto status,
             ClientId clientId,
             String creationDate

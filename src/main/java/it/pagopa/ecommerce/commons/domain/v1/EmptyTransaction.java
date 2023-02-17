@@ -34,7 +34,7 @@ public final class EmptyTransaction implements Transaction {
                                         new PaymentContextCode(n.getPaymentContextCode())
                                 )
                         ).collect(Collectors.toList()),
-                new Email(event.getData().getEmail()),
+                event.getData().getEmail(),
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
                 ZonedDateTime.parse(event.getCreationDate()),
