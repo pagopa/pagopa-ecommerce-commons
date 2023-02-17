@@ -9,10 +9,11 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
  * An object holding confidential data.
  * </p>
  */
-public record Confidential<T extends ConfidentialDataManager.ConfidentialData>(
+public record Confidential<T extends ConfidentialDataManager.ConfidentialData> (
         @JsonProperty("metadata") ConfidentialMetadata confidentialMetadata,
         @JsonProperty("data") String encodedCipherText
 ) {
     @JsonCreator
-    public Confidential {}
+    public Confidential {
+    }
 }

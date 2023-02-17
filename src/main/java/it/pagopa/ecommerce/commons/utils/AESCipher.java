@@ -21,7 +21,11 @@ public class AESCipher {
         this.key = key;
     }
 
-    public String encrypt(AESMetadata aesMetadata, String data) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public String encrypt(
+                          AESMetadata aesMetadata,
+                          String data
+    ) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, InvalidKeyException {
         Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
@@ -32,7 +36,10 @@ public class AESCipher {
         return Base64.getEncoder().encodeToString(cipherText);
     }
 
-    public String decrypt(AESMetadata aesMetadata, String cipherText) throws NoSuchPaddingException, NoSuchAlgorithmException,
+    public String decrypt(
+                          AESMetadata aesMetadata,
+                          String cipherText
+    ) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
 
