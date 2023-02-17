@@ -43,7 +43,7 @@ public record AESMetadata(
             @JsonProperty("salt") String salt,
             @JsonProperty("iv") String iv
     ) {
-        this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv)));
+        this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv))); // NOSONAR
     }
 
     /**
