@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
-import it.pagopa.generated.ecommerce.nodo.v2.dto.ClosePaymentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,8 +14,22 @@ import org.springframework.lang.Nullable;
 public class TransactionClosureData {
 
     /**
-     * The Nodo close payment outcome
+     * The Nodo closePayment outcome
      */
     @Nullable
-    private ClosePaymentResponseDto.OutcomeEnum outcome;
+    private Outcome outcome;
+
+    /**
+     * Enumeration of Nodo closePayment outcome
+     */
+    public enum Outcome {
+        /**
+         * closePayment OK outcome
+         */
+        OK,
+        /**
+         * closePayment KO outcome
+         */
+        KO
+    }
 }
