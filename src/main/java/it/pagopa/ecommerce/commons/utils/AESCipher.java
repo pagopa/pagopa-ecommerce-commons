@@ -26,6 +26,8 @@ public class AESCipher {
         Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
+
+        cipher.updateAAD(aesMetadata.iv().getIV());
         byte[] cipherText = cipher.doFinal(concatBytes(data.getBytes(), aesMetadata.salt()));
 
         return Base64.getEncoder().encodeToString(cipherText);
@@ -38,6 +40,9 @@ public class AESCipher {
         Cipher cipher = Cipher.getInstance(aesMetadata.getMode().value);
         GCMParameterSpec parameterSpec = new GCMParameterSpec(GCM_TAG_BIT_LENGTH, aesMetadata.iv().getIV());
         cipher.init(Cipher.DECRYPT_MODE, key, parameterSpec);
+
+
+        cipher.updateAAD(aesMetadata.iv().getIV());
 
         byte[] decipheredData = cipher.doFinal(Base64.getDecoder().decode(cipherText));
         byte[] plainText = Arrays.copyOfRange(decipheredData, 0, decipheredData.length - aesMetadata.salt().length);
