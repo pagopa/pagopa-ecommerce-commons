@@ -148,7 +148,7 @@ public class TransactionTestUtils {
     public static TransactionClosedEvent transactionClosedEvent(ClosePaymentResponseDto.OutcomeEnum outcome) {
         return new TransactionClosedEvent(
                 TRANSACTION_ID,
-                new TransactionClosedData(outcome)
+                new TransactionClosureData(outcome)
         );
     }
 
@@ -218,9 +218,9 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionUnauthorized transactionUnauthorized(
                                                                   BaseTransactionWithCompletedAuthorization transaction,
-                                                                  TransactionClosureFailedEvent transactionClosureFailedEven
+                                                                  TransactionClosureFailedEvent transactionClosureFailedEvent
     ) {
-        return new TransactionUnauthorized(transaction, transactionClosureFailedEven);
+        return new TransactionUnauthorized(transaction, transactionClosureFailedEvent);
     }
 
     @Nonnull
@@ -257,7 +257,8 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionClosureFailedEvent transactionClosureFailedEvent() {
         return new TransactionClosureFailedEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                new TransactionClosureData(null)
         );
     }
 
