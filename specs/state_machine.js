@@ -20,9 +20,11 @@ createMachine(
         on: {
           CLOSED: {
             target: "CLOSED",
+            cond: "auth_outcome_ok"
           },
           CLOSURE_FAILED: {
             target: "UNAUTHORIZED",
+            cond: "auth_outcome_ko"
           },
           CLOSURE_ERROR: {
             target: "CLOSURE_ERROR",
@@ -67,7 +69,12 @@ createMachine(
           CLOSURE_RETRIED: {},
           CLOSED: {
             target: "CLOSED",
+            cond: "auth_outcome_ok"
           },
+          CLOSURE_FAILED: {
+            target: "UNAUTHORIZED",
+            cond: "auth_outcome_ko"
+          }
         },
       },
       NOTIFIED: {
@@ -117,6 +124,7 @@ createMachine(
       closepayment_outcome_ko: (context, event) =>
         context.closepayment_outcome == "KO",
       auth_outcome_ok: (context, event) => context.auth_outcome == "OK",
+      auth_outcome_ko: (context, event) => context.auth_outcome == "KO",
       closepayment_response_ok: (context, event) =>
         context.closepayment_response == "OK",
     },
