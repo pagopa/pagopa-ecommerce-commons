@@ -18,7 +18,7 @@ public class TransactionClosureData {
      * The Nodo closePayment outcome
      */
     @NotNull
-    private Outcome outcome;
+    private Outcome responseOutcome;
 
     /**
      * Enumeration of Nodo closePayment outcome
