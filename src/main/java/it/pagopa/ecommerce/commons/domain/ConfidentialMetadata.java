@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "mode", visible = true)
 @JsonSubTypes(
     {
-            @JsonSubTypes.Type(value = AESMetadata.class, name = "AES/GCM/NoPadding"),
+            @JsonSubTypes.Type(value = AESMetadata.class, name = "AES_GCM_NOPAD"),
     }
 )
 public sealed interface ConfidentialMetadata permits AESMetadata {
