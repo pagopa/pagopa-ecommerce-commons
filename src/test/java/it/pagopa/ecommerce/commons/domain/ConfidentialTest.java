@@ -89,7 +89,7 @@ public class ConfidentialTest {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
-        jsonData.put("metadata", Map.of("mode", Mode.AES_GCM_NOPAD.value));
+        jsonData.put("metadata", Map.of("mode", Mode.AES_GCM_NOPAD));
 
         String tamperedValue = objectMapper.writeValueAsString(jsonData);
         TypeReference<Confidential<Email>> confidentialEmailTypeRef = new TypeReference<>() {
