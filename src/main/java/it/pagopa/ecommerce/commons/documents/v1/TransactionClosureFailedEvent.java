@@ -12,16 +12,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureFailedEvent extends TransactionEvent<Void> {
+public final class TransactionClosureFailedEvent extends TransactionEvent<TransactionClosureData> {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
-     * @param transactionId transaction unique id
+     * @param transactionId          transaction unique id
+     * @param transactionClosureData the transaction closure operation data
      */
     public TransactionClosureFailedEvent(
-            String transactionId
+            String transactionId,
+            TransactionClosureData transactionClosureData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT, null);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT, transactionClosureData);
     }
 }
