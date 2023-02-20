@@ -31,7 +31,7 @@ public record PaymentRequestInfo(
         @Nullable Integer amount,
         @Nullable String dueDate,
         @Nullable String paymentToken,
-        @NonNull IdempotencyKey idempotencyKey
+        @Nullable IdempotencyKey idempotencyKey
 ) {
     /**
      * Construct a {@link PaymentRequestInfo} from its components
