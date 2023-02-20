@@ -3,7 +3,8 @@ package it.pagopa.ecommerce.commons.documents.v1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Data related to Nodo close payment operation such as outcome (OK/KO)
@@ -16,7 +17,7 @@ public class TransactionClosureData {
     /**
      * The Nodo closePayment outcome
      */
-    @Nullable
+    @NotNull
     private Outcome outcome;
 
     /**

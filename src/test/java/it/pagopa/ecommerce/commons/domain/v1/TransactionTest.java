@@ -1675,7 +1675,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
-                .transactionClosureFailedEvent();
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -1718,7 +1718,7 @@ class TransactionTest {
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.UNAUTHORIZED);
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
-                .transactionClosureFailedEvent();
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,

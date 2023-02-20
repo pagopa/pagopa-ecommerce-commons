@@ -152,14 +152,6 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosedEvent transactionClosedEvent() {
-        return new TransactionClosedEvent(
-                TRANSACTION_ID,
-                new TransactionClosureData(TransactionClosureData.Outcome.OK)
-        );
-    }
-
-    @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(
                 TRANSACTION_ID
@@ -262,10 +254,10 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureFailedEvent transactionClosureFailedEvent() {
+    public static TransactionClosureFailedEvent transactionClosureFailedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureFailedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(null)
+                new TransactionClosureData(outcome)
         );
     }
 
