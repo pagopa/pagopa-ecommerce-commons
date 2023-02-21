@@ -53,7 +53,8 @@ public record AESMetadata(
     @JsonTypeId
     @Override
     public ConfidentialDataManager.Mode getMode() {
-        return salt.isPresent() ? ConfidentialDataManager.Mode.AES_GCM_NOPAD : ConfidentialDataManager.Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV;
+        return salt.isPresent() ? ConfidentialDataManager.Mode.AES_GCM_NOPAD
+                : ConfidentialDataManager.Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV;
     }
 
     /**

@@ -68,7 +68,6 @@ public class ConfidentialTest {
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
         Confidential<Email> otherConfidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
 
-
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
         String otherSerialized = objectMapper.writeValueAsString(otherConfidentialEmail);
 
@@ -101,7 +100,8 @@ public class ConfidentialTest {
             InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager
+                .encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -109,17 +109,22 @@ public class ConfidentialTest {
         };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
-        assertEquals(((Map<String, Object>) jsonData.get("metadata")).get("mode"), Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV.toString());
+        assertEquals(
+                ((Map<String, Object>) jsonData.get("metadata")).get("mode"),
+                Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV.toString()
+        );
         assertEquals(Set.of("data", "metadata"), jsonData.keySet());
     }
 
     @Test
-    void roundtripEncryptionDecryptionWithoutSaltWithDeterministicIvIsSuccessful() throws InvalidAlgorithmParameterException,
+    void roundtripEncryptionDecryptionWithoutSaltWithDeterministicIvIsSuccessful()
+            throws InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
             InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager
+                .encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -139,9 +144,10 @@ public class ConfidentialTest {
             InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
-        Confidential<Email> otherConfidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
-
+        Confidential<Email> confidentialEmail = this.confidentialDataManager
+                .encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+        Confidential<Email> otherConfidentialEmail = this.confidentialDataManager
+                .encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
         String otherSerialized = objectMapper.writeValueAsString(otherConfidentialEmail);
@@ -155,7 +161,8 @@ public class ConfidentialTest {
             InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager
+                .encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 

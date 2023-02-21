@@ -49,12 +49,13 @@ public class ConfidentialDataManager {
         /**
          * <p>
          * This mode implements encryption with an AES cipher in GCM mode without
-         * padding, without salting and with a deterministic IV derived from the plaintext data.
+         * padding, without salting and with a deterministic IV derived from the
+         * plaintext data.
          * </p>
          * <p>
          * <b>NOTA BENE:</b> No salting has security implications which must be
-         * considered carefully. Not using a nonce for an IV has EVEN WIDER security implications.
-         * If you're unsure, use {@code AES_GCM_NOPAD}
+         * considered carefully. Not using a nonce for an IV has EVEN WIDER security
+         * implications. If you're unsure, use {@code AES_GCM_NOPAD}
          * </p>
          * For more details, see {@link AESCipher}.
          *
