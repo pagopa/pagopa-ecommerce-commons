@@ -20,9 +20,11 @@ createMachine(
         on: {
           CLOSED: {
             target: "CLOSED",
+            cond: "auth_outcome_ok"
           },
           CLOSURE_FAILED: {
             target: "UNAUTHORIZED",
+            cond: "auth_outcome_ko"
           },
           CLOSURE_ERROR: {
             target: "CLOSURE_ERROR",
@@ -50,8 +52,19 @@ createMachine(
           },
         },
       },
-      CANCELED: {
-        type: "final",
+      CANCELLATION_REQUESTED: {
+        entry: assign({ was_canceled: true }),
+        on: {
+          CLOSED: {
+            target: "CANCELED"
+          },
+          CLOSURE_ERROR: {
+            target: "CLOSURE_ERROR"
+          },
+          EXPIRE: {
+            target: "EXPIRED"
+          }
+        }
       },
       UNAUTHORIZED: {
         type: "final",
@@ -65,13 +78,27 @@ createMachine(
             target: "REFUNDED",
           },
           CLOSURE_RETRIED: {},
-          CLOSED: {
-            target: "CLOSED",
-          },
+          CLOSED: [
+            {
+              target: "CLOSED",
+              cond: "auth_outcome_ok"
+            },
+            {
+              target: "CANCELED",
+              cond: "was_canceled"
+            }
+          ],
+          CLOSURE_FAILED: {
+            target: "UNAUTHORIZED",
+            cond: "auth_outcome_ko"
+          }
         },
       },
       NOTIFIED: {
         type: "final",
+      },
+      CANCELED: {
+        type: "final"
       },
       ACTIVATED: {
         on: {
@@ -82,7 +109,7 @@ createMachine(
             target: "EXPIRED_NOT_AUTHORIZED",
           },
           USER_CANCELED: {
-            target: "CANCELED",
+            target: "CANCELLATION_REQUESTED",
           },
         },
       },
@@ -91,6 +118,9 @@ createMachine(
           REFUND: {
             target: "REFUNDED",
           },
+          REFUND_ERROR: {
+            target: "REFUND_ERROR"
+          }
         },
       },
       EXPIRED_NOT_AUTHORIZED: {
@@ -99,12 +129,21 @@ createMachine(
       REFUNDED: {
         type: "final",
       },
+      REFUND_ERROR: {
+        on: {
+          REFUND: {
+            target: "REFUNDED"
+          },
+          REFUND_RETRIED: {}
+        }
+      }
     },
     context: {
       auth_requested: false,
       closepayment_outcome: null,
       closepayment_response: null,
       auth_outcome: null,
+      was_canceled: null
     },
     predictableActionArguments: true,
     preserveActionOrder: true,
@@ -117,8 +156,10 @@ createMachine(
       closepayment_outcome_ko: (context, event) =>
         context.closepayment_outcome == "KO",
       auth_outcome_ok: (context, event) => context.auth_outcome == "OK",
+      auth_outcome_ko: (context, event) => context.auth_outcome == "KO",
       closepayment_response_ok: (context, event) =>
         context.closepayment_response == "OK",
+      was_canceled: (context, event) => context.was_canceled,
     },
   }
 );
