@@ -304,7 +304,7 @@ public class TransactionTestUtils {
                 null,
                 EMAIL,
                 transactionStatus,
-                Transaction.ClientId.UNKNOWN,
+                Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString()
         );
     }
