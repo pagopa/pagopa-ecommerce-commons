@@ -25,8 +25,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ConfidentialTest {
@@ -61,6 +60,22 @@ public class ConfidentialTest {
     }
 
     @Test
+    void encryptedDataWithSaltIsDifferent() throws InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
+            InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+        Email email = new Email("foo@example.com");
+
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
+        Confidential<Email> otherConfidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email);
+
+
+        String serialized = objectMapper.writeValueAsString(confidentialEmail);
+        String otherSerialized = objectMapper.writeValueAsString(otherConfidentialEmail);
+
+        assertNotEquals(serialized, otherSerialized);
+    }
+
+    @Test
     void roundtripEncryptionDecryptionWithSaltIsSuccessful() throws InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
             InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
@@ -80,13 +95,13 @@ public class ConfidentialTest {
     }
 
     @Test
-    void confidentialJsonRepresentationWithoutSaltIsOK()
+    void confidentialJsonRepresentationWithoutSaltWithDeterministicIvIsOK()
             throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
             NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
             InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -94,17 +109,17 @@ public class ConfidentialTest {
         };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
-        assertEquals(((Map<String, Object>) jsonData.get("metadata")).get("mode"), Mode.AES_GCM_NOPAD_NOSALT.toString());
+        assertEquals(((Map<String, Object>) jsonData.get("metadata")).get("mode"), Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV.toString());
         assertEquals(Set.of("data", "metadata"), jsonData.keySet());
     }
 
     @Test
-    void roundtripEncryptionDecryptionWithoutSaltIsSuccessful() throws InvalidAlgorithmParameterException,
+    void roundtripEncryptionDecryptionWithoutSaltWithDeterministicIvIsSuccessful() throws InvalidAlgorithmParameterException,
             IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
             InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -114,8 +129,24 @@ public class ConfidentialTest {
 
         Email decryptedEmail = confidentialDataManager.decrypt(deserialized, Email::new);
 
-        assertEquals(Mode.AES_GCM_NOPAD_NOSALT, deserialized.confidentialMetadata().getMode());
+        assertEquals(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, deserialized.confidentialMetadata().getMode());
         assertEquals(email, decryptedEmail);
+    }
+
+    @Test
+    void encryptedDataWithoutSaltWithDeterministicIvIsTheSame() throws InvalidAlgorithmParameterException,
+            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
+            InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+        Email email = new Email("foo@example.com");
+
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+        Confidential<Email> otherConfidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
+
+
+        String serialized = objectMapper.writeValueAsString(confidentialEmail);
+        String otherSerialized = objectMapper.writeValueAsString(otherConfidentialEmail);
+
+        assertEquals(serialized, otherSerialized);
     }
 
     @Test
@@ -124,7 +155,7 @@ public class ConfidentialTest {
             InvalidKeyException, JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT, email);
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV, email);
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 

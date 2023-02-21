@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.crypto.spec.IvParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -18,6 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class AESMetadataTest {
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
+
+    private static final IvParameterSpec iv;
+
+    static {
+        byte[] ivData = new byte[AESMetadata.IV_LENGTH];
+        new Random().nextBytes(ivData);
+
+        iv = new IvParameterSpec(ivData);
+    }
 
     @Test
     void aesMetadataSerializationWithSaltIsOk() throws JsonProcessingException {
@@ -33,7 +44,7 @@ public class AESMetadataTest {
 
     @Test
     void aesMetadataSerializationWithoutSaltIsOk() throws JsonProcessingException {
-        AESMetadata metadata = AESMetadata.withoutSalt();
+        AESMetadata metadata = AESMetadata.withoutSalt(iv);
 
         String serialized = objectMapper.writeValueAsString(metadata);
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
@@ -60,7 +71,7 @@ public class AESMetadataTest {
 
     @Test
     void aesSerializationRoundtripWithoutSaltIsSuccessful() throws JsonProcessingException {
-        AESMetadata metadata = AESMetadata.withoutSalt();
+        AESMetadata metadata = AESMetadata.withoutSalt(iv);
 
         String serialized = objectMapper.writeValueAsString(metadata);
 

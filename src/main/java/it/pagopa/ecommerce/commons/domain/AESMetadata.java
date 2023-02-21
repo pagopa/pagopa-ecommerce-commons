@@ -53,7 +53,7 @@ public record AESMetadata(
     @JsonTypeId
     @Override
     public ConfidentialDataManager.Mode getMode() {
-        return salt.isPresent() ? ConfidentialDataManager.Mode.AES_GCM_NOPAD : ConfidentialDataManager.Mode.AES_GCM_NOPAD_NOSALT;
+        return salt.isPresent() ? ConfidentialDataManager.Mode.AES_GCM_NOPAD : ConfidentialDataManager.Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV;
     }
 
     /**
@@ -72,8 +72,8 @@ public record AESMetadata(
      *
      * @return a {@link AESMetadata} instance initialized with an IV only.
      */
-    public static AESMetadata withoutSalt() {
-        return new AESMetadata(Optional.empty(), generateIv());
+    public static AESMetadata withoutSalt(@Nonnull IvParameterSpec iv) {
+        return new AESMetadata(Optional.empty(), iv);
     }
 
     @Override

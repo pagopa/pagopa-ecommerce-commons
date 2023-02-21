@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import it.pagopa.ecommerce.commons.domain.AESMetadata;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.ConfidentialMetadata;
@@ -9,11 +8,15 @@ import javax.annotation.Nonnull;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -46,16 +49,17 @@ public class ConfidentialDataManager {
         /**
          * <p>
          * This mode implements encryption with an AES cipher in GCM mode without
-         * padding and without salting.
+         * padding, without salting and with a deterministic IV derived from the plaintext data.
          * </p>
          * <p>
          * <b>NOTA BENE:</b> No salting has security implications which must be
-         * considered carefully. If you're unsure, use {@code AES_GCM_NOPAD}
+         * considered carefully. Not using a nonce for an IV has EVEN WIDER security implications.
+         * If you're unsure, use {@code AES_GCM_NOPAD}
          * </p>
          * For more details, see {@link AESCipher}.
          *
          */
-        AES_GCM_NOPAD_NOSALT("AES/GCM/NoPadding");
+        AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV("AES/GCM/NoPadding");
 
         /**
          * String representation of the mode. Must be unique for each mode.
@@ -131,12 +135,14 @@ public class ConfidentialDataManager {
             NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         if (mode == Mode.AES_GCM_NOPAD) {
             AESMetadata confidentialMetadata = new AESMetadata();
-            return new Confidential<T>(
+            return new Confidential<>(
                     confidentialMetadata,
                     encryptData(confidentialMetadata, data.toStringRepresentation())
             );
-        } else if (mode == Mode.AES_GCM_NOPAD_NOSALT) {
-            AESMetadata confidentialMetadata = AESMetadata.withoutSalt();
+        } else if (mode == Mode.AES_GCM_NOPAD_NOSALT_DETERMINISTIC_IV) {
+            IvParameterSpec iv = generateDeterministicIv(data.toStringRepresentation());
+            AESMetadata confidentialMetadata = AESMetadata.withoutSalt(iv);
+
             return new Confidential<T>(
                     confidentialMetadata,
                     encryptData(confidentialMetadata, data.toStringRepresentation())
@@ -206,5 +212,16 @@ public class ConfidentialDataManager {
             case AESMetadata aesMetadata -> this.aesCipher.encrypt(aesMetadata, data);
             default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
         };
+    }
+
+    @Nonnull
+    private IvParameterSpec generateDeterministicIv(String data) throws NoSuchAlgorithmException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        sha1.reset();
+        sha1.update(data.getBytes(StandardCharsets.UTF_8));
+
+        byte[] digest = sha1.digest();
+
+        return new IvParameterSpec(Arrays.copyOfRange(digest, 0, AESMetadata.IV_LENGTH));
     }
 }
