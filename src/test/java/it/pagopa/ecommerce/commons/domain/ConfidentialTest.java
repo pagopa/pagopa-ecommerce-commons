@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class ConfidentialTest {
+class ConfidentialTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ConfidentialDataManager confidentialDataManager;
 

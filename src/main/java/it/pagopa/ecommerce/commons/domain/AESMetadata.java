@@ -31,7 +31,7 @@ public record AESMetadata(
     /**
      * The length of the initialization vector
      */
-    public final static int IV_LENGTH = 12;
+    public static final int IV_LENGTH = 12;
 
     /**
      * The length of the salt
