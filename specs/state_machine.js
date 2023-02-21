@@ -47,8 +47,8 @@ createMachine(
           EXPIRE: {
             target: "EXPIRED",
           },
-          REFUND: {
-            target: "REFUNDED",
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
           },
         },
       },
@@ -74,8 +74,8 @@ createMachine(
           EXPIRE: {
             target: "EXPIRED",
           },
-          REFUND: {
-            target: "REFUNDED",
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
           },
           CLOSURE_RETRIED: {},
           CLOSED: [
@@ -128,6 +128,16 @@ createMachine(
       },
       REFUNDED: {
         type: "final",
+      },
+      REFUND_REQUESTED: {
+        on: {
+          REFUND: {
+            target: "REFUNDED"
+          },
+          REFUND_ERROR: {
+            target: "REFUND_ERROR"
+          }
+        }
       },
       REFUND_ERROR: {
         on: {
