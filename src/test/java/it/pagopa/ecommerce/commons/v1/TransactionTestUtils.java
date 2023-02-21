@@ -334,8 +334,8 @@ public class TransactionTestUtils {
                 ),
                 null,
                 EMAIL,
-                Transaction.ClientId.UNKNOWN,
                 transactionStatus,
+                Transaction.ClientId.UNKNOWN,
                 creationDateTime.toString()
         );
     }
