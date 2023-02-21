@@ -71,6 +71,7 @@ public record AESMetadata(
      * YOU ARE DOING.
      * </p>
      *
+     * @param iv the initialization vector
      * @return a {@link AESMetadata} instance initialized with an IV only.
      */
     public static AESMetadata withoutSalt(@Nonnull IvParameterSpec iv) {
