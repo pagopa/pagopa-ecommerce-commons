@@ -16,7 +16,7 @@ createMachine(
         },
       },
       AUTHORIZATION_COMPLETED: {
-        entry: assign({ auth_outcome: "KO" }),
+        entry: assign({ auth_outcome: "OK" }),
         on: {
           CLOSED: {
             target: "CLOSED",
@@ -33,10 +33,14 @@ createMachine(
         },
       },
       CLOSED: {
-        entry: assign({ closepayment_outcome: "KO" }),
+        entry: assign({
+          closepayment_outcome: "OK",
+          closepayment_response: "KO",
+        }),
         on: {
           ADD_USER_RECEIPT: {
             target: "NOTIFIED",
+            cond: "closepayment_response_ok",
           },
           EXPIRE: {
             target: "EXPIRED",
@@ -99,6 +103,7 @@ createMachine(
     context: {
       auth_requested: false,
       closepayment_outcome: null,
+      closepayment_response: null,
       auth_outcome: null,
     },
     predictableActionArguments: true,
@@ -112,6 +117,8 @@ createMachine(
       closepayment_outcome_ko: (context, event) =>
         context.closepayment_outcome == "KO",
       auth_outcome_ok: (context, event) => context.auth_outcome == "OK",
+      closepayment_response_ok: (context, event) =>
+        context.closepayment_response == "OK",
     },
   }
 );

@@ -1,9 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -52,8 +49,13 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent ->
-                    new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
+            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent -> {
+                if (TransactionClosureData.Outcome.OK.equals(this.transactionClosedEvent.getData().getResponseOutcome())) {
+                    yield new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
+                } else {
+                    yield this;
+                }
+            }
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpired(this, transactionExpiredEvent);
             case TransactionRefundedEvent transactionRefundedEvent ->
