@@ -40,7 +40,8 @@ public class TransactionUtils {
         return TransactionStatusDto.CLOSED == status
                 || TransactionStatusDto.CLOSURE_ERROR == status
                 || TransactionStatusDto.EXPIRED == status
-                || TransactionStatusDto.AUTHORIZATION_COMPLETED == status;
+                || TransactionStatusDto.AUTHORIZATION_COMPLETED == status
+                || TransactionStatusDto.AUTHORIZATION_REQUESTED == status;
     }
 
     /**
