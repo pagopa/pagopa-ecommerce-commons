@@ -50,11 +50,7 @@ public class Transaction {
         /**
          * Transaction originated by IO app
          */
-        IO,
-        /**
-         * Transaction origin is not an above ones
-         */
-        UNKNOWN;
+        IO;
 
         private static final Map<String, ClientId> lookupMap = Collections.unmodifiableMap(
                 Arrays.stream(ClientId.values()).collect(Collectors.toMap(ClientId::toString, Function.identity()))
@@ -63,12 +59,10 @@ public class Transaction {
         /**
          * @param enumValue - the enumeration value to be converted to {@link ClientId}
          *                  enumeration instance
-         * @return the converted {@link ClientId} enumeration instance or
-         *         {@link ClientId#UNKNOWN} if the input value is not assignable to an
-         *         enumeration value
+         * @return the converted {@link ClientId} enumeration instance
          */
         public static ClientId fromString(String enumValue) {
-            return lookupMap.getOrDefault(enumValue, UNKNOWN);
+            return lookupMap.get(enumValue);
         }
     }
 
