@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.annotation.Nonnull;
 import java.security.SecureRandom;
@@ -43,6 +44,11 @@ public record AESMetadata(
             @JsonProperty("iv") String iv
     ) {
         this(Base64.getDecoder().decode(salt), Base64.getDecoder().decode(iv)); // NOSONAR
+    }
+
+    @PersistenceConstructor
+    public AESMetadata {
+        //used by Mongo for serialization
     }
 
     /**
