@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.annotation.Nonnull;
-import javax.crypto.spec.IvParameterSpec;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @JsonIgnoreProperties(value = "mode")
 public record AESMetadata(
         @Nonnull byte[] salt,
-        @Nonnull IvParameterSpec iv
+        @Nonnull byte[] iv
 )
         implements
         ConfidentialMetadata {
@@ -39,11 +39,12 @@ public record AESMetadata(
     public static final int SALT_LENGTH = 16;
 
     @JsonCreator
+    @PersistenceConstructor
     private AESMetadata(
             @JsonProperty("salt") String salt,
             @JsonProperty("iv") String iv
     ) {
-        this(Base64.getDecoder().decode(salt), new IvParameterSpec(Base64.getDecoder().decode(iv))); // NOSONAR
+        this(Base64.getDecoder().decode(salt), Base64.getDecoder().decode(iv)); // NOSONAR
     }
 
     /**
@@ -67,12 +68,12 @@ public record AESMetadata(
     public boolean equals(Object o) {
         return o instanceof AESMetadata other
                 && Arrays.equals(salt, other.salt)
-                && Arrays.equals(iv.getIV(), other.iv.getIV());
+                && Arrays.equals(iv, other.iv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.hashCode(salt), Arrays.hashCode(iv.getIV()));
+        return Objects.hash(Arrays.hashCode(salt), Arrays.hashCode(iv));
     }
 
     @Override
@@ -84,13 +85,13 @@ public record AESMetadata(
     }
 
     @Nonnull
-    private static IvParameterSpec generateIv() {
+    private static byte[] generateIv() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] iv = new byte[IV_LENGTH];
 
         secureRandom.nextBytes(iv);
 
-        return new IvParameterSpec(iv);
+        return iv;
     }
 
     @Nonnull
@@ -106,7 +107,7 @@ public record AESMetadata(
     @Nonnull
     @JsonProperty("iv")
     private String getEncodedIv() {
-        return Base64.getEncoder().encodeToString(iv.getIV());
+        return Base64.getEncoder().encodeToString(iv);
     }
 
     @Nonnull
