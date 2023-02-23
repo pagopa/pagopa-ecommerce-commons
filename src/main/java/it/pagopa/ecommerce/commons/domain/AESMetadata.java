@@ -48,7 +48,7 @@ public record AESMetadata(
 
     @PersistenceConstructor
     public AESMetadata {
-        // used by Mongo for serialization
+        // used by Mongo for deserialization
     }
 
     /**
