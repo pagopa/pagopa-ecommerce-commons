@@ -39,12 +39,22 @@ public record AESMetadata(
     public static final int SALT_LENGTH = 16;
 
     @JsonCreator
-    @PersistenceConstructor
     private AESMetadata(
             @JsonProperty("salt") String salt,
             @JsonProperty("iv") String iv
     ) {
         this(Base64.getDecoder().decode(salt), Base64.getDecoder().decode(iv)); // NOSONAR
+    }
+
+    /**
+     * Persistence constructor
+     *
+     * @param salt - the salt byte array
+     * @param iv   - the initialization vector
+     */
+    @PersistenceConstructor
+    public AESMetadata {
+        // NOSONAR
     }
 
     /**
