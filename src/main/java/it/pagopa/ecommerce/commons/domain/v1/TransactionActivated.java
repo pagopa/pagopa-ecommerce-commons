@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -43,7 +44,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public TransactionActivated(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
-            Email email,
+            Confidential<Email> email,
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
@@ -58,7 +59,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 clientId,
 
                 new TransactionActivatedData(
-                        email.value(),
+                        email,
                         paymentNotices.stream()
                                 .map(
                                         n -> new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
@@ -89,7 +90,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     public TransactionActivated(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
-            Email email,
+            Confidential<Email> email,
             String faultCode,
             String faultCodeString,
             ClientId clientId

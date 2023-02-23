@@ -41,7 +41,7 @@ class AESMetadataTest {
         AESMetadata deserialized = objectMapper.readValue(serialized, typeRef);
 
         assertArrayEquals(metadata.salt(), deserialized.salt());
-        assertArrayEquals(metadata.iv().getIV(), deserialized.iv().getIV());
+        assertArrayEquals(metadata.iv(), deserialized.iv());
         assertEquals(metadata, deserialized);
     }
 }

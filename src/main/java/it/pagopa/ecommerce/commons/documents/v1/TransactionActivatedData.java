@@ -1,5 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.v1.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
@@ -17,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Generated
 public class TransactionActivatedData {
-    private String email;
+    private Confidential<Email> email;
     private List<PaymentNotice> paymentNotices;
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
