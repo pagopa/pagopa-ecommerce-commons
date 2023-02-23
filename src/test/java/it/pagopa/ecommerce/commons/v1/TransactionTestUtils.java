@@ -89,7 +89,7 @@ public class TransactionTestUtils {
                         ),
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.ClientId.UNKNOWN
+                        Transaction.ClientId.CHECKOUT
                 )
         );
     }
@@ -111,7 +111,7 @@ public class TransactionTestUtils {
                 FAULT_CODE,
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
-                Transaction.ClientId.UNKNOWN
+                Transaction.ClientId.CHECKOUT
         );
     }
 
@@ -335,7 +335,7 @@ public class TransactionTestUtils {
                 null,
                 EMAIL,
                 transactionStatus,
-                Transaction.ClientId.UNKNOWN,
+                Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString()
         );
     }
