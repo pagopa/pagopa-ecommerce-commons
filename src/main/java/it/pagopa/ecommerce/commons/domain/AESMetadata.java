@@ -52,6 +52,15 @@ public record AESMetadata(
      * @param salt - the salt byte[] value
      * @param iv   - the initialization vector byte[] value
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S6207 - Redundant constructors/methods should be avoided in records
+     * Suppressed warning because default constructor was redefined here just to add the `@PersistenceConstructor` annotation
+     * and is currently the canonical way to add annotations to record constructors
+     *
+     * @formatter:on
+     */
     @PersistenceConstructor
     @SuppressWarnings(
         {
