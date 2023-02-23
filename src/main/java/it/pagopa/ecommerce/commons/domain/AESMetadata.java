@@ -46,7 +46,18 @@ public record AESMetadata(
         this(Base64.getDecoder().decode(salt), Base64.getDecoder().decode(iv)); // NOSONAR
     }
 
+    /**
+     * Constructor used by mongo for deserialization
+     *
+     * @param salt - the salt byte[] value
+     * @param iv   - the initialization vector byte[] value
+     */
     @PersistenceConstructor
+    @SuppressWarnings(
+        {
+                "java:S6207"
+        }
+    )
     public AESMetadata {
         // used by Mongo for deserialization
     }
