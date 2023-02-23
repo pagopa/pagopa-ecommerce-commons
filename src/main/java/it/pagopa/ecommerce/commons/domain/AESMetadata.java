@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.annotation.Nonnull;
 import java.security.SecureRandom;
@@ -43,6 +44,31 @@ public record AESMetadata(
             @JsonProperty("iv") String iv
     ) {
         this(Base64.getDecoder().decode(salt), Base64.getDecoder().decode(iv)); // NOSONAR
+    }
+
+    /**
+     * Constructor used by mongo for deserialization
+     *
+     * @param salt - the salt byte[] value
+     * @param iv   - the initialization vector byte[] value
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S6207 - Redundant constructors/methods should be avoided in records
+     * Suppressed warning because default constructor was redefined here just to add the `@PersistenceConstructor` annotation
+     * and is currently the canonical way to add annotations to record constructors
+     *
+     * @formatter:on
+     */
+    @PersistenceConstructor
+    @SuppressWarnings(
+        {
+                "java:S6207"
+        }
+    )
+    public AESMetadata {
+        // used by Mongo for deserialization
     }
 
     /**
