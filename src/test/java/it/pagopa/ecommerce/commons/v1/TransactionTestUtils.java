@@ -193,7 +193,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          BaseTransactionWithCompletedAuthorization transaction
+                                                                          BaseTransaction transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
