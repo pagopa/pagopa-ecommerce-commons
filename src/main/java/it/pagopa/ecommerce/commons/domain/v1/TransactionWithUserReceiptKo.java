@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptData;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -12,12 +12,12 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * Transaction closed and notified to the user, but with possible failure in
- * notification.
+ * Transaction closed and notified to the user. This state is reached when Nodo
+ * sendPaymentResult has KO outcome
  * </p>
  * <p>
- * Given that this is a terminal state for a transaction, there are no events
- * that you can meaningfully apply to it. Any event application is thus ignored.
+ * Starting from this state the only applicable event is
+ * {@link TransactionRefundRequestedEvent} for start refund process
  *
  * @see Transaction
  * @see BaseTransactionWithCompletedAuthorization
@@ -26,7 +26,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithUserReceipt extends BaseTransactionWithCompletedAuthorization implements Transaction {
+public final class TransactionWithUserReceiptKo extends BaseTransactionWithCompletedAuthorization
+        implements Transaction {
 
     TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent;
 
@@ -37,7 +38,7 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithComplet
      *                                         data
      * @param transactionUserReceiptAddedEvent transaction user receipt added event
      */
-    public TransactionWithUserReceipt(
+    public TransactionWithUserReceiptKo(
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
@@ -47,13 +48,15 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithComplet
 
     @Override
     public Transaction applyEvent(Object event) {
+        if (event instanceof TransactionRefundRequestedEvent e) {
+            return new TransactionWithRefundRequested(this, e);
+        }
         return this;
+
     }
 
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionUserReceiptData.Outcome.OK.equals(
-                transactionUserReceiptAddedEvent.getData().getResponseOutcome()
-        ) ? TransactionStatusDto.NOTIFIED_OK : TransactionStatusDto.NOTIFIED_KO;
+        return TransactionStatusDto.NOTIFIED_KO;
     }
 }

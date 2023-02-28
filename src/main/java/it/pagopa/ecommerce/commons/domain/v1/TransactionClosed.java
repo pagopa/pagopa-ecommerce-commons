@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * To this class you can apply a {@link TransactionUserReceiptAddedEvent} to get
- * a {@link TransactionWithUserReceipt}.
+ * a {@link TransactionWithUserReceiptOk}.
  * </p>
  *
  * @see Transaction
@@ -50,11 +50,11 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent -> {
-                if (TransactionClosureData.Outcome.OK.equals(this.transactionClosedEvent.getData().getResponseOutcome())) {
-                    yield new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
+            case TransactionUserReceiptAddedEvent e -> {
+                if (TransactionUserReceiptData.Outcome.OK.equals(e.getData().getResponseOutcome())) {
+                    yield new TransactionWithUserReceiptOk(this, e);
                 } else {
-                    yield this;
+                    yield new TransactionWithUserReceiptKo(this, e);
                 }
             }
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);

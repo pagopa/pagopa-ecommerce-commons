@@ -213,11 +213,22 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed,
-                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+    public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
+                                                                            BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
-        return new TransactionWithUserReceipt(
+        return new TransactionWithUserReceiptOk(
+                baseTransactionClosed,
+                transactionUserReceiptAddedEvent
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithUserReceiptKo transactionWithUserReceiptKo(
+                                                                            BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+    ) {
+        return new TransactionWithUserReceiptKo(
                 baseTransactionClosed,
                 transactionUserReceiptAddedEvent
         );
