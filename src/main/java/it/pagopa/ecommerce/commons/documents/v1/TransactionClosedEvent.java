@@ -6,7 +6,7 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a transaction closure being sent. This action
+ * Business event corresponding to a transaction closure OK being sent. This action
  * notifies Nodo that the transaction has been finalized.
  */
 @Document(collection = "eventstore")

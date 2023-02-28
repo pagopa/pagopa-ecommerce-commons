@@ -30,26 +30,30 @@ import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
  *
  * <pre>
  *     {@code
- *      ACTIVATION_REQUESTED
- *              │
- *              ▼
+ *
  *          ACTIVATED
+ *              │
+ *              ├────────► EXPIRED_NOT_AUTHORIZED / CANCELLATION_REQUESTED
  *              │
  *              ▼
  *      AUTHORIZATION_REQUESTED
  *              │
- *              ├────────► AUTHORIZATION_ERROR
+ *              ├────────► EXPIRED ────────────────────────────────┐
+ *              │                                                  │
+ *              ▼                                                  │
+ *     AUTHORIZATION_COMPLETED                                     │───► REFUND_REQUESTED ───► REFUND_ERROR / REFUNDED
+ *              │                                                  │
+ *              ├──────────► CLOSURE_ERROR──────┐                  │
+ *              ├──────────► EXPIRED ───────────┼──────────────────┚
+ *              │                               │
+ *              │                               │
+ *              ──────────► UNAUTHORIZED        │
+ *              │                               │
+ *              ▼                               │
+ *            CLOSED ───────────────────────────┘
  *              │
  *              ▼
- *   AUTHORIZED / AUTHORIZATION_FAILED
- *              │
- *              ├──────────► CLOSURE_ERROR
- *              │
- *              ▼
- *       CLOSED / CLOSURE_FAILED
- *              │
- *              ▼
- *           NOTIFIED
+ *    NOTIFIED OK / NOTIFIED KO
  *         }
  * </pre>
  * <p>
@@ -68,7 +72,7 @@ import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
  * reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithCancellationRequested,TransactionWithClosureError,TransactionWithRefundError,TransactionWithRefundRequested,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
+public sealed interface Transaction permits EmptyTransaction, TransactionActivated, TransactionAuthorizationCompleted, TransactionClosed, TransactionExpired, TransactionExpiredNotAuthorized, TransactionRefunded, TransactionUnauthorized, TransactionUserCanceled, TransactionWithCancellationRequested, TransactionWithClosureError, TransactionWithRefundError, TransactionWithRefundRequested, TransactionWithRequestedAuthorization, TransactionWithUserReceipt {
     /**
      * Applies an event to a transaction
      *

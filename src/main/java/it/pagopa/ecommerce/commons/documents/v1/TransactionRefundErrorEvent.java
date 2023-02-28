@@ -6,8 +6,7 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a transaction refund requested for a given
- * transaction.
+ * Business event corresponding to an error during transaction refund processing
  */
 @Document(collection = "eventstore")
 @NoArgsConstructor
