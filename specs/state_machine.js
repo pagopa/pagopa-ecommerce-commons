@@ -129,7 +129,7 @@ createMachine(
       },
       EXPIRED: {
         on: {
-          REFUND: {
+          REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
           },
           REFUND_ERROR: {
