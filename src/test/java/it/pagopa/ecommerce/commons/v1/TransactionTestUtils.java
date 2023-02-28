@@ -183,9 +183,10 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                new TransactionClosureData(outcome)
         );
     }
 
@@ -201,11 +202,11 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosed transactionClosed(
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
-                                                      TransactionClosedEvent transactionClosedEvent
+    public static TransactionClosedWithCompletedAuthorization transactionClosed(
+                                                                                BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+                                                                                TransactionClosedEvent transactionClosedEvent
     ) {
-        return new TransactionClosed(
+        return new TransactionClosedWithCompletedAuthorization(
                 transactionWithCompletedAuthorization,
                 transactionClosedEvent
         );
@@ -259,9 +260,17 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
                                                                   BaseTransaction transaction,
-                                                                  TransactionUserCanceledEvent transactionUserCanceledEvent
+                                                                  TransactionClosedEvent transactionClosedEvent
     ) {
-        return new TransactionUserCanceled(transaction, transactionUserCanceledEvent);
+        return new TransactionUserCanceled(transaction, transactionClosedEvent);
+    }
+
+    @Nonnull
+    public static TransactionWithCancellationRequested transactionWithCancellationRequested(
+                                                                                            BaseTransaction baseTransaction,
+                                                                                            TransactionUserCanceledEvent transactionUserCanceledEvent
+    ) {
+        return new TransactionWithCancellationRequested(baseTransaction, transactionUserCanceledEvent);
     }
 
     @Nonnull

@@ -128,7 +128,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             case TransactionExpiredEvent transactionExpiredEvent ->
                     new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
             case TransactionUserCanceledEvent transactionUserCanceledEvent ->
-                    new TransactionUserCanceled(this, transactionUserCanceledEvent);
+                    new TransactionWithCancellationRequested(this, transactionUserCanceledEvent);
             default -> this;
         };
     }

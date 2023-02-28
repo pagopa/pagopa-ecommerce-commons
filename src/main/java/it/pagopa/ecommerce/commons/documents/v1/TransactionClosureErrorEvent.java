@@ -14,16 +14,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureErrorEvent extends TransactionEvent<Void> {
+public final class TransactionClosureErrorEvent extends BaseTransactionClosureEvent {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
-     * @param transactionId transaction unique id
+     * @param transactionId          transaction unique id
+     * @param transactionClosureData transaction closure data
      */
     public TransactionClosureErrorEvent(
-            String transactionId
+            String transactionId,
+            TransactionClosureData transactionClosureData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_ERROR_EVENT, null);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_ERROR_EVENT, transactionClosureData);
     }
 }

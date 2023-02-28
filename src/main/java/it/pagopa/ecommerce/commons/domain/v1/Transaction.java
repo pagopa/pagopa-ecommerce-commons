@@ -68,7 +68,7 @@ import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
  * reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithClosureError,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
+public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionClosedWithCompletedAuthorization,TransactionClosedWithoutCompletedAuthorization,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithCancellationRequested,TransactionWithClosureError,TransactionWithRequestedAuthorization,TransactionWithUserReceipt {
     /**
      * Applies an event to a transaction
      *

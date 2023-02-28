@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureFailedEvent extends TransactionEvent<TransactionClosureData> {
+public final class TransactionClosureFailedEvent extends BaseTransactionClosureEvent {
 
     /**
      * Convenience constructor which sets the creation date to now
