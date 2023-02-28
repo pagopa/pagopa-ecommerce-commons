@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosureWithoutAuthorization;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionExpired;
@@ -46,7 +46,8 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
             return switch (event) {
                 case TransactionRefundErrorEvent e ->
                         new TransactionWithRefundError(baseTransactionWithCompletedAuthorization, e);
-                case TransactionRefundedEvent e -> new TransactionRefunded(this, e);
+                case TransactionRefundRequestedEvent e ->
+                        new TransactionWithRefundRequested(baseTransactionWithCompletedAuthorization, e);
                 default -> this;
             };
         } else {

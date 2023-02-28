@@ -1174,15 +1174,15 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
-        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionExpiredEvent,
-                transactionRefundedEvent
+                transactionRefundRequestedEvent
         );
 
         TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1196,14 +1196,17 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
-        TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionExpired, transactionRefundedEvent);
+        TransactionWithRefundRequested expected = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
         )
                 .verifyComplete();
     }
@@ -1219,8 +1222,8 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
-        TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+        TransactionRefundRequestedEvent transactionRefundedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -1246,15 +1249,18 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
-        TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionExpired, transactionRefundedEvent);
+        TransactionWithRefundRequested expected = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundedEvent
+                );
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
         )
                 .verifyComplete();
     }
@@ -2087,14 +2093,17 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+                .transactionRefundedEvent(TransactionStatusDto.REFUND_REQUESTED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 transactionAuthorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionExpiredEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent
         );
 
@@ -2109,8 +2118,13 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionExpired, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -2134,8 +2148,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.EXPIRED);
+                .transactionRefundedEvent(TransactionStatusDto.REFUND_REQUESTED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -2145,6 +2161,8 @@ class TransactionTest {
                 transactionExpiredEvent,
                 transactionActivatedEvent,
                 transactionAuthorizationCompletedEvent,
+                transactionRefundedEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent
         );
 
@@ -2159,8 +2177,13 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionExpired, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
