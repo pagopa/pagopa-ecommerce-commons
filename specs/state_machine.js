@@ -41,12 +41,16 @@ createMachine(
         entry: assign({
           closepayment_outcome: "OK",
           closepayment_response: "KO",
+          sendpaymentresult_response: "KO"
         }),
         on: {
-          ADD_USER_RECEIPT: {
-            target: "NOTIFIED",
-            cond: "closepayment_response_ok",
-          },
+          ADD_USER_RECEIPT: [{
+            target: "NOTIFIED_OK",
+            cond: "sendpaymentresult_response_ok",
+          }, {
+            target: "NOTIFIED_KO",
+            cond: "sendpaymentresult_response_ko",
+          }],
           EXPIRE: {
             target: "EXPIRED",
           },
@@ -97,8 +101,15 @@ createMachine(
           }
         },
       },
-      NOTIFIED: {
+      NOTIFIED_OK: {
         type: "final",
+      },
+      NOTIFIED_KO: {
+        on: {
+            REFUND_REQUESTED: {
+                target: "REFUND_REQUESTED"
+            }
+        }
       },
       CANCELED: {
         type: "final"
@@ -119,7 +130,7 @@ createMachine(
       EXPIRED: {
         on: {
           REFUND: {
-            target: "REFUNDED",
+            target: "REFUND_REQUESTED",
           },
           REFUND_ERROR: {
             target: "REFUND_ERROR"
@@ -143,6 +154,7 @@ createMachine(
         }
       },
       REFUND_ERROR: {
+        type: "final",
         on: {
           REFUND: {
             target: "REFUNDED"
@@ -155,6 +167,7 @@ createMachine(
       auth_requested: false,
       closepayment_outcome: null,
       closepayment_response: null,
+      sendpaymentresult_response: null,
       auth_outcome: null,
       was_canceled: null
     },
@@ -172,6 +185,10 @@ createMachine(
       auth_outcome_ko: (context, event) => context.auth_outcome == "KO",
       closepayment_response_ok: (context, event) =>
         context.closepayment_response == "OK",
+      sendpaymentresult_response_ok: (context, event) =>
+        context.sendpaymentresult_response == "OK" && context.closepayment_response == "OK",
+      sendpaymentresult_response_ko: (context, event) =>
+        context.sendpaymentresult_response == "KO",
       was_canceled: (context, event) => context.was_canceled,
     },
   }
