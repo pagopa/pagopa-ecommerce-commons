@@ -25,7 +25,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionClosedWithCompletedAuthorization extends BaseTransactionWithCompletedAuthorization
+public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization
         implements Transaction {
 
     TransactionClosedEvent transactionClosedEvent;
@@ -36,7 +36,7 @@ public final class TransactionClosedWithCompletedAuthorization extends BaseTrans
      * @param baseTransaction        base transaction
      * @param transactionClosedEvent the transaction closed event
      */
-    public TransactionClosedWithCompletedAuthorization(
+    public TransactionClosed(
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
@@ -57,10 +57,8 @@ public final class TransactionClosedWithCompletedAuthorization extends BaseTrans
                     yield this;
                 }
             }
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionRefundedEvent transactionRefundedEvent ->
-                    new TransactionRefunded(this, transactionRefundedEvent);
+            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
+            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
             default -> this;
         };
     }

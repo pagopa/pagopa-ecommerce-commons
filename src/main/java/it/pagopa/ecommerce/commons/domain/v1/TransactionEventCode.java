@@ -56,6 +56,14 @@ public enum TransactionEventCode {
      * The transaction is canceled by user
      */
     TRANSACTION_USER_CANCELED_EVENT("TRANSACTION_USER_CANCELED_EVENT"),
+    /**
+     * Event when a refund is requested for the transaction
+     */
+    TRANSACTION_REFUND_REQUESTED_EVENT("TRANSACTION_REFUND_REQUESTED_EVENT"),
+    /**
+     * Event when an attempt is performed for transaction refund with error
+     */
+    TRANSACTION_REFUND_ERROR_EVENT("TRANSACTION_REFUND_ERROR_EVENT"),
     ;
 
     private final String code;

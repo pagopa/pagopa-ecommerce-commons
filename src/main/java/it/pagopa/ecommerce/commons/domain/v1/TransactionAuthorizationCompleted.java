@@ -16,8 +16,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * To this class you can apply either a {@link TransactionClosedEvent} to get a
- * {@link TransactionClosedWithCompletedAuthorization} or a
- * {@link TransactionClosureErrorEvent} to get a
+ * {@link TransactionClosed} or a {@link TransactionClosureErrorEvent} to get a
  * {@link TransactionWithClosureError}
  * </p>
  *
@@ -51,7 +50,7 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionClosedEvent closureSentEvent -> new TransactionClosedWithCompletedAuthorization(
+            case TransactionClosedEvent closureSentEvent -> new TransactionClosed(
                     this,
                     closureSentEvent);
             case TransactionClosureErrorEvent closureErrorEvent -> new TransactionWithClosureError(

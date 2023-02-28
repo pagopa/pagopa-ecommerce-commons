@@ -202,11 +202,11 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosedWithCompletedAuthorization transactionClosed(
-                                                                                BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
-                                                                                TransactionClosedEvent transactionClosedEvent
+    public static TransactionClosed transactionClosed(
+                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+                                                      TransactionClosedEvent transactionClosedEvent
     ) {
-        return new TransactionClosedWithCompletedAuthorization(
+        return new TransactionClosed(
                 transactionWithCompletedAuthorization,
                 transactionClosedEvent
         );
@@ -282,6 +282,25 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionWithRefundError transactionWithRefundError(
+                                                                        BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization,
+                                                                        TransactionRefundErrorEvent transactionRefundErrorEvent
+    ) {
+        return new TransactionWithRefundError(baseTransactionWithCompletedAuthorization, transactionRefundErrorEvent);
+    }
+
+    @Nonnull
+    public static TransactionWithRefundRequested transactionWithRefundRequested(
+                                                                                BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization,
+                                                                                TransactionRefundRequestedEvent transactionRefundRequestedEvent
+    ) {
+        return new TransactionWithRefundRequested(
+                baseTransactionWithCompletedAuthorization,
+                transactionRefundRequestedEvent
+        );
+    }
+
+    @Nonnull
     public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
@@ -326,6 +345,18 @@ public class TransactionTestUtils {
                 TRANSACTION_ID,
                 new TransactionRefundedData(statusBeforeRefunded)
         );
+    }
+
+    @Nonnull
+    public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
+                                                                                  TransactionStatusDto statusBeforeRefunded
+    ) {
+        return new TransactionRefundRequestedEvent(TRANSACTION_ID, new TransactionRefundedData(statusBeforeRefunded));
+    }
+
+    @Nonnull
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent(TransactionStatusDto statusBeforeRefunded) {
+        return new TransactionRefundErrorEvent(TRANSACTION_ID, new TransactionRefundedData(statusBeforeRefunded));
     }
 
     @Nonnull

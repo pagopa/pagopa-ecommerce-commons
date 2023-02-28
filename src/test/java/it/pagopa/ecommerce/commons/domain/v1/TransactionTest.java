@@ -242,7 +242,7 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        TransactionClosedWithCompletedAuthorization expected = TransactionTestUtils.transactionClosed(
+        TransactionClosed expected = TransactionTestUtils.transactionClosed(
 
                 transactionAuthorizationCompleted,
                 closureSentEvent
@@ -288,7 +288,7 @@ class TransactionTest {
                         authorizedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
 
                         transactionAuthorizationCompleted,
@@ -296,7 +296,7 @@ class TransactionTest {
                 );
         TransactionWithUserReceipt expected = TransactionTestUtils.transactionWithUserReceipt(
 
-                transactionClosedWithCompletedAuthorization,
+                transactionClosed,
                 transactionUserReceiptAddedEvent
         );
 
@@ -337,7 +337,7 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization expected = TransactionTestUtils.transactionClosed(
+        TransactionClosed expected = TransactionTestUtils.transactionClosed(
                 transactionAuthorizationCompleted,
                 closureSentEvent
         );
@@ -380,7 +380,7 @@ class TransactionTest {
                 .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionWithCompletedAuthorization = TransactionTestUtils
                 .transactionAuthorizationCompleted(authorizedEvent, transactionWithRequestedAuthorization);
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
 
                         transactionWithCompletedAuthorization,
@@ -388,7 +388,7 @@ class TransactionTest {
                 );
         TransactionWithUserReceipt expected = TransactionTestUtils.transactionWithUserReceipt(
 
-                transactionClosedWithCompletedAuthorization,
+                transactionClosed,
                 transactionUserReceiptAddedEvent
         );
 
@@ -513,7 +513,7 @@ class TransactionTest {
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
-        TransactionClosedWithCompletedAuthorization expected = TransactionTestUtils
+        TransactionClosed expected = TransactionTestUtils
                 .transactionClosed(
                         (BaseTransactionWithCompletedAuthorization) transactionWithClosureError
                                 .getTransactionAtPreviousState(),
@@ -670,14 +670,14 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         closureSentEvent
                 );
 
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(expiredEvent, transactionClosedWithCompletedAuthorization);
+                .transactionExpired(expiredEvent, transactionClosed);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -686,7 +686,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpired) v).getTransactionAtPreviousState()
-                                        .equals(transactionClosedWithCompletedAuthorization)
+                                        .equals(transactionClosed)
                                 && ((TransactionExpired) v).getStatus() == TransactionStatusDto.EXPIRED
                 )
                 .verifyComplete();
@@ -722,11 +722,11 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(transactionAuthorizationCompleted, closedEvent);
 
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(expiredEvent, transactionClosedWithCompletedAuthorization);
+                .transactionExpired(expiredEvent, transactionClosed);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -735,7 +735,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpired) v).getTransactionAtPreviousState()
-                                        .equals(transactionClosedWithCompletedAuthorization)
+                                        .equals(transactionClosed)
                                 && ((TransactionExpired) v).getStatus() == TransactionStatusDto.EXPIRED
                 )
                 .verifyComplete();
@@ -776,7 +776,7 @@ class TransactionTest {
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
 
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(expiredEvent, transactionWithClosureError);
+                .transactionExpired(expiredEvent, transactionWithClosureError.getTransactionAtPreviousState());
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -784,7 +784,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         v -> v.equals(expected) && ((TransactionExpired) v).getTransactionAtPreviousState()
-                                .equals(transactionWithClosureError)
+                                .equals(transactionWithClosureError.getTransactionAtPreviousState())
                                 && ((TransactionExpired) v).getStatus() == TransactionStatusDto.EXPIRED
                 )
                 .verifyComplete();
@@ -877,13 +877,13 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionWithCompletedAuthorization,
                         TransactionTestUtils.transactionClosedEvent(TransactionClosureData.Outcome.OK)
                 );
 
-        assertEquals(TransactionStatusDto.CLOSED, transactionClosedWithCompletedAuthorization.getStatus());
+        assertEquals(TransactionStatusDto.CLOSED, transactionClosed.getStatus());
     }
 
     @Test
@@ -904,7 +904,7 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         TransactionTestUtils.transactionClosedEvent(TransactionClosureData.Outcome.OK)
@@ -912,7 +912,7 @@ class TransactionTest {
 
         TransactionWithUserReceipt transactionWithUserReceipt = TransactionTestUtils
                 .transactionWithUserReceipt(
-                        transactionClosedWithCompletedAuthorization,
+                        transactionClosed,
                         TransactionTestUtils.transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.OK)
                 );
 
@@ -930,14 +930,17 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.CLOSURE_ERROR);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.CLOSURE_ERROR);
+                .transactionRefundedEvent(TransactionStatusDto.REFUND_REQUESTED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent
         );
 
@@ -956,8 +959,15 @@ class TransactionTest {
                 transactionAuthorizationCompleted
         );
 
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionWithClosureError
+                                .getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
+
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -979,7 +989,9 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.CLOSURE_ERROR);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
                 .transactionRefundedEvent(TransactionStatusDto.CLOSURE_ERROR);
 
@@ -992,6 +1004,8 @@ class TransactionTest {
                 transactionAuthorizationCompletedEvent,
                 transactionClosureErrorEvent,
                 transactionClosureErrorEvent,
+                transactionRefundRequestedEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent,
                 transactionRefundedEvent,
                 transactionClosureErrorEvent
@@ -1011,9 +1025,15 @@ class TransactionTest {
                 transactionClosureErrorEvent,
                 transactionAuthorizationCompleted
         );
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithCompletedAuthorization) transactionWithClosureError
+                                .getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
 
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionWithClosureError, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -1036,6 +1056,8 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.CLOSED);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
                 .transactionRefundedEvent(TransactionStatusDto.CLOSED);
 
@@ -1044,6 +1066,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionClosedEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent
         );
 
@@ -1057,14 +1080,17 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         transactionClosedEvent
                 );
 
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(transactionClosed, transactionRefundRequestedEvent);
+
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionClosedWithCompletedAuthorization, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -1087,8 +1113,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.CLOSED);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
-                .transactionRefundedEvent(TransactionStatusDto.CLOSED);
+                .transactionRefundedEvent(TransactionStatusDto.REFUND_REQUESTED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -1097,6 +1125,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionClosedEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundedEvent,
                 transactionClosedEvent,
                 transactionAuthorizationCompletedEvent
@@ -1112,14 +1141,17 @@ class TransactionTest {
                         transactionWithRequestedAuthorization
                 );
 
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         transactionClosedEvent
                 );
 
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(transactionClosed, transactionRefundRequestedEvent);
+
         TransactionRefunded expected = TransactionTestUtils
-                .transactionRefunded(transactionClosedWithCompletedAuthorization, transactionRefundedEvent);
+                .transactionRefunded(transactionWithRefundRequested, transactionRefundedEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -1258,13 +1290,13 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         transactionClosedEvent
                 );
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionExpiredEvent, transactionClosedWithCompletedAuthorization);
+                .transactionExpired(transactionExpiredEvent, transactionClosed);
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
@@ -1310,13 +1342,13 @@ class TransactionTest {
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization transactionClosedWithCompletedAuthorization = TransactionTestUtils
+        TransactionClosed transactionClosed = TransactionTestUtils
                 .transactionClosed(
                         transactionAuthorizationCompleted,
                         transactionClosedEvent
                 );
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionExpiredEvent, transactionClosedWithCompletedAuthorization);
+                .transactionExpired(transactionExpiredEvent, transactionClosed);
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
@@ -1361,7 +1393,10 @@ class TransactionTest {
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
+                .transactionExpired(
+                        transactionExpiredEvent,
+                        transactionWithClosureError.getTransactionAtPreviousState()
+                );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
@@ -1410,7 +1445,10 @@ class TransactionTest {
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionExpiredEvent, transactionWithClosureError);
+                .transactionExpired(
+                        transactionExpiredEvent,
+                        transactionWithClosureError.getTransactionAtPreviousState()
+                );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
@@ -1813,7 +1851,7 @@ class TransactionTest {
                         authorizedEvent,
                         transactionWithRequestedAuthorization
                 );
-        TransactionClosedWithCompletedAuthorization expected = TransactionTestUtils.transactionClosed(
+        TransactionClosed expected = TransactionTestUtils.transactionClosed(
 
                 transactionAuthorizationCompleted,
                 closureSentEvent

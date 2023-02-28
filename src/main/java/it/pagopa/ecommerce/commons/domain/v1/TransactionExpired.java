@@ -1,10 +1,12 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosureWithoutAuthorization;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionExpired;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -39,10 +41,18 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundedEvent transactionRefundedEvent) {
-            return new TransactionRefunded(this, transactionRefundedEvent);
+        //transition from expiry to refund requested is allowed only if the transaction was previously authorized
+        if (this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization) {
+            return switch (event) {
+                case TransactionRefundErrorEvent e ->
+                        new TransactionWithRefundError(baseTransactionWithCompletedAuthorization, e);
+                case TransactionRefundedEvent e -> new TransactionRefunded(this, e);
+                default -> this;
+            };
+        } else {
+            return this;
         }
-        return this;
+
     }
 
     /**

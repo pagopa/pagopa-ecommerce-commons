@@ -1,9 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosureWithoutAuthorization;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
@@ -16,11 +13,25 @@ import lombok.ToString;
  * Transaction with a closure error.
  * </p>
  * <p>
- * To this class you can apply a {@link TransactionClosedEvent} to get a
- * {@link TransactionClosedWithCompletedAuthorization} or
- * {@link TransactionClosedWithoutCompletedAuthorization} based on the fact that
- * the transaction was previously authorized. Semantically this means that the
- * transaction has recovered from the closure error.
+ * Applicable events with resulting aggregates are: if transaction was
+ * previously <strong>authorized</strong>:
+ * </p>
+ * {@link TransactionClosedEvent} -> {@link TransactionClosed}
+ * {@link TransactionExpiredEvent} -> {@link TransactionExpired}
+ * {@link TransactionRefundRequestedEvent} ->
+ * {@link TransactionWithRefundRequested} {@link TransactionClosureFailedEvent}
+ * -> {@link TransactionUnauthorized}
+ * <p>
+ * if transaction was <strong> NOT authorized</strong>:
+ * </p>
+ * {@link TransactionClosedEvent} -> {@link TransactionUserCanceled}
+ * {@link TransactionExpiredEvent} -> {@link TransactionExpired}
+ * <p>
+ * Other events than the above ones will be discarded
+ * </p>
+ * <p>
+ * Semantically this means that the transaction has recovered from the closure
+ * error.
  * </p>
  *
  * @see Transaction
@@ -49,24 +60,35 @@ public final class TransactionWithClosureError extends BaseTransactionClosureWit
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionClosedEvent closureSentEvent -> {
-                if (this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization) {
-                    yield new TransactionClosedWithCompletedAuthorization(
-                            baseTransactionWithCompletedAuthorization,
-                            closureSentEvent);
-                } else {
-                    yield new TransactionClosedWithoutCompletedAuthorization(
-                            this,
-                            closureSentEvent);
-                }
-            }
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionRefundedEvent transactionRefundedEvent ->
-                    new TransactionRefunded(this, transactionRefundedEvent);
-            default -> this;
-        };
+
+        if (isTransactionAuthorized()) {
+            BaseTransactionWithCompletedAuthorization baseTransaction = (BaseTransactionWithCompletedAuthorization) this.getTransactionAtPreviousState();
+            return switch (event) {
+                case TransactionClosedEvent e -> new TransactionClosed(baseTransaction, e);
+                case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
+                case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(baseTransaction, e);
+                case TransactionClosureFailedEvent e -> new TransactionUnauthorized(baseTransaction, e);
+                default -> this;
+            };
+        } else {
+            BaseTransaction baseTransaction = this.getTransactionAtPreviousState();
+            return switch (event) {
+                case TransactionClosedEvent e -> new TransactionUserCanceled(baseTransaction, e);
+                case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
+                default -> this;
+            };
+        }
+
+    }
+
+    /**
+     * Check if the transaction was previously authorized by checking the type of
+     * the transaction at previous state
+     *
+     * @return true if the transaction was previously authorized, false otherwise
+     */
+    private boolean isTransactionAuthorized() {
+        return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization;
     }
 
     /**
