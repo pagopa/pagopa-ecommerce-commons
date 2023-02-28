@@ -2855,4 +2855,109 @@ class TransactionTest {
                 )
                 .verifyComplete();
     }
+
+    @Test
+    void shouldConstructTransactionUserCanceledFromTransactionWithCancellationRequested() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionUserCanceledEvent,
+                transactionClosedEvent
+
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithCancellationRequested transactionWithCancellationRequested = TransactionTestUtils
+                .transactionWithCancellationRequested(transactionActivated, transactionUserCanceledEvent);
+        TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(
+                transactionWithCancellationRequested,
+                transactionClosedEvent
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionClosureErrorFromTransactionWithCancellationRequested() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
+                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionUserCanceledEvent,
+                transactionClosureErrorEvent
+
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithCancellationRequested transactionWithCancellationRequested = TransactionTestUtils
+                .transactionWithCancellationRequested(transactionActivated, transactionUserCanceledEvent);
+        TransactionWithClosureError expected = TransactionTestUtils.transactionWithClosureError(
+                transactionClosureErrorEvent,
+                transactionWithCancellationRequested
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && TransactionStatusDto.CLOSURE_ERROR.equals(((BaseTransaction) t).getStatus())
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromTransactionWithCancellationRequested() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CANCELLATION_REQUESTED);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionUserCanceledEvent,
+                transactionExpiredEvent
+
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithCancellationRequested transactionWithCancellationRequested = TransactionTestUtils
+                .transactionWithCancellationRequested(transactionActivated, transactionUserCanceledEvent);
+        TransactionExpired expected = TransactionTestUtils.transactionExpired(
+                transactionWithCancellationRequested,
+                transactionExpiredEvent
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                )
+                .verifyComplete();
+    }
 }
