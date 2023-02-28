@@ -223,9 +223,12 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent() {
+    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
+                                                                                    TransactionUserReceiptData.Outcome outcome
+    ) {
         return new TransactionUserReceiptAddedEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                new TransactionUserReceiptData(outcome)
         );
     }
 

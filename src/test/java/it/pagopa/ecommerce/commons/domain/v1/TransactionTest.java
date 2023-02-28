@@ -268,7 +268,7 @@ class TransactionTest {
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
-                .transactionUserReceiptAddedEvent();
+                .transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -361,7 +361,7 @@ class TransactionTest {
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
-                .transactionUserReceiptAddedEvent();
+                .transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -898,9 +898,12 @@ class TransactionTest {
                 );
 
         TransactionWithUserReceipt transactionWithUserReceipt = TransactionTestUtils
-                .transactionWithUserReceipt(transactionClosed, TransactionTestUtils.transactionUserReceiptAddedEvent());
+                .transactionWithUserReceipt(
+                        transactionClosed,
+                        TransactionTestUtils.transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.OK)
+                );
 
-        assertEquals(TransactionStatusDto.NOTIFIED, transactionWithUserReceipt.getStatus());
+        assertEquals(TransactionStatusDto.NOTIFIED_OK, transactionWithUserReceipt.getStatus());
     }
 
     @Test
@@ -1765,7 +1768,7 @@ class TransactionTest {
                 .transactionClosedEvent(TransactionClosureData.Outcome.KO);
 
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
-                .transactionUserReceiptAddedEvent();
+                .transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.OK);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,

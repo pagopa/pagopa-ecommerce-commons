@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptData;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -51,6 +52,8 @@ public final class TransactionWithUserReceipt extends BaseTransactionWithComplet
 
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionStatusDto.NOTIFIED;
+        return TransactionUserReceiptData.Outcome.OK.equals(
+                transactionUserReceiptAddedEvent.getData().getResponseOutcome()
+        ) ? TransactionStatusDto.NOTIFIED_OK : TransactionStatusDto.NOTIFIED_KO;
     }
 }
