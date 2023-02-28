@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
@@ -65,6 +66,7 @@ public final class TransactionWithCancellationRequested extends BaseTransaction 
     public Transaction applyEvent(Object event) {
         return switch (event) {
             case TransactionClosedEvent e -> new TransactionUserCanceled(this, e);
+            case TransactionClosureErrorEvent e -> new TransactionWithClosureError(this, e);
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
             default -> this;
         };
