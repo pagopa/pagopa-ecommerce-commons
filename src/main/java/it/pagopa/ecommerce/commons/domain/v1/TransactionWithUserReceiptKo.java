@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * Starting from this state the only applicable event is
- * {@link TransactionRefundRequestedEvent} for start refund process
+ * {@link TransactionRefundRequestedEvent} to start the refund process
  *
  * @see Transaction
  * @see BaseTransactionWithCompletedAuthorization
