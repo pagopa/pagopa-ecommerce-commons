@@ -4,6 +4,7 @@ import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
@@ -555,7 +556,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpiredNotAuthorized) v)
-                                        .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
+                                .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
                 )
                 .verifyComplete();
     }
@@ -687,7 +688,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpired) v).getTransactionAtPreviousState()
-                                        .equals(transactionClosed)
+                                .equals(transactionClosed)
                                 && ((TransactionExpired) v).getStatus() == TransactionStatusDto.EXPIRED
                 )
                 .verifyComplete();
@@ -736,7 +737,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpired) v).getTransactionAtPreviousState()
-                                        .equals(transactionClosed)
+                                .equals(transactionClosed)
                                 && ((TransactionExpired) v).getStatus() == TransactionStatusDto.EXPIRED
                 )
                 .verifyComplete();
@@ -974,9 +975,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
+                )
                 .verifyComplete();
     }
 
@@ -1040,9 +1041,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
+                )
                 .verifyComplete();
     }
 
@@ -1097,9 +1098,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
+                )
                 .verifyComplete();
     }
 
@@ -1158,9 +1159,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
+                )
                 .verifyComplete();
     }
 
@@ -1206,9 +1207,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                )
                 .verifyComplete();
     }
 
@@ -1252,7 +1253,7 @@ class TransactionTest {
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
         TransactionWithRefundRequested expected = TransactionTestUtils
                 .transactionWithRefundRequested(
-                        transactionExpired.getTransactionAtPreviousState(),
+                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
                         transactionRefundedEvent
                 );
 
@@ -1260,9 +1261,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                )
                 .verifyComplete();
     }
 
@@ -1308,9 +1309,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1360,9 +1361,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1408,9 +1409,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1460,9 +1461,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1500,9 +1501,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1544,9 +1545,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1576,9 +1577,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1610,9 +1611,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
                 .verifyComplete();
     }
 
@@ -1637,9 +1638,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
+                )
                 .verifyComplete();
     }
 
@@ -1672,9 +1673,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
+                )
                 .verifyComplete();
     }
 
@@ -1698,9 +1699,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_REQUESTED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_REQUESTED)
+                )
                 .verifyComplete();
     }
 
@@ -1731,9 +1732,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
+                )
                 .verifyComplete();
     }
 
@@ -1771,9 +1772,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
+                )
                 .verifyComplete();
     }
 
@@ -2248,9 +2249,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_ERROR)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_ERROR)
+                )
                 .verifyComplete();
     }
 
@@ -2302,9 +2303,9 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual).expectNextMatches(
-                t -> expected.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-        )
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                )
                 .verifyComplete();
     }
 
@@ -3097,7 +3098,7 @@ class TransactionTest {
                 .expectNextMatches(
                         v -> v.equals(expected)
                                 && ((TransactionExpiredNotAuthorized) v)
-                                        .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
+                                .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
                 )
                 .verifyComplete();
     }
