@@ -19,9 +19,11 @@ import lombok.experimental.FieldDefaults;
  * closePayment with response outcome KO or sendPaymentResult with outcome KO)
  * </p>
  * <p>
- * Applicable events with resulting aggregates are: *
- * {@link TransactionRefundRetriedEvent} --> {@link TransactionWithRefundError}
- * * {@link TransactionRefundedEvent} --> {@link TransactionRefunded}
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ *     <li>{@link TransactionRefundRetriedEvent} --> {@link TransactionWithRefundError}</li>
+ *     <li>{@link TransactionRefundedEvent} --> {@link TransactionRefunded}</li>
+ * </ul>
  *
  * @see Transaction
  * @see BaseTransactionRefunded
