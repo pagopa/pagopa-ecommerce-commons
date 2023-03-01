@@ -1251,7 +1251,7 @@ class TransactionTest {
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
         TransactionWithRefundRequested expected = TransactionTestUtils
                 .transactionWithRefundRequested(
-                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionExpired.getTransactionAtPreviousState(),
                         transactionRefundedEvent
                 );
 
@@ -2153,7 +2153,7 @@ class TransactionTest {
     }
 
     @Test
-    void shouldConstructTransactionFromExpiredIgnoringEventsForTransactionNotAuthorized() {
+    void shouldConstructTransactionRefundErrorFromTransactionWithAuthorizationRequested() {
         EmptyTransaction transaction = new EmptyTransaction();
 
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
@@ -2175,8 +2175,12 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(transactionAuthorizationRequestedEvent, transactionActivated);
-        TransactionExpired expected = TransactionTestUtils
+        TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionWithRequestedAuthorization, transactionExpiredEvent);
+        TransactionWithRefundError expected = TransactionTestUtils.transactionWithRefundError(
+                transactionExpired.getTransactionAtPreviousState(),
+                transactionRefundErrorEvent
+        );
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -2184,7 +2188,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                                && TransactionStatusDto.REFUND_ERROR.equals(((BaseTransaction) t).getStatus())
                 )
                 .verifyComplete();
     }
@@ -3061,6 +3065,38 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionIgnoringExpirationEventStartingFromNotAuthorizedState() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionExpiredEvent expiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.ACTIVATED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                expiredEvent,
+                expiredEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+
+        TransactionExpiredNotAuthorized expected = TransactionTestUtils
+                .transactionExpiredNotAuthorized(transactionActivated, expiredEvent);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        v -> v.equals(expected)
+                                && ((TransactionExpiredNotAuthorized) v)
+                                        .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
                 )
                 .verifyComplete();
     }

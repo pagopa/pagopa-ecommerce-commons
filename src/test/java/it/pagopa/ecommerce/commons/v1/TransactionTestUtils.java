@@ -294,19 +294,19 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithRefundError transactionWithRefundError(
-                                                                        BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization,
+                                                                        BaseTransaction baseTransaction,
                                                                         TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
-        return new TransactionWithRefundError(baseTransactionWithCompletedAuthorization, transactionRefundErrorEvent);
+        return new TransactionWithRefundError(baseTransaction, transactionRefundErrorEvent);
     }
 
     @Nonnull
     public static TransactionWithRefundRequested transactionWithRefundRequested(
-                                                                                BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization,
+                                                                                BaseTransaction baseTransaction,
                                                                                 TransactionRefundRequestedEvent transactionRefundRequestedEvent
     ) {
         return new TransactionWithRefundRequested(
-                baseTransactionWithCompletedAuthorization,
+                baseTransaction,
                 transactionRefundRequestedEvent
         );
     }

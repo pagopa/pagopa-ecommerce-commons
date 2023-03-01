@@ -2,7 +2,8 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionRefunded;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -23,13 +24,13 @@ import lombok.experimental.FieldDefaults;
  * {@link TransactionRefundedEvent} --> {@link TransactionRefunded}
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionRefunded
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithRefundError extends BaseTransactionWithCompletedAuthorization implements Transaction {
+public final class TransactionWithRefundError extends BaseTransactionRefunded implements Transaction {
 
     TransactionRefundErrorEvent transactionRefundErrorEvent;
 
@@ -40,10 +41,10 @@ public final class TransactionWithRefundError extends BaseTransactionWithComplet
      * @param transactionRefundErrorEvent transaction refund error event
      */
     public TransactionWithRefundError(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransaction baseTransaction,
             TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
+        super(baseTransaction, transactionRefundErrorEvent.getData());
         this.transactionRefundErrorEvent = transactionRefundErrorEvent;
     }
 

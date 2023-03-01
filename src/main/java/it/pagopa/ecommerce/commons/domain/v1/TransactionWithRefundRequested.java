@@ -4,7 +4,8 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRetriedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionRefunded;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -23,13 +24,13 @@ import lombok.experimental.FieldDefaults;
  * * {@link TransactionRefundedEvent} --> {@link TransactionRefunded}
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionRefunded
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithRefundRequested extends BaseTransactionWithCompletedAuthorization
+public final class TransactionWithRefundRequested extends BaseTransactionRefunded
         implements Transaction {
 
     TransactionRefundRequestedEvent transactionRefundRequestedEvent;
@@ -42,10 +43,10 @@ public final class TransactionWithRefundRequested extends BaseTransactionWithCom
      * @param transactionRefundRequestedEvent transaction refund requested event
      */
     public TransactionWithRefundRequested(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransaction baseTransaction,
             TransactionRefundRequestedEvent transactionRefundRequestedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
+        super(baseTransaction, transactionRefundRequestedEvent.getData());
         this.transactionRefundRequestedEvent = transactionRefundRequestedEvent;
     }
 
