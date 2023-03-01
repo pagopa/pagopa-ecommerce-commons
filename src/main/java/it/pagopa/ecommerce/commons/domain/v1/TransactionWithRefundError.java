@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction authorized for which a refund operation is applied
- * unsuccessfully. This state is both final and non-final, In fact, starting
+ * unsuccessfully. This state can be both final and non-final. In fact, starting
  * from this state, a configurable number of attempts are performed for
  * transaction refund process to be completed and transaction can ends up into
  * this state if no more attempts are available for refund operation to be done
