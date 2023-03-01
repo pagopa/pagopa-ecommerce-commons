@@ -341,31 +341,37 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
+    public static TransactionExpiredEvent transactionExpiredEvent(BaseTransaction baseTransaction) {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,
-                new TransactionExpiredData(previousStatus)
+                new TransactionExpiredData(baseTransaction.getStatus())
         );
     }
 
     @Nonnull
-    public static TransactionRefundedEvent transactionRefundedEvent(TransactionStatusDto statusBeforeRefunded) {
+    public static TransactionRefundedEvent transactionRefundedEvent(BaseTransaction baseTransaction) {
         return new TransactionRefundedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundedData(statusBeforeRefunded)
+                new TransactionRefundedData(baseTransaction.getStatus())
         );
     }
 
     @Nonnull
     public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
-                                                                                  TransactionStatusDto statusBeforeRefunded
+                                                                                  BaseTransaction baseTransaction
     ) {
-        return new TransactionRefundRequestedEvent(TRANSACTION_ID, new TransactionRefundedData(statusBeforeRefunded));
+        return new TransactionRefundRequestedEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(baseTransaction.getStatus())
+        );
     }
 
     @Nonnull
-    public static TransactionRefundErrorEvent transactionRefundErrorEvent(TransactionStatusDto statusBeforeRefunded) {
-        return new TransactionRefundErrorEvent(TRANSACTION_ID, new TransactionRefundedData(statusBeforeRefunded));
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
+        return new TransactionRefundErrorEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(baseTransaction.getStatus())
+        );
     }
 
     @Nonnull
