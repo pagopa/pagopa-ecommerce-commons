@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,11 +8,10 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * POJO for an expired transaction.
+ * POJO for a transaction with a cancellation requested by the user
  * </p>
  *
- * @see BaseTransaction
- * @see TransactionExpiredEvent
+ * @see BaseTransactionWithPaymentToken
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
