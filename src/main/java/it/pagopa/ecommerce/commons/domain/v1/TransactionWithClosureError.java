@@ -82,7 +82,7 @@ public final class TransactionWithClosureError extends BaseTransactionClosureWit
     }
 
     /**
-     * Check if the transaction was previously authorized by checking the type of
+     * Checks if the transaction was previously authorized by checking the type of
      * the transaction at previous state
      *
      * @return true if the transaction was previously authorized, false otherwise
