@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionExpired;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRefundRequested;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -50,7 +51,7 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
          */
         return switch (event) {
             case TransactionRefundErrorEvent e ->
-                    new TransactionWithRefundError(this.getTransactionAtPreviousState(), e);
+                    new TransactionWithRefundError((BaseTransactionWithRefundRequested) this.getTransactionAtPreviousState(), e);
             case TransactionRefundRequestedEvent e ->
                     new TransactionWithRefundRequested((BaseTransactionWithRequestedAuthorization) this.getTransactionAtPreviousState(), e);
             default -> this;

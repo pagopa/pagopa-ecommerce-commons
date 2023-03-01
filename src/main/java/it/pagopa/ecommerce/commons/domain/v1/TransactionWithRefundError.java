@@ -2,8 +2,8 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionRefunded;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRefundRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -41,7 +41,7 @@ public final class TransactionWithRefundError extends BaseTransactionRefunded im
      * @param transactionRefundErrorEvent transaction refund error event
      */
     public TransactionWithRefundError(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithRefundRequested baseTransaction,
             TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
         super(baseTransaction, transactionRefundErrorEvent.getData());

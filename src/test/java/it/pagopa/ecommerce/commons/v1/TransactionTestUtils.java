@@ -292,7 +292,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithRefundError transactionWithRefundError(
-                                                                        BaseTransaction baseTransaction,
+                                                                        BaseTransactionWithRefundRequested baseTransaction,
                                                                         TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
         return new TransactionWithRefundError(baseTransaction, transactionRefundErrorEvent);

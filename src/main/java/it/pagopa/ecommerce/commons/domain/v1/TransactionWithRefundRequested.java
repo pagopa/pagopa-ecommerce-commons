@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRetriedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionRefunded;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRefundRequested;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -27,13 +27,13 @@ import lombok.experimental.FieldDefaults;
  * </ul>
  *
  * @see Transaction
- * @see BaseTransactionRefunded
+ * @see BaseTransactionWithRefundRequested
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithRefundRequested extends BaseTransactionRefunded
+public final class TransactionWithRefundRequested extends BaseTransactionWithRefundRequested
         implements Transaction {
 
     TransactionRefundRequestedEvent transactionRefundRequestedEvent;
@@ -49,7 +49,7 @@ public final class TransactionWithRefundRequested extends BaseTransactionRefunde
             BaseTransactionWithRequestedAuthorization baseTransaction,
             TransactionRefundRequestedEvent transactionRefundRequestedEvent
     ) {
-        super(baseTransaction, transactionRefundRequestedEvent.getData());
+        super(baseTransaction);
         this.transactionRefundRequestedEvent = transactionRefundRequestedEvent;
     }
 

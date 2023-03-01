@@ -2116,14 +2116,18 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+
         TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils
                 .transactionRefundErrorEvent(TransactionStatusDto.EXPIRED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 transactionAuthorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionExpiredEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundErrorEvent
         );
 
@@ -2138,8 +2142,13 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionWithRefundError expected = TransactionTestUtils.transactionWithRefundError(
-                (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                transactionWithRefundRequested,
                 transactionRefundErrorEvent
         );
 
@@ -2163,6 +2172,8 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
         TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils
                 .transactionRefundErrorEvent(TransactionStatusDto.EXPIRED);
 
@@ -2170,6 +2181,7 @@ class TransactionTest {
                 transactionActivatedEvent,
                 transactionAuthorizationRequestedEvent,
                 transactionExpiredEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundErrorEvent
         );
 
@@ -2179,8 +2191,13 @@ class TransactionTest {
                 .transactionWithRequestedAuthorization(transactionAuthorizationRequestedEvent, transactionActivated);
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionWithRequestedAuthorization, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionWithRefundError expected = TransactionTestUtils.transactionWithRefundError(
-                transactionExpired.getTransactionAtPreviousState(),
+                transactionWithRefundRequested,
                 transactionRefundErrorEvent
         );
 
@@ -2318,6 +2335,8 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
         TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils
@@ -2330,6 +2349,7 @@ class TransactionTest {
                 transactionAuthorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionExpiredEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundErrorEvent,
                 transactionRefundedEvent
 
@@ -2346,8 +2366,13 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionWithRefundError transactionWithRefundError = TransactionTestUtils.transactionWithRefundError(
-                (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                transactionWithRefundRequested,
                 transactionRefundErrorEvent
         );
         TransactionRefunded expected = TransactionTestUtils
@@ -2375,6 +2400,8 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(TransactionStatusDto.EXPIRED);
         TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils
                 .transactionRefundErrorEvent(TransactionStatusDto.EXPIRED);
         TransactionRefundedEvent transactionRefundedEvent = TransactionTestUtils
@@ -2385,6 +2412,7 @@ class TransactionTest {
                 transactionAuthorizationRequestedEvent,
                 transactionAuthorizationCompletedEvent,
                 transactionExpiredEvent,
+                transactionRefundRequestedEvent,
                 transactionRefundErrorEvent,
                 transactionExpiredEvent,
                 transactionAuthorizationCompletedEvent,
@@ -2403,8 +2431,13 @@ class TransactionTest {
                 );
         TransactionExpired transactionExpired = TransactionTestUtils
                 .transactionExpired(transactionAuthorizationCompleted, transactionExpiredEvent);
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(
+                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionRefundRequestedEvent
+                );
         TransactionWithRefundError transactionWithRefundError = TransactionTestUtils.transactionWithRefundError(
-                (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                transactionWithRefundRequested,
                 transactionRefundErrorEvent
         );
         TransactionRefunded expected = TransactionTestUtils
