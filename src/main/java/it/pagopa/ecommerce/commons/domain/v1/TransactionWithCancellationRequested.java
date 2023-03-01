@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -28,7 +29,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithCancellationRequested extends BaseTransactionWithPaymentToken implements Transaction {
+public final class TransactionWithCancellationRequested extends BaseTransactionWithCancellationRequested
+        implements Transaction {
 
     TransactionUserCanceledEvent transactionUserCanceledEvent;
 
@@ -43,8 +45,7 @@ public final class TransactionWithCancellationRequested extends BaseTransactionW
             TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
         super(
-                baseTransaction,
-                baseTransaction.getTransactionActivatedData()
+                baseTransaction
         );
         this.transactionUserCanceledEvent = transactionUserCanceledEvent;
     }

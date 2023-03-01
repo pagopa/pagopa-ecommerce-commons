@@ -1,7 +1,8 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -16,13 +17,13 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionWithPaymentToken
+ * @see BaseTransaction
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionUserCanceled extends BaseTransactionWithPaymentToken implements Transaction {
+public final class TransactionUserCanceled extends BaseTransaction implements Transaction {
 
     TransactionClosedEvent transactionClosedEvent;
 
@@ -33,12 +34,15 @@ public final class TransactionUserCanceled extends BaseTransactionWithPaymentTok
      * @param transactionClosedEvent the transaction closed event
      */
     public TransactionUserCanceled(
-            BaseTransactionWithPaymentToken baseTransaction,
+            BaseTransactionWithCancellationRequested baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
         super(
-                baseTransaction,
-                baseTransaction.getTransactionActivatedData()
+                baseTransaction.getTransactionId(),
+                baseTransaction.getPaymentNotices(),
+                baseTransaction.getEmail(),
+                baseTransaction.getCreationDate(),
+                baseTransaction.getClientId()
         );
         this.transactionClosedEvent = transactionClosedEvent;
     }

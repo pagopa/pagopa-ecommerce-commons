@@ -21,8 +21,9 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * Applicable events with resulting aggregates are:
  * <ul>
- *     <li>{@link TransactionRefundRetriedEvent} --> {@link TransactionWithRefundError}</li>
- *     <li>{@link TransactionRefundedEvent} --> {@link TransactionRefunded}</li>
+ * <li>{@link TransactionRefundRetriedEvent} -->
+ * {@link TransactionWithRefundError}</li>
+ * <li>{@link TransactionRefundedEvent} --> {@link TransactionRefunded}</li>
  * </ul>
  *
  * @see Transaction

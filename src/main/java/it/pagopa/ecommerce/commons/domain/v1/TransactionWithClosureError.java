@@ -2,9 +2,9 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -75,7 +75,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
             BaseTransaction baseTransaction = this.getTransactionAtPreviousState();
             return switch (event) {
                 case TransactionClosedEvent e ->
-                        new TransactionUserCanceled((BaseTransactionWithPaymentToken) baseTransaction, e);
+                        new TransactionUserCanceled((BaseTransactionWithCancellationRequested) baseTransaction, e);
                 case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
                 default -> this;
             };
