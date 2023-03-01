@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @ToString(callSuper = true)
 public sealed class BaseTransactionClosureEvent extends
-        TransactionEvent<TransactionClosureData>permits TransactionClosedEvent,TransactionClosureErrorEvent,TransactionClosureFailedEvent {
+        TransactionEvent<TransactionClosureData>permits TransactionClosedEvent,TransactionClosureFailedEvent {
 
     /**
      * Convenience constructor which sets the creation date to now

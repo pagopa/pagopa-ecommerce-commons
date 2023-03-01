@@ -6,6 +6,7 @@ import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
@@ -185,8 +186,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                TRANSACTION_ID
         );
     }
 
@@ -270,7 +270,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
-                                                                  BaseTransaction transaction,
+                                                                  BaseTransactionWithPaymentToken transaction,
                                                                   TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionUserCanceled(transaction, transactionClosedEvent);
@@ -278,7 +278,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithCancellationRequested transactionWithCancellationRequested(
-                                                                                            BaseTransaction baseTransaction,
+                                                                                            BaseTransactionWithPaymentToken baseTransaction,
                                                                                             TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
         return new TransactionWithCancellationRequested(baseTransaction, transactionUserCanceledEvent);

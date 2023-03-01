@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain.v1;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
@@ -2732,7 +2733,7 @@ class TransactionTest {
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionWithCancellationRequested);
         TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(
-                transactionWithClosureError.getTransactionAtPreviousState(),
+                (BaseTransactionWithPaymentToken) transactionWithClosureError.getTransactionAtPreviousState(),
                 transactionClosedevent
         );
 
@@ -2775,7 +2776,7 @@ class TransactionTest {
         TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionWithCancellationRequested);
         TransactionUserCanceled expected = TransactionTestUtils.transactionUserCanceled(
-                transactionWithClosureError.getTransactionAtPreviousState(),
+                (BaseTransactionWithPaymentToken) transactionWithClosureError.getTransactionAtPreviousState(),
                 transactionClosedevent
         );
 

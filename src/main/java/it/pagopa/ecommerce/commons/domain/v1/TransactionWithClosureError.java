@@ -2,8 +2,9 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosureWithoutAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithClosureError;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,11 +36,11 @@ import lombok.ToString;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionClosureWithoutAuthorization
+ * @see BaseTransactionWithClosureError
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
-public final class TransactionWithClosureError extends BaseTransactionClosureWithoutAuthorization
+public final class TransactionWithClosureError extends BaseTransactionWithClosureError
         implements Transaction {
 
     /**
@@ -73,7 +74,8 @@ public final class TransactionWithClosureError extends BaseTransactionClosureWit
         } else {
             BaseTransaction baseTransaction = this.getTransactionAtPreviousState();
             return switch (event) {
-                case TransactionClosedEvent e -> new TransactionUserCanceled(baseTransaction, e);
+                case TransactionClosedEvent e ->
+                        new TransactionUserCanceled((BaseTransactionWithPaymentToken) baseTransaction, e);
                 case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
                 default -> this;
             };

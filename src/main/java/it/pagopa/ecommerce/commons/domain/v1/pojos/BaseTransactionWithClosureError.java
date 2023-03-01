@@ -1,7 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v1.BaseTransactionClosureEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureErrorEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -23,9 +21,7 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionClosureWithoutAuthorization extends BaseTransaction {
-
-    TransactionClosureData transactionClosureData;
+public abstract class BaseTransactionWithClosureError extends BaseTransaction {
 
     BaseTransaction transactionAtPreviousState;
 
@@ -35,9 +31,9 @@ public abstract class BaseTransactionClosureWithoutAuthorization extends BaseTra
      * @param baseTransaction base transaction
      * @param event           data related to closure error event
      */
-    protected BaseTransactionClosureWithoutAuthorization(
+    protected BaseTransactionWithClosureError(
             BaseTransaction baseTransaction,
-            BaseTransactionClosureEvent event
+            TransactionClosureErrorEvent event
     ) {
         super(
                 baseTransaction.getTransactionId(),
@@ -46,7 +42,6 @@ public abstract class BaseTransactionClosureWithoutAuthorization extends BaseTra
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
         );
-        this.transactionClosureData = event.getData();
         this.transactionAtPreviousState = baseTransaction;
     }
 }
