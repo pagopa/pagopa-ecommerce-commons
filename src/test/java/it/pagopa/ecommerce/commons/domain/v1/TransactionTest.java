@@ -974,7 +974,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
         )
                 .verifyComplete();
     }
@@ -1040,7 +1040,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
         )
                 .verifyComplete();
     }
@@ -1097,7 +1097,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
         )
                 .verifyComplete();
     }
@@ -1158,7 +1158,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
         )
                 .verifyComplete();
     }
@@ -1206,7 +1206,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -1260,7 +1260,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -1308,7 +1308,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1360,7 +1360,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1408,7 +1408,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1460,7 +1460,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1500,7 +1500,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1544,7 +1544,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1576,7 +1576,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1610,7 +1610,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
         )
                 .verifyComplete();
     }
@@ -1637,7 +1637,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED_NOT_AUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
         )
                 .verifyComplete();
     }
@@ -1672,7 +1672,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.EXPIRED_NOT_AUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED_NOT_AUTHORIZED)
         )
                 .verifyComplete();
     }
@@ -1698,7 +1698,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.CANCELLATION_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -1731,7 +1731,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
         )
                 .verifyComplete();
     }
@@ -1771,7 +1771,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
         )
                 .verifyComplete();
     }
@@ -1826,7 +1826,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.NOTIFIED_OK.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.NOTIFIED_OK)
                 )
                 .verifyComplete();
     }
@@ -1881,7 +1881,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.NOTIFIED_KO.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.NOTIFIED_KO)
                 )
                 .verifyComplete();
     }
@@ -1914,7 +1914,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
                 )
                 .verifyComplete();
 
@@ -1950,7 +1950,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
                 )
                 .verifyComplete();
 
@@ -1984,7 +1984,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2039,7 +2039,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
                 )
                 .verifyComplete();
     }
@@ -2098,7 +2098,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
                 )
                 .verifyComplete();
     }
@@ -2147,7 +2147,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUND_ERROR.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_ERROR)
                 )
                 .verifyComplete();
     }
@@ -2188,7 +2188,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUND_ERROR.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_ERROR)
                 )
                 .verifyComplete();
     }
@@ -2248,7 +2248,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUND_ERROR.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_ERROR)
         )
                 .verifyComplete();
     }
@@ -2302,7 +2302,7 @@ class TransactionTest {
 
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
-                        && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -2357,7 +2357,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
                 )
                 .verifyComplete();
     }
@@ -2414,7 +2414,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUNDED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUNDED)
                 )
                 .verifyComplete();
     }
@@ -2463,7 +2463,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CLOSED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED)
                 )
                 .verifyComplete();
     }
@@ -2512,7 +2512,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2561,7 +2561,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
                 )
                 .verifyComplete();
     }
@@ -2610,7 +2610,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
                 )
                 .verifyComplete();
     }
@@ -2662,7 +2662,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
                 )
                 .verifyComplete();
     }
@@ -2702,7 +2702,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2742,7 +2742,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
                 )
                 .verifyComplete();
     }
@@ -2785,7 +2785,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
                 )
                 .verifyComplete();
     }
@@ -2820,7 +2820,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CANCELED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELED)
                 )
                 .verifyComplete();
     }
@@ -2855,7 +2855,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.CLOSURE_ERROR.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSURE_ERROR)
                 )
                 .verifyComplete();
     }
@@ -2890,7 +2890,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.EXPIRED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2937,7 +2937,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.UNAUTHORIZED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
                 )
                 .verifyComplete();
     }
@@ -2999,7 +2999,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
                 )
                 .verifyComplete();
     }
@@ -3064,7 +3064,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && TransactionStatusDto.REFUND_REQUESTED.equals(((BaseTransaction) t).getStatus())
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
                 )
                 .verifyComplete();
     }

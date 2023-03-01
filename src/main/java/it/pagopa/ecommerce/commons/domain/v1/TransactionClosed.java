@@ -51,7 +51,7 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
     public Transaction applyEvent(Object event) {
         return switch (event) {
             case TransactionUserReceiptAddedEvent e -> {
-                if (TransactionUserReceiptData.Outcome.OK.equals(e.getData().getResponseOutcome())) {
+                if (e.getData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.OK)) {
                     yield new TransactionWithUserReceiptOk(this, e);
                 } else {
                     yield new TransactionWithUserReceiptKo(this, e);

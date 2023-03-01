@@ -61,7 +61,7 @@ public final class TransactionWithClosureError extends BaseTransactionClosureWit
     @Override
     public Transaction applyEvent(Object event) {
 
-        if (isTransactionAuthorized()) {
+        if (wasTransactionAuthorized()) {
             BaseTransactionWithCompletedAuthorization baseTransaction = (BaseTransactionWithCompletedAuthorization) this.getTransactionAtPreviousState();
             return switch (event) {
                 case TransactionClosedEvent e -> new TransactionClosed(baseTransaction, e);
@@ -87,7 +87,7 @@ public final class TransactionWithClosureError extends BaseTransactionClosureWit
      *
      * @return true if the transaction was previously authorized, false otherwise
      */
-    private boolean isTransactionAuthorized() {
+    private boolean wasTransactionAuthorized() {
         return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization;
     }
 
