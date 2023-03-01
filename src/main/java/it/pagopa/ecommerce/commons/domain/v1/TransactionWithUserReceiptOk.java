@@ -1,7 +1,9 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -25,10 +27,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithUserReceiptOk extends BaseTransactionWithCompletedAuthorization
+public final class TransactionWithUserReceiptOk extends BaseTransactionWithUserReceipt
         implements Transaction {
-
-    TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent;
 
     /**
      * Main constructor.
@@ -38,11 +38,10 @@ public final class TransactionWithUserReceiptOk extends BaseTransactionWithCompl
      * @param transactionUserReceiptAddedEvent transaction user receipt added event
      */
     public TransactionWithUserReceiptOk(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransactionClosed baseTransaction,
             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
-        this.transactionUserReceiptAddedEvent = transactionUserReceiptAddedEvent;
+        super(baseTransaction, transactionUserReceiptAddedEvent.getData());
     }
 
     @Override

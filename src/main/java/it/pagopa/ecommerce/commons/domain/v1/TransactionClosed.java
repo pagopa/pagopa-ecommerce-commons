@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -25,10 +26,8 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization
+public final class TransactionClosed extends BaseTransactionClosed
         implements Transaction {
-
-    TransactionClosedEvent transactionClosedEvent;
 
     /**
      * Primary constructor
@@ -40,8 +39,7 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
-        this.transactionClosedEvent = transactionClosedEvent;
+        super(baseTransaction, transactionClosedEvent.getData());
     }
 
     /**

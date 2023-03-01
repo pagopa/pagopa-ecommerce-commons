@@ -212,7 +212,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
-                                                                            BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                            BaseTransactionClosed baseTransactionClosed,
                                                                             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptOk(
@@ -223,7 +223,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptKo transactionWithUserReceiptKo(
-                                                                            BaseTransactionWithCompletedAuthorization baseTransactionClosed,
+                                                                            BaseTransactionClosed baseTransactionClosed,
                                                                             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptKo(
