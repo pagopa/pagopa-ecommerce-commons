@@ -20,7 +20,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionClosed
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString

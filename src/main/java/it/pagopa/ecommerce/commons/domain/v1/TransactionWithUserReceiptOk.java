@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -20,7 +19,7 @@ import lombok.experimental.FieldDefaults;
  * that you can meaningfully apply to it. Any event application is thus ignored.
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionClosed
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
