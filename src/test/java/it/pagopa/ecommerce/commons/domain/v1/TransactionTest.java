@@ -775,7 +775,11 @@ class TransactionTest {
         );
 
         TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionWithClosureError.getTransactionAtPreviousState(), expiredEvent);
+                .transactionExpired(
+                        (BaseTransactionWithRequestedAuthorization) transactionWithClosureError
+                                .getTransactionAtPreviousState(),
+                        expiredEvent
+                );
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -1400,7 +1404,8 @@ class TransactionTest {
 
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(
-                        transactionWithClosureError.getTransactionAtPreviousState(),
+                        (BaseTransactionWithRequestedAuthorization) transactionWithClosureError
+                                .getTransactionAtPreviousState(),
                         transactionExpiredEvent
                 );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
@@ -1452,7 +1457,8 @@ class TransactionTest {
 
         TransactionExpired expected = TransactionTestUtils
                 .transactionExpired(
-                        transactionWithClosureError.getTransactionAtPreviousState(),
+                        (BaseTransactionWithRequestedAuthorization) transactionWithClosureError
+                                .getTransactionAtPreviousState(),
                         transactionExpiredEvent
                 );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
@@ -2537,7 +2543,7 @@ class TransactionTest {
         );
 
         TransactionExpired expected = TransactionTestUtils.transactionExpired(
-                transactionWithClosureError.getTransactionAtPreviousState(),
+                (BaseTransactionWithRequestedAuthorization) transactionWithClosureError.getTransactionAtPreviousState(),
                 transactionExpiredEvent
         );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events

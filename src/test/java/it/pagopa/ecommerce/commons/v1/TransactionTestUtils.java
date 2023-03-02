@@ -244,7 +244,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-                                                        BaseTransaction transaction,
+                                                        BaseTransactionWithRequestedAuthorization transaction,
                                                         TransactionExpiredEvent expiredEvent
     ) {
         return new TransactionExpired(transaction, expiredEvent);
