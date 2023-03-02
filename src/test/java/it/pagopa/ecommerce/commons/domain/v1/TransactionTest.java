@@ -412,7 +412,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -450,7 +450,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -491,7 +491,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
@@ -751,7 +751,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -840,7 +840,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
 
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -928,7 +928,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -988,7 +988,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -1375,7 +1375,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -1423,7 +1423,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -2222,7 +2222,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -2281,7 +2281,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -2463,7 +2463,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
@@ -2512,7 +2512,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -2561,7 +2561,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
@@ -2610,7 +2610,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
@@ -2659,7 +2659,7 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.KO);
+                .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
@@ -2708,7 +2708,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithCancellationRequested transactionWithCancellationRequested = TransactionTestUtils
@@ -2746,7 +2746,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionClosedEvent transactionClosedevent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
         Flux<Object> events = Flux.just(
@@ -2786,7 +2786,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         TransactionClosedEvent transactionClosedevent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
         Flux<Object> events = Flux.just(
@@ -2864,7 +2864,7 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
-                .transactionClosureErrorEvent(TransactionClosureData.Outcome.OK);
+                .transactionClosureErrorEvent();
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 transactionUserCanceledEvent,
@@ -3160,5 +3160,17 @@ class TransactionTest {
                                         .getStatus() == TransactionStatusDto.EXPIRED_NOT_AUTHORIZED
                 )
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionClosureErrorIgnoringTransactionNotAuthorizedAndNotCanceled() {
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(ZonedDateTime.now().toString());
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils.transactionClosureErrorEvent();
+        TransactionWithClosureError transactionWithClosureError = TransactionTestUtils
+                .transactionWithClosureError(transactionClosureErrorEvent, transactionActivated);
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        Transaction result = transactionWithClosureError.applyEvent(transactionActivatedEvent);
+        assertEquals(transactionWithClosureError, result);
     }
 }

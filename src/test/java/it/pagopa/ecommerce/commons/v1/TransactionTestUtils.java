@@ -182,7 +182,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureErrorEvent transactionClosureErrorEvent(TransactionClosureData.Outcome outcome) {
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(
                 TRANSACTION_ID
         );
