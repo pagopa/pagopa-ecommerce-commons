@@ -17,16 +17,21 @@ import lombok.ToString;
  * Applicable events with resulting aggregates are: if transaction was
  * previously <strong>authorized</strong>:
  * </p>
- * {@link TransactionClosedEvent} -> {@link TransactionClosed}
- * {@link TransactionExpiredEvent} -> {@link TransactionExpired}
- * {@link TransactionRefundRequestedEvent} ->
- * {@link TransactionWithRefundRequested} {@link TransactionClosureFailedEvent}
- * -> {@link TransactionUnauthorized}
+ * <ul>
+ * <li>{@link TransactionClosedEvent} --> {@link TransactionClosed}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionRefundRequestedEvent} -->
+ * {@link TransactionWithRefundRequested}</li>
+ * <li>{@link TransactionClosureFailedEvent} -->
+ * {@link TransactionUnauthorized}</li>
+ * </ul>
  * <p>
  * if transaction was <strong> NOT authorized</strong>:
  * </p>
- * {@link TransactionClosedEvent} -> {@link TransactionUserCanceled}
- * {@link TransactionExpiredEvent} -> {@link TransactionExpired}
+ * <ul>
+ * <li>{@link TransactionClosedEvent} --> {@link TransactionUserCanceled}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * </ul>
  * <p>
  * Other events than the above ones will be discarded
  * </p>

@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureFailedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -17,7 +16,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see Transaction
- * @see BaseTransaction
+ * @see BaseTransactionWithCompletedAuthorization
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString

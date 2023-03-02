@@ -14,11 +14,16 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * Transaction with a successful authorization.
  * </p>
- * <p>
- * To this class you can apply either a {@link TransactionClosedEvent} to get a
- * {@link TransactionClosed} or a {@link TransactionClosureErrorEvent} to get a
- * {@link TransactionWithClosureError}
- * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionClosedEvent} --> {@link TransactionClosed}</li>
+ * <li>{@link TransactionClosureErrorEvent} -->
+ * {@link TransactionWithClosureError}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionClosureFailedEvent} -->
+ * {@link TransactionUnauthorized}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
  * @see BaseTransactionWithCompletedAuthorization

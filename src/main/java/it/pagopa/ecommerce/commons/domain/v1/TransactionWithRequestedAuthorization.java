@@ -13,11 +13,13 @@ import lombok.ToString;
  * <p>
  * Transaction with a requested authorization.
  * </p>
- * <p>
- * To this class you can apply an {@link TransactionAuthorizationCompletedEvent}
- * to get a {@link TransactionAuthorizationCompleted} or a
- * {@link TransactionExpiredEvent} to get a {@link TransactionExpired}
- * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionAuthorizationCompletedEvent} -->
+ * {@link TransactionAuthorizationCompleted}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * </ul>
+ * Other events than the above ones will be discarded
  *
  * @see Transaction
  * @see BaseTransactionWithRequestedAuthorization

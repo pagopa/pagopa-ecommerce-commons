@@ -13,12 +13,12 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction refunded. This state means that the transaction is not completed
- * successfully requiring a refund to be performed to the user This is a final
- * state so any event applied to this class will be discarded
+ * successfully requiring a refund to be performed to the user. This is a final
+ * state so any event applied to this class will be discarded.
  * </p>
  *
  * @see Transaction
- * @see BaseTransaction
+ * @see BaseTransactionRefunded
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString

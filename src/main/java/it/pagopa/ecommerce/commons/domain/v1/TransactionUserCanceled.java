@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction canceled by user. This is a final state, so any event applied to
- * this class will be discarded
+ * this class will be discarded.
  * </p>
  *
  * @see Transaction
