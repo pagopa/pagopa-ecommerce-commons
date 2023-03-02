@@ -20,7 +20,8 @@ import lombok.experimental.FieldDefaults;
  * <li>{@link TransactionClosedEvent} --> {@link TransactionUserCanceled}</li>
  * <li>{@link TransactionClosureErrorEvent} -->
  * {@link TransactionWithClosureError}</li>
- * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionExpiredEvent} -->
+ * {@link TransactionCancellationExpired}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *

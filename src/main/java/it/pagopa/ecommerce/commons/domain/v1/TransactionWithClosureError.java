@@ -30,7 +30,8 @@ import lombok.ToString;
  * </p>
  * <ul>
  * <li>{@link TransactionClosedEvent} --> {@link TransactionUserCanceled}</li>
- * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionExpiredEvent} -->
+ * {@link TransactionCancellationExpired}</li>
  * </ul>
  * <p>
  * Other events than the above ones will be discarded
