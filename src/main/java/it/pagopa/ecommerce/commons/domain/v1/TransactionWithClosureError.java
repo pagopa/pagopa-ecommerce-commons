@@ -71,15 +71,16 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                 case TransactionClosureFailedEvent e -> new TransactionUnauthorized(baseTransaction, e);
                 default -> this;
             };
-        } else {
-            BaseTransaction baseTransaction = this.getTransactionAtPreviousState();
+        }
+        if (wasCancelledByUser()) {
+            BaseTransactionWithCancellationRequested baseTransaction = (BaseTransactionWithCancellationRequested) this.getTransactionAtPreviousState();
             return switch (event) {
-                case TransactionClosedEvent e ->
-                        new TransactionUserCanceled((BaseTransactionWithCancellationRequested) baseTransaction, e);
-                case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
+                case TransactionClosedEvent e -> new TransactionUserCanceled(baseTransaction, e);
+                case TransactionExpiredEvent e -> new TransactionCancellationExpired(baseTransaction, e);
                 default -> this;
             };
         }
+        return this;
 
     }
 
@@ -91,6 +92,16 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      */
     private boolean wasTransactionAuthorized() {
         return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization;
+    }
+
+    /**
+     * Checks if the transaction was cancelled by the user by checking the type of
+     * the transaction at previous state
+     *
+     * @return true if the transaction was cancelled by the user, false otherwise
+     */
+    private boolean wasCancelledByUser() {
+        return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCancellationRequested;
     }
 
     /**

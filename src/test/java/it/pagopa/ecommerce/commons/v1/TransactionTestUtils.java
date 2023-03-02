@@ -283,6 +283,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionCancellationExpired transactionCancellationExpired(
+                                                                                BaseTransactionWithCancellationRequested baseTransaction,
+                                                                                TransactionExpiredEvent transactionExpiredEvent
+    ) {
+        return new TransactionCancellationExpired(baseTransaction, transactionExpiredEvent);
+    }
+
+    @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
                                                                                   BaseTransaction transaction,
                                                                                   TransactionExpiredEvent transactionExpiredEvent

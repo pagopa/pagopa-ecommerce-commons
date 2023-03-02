@@ -31,6 +31,7 @@ components:
         - REFUND_ERROR
         - REFUND_REQUESTED
         - CANCELLATION_REQUESTED
+        - CANCELLATION_EXPIRED
     AuthorizationResult:
       description: Authorization result
       type: string

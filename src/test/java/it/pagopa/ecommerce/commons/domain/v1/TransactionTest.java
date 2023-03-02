@@ -1975,8 +1975,8 @@ class TransactionTest {
                 transactionExpiredEvent
         );
 
-        TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionWithCancellationRequested, transactionExpiredEvent);
+        TransactionCancellationExpired expected = TransactionTestUtils
+                .transactionCancellationExpired(transactionWithCancellationRequested, transactionExpiredEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -1984,7 +1984,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2725,10 +2725,8 @@ class TransactionTest {
 
         );
 
-        TransactionExpired expected = TransactionTestUtils.transactionExpired(
-                transactionWithClosureError.getTransactionAtPreviousState(),
-                transactionExpiredEvent
-        );
+        TransactionCancellationExpired expected = TransactionTestUtils
+                .transactionCancellationExpired(transactionWithCancellationRequested, transactionExpiredEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -2736,7 +2734,7 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_EXPIRED)
                 )
                 .verifyComplete();
     }
@@ -2913,10 +2911,8 @@ class TransactionTest {
 
         );
 
-        TransactionExpired expected = TransactionTestUtils.transactionExpired(
-                transactionWithCancellationRequested,
-                transactionExpiredEvent
-        );
+        TransactionCancellationExpired expected = TransactionTestUtils
+                .transactionCancellationExpired(transactionWithCancellationRequested, transactionExpiredEvent);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -2924,7 +2920,42 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_EXPIRED)
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionExpiredFromTransactionWithCancellationRequestedIgnoringInvalidEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithCancellationRequested transactionWithCancellationRequested = TransactionTestUtils
+                .transactionWithCancellationRequested(transactionActivated, transactionUserCanceledEvent);
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(transactionWithCancellationRequested);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                transactionUserCanceledEvent,
+                transactionExpiredEvent,
+                transactionUserCanceledEvent,
+                transactionActivatedEvent
+
+        );
+
+        TransactionCancellationExpired expected = TransactionTestUtils
+                .transactionCancellationExpired(transactionWithCancellationRequested, transactionExpiredEvent);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CANCELLATION_EXPIRED)
                 )
                 .verifyComplete();
     }

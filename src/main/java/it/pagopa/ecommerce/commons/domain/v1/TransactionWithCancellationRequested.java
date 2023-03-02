@@ -66,7 +66,7 @@ public final class TransactionWithCancellationRequested extends BaseTransactionW
         return switch (event) {
             case TransactionClosedEvent e -> new TransactionUserCanceled(this, e);
             case TransactionClosureErrorEvent e -> new TransactionWithClosureError(this, e);
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
+            case TransactionExpiredEvent e -> new TransactionCancellationExpired(this, e);
             default -> this;
         };
 
