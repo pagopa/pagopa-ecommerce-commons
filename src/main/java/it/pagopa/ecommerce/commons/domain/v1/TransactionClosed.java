@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -13,21 +14,27 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * Closed transaction.
  * </p>
- * <p>
- * To this class you can apply a {@link TransactionUserReceiptAddedEvent} to get
- * a {@link TransactionWithUserReceipt}.
- * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionUserReceiptAddedEvent} with OK send payment result
+ * outcome --> {@link TransactionWithUserReceiptOk}</li>
+ * <li>{@link TransactionUserReceiptAddedEvent} with KO send payment result
+ * outcome --> {@link TransactionWithUserReceiptKo}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionRefundRequestedEvent} -->
+ * {@link TransactionWithRefundRequested}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionClosed
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionClosed extends BaseTransactionWithCompletedAuthorization implements Transaction {
-
-    TransactionClosedEvent transactionClosedEvent;
+public final class TransactionClosed extends BaseTransactionClosed
+        implements Transaction {
 
     /**
      * Primary constructor
@@ -39,8 +46,7 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
             BaseTransactionWithCompletedAuthorization baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
-        this.transactionClosedEvent = transactionClosedEvent;
+        super(baseTransaction, transactionClosedEvent.getData());
     }
 
     /**
@@ -49,17 +55,15 @@ public final class TransactionClosed extends BaseTransactionWithCompletedAuthori
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
-            case TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent -> {
-                if (TransactionClosureData.Outcome.OK.equals(this.transactionClosedEvent.getData().getResponseOutcome())) {
-                    yield new TransactionWithUserReceipt(this, transactionUserReceiptAddedEvent);
+            case TransactionUserReceiptAddedEvent e -> {
+                if (e.getData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.OK)) {
+                    yield new TransactionWithUserReceiptOk(this, e);
                 } else {
-                    yield this;
+                    yield new TransactionWithUserReceiptKo(this, e);
                 }
             }
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpired(this, transactionExpiredEvent);
-            case TransactionRefundedEvent transactionRefundedEvent ->
-                    new TransactionRefunded(this, transactionRefundedEvent);
+            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
+            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
             default -> this;
         };
     }

@@ -10,53 +10,80 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static it.pagopa.ecommerce.commons.utils.v1.TransactionUtils.getTransactionFee;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionUtilsTest {
 
     private TransactionUtils transactionUtils;
 
-    List<TransactionStatusDto> transientStatusList = List.of(
+    Set<TransactionStatusDto> transientStatusSet = Set.of(
             TransactionStatusDto.ACTIVATED,
             TransactionStatusDto.AUTHORIZATION_REQUESTED,
             TransactionStatusDto.AUTHORIZATION_COMPLETED,
             TransactionStatusDto.CLOSURE_ERROR,
             TransactionStatusDto.CLOSED,
-            TransactionStatusDto.EXPIRED
+            TransactionStatusDto.EXPIRED,
+            TransactionStatusDto.NOTIFIED_KO,
+            TransactionStatusDto.REFUND_REQUESTED,
+            TransactionStatusDto.REFUND_ERROR,
+            TransactionStatusDto.CANCELLATION_REQUESTED
+
     );
 
-    List<TransactionStatusDto> refaundableStatusList = List.of(
+    Set<TransactionStatusDto> refaundableStatusSet = Set.of(
             TransactionStatusDto.CLOSED,
             TransactionStatusDto.CLOSURE_ERROR,
-            TransactionStatusDto.EXPIRED
+            TransactionStatusDto.EXPIRED,
+            TransactionStatusDto.AUTHORIZATION_COMPLETED,
+            TransactionStatusDto.AUTHORIZATION_REQUESTED,
+            TransactionStatusDto.NOTIFIED_KO
     );
 
     @Test
     void shouldHaveBeenTransientStatus() {
         transactionUtils = new TransactionUtils();
-        transientStatusList.forEach(
+        transientStatusSet.forEach(
                 transactionStatusDto -> assertTrue(
                         transactionUtils.isTransientStatus(transactionStatusDto),
                         "Error! The status is not transient"
                 )
         );
+        for (TransactionStatusDto status : TransactionStatusDto.class.getEnumConstants()) {
+            if (transientStatusSet.contains(status)) {
+                assertTrue(
+                        transactionUtils.isTransientStatus(status),
+                        "Error! The status %s was expected to be transient".formatted(status)
+                );
+            } else {
+                assertFalse(
+                        transactionUtils.isTransientStatus(status),
+                        "Error! The status %s was NOT expected to be transient".formatted(status)
+                );
+            }
+        }
     }
 
     @Test
     void shouldHaveBeenRefundableTransactionStatus() {
         transactionUtils = new TransactionUtils();
-        refaundableStatusList.forEach(
-                transactionStatusDto -> assertTrue(
-                        transactionUtils.isRefundableTransaction(transactionStatusDto),
-                        "Error! The status is not refundable transaction"
-                )
-        );
+        for (TransactionStatusDto status : TransactionStatusDto.class.getEnumConstants()) {
+            if (refaundableStatusSet.contains(status)) {
+                assertTrue(
+                        transactionUtils.isRefundableTransaction(status),
+                        "Error! The status %s was expected to be refundable".formatted(status)
+                );
+            } else {
+                assertFalse(
+                        transactionUtils.isRefundableTransaction(status),
+                        "Error! The status %s was NOT expected to be refundable".formatted(status)
+                );
+            }
+        }
     }
 
     @Test

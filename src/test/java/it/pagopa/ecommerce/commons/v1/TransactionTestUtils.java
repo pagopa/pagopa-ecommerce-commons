@@ -4,8 +4,7 @@ import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.*;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
@@ -192,7 +191,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
                                                                           TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          BaseTransactionWithCompletedAuthorization transaction
+                                                                          BaseTransaction transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
@@ -212,27 +211,41 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionWithUserReceipt transactionWithUserReceipt(
-                                                                        BaseTransactionWithCompletedAuthorization baseTransactionClosed,
-                                                                        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+    public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
+                                                                            BaseTransactionClosed baseTransactionClosed,
+                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
-        return new TransactionWithUserReceipt(
+        return new TransactionWithUserReceiptOk(
                 baseTransactionClosed,
                 transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
-    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent() {
+    public static TransactionWithUserReceiptKo transactionWithUserReceiptKo(
+                                                                            BaseTransactionClosed baseTransactionClosed,
+                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+    ) {
+        return new TransactionWithUserReceiptKo(
+                baseTransactionClosed,
+                transactionUserReceiptAddedEvent
+        );
+    }
+
+    @Nonnull
+    public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
+                                                                                    TransactionUserReceiptData.Outcome outcome
+    ) {
         return new TransactionUserReceiptAddedEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                new TransactionUserReceiptData(outcome)
         );
     }
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-                                                        TransactionExpiredEvent expiredEvent,
-                                                        BaseTransaction transaction
+                                                        BaseTransactionWithRequestedAuthorization transaction,
+                                                        TransactionExpiredEvent expiredEvent
     ) {
         return new TransactionExpired(transaction, expiredEvent);
     }
@@ -255,10 +268,26 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
-                                                                  BaseTransaction transaction,
-                                                                  TransactionUserCanceledEvent transactionUserCanceledEvent
+                                                                  BaseTransactionWithCancellationRequested transaction,
+                                                                  TransactionClosedEvent transactionClosedEvent
     ) {
-        return new TransactionUserCanceled(transaction, transactionUserCanceledEvent);
+        return new TransactionUserCanceled(transaction, transactionClosedEvent);
+    }
+
+    @Nonnull
+    public static TransactionWithCancellationRequested transactionWithCancellationRequested(
+                                                                                            BaseTransactionWithPaymentToken baseTransaction,
+                                                                                            TransactionUserCanceledEvent transactionUserCanceledEvent
+    ) {
+        return new TransactionWithCancellationRequested(baseTransaction, transactionUserCanceledEvent);
+    }
+
+    @Nonnull
+    public static TransactionCancellationExpired transactionCancellationExpired(
+                                                                                BaseTransactionWithCancellationRequested baseTransaction,
+                                                                                TransactionExpiredEvent transactionExpiredEvent
+    ) {
+        return new TransactionCancellationExpired(baseTransaction, transactionExpiredEvent);
     }
 
     @Nonnull
@@ -267,6 +296,25 @@ public class TransactionTestUtils {
                                                                                   TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
+    }
+
+    @Nonnull
+    public static TransactionWithRefundError transactionWithRefundError(
+                                                                        BaseTransactionWithRefundRequested baseTransaction,
+                                                                        TransactionRefundErrorEvent transactionRefundErrorEvent
+    ) {
+        return new TransactionWithRefundError(baseTransaction, transactionRefundErrorEvent);
+    }
+
+    @Nonnull
+    public static TransactionWithRefundRequested transactionWithRefundRequested(
+                                                                                BaseTransactionWithRequestedAuthorization baseTransaction,
+                                                                                TransactionRefundRequestedEvent transactionRefundRequestedEvent
+    ) {
+        return new TransactionWithRefundRequested(
+                baseTransaction,
+                transactionRefundRequestedEvent
+        );
     }
 
     @Nonnull
@@ -301,18 +349,36 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto previousStatus) {
+    public static TransactionExpiredEvent transactionExpiredEvent(BaseTransaction baseTransaction) {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,
-                new TransactionExpiredData(previousStatus)
+                new TransactionExpiredData(baseTransaction.getStatus())
         );
     }
 
     @Nonnull
-    public static TransactionRefundedEvent transactionRefundedEvent(TransactionStatusDto statusBeforeRefunded) {
+    public static TransactionRefundedEvent transactionRefundedEvent(BaseTransaction baseTransaction) {
         return new TransactionRefundedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundedData(statusBeforeRefunded)
+                new TransactionRefundedData(baseTransaction.getStatus())
+        );
+    }
+
+    @Nonnull
+    public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
+                                                                                  BaseTransaction baseTransaction
+    ) {
+        return new TransactionRefundRequestedEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(baseTransaction.getStatus())
+        );
+    }
+
+    @Nonnull
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
+        return new TransactionRefundErrorEvent(
+                TRANSACTION_ID,
+                new TransactionRefundedData(baseTransaction.getStatus())
         );
     }
 
@@ -339,4 +405,5 @@ public class TransactionTestUtils {
                 creationDateTime.toString()
         );
     }
+
 }

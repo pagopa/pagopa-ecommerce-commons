@@ -6,6 +6,7 @@ createMachine(
     initial: "ACTIVATED",
     states: {
       AUTH_REQUESTED: {
+        entry: assign({ auth_requested: true }),
         on: {
           AUTHORIZATION_COMPLETED: {
             target: "AUTHORIZATION_COMPLETED",
@@ -41,12 +42,16 @@ createMachine(
         entry: assign({
           closepayment_outcome: "OK",
           closepayment_response: "KO",
+          sendpaymentresult_response: "KO"
         }),
         on: {
-          ADD_USER_RECEIPT: {
-            target: "NOTIFIED",
-            cond: "closepayment_response_ok",
-          },
+          ADD_USER_RECEIPT: [{
+            target: "NOTIFIED_OK",
+            cond: "sendpaymentresult_response_ok",
+          }, {
+            target: "NOTIFIED_KO",
+            cond: "sendpaymentresult_response_ko",
+          }],
           EXPIRE: {
             target: "EXPIRED",
           },
@@ -65,7 +70,7 @@ createMachine(
             target: "CLOSURE_ERROR"
           },
           EXPIRE: {
-            target: "EXPIRED"
+            target: "CANCELLATION_EXPIRED"
           }
         }
       },
@@ -74,11 +79,19 @@ createMachine(
       },
       CLOSURE_ERROR: {
         on: {
-          EXPIRE: {
-            target: "EXPIRED",
-          },
+          EXPIRE: [
+            {
+              target: "EXPIRED",
+              cond: "auth_requested",
+            },
+            {
+              target: "CANCELLATION_EXPIRED",
+              cond: "was_canceled",
+            },
+          ],
           REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
+            cond: "auth_requested",
           },
           CLOSURE_RETRIED: {},
           CLOSED: [
@@ -97,11 +110,21 @@ createMachine(
           }
         },
       },
-      NOTIFIED: {
+      NOTIFIED_OK: {
         type: "final",
+      },
+      NOTIFIED_KO: {
+        on: {
+            REFUND_REQUESTED: {
+                target: "REFUND_REQUESTED"
+            }
+        }
       },
       CANCELED: {
         type: "final"
+      },
+      CANCELLATION_EXPIRED: {
+        type: "final",
       },
       ACTIVATED: {
         on: {
@@ -118,8 +141,8 @@ createMachine(
       },
       EXPIRED: {
         on: {
-          REFUND: {
-            target: "REFUNDED",
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
           },
           REFUND_ERROR: {
             target: "REFUND_ERROR"
@@ -155,6 +178,7 @@ createMachine(
       auth_requested: false,
       closepayment_outcome: null,
       closepayment_response: null,
+      sendpaymentresult_response: null,
       auth_outcome: null,
       was_canceled: null
     },
@@ -172,6 +196,10 @@ createMachine(
       auth_outcome_ko: (context, event) => context.auth_outcome == "KO",
       closepayment_response_ok: (context, event) =>
         context.closepayment_response == "OK",
+      sendpaymentresult_response_ok: (context, event) =>
+        context.sendpaymentresult_response == "OK" && context.closepayment_response == "OK",
+      sendpaymentresult_response_ko: (context, event) =>
+        context.sendpaymentresult_response == "KO",
       was_canceled: (context, event) => context.was_canceled,
     },
   }

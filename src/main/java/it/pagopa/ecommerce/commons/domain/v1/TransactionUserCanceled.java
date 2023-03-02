@@ -1,7 +1,8 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
-import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionClosedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -12,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction canceled by user. This is a final state, so any event applied to
- * this class will be discarded
+ * this class will be discarded.
  * </p>
  *
  * @see Transaction
@@ -24,17 +25,17 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public final class TransactionUserCanceled extends BaseTransaction implements Transaction {
 
-    TransactionUserCanceledEvent transactionUserCanceledEvent;
+    TransactionClosedEvent transactionClosedEvent;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction              the base transaction
-     * @param transactionUserCanceledEvent the transaction expired event
+     * @param baseTransaction        the base transaction
+     * @param transactionClosedEvent the transaction closed event
      */
     public TransactionUserCanceled(
-            BaseTransaction baseTransaction,
-            TransactionUserCanceledEvent transactionUserCanceledEvent
+            BaseTransactionWithCancellationRequested baseTransaction,
+            TransactionClosedEvent transactionClosedEvent
     ) {
         super(
                 baseTransaction.getTransactionId(),
@@ -43,7 +44,7 @@ public final class TransactionUserCanceled extends BaseTransaction implements Tr
                 baseTransaction.getCreationDate(),
                 baseTransaction.getClientId()
         );
-        this.transactionUserCanceledEvent = transactionUserCanceledEvent;
+        this.transactionClosedEvent = transactionClosedEvent;
     }
 
     /**

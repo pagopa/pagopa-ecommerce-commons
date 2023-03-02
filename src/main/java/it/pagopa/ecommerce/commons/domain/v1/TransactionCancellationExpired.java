@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -11,20 +11,24 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * Transaction expired before requesting authorization. This is a final state so
- * any event applied to this class will be discarded.
+ * Transaction that was cancelled by user and cancellation process (Nodo
+ * closePaymentV2) is expired
+ * </p>
+ * <p>
+ * This is a final state so any event applied to this aggregate will be ignored
  * </p>
  *
  * @see Transaction
- * @see BaseTransaction
+ * @see BaseTransactionWithCancellationRequested
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionExpiredNotAuthorized extends BaseTransaction implements Transaction {
+public final class TransactionCancellationExpired extends BaseTransactionWithCancellationRequested
+        implements Transaction {
 
-    private final TransactionExpiredEvent transactionExpiredEvent;
+    TransactionExpiredEvent transactionExpiredEvent;
 
     /**
      * Primary constructor
@@ -32,16 +36,12 @@ public final class TransactionExpiredNotAuthorized extends BaseTransaction imple
      * @param baseTransaction         the base transaction
      * @param transactionExpiredEvent the transaction expired event
      */
-    public TransactionExpiredNotAuthorized(
-            BaseTransaction baseTransaction,
+    public TransactionCancellationExpired(
+            BaseTransactionWithCancellationRequested baseTransaction,
             TransactionExpiredEvent transactionExpiredEvent
     ) {
         super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
+                baseTransaction
         );
         this.transactionExpiredEvent = transactionExpiredEvent;
     }
@@ -51,7 +51,7 @@ public final class TransactionExpiredNotAuthorized extends BaseTransaction imple
      */
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionStatusDto.EXPIRED_NOT_AUTHORIZED;
+        return TransactionStatusDto.CANCELLATION_EXPIRED;
     }
 
     /**

@@ -6,24 +6,30 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a transaction closure KO being sent. Closing
- * a transaction notifies Nodo that the transaction has been finalized.
+ * Shared transaction closure correlated events structure
+ *
+ * @see TransactionClosedEvent
+ * @see TransactionClosureErrorEvent
+ * @see TransactionClosureFailedEvent
  */
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureFailedEvent extends BaseTransactionClosureEvent {
+public sealed class BaseTransactionClosureEvent extends
+        TransactionEvent<TransactionClosureData>permits TransactionClosedEvent,TransactionClosureFailedEvent {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
      * @param transactionId          transaction unique id
+     * @param transactionEventCode   the transaction event code
      * @param transactionClosureData the transaction closure operation data
      */
-    public TransactionClosureFailedEvent(
+    BaseTransactionClosureEvent(
             String transactionId,
+            TransactionEventCode transactionEventCode,
             TransactionClosureData transactionClosureData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT, transactionClosureData);
+        super(transactionId, transactionEventCode, transactionClosureData);
     }
 }

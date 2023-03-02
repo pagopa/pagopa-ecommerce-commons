@@ -21,9 +21,9 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionWithClosureError extends BaseTransactionWithCompletedAuthorization {
+public abstract class BaseTransactionWithClosureError extends BaseTransaction {
 
-    TransactionClosureErrorEvent event;
+    BaseTransaction transactionAtPreviousState;
 
     /**
      * Primary constructor
@@ -32,10 +32,16 @@ public abstract class BaseTransactionWithClosureError extends BaseTransactionWit
      * @param event           data related to closure error event
      */
     protected BaseTransactionWithClosureError(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransaction baseTransaction,
             TransactionClosureErrorEvent event
     ) {
-        super(baseTransaction, baseTransaction.getTransactionAuthorizationCompletedData());
-        this.event = event;
+        super(
+                baseTransaction.getTransactionId(),
+                baseTransaction.getPaymentNotices(),
+                baseTransaction.getEmail(),
+                baseTransaction.getCreationDate(),
+                baseTransaction.getClientId()
+        );
+        this.transactionAtPreviousState = baseTransaction;
     }
 }
