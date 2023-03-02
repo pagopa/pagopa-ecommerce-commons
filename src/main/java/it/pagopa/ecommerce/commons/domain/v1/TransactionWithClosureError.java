@@ -1,13 +1,13 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithClosureError;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -67,47 +67,42 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      */
     @Override
     public Transaction applyEvent(Object event) {
-
-        if (wasTransactionAuthorized()) {
-            BaseTransactionWithCompletedAuthorization baseTransaction = (BaseTransactionWithCompletedAuthorization) this.getTransactionAtPreviousState();
-            return switch (event) {
-                case TransactionClosedEvent e -> new TransactionClosed(baseTransaction, e);
-                case TransactionExpiredEvent e -> new TransactionExpired(baseTransaction, e);
-                case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(baseTransaction, e);
-                case TransactionClosureFailedEvent e -> new TransactionUnauthorized(baseTransaction, e);
-                default -> this;
-            };
-        }
-        if (wasCancelledByUser()) {
-            BaseTransactionWithCancellationRequested baseTransaction = (BaseTransactionWithCancellationRequested) this.getTransactionAtPreviousState();
-            return switch (event) {
-                case TransactionClosedEvent e -> new TransactionUserCanceled(baseTransaction, e);
-                case TransactionExpiredEvent e -> new TransactionCancellationExpired(baseTransaction, e);
-                default -> this;
-            };
-        }
-        return this;
+        Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState = transactionAtPreviousState();
+        return transactionAtPreviousState
+                .map(either -> either.fold(
+                        trxWithCancellation -> switch (event) {
+                            case TransactionClosedEvent e -> new TransactionUserCanceled(trxWithCancellation, e);
+                            case TransactionExpiredEvent e ->
+                                    new TransactionCancellationExpired(trxWithCancellation, e);
+                            default -> this;
+                        },
+                        trxWithAuthorizationCompleted -> switch (event) {
+                            case TransactionClosedEvent e -> new TransactionClosed(trxWithAuthorizationCompleted, e);
+                            case TransactionExpiredEvent e -> new TransactionExpired(trxWithAuthorizationCompleted, e);
+                            case TransactionRefundRequestedEvent e ->
+                                    new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
+                            case TransactionClosureFailedEvent e ->
+                                    new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
+                            default -> this;
+                        }
+                ))
+                .orElse(this);
 
     }
 
     /**
-     * Checks if the transaction was previously authorized by checking the type of
-     * the transaction at previous state
+     * Return an Either of the transaction at previous point
      *
-     * @return true if the transaction was previously authorized, false otherwise
+     * @return an optional Either instance populated from the transaction value at previous step.
+     * If the transaction is not one of  {@link BaseTransactionWithCancellationRequested} or {@link BaseTransactionWithRequestedAuthorization} then an empty
+     * Optional is returned
      */
-    private boolean wasTransactionAuthorized() {
-        return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCompletedAuthorization;
-    }
-
-    /**
-     * Checks if the transaction was cancelled by the user by checking the type of
-     * the transaction at previous state
-     *
-     * @return true if the transaction was cancelled by the user, false otherwise
-     */
-    private boolean wasCancelledByUser() {
-        return this.getTransactionAtPreviousState() instanceof BaseTransactionWithCancellationRequested;
+    private Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState() {
+        return switch (this.getTransactionAtPreviousState()) {
+            case BaseTransactionWithCancellationRequested trx -> Optional.of(Either.left(trx));
+            case BaseTransactionWithCompletedAuthorization trx -> Optional.of(Either.right(trx));
+            default -> Optional.empty();
+        };
     }
 
     /**
