@@ -18,16 +18,16 @@ import lombok.experimental.FieldDefaults;
  * {@link TransactionExpiredData TransactionExpiredData}.
  * </p>
  *
- * @see BaseTransaction
+ * @see BaseTransactionWithRequestedAuthorization
  * @see TransactionExpiredEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionExpired extends BaseTransaction {
+public abstract class BaseTransactionExpired extends BaseTransactionWithRequestedAuthorization {
     TransactionExpiredData transactionExpiredData;
-    BaseTransaction transactionAtPreviousState;
+    BaseTransactionWithRequestedAuthorization transactionAtPreviousState;
 
     /**
      * Primary constructor
@@ -36,15 +36,12 @@ public abstract class BaseTransactionExpired extends BaseTransaction {
      * @param transactionExpiredData transaction expiration data
      */
     protected BaseTransactionExpired(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithRequestedAuthorization baseTransaction,
             TransactionExpiredData transactionExpiredData
     ) {
         super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
+                baseTransaction,
+                baseTransaction.getTransactionAuthorizationRequestData()
         );
 
         this.transactionExpiredData = transactionExpiredData;

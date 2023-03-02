@@ -182,7 +182,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureErrorEvent transactionClosureErrorEvent(TransactionClosureData.Outcome outcome) {
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
         return new TransactionClosureErrorEvent(
                 TRANSACTION_ID
         );
@@ -244,7 +244,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-                                                        BaseTransaction transaction,
+                                                        BaseTransactionWithRequestedAuthorization transaction,
                                                         TransactionExpiredEvent expiredEvent
     ) {
         return new TransactionExpired(transaction, expiredEvent);
@@ -280,6 +280,14 @@ public class TransactionTestUtils {
                                                                                             TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
         return new TransactionWithCancellationRequested(baseTransaction, transactionUserCanceledEvent);
+    }
+
+    @Nonnull
+    public static TransactionCancellationExpired transactionCancellationExpired(
+                                                                                BaseTransactionWithCancellationRequested baseTransaction,
+                                                                                TransactionExpiredEvent transactionExpiredEvent
+    ) {
+        return new TransactionCancellationExpired(baseTransaction, transactionExpiredEvent);
     }
 
     @Nonnull

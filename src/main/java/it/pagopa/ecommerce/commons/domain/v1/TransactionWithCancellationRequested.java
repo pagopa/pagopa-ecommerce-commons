@@ -20,7 +20,8 @@ import lombok.experimental.FieldDefaults;
  * <li>{@link TransactionClosedEvent} --> {@link TransactionUserCanceled}</li>
  * <li>{@link TransactionClosureErrorEvent} -->
  * {@link TransactionWithClosureError}</li>
- * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionExpiredEvent} -->
+ * {@link TransactionCancellationExpired}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -68,7 +69,7 @@ public final class TransactionWithCancellationRequested extends BaseTransactionW
         return switch (event) {
             case TransactionClosedEvent e -> new TransactionUserCanceled(this, e);
             case TransactionClosureErrorEvent e -> new TransactionWithClosureError(this, e);
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
+            case TransactionExpiredEvent e -> new TransactionCancellationExpired(this, e);
             default -> this;
         };
 
