@@ -6,6 +6,7 @@ createMachine(
     initial: "ACTIVATED",
     states: {
       AUTH_REQUESTED: {
+        entry: assign({ auth_requested: true }),
         on: {
           AUTHORIZATION_COMPLETED: {
             target: "AUTHORIZATION_COMPLETED",
@@ -69,7 +70,7 @@ createMachine(
             target: "CLOSURE_ERROR"
           },
           EXPIRE: {
-            target: "EXPIRED"
+            target: "CANCELLATION_EXPIRED"
           }
         }
       },
@@ -78,11 +79,19 @@ createMachine(
       },
       CLOSURE_ERROR: {
         on: {
-          EXPIRE: {
-            target: "EXPIRED",
-          },
+          EXPIRE: [
+            {
+              target: "EXPIRED",
+              cond: "auth_requested",
+            },
+            {
+              target: "CANCELLATION_EXPIRED",
+              cond: "was_canceled",
+            },
+          ],
           REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
+            cond: "auth_requested",
           },
           CLOSURE_RETRIED: {},
           CLOSED: [
@@ -113,6 +122,9 @@ createMachine(
       },
       CANCELED: {
         type: "final"
+      },
+      CANCELLATION_EXPIRED: {
+        type: "final",
       },
       ACTIVATED: {
         on: {
@@ -154,7 +166,6 @@ createMachine(
         }
       },
       REFUND_ERROR: {
-        type: "final",
         on: {
           REFUND: {
             target: "REFUNDED"
