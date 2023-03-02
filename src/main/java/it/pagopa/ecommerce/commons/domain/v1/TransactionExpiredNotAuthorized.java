@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction expired before requesting authorization. This is a final state so
- * any event applied to this class will be discarded
+ * any event applied to this class will be discarded.
  * </p>
  *
  * @see Transaction

@@ -18,10 +18,16 @@ import java.util.List;
  * <p>
  * Activated transaction.
  * </p>
- * <p>
- * To this class you can apply an {@link TransactionAuthorizationRequestedEvent}
- * to get a {@link TransactionWithRequestedAuthorization}
- * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionAuthorizationRequestedEvent} -->
+ * {@link TransactionWithRequestedAuthorization}</li>
+ * <li>{@link TransactionExpiredEvent} -->
+ * {@link TransactionExpiredNotAuthorized}</li>
+ * <li>{@link TransactionUserCanceledEvent} -->
+ * {@link TransactionWithCancellationRequested}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
  * @see BaseTransactionWithPaymentToken

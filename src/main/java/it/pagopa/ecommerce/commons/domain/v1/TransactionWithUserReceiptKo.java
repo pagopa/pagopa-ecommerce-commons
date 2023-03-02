@@ -16,8 +16,12 @@ import lombok.experimental.FieldDefaults;
  * sendPaymentResult has KO outcome
  * </p>
  * <p>
- * Starting from this state the only applicable event is
- * {@link TransactionRefundRequestedEvent} to start the refund process
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionRefundRequestedEvent} -->
+ * {@link TransactionWithRefundRequested}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
  * @see BaseTransactionClosed

@@ -14,10 +14,17 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * Closed transaction.
  * </p>
- * <p>
- * To this class you can apply a {@link TransactionUserReceiptAddedEvent} to get
- * a {@link TransactionWithUserReceiptOk}.
- * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionUserReceiptAddedEvent} with OK send payment result
+ * outcome --> {@link TransactionWithUserReceiptOk}</li>
+ * <li>{@link TransactionUserReceiptAddedEvent} with KO send payment result
+ * outcome --> {@link TransactionWithUserReceiptKo}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
+ * <li>{@link TransactionRefundRequestedEvent} -->
+ * {@link TransactionWithRefundRequested}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
  * @see BaseTransactionClosed

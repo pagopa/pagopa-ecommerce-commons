@@ -11,8 +11,9 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * Transaction closed and notified to the user, but with possible failure in
- * notification.
+ * Transaction closed and notified to the user for which email communication
+ * process has been started (by meaning of notifications-service has take in
+ * charge successful mail sending to the user)
  * </p>
  * <p>
  * Given that this is a terminal state for a transaction, there are no events

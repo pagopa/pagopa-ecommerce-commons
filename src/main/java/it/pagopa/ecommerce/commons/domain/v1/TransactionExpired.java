@@ -13,6 +13,12 @@ import lombok.ToString;
  * <p>
  * Expired transaction.
  * </p>
+ * Applicable events with resulting aggregates are:
+ * <ul>
+ * <li>{@link TransactionRefundRequestedEvent} -->
+ * {@link TransactionWithRefundRequested}</li>
+ * </ul>
+ * Any other event than the above ones will be discarded.
  *
  * @see Transaction
  * @see BaseTransactionExpired
