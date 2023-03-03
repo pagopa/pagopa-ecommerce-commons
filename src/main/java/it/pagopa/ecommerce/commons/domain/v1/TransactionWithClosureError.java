@@ -97,7 +97,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      * If the transaction is not one of  {@link BaseTransactionWithCancellationRequested} or {@link BaseTransactionWithRequestedAuthorization} then an empty
      * Optional is returned
      */
-    private Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState() {
+    public Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState() {
         return switch (this.getTransactionAtPreviousState()) {
             case BaseTransactionWithCancellationRequested trx -> Optional.of(Either.left(trx));
             case BaseTransactionWithCompletedAuthorization trx -> Optional.of(Either.right(trx));
