@@ -19,9 +19,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class TransactionTestUtils {
 
@@ -404,6 +402,26 @@ public class TransactionTestUtils {
                 Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString()
         );
+    }
+
+    @Nonnull
+    public static BaseTransaction reduceEvents(TransactionEvent<?>... events) {
+        List<Object> reductionList = new ArrayList<>();
+        reductionList.add(new EmptyTransaction());
+        reductionList.addAll(Arrays.stream(events).toList());
+        return (BaseTransaction) reductionList
+                .stream()
+                .reduce(
+                        (
+                         trx,
+                         event
+                        ) -> ((it.pagopa.ecommerce.commons.domain.v1.Transaction) trx).applyEvent(event)
+                )
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                "Error reducing input events: [%s]".formatted(Arrays.toString(events))
+                        )
+                );
     }
 
 }
