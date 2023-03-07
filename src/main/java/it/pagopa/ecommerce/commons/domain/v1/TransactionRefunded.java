@@ -28,10 +28,10 @@ import lombok.experimental.FieldDefaults;
  * @formatter:off
  *
  * Warning java:S110 - This class has x parents which is greater than 5 authorized
- * Suppressed because the Transaction hierarchy modeled here force TransactionWithUserReceiptOk
- * to be instantiated only starting from a TransactionClosed. The hierarchy dept is strictly correlated
- * to the depth of the graph representing the finite state machine so can be accepted that hierarchy level
- * is deeper than the max authorized level
+ * Suppressed because the Transaction hierarchy modeled here ensures that TransactionWithUserReceiptOk
+ * can only be instantiated from a TransactionClosed. The hierarchy depth is closely related
+ * to the depth of the graph representing the finite state machine so it is acceptable that the hierarchy level
+ * is deeper than the maximum allowed level
  *
  * @formatter:on
  */
