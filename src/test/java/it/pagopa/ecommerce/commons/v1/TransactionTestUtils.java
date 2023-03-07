@@ -250,7 +250,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefunded transactionRefunded(
-                                                          BaseTransaction transaction,
+                                                          BaseTransactionWithRefundRequested transaction,
                                                           TransactionRefundedEvent transactionRefundedEvent
     ) {
         return new TransactionRefunded(transaction, transactionRefundedEvent);

@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundErrorEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionRefunded;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRefundRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -27,27 +26,27 @@ import lombok.experimental.FieldDefaults;
  * Other events than the above ones will be discarded
  *
  * @see Transaction
- * @see BaseTransactionRefunded
+ * @see BaseTransactionWithRefundRequested
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionWithRefundError extends BaseTransactionRefunded implements Transaction {
+public final class TransactionWithRefundError extends BaseTransactionWithRefundRequested implements Transaction {
 
     TransactionRefundErrorEvent transactionRefundErrorEvent;
 
     /**
      * Main constructor.
      *
-     * @param baseTransaction             transaction to extend with receipt data
+     * @param baseTransaction             base transaction with refund requested
      * @param transactionRefundErrorEvent transaction refund error event
      */
     public TransactionWithRefundError(
             BaseTransactionWithRefundRequested baseTransaction,
             TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
-        super(baseTransaction, transactionRefundErrorEvent.getData());
+        super(baseTransaction);
         this.transactionRefundErrorEvent = transactionRefundErrorEvent;
     }
 

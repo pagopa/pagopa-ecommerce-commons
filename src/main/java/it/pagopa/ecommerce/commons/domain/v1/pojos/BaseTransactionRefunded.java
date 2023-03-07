@@ -18,35 +18,29 @@ import lombok.experimental.FieldDefaults;
  * {@link TransactionRefundedData TransactionRefundedData}.
  * </p>
  *
- * @see BaseTransaction
+ * @see BaseTransactionWithRefundRequested
  * @see TransactionRefundedEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionRefunded extends BaseTransaction {
+public abstract class BaseTransactionRefunded extends BaseTransactionWithRefundRequested {
     TransactionRefundedData transactionRefundedData;
-    BaseTransaction transactionAtPreviousState;
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction         base transaction
+     * @param baseTransaction         base transaction with refund requested
      * @param transactionRefundedData the transaction refunded data
      */
     protected BaseTransactionRefunded(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithRefundRequested baseTransaction,
             TransactionRefundedData transactionRefundedData
     ) {
         super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
+                baseTransaction
         );
         this.transactionRefundedData = transactionRefundedData;
-        this.transactionAtPreviousState = baseTransaction;
     }
 }
