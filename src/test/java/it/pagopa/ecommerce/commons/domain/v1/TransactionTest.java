@@ -3283,7 +3283,9 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                                && (((TransactionExpired) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                                && (((TransactionExpired) t).getTransactionAtPreviousState().getStatus())
+                                        .equals(TransactionStatusDto.NOTIFIED_KO)
                 )
                 .verifyComplete();
     }
