@@ -114,6 +114,9 @@ createMachine(
         on: {
             REFUND_REQUESTED: {
                 target: "REFUND_REQUESTED"
+            },
+            EXPIRE: {
+                target: "EXPIRED"
             }
         }
       },
