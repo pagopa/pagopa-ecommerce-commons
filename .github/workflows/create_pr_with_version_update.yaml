@@ -40,6 +40,8 @@ jobs:
 
       - name: Create change commit
         run: |
+          git config user.name pagopa-platform-github-bot
+          git config user.email pagopa-github-bot@pagopa.it
           git add .
           git commit -m "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
 
