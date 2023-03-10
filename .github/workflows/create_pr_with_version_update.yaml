@@ -48,6 +48,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PR_ACTIONS_ACCESS_TOKEN }}
+          committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
           body: |
             <!--- Please always add a PR description as if nobody knows anything about the context these changes come from. -->
