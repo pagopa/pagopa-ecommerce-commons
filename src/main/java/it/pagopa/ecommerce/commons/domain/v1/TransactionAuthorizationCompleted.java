@@ -22,8 +22,6 @@ import lombok.experimental.FieldDefaults;
  * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * <li>{@link TransactionClosureFailedEvent} -->
  * {@link TransactionUnauthorized}</li>
- * <li>{@link TransactionRefundRequestedEvent} -->
- * {@link TransactionWithRefundRequested}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -66,7 +64,6 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
             );
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
             case TransactionClosureFailedEvent e -> new TransactionUnauthorized(this, e);
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
             default -> this;
         };
     }
