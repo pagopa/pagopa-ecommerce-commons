@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
@@ -20,6 +21,7 @@ import lombok.experimental.FieldDefaults;
  * <ul>
  * <li>{@link TransactionRefundRequestedEvent} -->
  * {@link TransactionWithRefundRequested}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -64,11 +66,11 @@ public final class TransactionWithUserReceiptKo extends BaseTransactionClosed
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundRequestedEvent e) {
-            return new TransactionWithRefundRequested(this, e);
-        }
-        return this;
-
+        return switch (event) {
+            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
+            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
+            default -> this;
+        };
     }
 
     @Override

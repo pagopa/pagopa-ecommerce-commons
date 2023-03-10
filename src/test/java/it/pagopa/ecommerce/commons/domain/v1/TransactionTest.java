@@ -3220,4 +3220,71 @@ class TransactionTest {
                 )
                 .verifyComplete();
     }
+
+    @Test
+    void shouldConstructTransactionExpiredFromUserReceiptWithStatusNotifiedKO() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+
+        TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
+                .transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.KO);
+        TransactionExpiredEvent expiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent,
+                        closureSentEvent,
+                        transactionUserReceiptAddedEvent
+                )
+        );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                closureSentEvent,
+                transactionUserReceiptAddedEvent,
+                expiredEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionClosed transactionClosed = TransactionTestUtils
+                .transactionClosed(
+
+                        transactionAuthorizationCompleted,
+                        closureSentEvent
+                );
+        TransactionWithUserReceiptKo transactionWithUserReceiptKo = TransactionTestUtils.transactionWithUserReceiptKo(
+
+                transactionClosed,
+                transactionUserReceiptAddedEvent
+        );
+
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionWithUserReceiptKo, expiredEvent);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+                )
+                .verifyComplete();
+    }
 }
