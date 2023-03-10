@@ -32,9 +32,6 @@ createMachine(
           },
           EXPIRE: {
             target: "EXPIRED",
-          },
-          REFUND_REQUESTED: {
-            target: "REFUND_REQUESTED"
           }
         },
       },

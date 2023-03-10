@@ -3181,7 +3181,7 @@ class TransactionTest {
     }
 
     @Test
-    void shouldConstructTransactionRefundRequestedFromAuthorizationCompleted() {
+    void shouldIgnoreTransactionRefundRequestedEventFromAuthorizationCompleted() {
         EmptyTransaction transaction = new EmptyTransaction();
 
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
@@ -3193,13 +3193,13 @@ class TransactionTest {
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
                 .transactionWithRequestedAuthorization(transactionAuthorizationRequestedEvent, transactionActivated);
-        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+        TransactionAuthorizationCompleted expected = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
                         transactionWithRequestedAuthorization
                 );
         TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
-                .transactionRefundRequestedEvent(transactionAuthorizationCompleted);
+                .transactionRefundRequestedEvent(expected);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -3209,17 +3209,14 @@ class TransactionTest {
 
         );
 
-        TransactionWithRefundRequested expected = TransactionTestUtils.transactionWithRefundRequested(
-                transactionAuthorizationCompleted,
-                transactionRefundRequestedEvent
-        );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
 
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                                && (((BaseTransaction) t).getStatus())
+                                        .equals(TransactionStatusDto.AUTHORIZATION_COMPLETED)
                 )
                 .verifyComplete();
     }
