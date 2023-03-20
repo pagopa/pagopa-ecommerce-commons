@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import it.pagopa.generated.pdv.v1.api.TokenApi;
 
 import javax.annotation.Nonnull;
 import javax.crypto.BadPaddingException;
@@ -38,7 +39,8 @@ public class TransactionTestUtils {
     static {
         try {
             EMAIL = confidentialDataManager
-                    .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email("foo@example.com"));
+                    .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email("foo@example.com"))
+                    .block();
         } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException
                 | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
             throw new RuntimeException(e);
@@ -66,7 +68,7 @@ public class TransactionTestUtils {
         byte[] key = new byte[16];
         new Random().nextBytes(key);
 
-        return new ConfidentialDataManager(new SecretKeySpec(key, "AES"));
+        return new ConfidentialDataManager(new SecretKeySpec(key, "AES"), new TokenApi());
     }
 
     @Nonnull

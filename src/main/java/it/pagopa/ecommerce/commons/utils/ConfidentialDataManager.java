@@ -3,6 +3,11 @@ package it.pagopa.ecommerce.commons.utils;
 import it.pagopa.ecommerce.commons.domain.AESMetadata;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.ConfidentialMetadata;
+import it.pagopa.ecommerce.commons.domain.PersonalDataVaultMetadata;
+import it.pagopa.generated.pdv.v1.api.TokenApi;
+import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
+import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Nonnull;
 import javax.crypto.BadPaddingException;
@@ -13,6 +18,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -40,7 +46,13 @@ public class ConfidentialDataManager {
          * This mode implements encryption with an AES cipher in GCM mode without
          * padding. For more details, see {@link AESCipher}.
          */
-        AES_GCM_NOPAD("AES/GCM/NoPadding");
+        AES_GCM_NOPAD("AES/GCM/NoPadding"),
+
+        /**
+         * This mode implements encryption through the external service Personal Data
+         * Vault.
+         */
+        PERSONAL_DATA_VAULT("PersonalDataVault");
 
         /**
          * String representation of the mode. Must be unique for each mode.
@@ -74,14 +86,21 @@ public class ConfidentialDataManager {
 
     private final AESCipher aesCipher;
 
+    private final TokenApi personalDataVaultClient;
+
     /**
      * Primary constructor.
      *
-     * @param key AES secret key used to handle
-     *            {@code ConfidentialDataManager.Mode.AES_GCM_NOPAD}
+     * @param key                     AES secret key used to handle
+     *                                {@code ConfidentialDataManager.Mode.AES_GCM_NOPAD}
+     * @param personalDataVaultClient Client for Personal Data Vault
      */
-    public ConfidentialDataManager(@Nonnull SecretKeySpec key) {
+    public ConfidentialDataManager(
+            @Nonnull SecretKeySpec key,
+            TokenApi personalDataVaultClient
+    ) {
         this.aesCipher = new AESCipher(key);
+        this.personalDataVaultClient = personalDataVaultClient;
     }
 
     /**
@@ -109,20 +128,24 @@ public class ConfidentialDataManager {
      *                                            {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     @Nonnull
-    public <T extends ConfidentialData> Confidential<T> encrypt(
-                                                                Mode mode,
-                                                                @Nonnull T data
+    public <T extends ConfidentialData> Mono<Confidential<T>> encrypt(
+                                                                      @Nonnull Mode mode,
+                                                                      @Nonnull T data
     ) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException,
             NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-        if (mode == Mode.AES_GCM_NOPAD) {
-            AESMetadata confidentialMetadata = new AESMetadata();
-            return new Confidential<T>(
-                    confidentialMetadata,
-                    encryptData(confidentialMetadata, data.toStringRepresentation())
-            );
-        } else {
-            throw new IllegalArgumentException();
-        }
+        ConfidentialMetadata metadata = switch (mode) {
+            case AES_GCM_NOPAD -> new AESMetadata();
+            case PERSONAL_DATA_VAULT -> new PersonalDataVaultMetadata();
+            case null -> throw new IllegalArgumentException();
+        };
+
+        return encryptData(metadata, data.toStringRepresentation())
+                .map(
+                        encrypted -> new Confidential<T>(
+                                metadata,
+                                encrypted
+                        )
+                );
     }
 
     /**
@@ -131,7 +154,7 @@ public class ConfidentialDataManager {
      * @param data        the data to be decrypted
      * @param constructor a function to construct {@code T} instances from the
      *                    serialized deciphered data
-     * @return a {@code T} instance built from the encrypted data
+     * @return a {@code Mono<T>} instance built from the encrypted data
      * @param <T> the type of the object to be returned
      * @throws InvalidAlgorithmParameterException See
      *                                            {@link javax.crypto.Cipher#doFinal(byte[])}
@@ -147,18 +170,18 @@ public class ConfidentialDataManager {
      *                                            {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     @Nonnull
-    public <T extends ConfidentialData> T decrypt(
-                                                  Confidential<T> data,
-                                                  Function<String, T> constructor
+    public <T extends ConfidentialData> Mono<T> decrypt(
+                                                        Confidential<T> data,
+                                                        Function<String, T> constructor
     ) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
             NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        return constructor.apply(decrypt(data));
+        return decrypt(data).map(constructor);
     }
 
     /**
      * Descrypts the data to string without conversion. Prefer {@link ConfidentialDataManager#decrypt(Confidential, Function)} to this.
      * @param data the data to be decrypted
-     * @return a {@code T} instance built from the encrypted data
+     * @return a {@code Mono<T>} instance built from the encrypted data
      * @param <T> the type of the object to be returned
      * @throws InvalidAlgorithmParameterException See {@link javax.crypto.Cipher#doFinal(byte[])}
      * @throws NoSuchPaddingException See {@link javax.crypto.Cipher#doFinal(byte[])}
@@ -168,20 +191,22 @@ public class ConfidentialDataManager {
      * @throws InvalidKeyException See {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     @Nonnull
-    public <T extends ConfidentialData> String decrypt(Confidential<T> data) throws NoSuchPaddingException, NoSuchAlgorithmException,
+    public <T extends ConfidentialData> Mono<String> decrypt(Confidential<T> data) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
 
         return switch (data.confidentialMetadata()) {
-            case AESMetadata aesMetadata -> this.aesCipher.decrypt(aesMetadata, data.opaqueData());
+            case AESMetadata aesMetadata -> Mono.just(this.aesCipher.decrypt(aesMetadata, data.opaqueData()));
+            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.findPiiUsingGET(data.opaqueData()).map(PiiResourceDto::getPii);
             default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
         };
     }
 
     @Nonnull
-    private String encryptData(@Nonnull ConfidentialMetadata metadata, @Nonnull String data) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
+    private Mono<String> encryptData(@Nonnull ConfidentialMetadata metadata, @Nonnull String data) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
         return switch (metadata) {
-            case AESMetadata aesMetadata -> this.aesCipher.encrypt(aesMetadata, data);
+            case AESMetadata aesMetadata -> Mono.just(this.aesCipher.encrypt(aesMetadata, data));
+            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data)).map(TokenResourceDto::getToken).map(UUID::toString);
             default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
         };
     }
