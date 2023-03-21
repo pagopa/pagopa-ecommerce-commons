@@ -11,14 +11,7 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 
 import javax.annotation.Nonnull;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -37,14 +30,9 @@ public class TransactionTestUtils {
     public static final Confidential<Email> EMAIL;
 
     static {
-        try {
-            EMAIL = confidentialDataManager
-                    .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email("foo@example.com"))
-                    .block();
-        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException
-                | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
+        EMAIL = confidentialDataManager
+                .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email("foo@example.com"))
+                .block();
     }
 
     public static final String FAULT_CODE = "";
