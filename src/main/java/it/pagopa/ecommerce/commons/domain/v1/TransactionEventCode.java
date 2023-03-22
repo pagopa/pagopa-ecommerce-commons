@@ -64,6 +64,15 @@ public enum TransactionEventCode {
      * Event when an attempt is performed for transaction refund with error
      */
     TRANSACTION_REFUND_ERROR_EVENT("TRANSACTION_REFUND_ERROR_EVENT"),
+
+    /**
+     * User receipt add retry event
+     */
+    TRANSACTION_ADD_USER_RECEIPT_RETRY_EVENT("TRANSACTION_ADD_USER_RECEIPT_RETRY_EVENT"),
+    /**
+     * User receipt sending error event
+     */
+    TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT("TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT"),
     ;
 
     private final String code;
