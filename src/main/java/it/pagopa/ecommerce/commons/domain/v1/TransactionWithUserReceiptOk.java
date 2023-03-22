@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,7 @@ import lombok.experimental.FieldDefaults;
  * that you can meaningfully apply to it. Any event application is thus ignored.
  *
  * @see Transaction
- * @see BaseTransactionClosed
+ * @see BaseTransactionWithUserReceipt
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
@@ -38,10 +39,8 @@ import lombok.experimental.FieldDefaults;
  * @formatter:on
  */
 @SuppressWarnings("java:S110")
-public final class TransactionWithUserReceiptOk extends BaseTransactionClosed
+public final class TransactionWithUserReceiptOk extends BaseTransactionWithUserReceipt
         implements Transaction {
-
-    TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent;
 
     /**
      * Main constructor.
@@ -54,8 +53,7 @@ public final class TransactionWithUserReceiptOk extends BaseTransactionClosed
             BaseTransactionClosed baseTransaction,
             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
-        super(baseTransaction, baseTransaction.getTransactionClosureData());
-        this.transactionUserReceiptAddedEvent = transactionUserReceiptAddedEvent;
+        super(baseTransaction, transactionUserReceiptAddedEvent.getData());
     }
 
     @Override
