@@ -31,7 +31,8 @@ class TransactionUtilsTest {
             TransactionStatusDto.NOTIFIED_KO,
             TransactionStatusDto.REFUND_REQUESTED,
             TransactionStatusDto.REFUND_ERROR,
-            TransactionStatusDto.CANCELLATION_REQUESTED
+            TransactionStatusDto.CANCELLATION_REQUESTED,
+            TransactionStatusDto.NOTIFICATION_ERROR
 
     );
 
@@ -41,19 +42,14 @@ class TransactionUtilsTest {
             TransactionStatusDto.EXPIRED,
             TransactionStatusDto.AUTHORIZATION_COMPLETED,
             TransactionStatusDto.AUTHORIZATION_REQUESTED,
-            TransactionStatusDto.NOTIFIED_KO
+            TransactionStatusDto.NOTIFIED_KO,
+            TransactionStatusDto.NOTIFICATION_ERROR
     );
 
     @Test
     void shouldHaveBeenTransientStatus() {
         transactionUtils = new TransactionUtils();
-        transientStatusSet.forEach(
-                transactionStatusDto -> assertTrue(
-                        transactionUtils.isTransientStatus(transactionStatusDto),
-                        "Error! The status is not transient"
-                )
-        );
-        for (TransactionStatusDto status : TransactionStatusDto.class.getEnumConstants()) {
+        for (TransactionStatusDto status : TransactionStatusDto.values()) {
             if (transientStatusSet.contains(status)) {
                 assertTrue(
                         transactionUtils.isTransientStatus(status),

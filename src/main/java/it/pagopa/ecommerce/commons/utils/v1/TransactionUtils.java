@@ -31,7 +31,8 @@ public class TransactionUtils {
                 || TransactionStatusDto.EXPIRED == status
                 || TransactionStatusDto.NOTIFIED_KO == status
                 || TransactionStatusDto.REFUND_REQUESTED == status
-                || TransactionStatusDto.REFUND_ERROR == status;
+                || TransactionStatusDto.REFUND_ERROR == status
+                || TransactionStatusDto.NOTIFICATION_ERROR == status;
     }
 
     /**
@@ -46,7 +47,8 @@ public class TransactionUtils {
                 || TransactionStatusDto.EXPIRED == status
                 || TransactionStatusDto.AUTHORIZATION_COMPLETED == status
                 || TransactionStatusDto.AUTHORIZATION_REQUESTED == status
-                || TransactionStatusDto.NOTIFIED_KO == status;
+                || TransactionStatusDto.NOTIFIED_KO == status
+                || TransactionStatusDto.NOTIFICATION_ERROR == status;
     }
 
     /**
