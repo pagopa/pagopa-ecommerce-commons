@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
@@ -212,15 +213,17 @@ public class ConfidentialDataManager {
     public <T extends ConfidentialData> Mono<String> decrypt(Confidential<T> data) {
 
         return switch (data.confidentialMetadata()) {
-            case AESMetadata aesMetadata -> {
+            case AESMetadata aesMetadata -> Mono.fromCallable(() -> {
                 try {
-                    yield Mono.just(this.aesCipher.decrypt(aesMetadata, data.opaqueData()));
+                    return this.aesCipher.decrypt(aesMetadata, data.opaqueData());
                 } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
                          InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
                     throw new ConfidentialDataException(e);
                 }
-            }
-            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.findPiiUsingGET(data.opaqueData()).map(PiiResourceDto::getPii);
+            });
+            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.findPiiUsingGET(data.opaqueData())
+                    .map(PiiResourceDto::getPii)
+                    .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
             default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
         };
     }
@@ -228,15 +231,18 @@ public class ConfidentialDataManager {
     @Nonnull
     private Mono<String> encryptData(@Nonnull ConfidentialMetadata metadata, @Nonnull String data) {
         return switch (metadata) {
-            case AESMetadata aesMetadata -> {
+            case AESMetadata aesMetadata -> Mono.fromCallable(() -> {
                 try {
-                    yield Mono.just(this.aesCipher.encrypt(aesMetadata, data));
+                    return this.aesCipher.encrypt(aesMetadata, data);
                 } catch (IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException |
                          NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException e) {
                     throw new ConfidentialDataException(e);
                 }
-            }
-            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data)).map(TokenResourceDto::getToken).map(UUID::toString);
+            });
+            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data))
+                    .map(TokenResourceDto::getToken)
+                    .map(UUID::toString)
+                    .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
             default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
         };
     }
