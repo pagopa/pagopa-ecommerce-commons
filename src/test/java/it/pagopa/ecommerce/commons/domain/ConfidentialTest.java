@@ -12,19 +12,11 @@ import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,9 +38,7 @@ class ConfidentialTest {
     }
 
     @Test
-    void confidentialJsonRepresentationIsOK() throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
-            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
-            InvalidKeyException, JsonProcessingException {
+    void confidentialJsonRepresentationIsOK() throws JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
@@ -63,9 +53,7 @@ class ConfidentialTest {
     }
 
     @Test
-    void roundtripEncryptionDecryptionIsSuccessful() throws InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+    void roundtripEncryptionDecryptionIsSuccessful() throws JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
@@ -82,9 +70,7 @@ class ConfidentialTest {
     }
 
     @Test
-    void deserializationFailsOnInvalidMetadata() throws InvalidAlgorithmParameterException, IllegalBlockSizeException,
-            NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
-            InvalidKeyException, JsonProcessingException {
+    void deserializationFailsOnInvalidMetadata() throws JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
@@ -107,9 +93,7 @@ class ConfidentialTest {
     }
 
     @Test
-    void roundtripEncryptionDecryptionWithPDVIsSuccessful() throws InvalidAlgorithmParameterException,
-            IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, JsonProcessingException {
+    void roundtripEncryptionDecryptionWithPDVIsSuccessful() throws JsonProcessingException {
         Email email = new Email("foo@example.com");
 
         TokenResourceDto emailToken = new TokenResourceDto().token(UUID.randomUUID());
