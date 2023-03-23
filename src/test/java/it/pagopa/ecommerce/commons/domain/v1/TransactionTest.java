@@ -3594,7 +3594,7 @@ class TransactionTest {
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
-                .transactionUserReceiptAddErrorEvent(TransactionUserReceiptData.Outcome.OK);
+                .transactionUserReceiptAddErrorEvent(TransactionUserReceiptData.Outcome.KO);
         TransactionUserReceiptAddedEvent userReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(TransactionUserReceiptData.Outcome.KO);
         Flux<Object> events = Flux.just(
