@@ -14,12 +14,15 @@ import lombok.experimental.FieldDefaults;
  * <p>
  * Transaction closed for which an error occurs during user receipt notification
  * </p>
- * <p>
  * Applicable events with resulting aggregates are:
  * <ul>
+ * <li>{@link TransactionUserReceiptAddedEvent} with OK send payment result
+ * outcome --> {@link TransactionWithUserReceiptOk}</li>
+ * <li>{@link TransactionUserReceiptAddedEvent} with KO send payment result
+ * outcome --> {@link TransactionWithUserReceiptKo}</li>
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * <li>{@link TransactionRefundRequestedEvent} -->
  * {@link TransactionWithRefundRequested}</li>
- * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
