@@ -74,7 +74,12 @@ public final class TransactionWithUserReceiptError extends BaseTransactionWithUs
                 }
             }
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
+            case TransactionRefundRequestedEvent e -> {
+                if (this.getTransactionUserReceiptData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.KO)) {
+                    yield new TransactionWithRefundRequested(this, e);
+                }
+                yield this;
+            }
             default -> this;
         };
     }
