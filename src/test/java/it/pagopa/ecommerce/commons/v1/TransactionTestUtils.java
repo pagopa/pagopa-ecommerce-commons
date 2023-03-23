@@ -3,21 +3,14 @@ package it.pagopa.ecommerce.commons.v1;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.PersonalDataVaultMetadata;
 import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
 import javax.annotation.Nonnull;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -27,23 +20,17 @@ public class TransactionTestUtils {
         // helper class with only static methods, no need to instantiate it
     }
 
-    public static final ConfidentialDataManager confidentialDataManager = constructConfidentialDataManager();
-
     public static final String RPT_ID = "77777777777111111111111111111";
     public static final String PAYMENT_TOKEN = "paymentToken";
     public static final String DESCRIPTION = "description";
     public static final int AMOUNT = 100;
-    public static final Confidential<Email> EMAIL;
 
-    static {
-        try {
-            EMAIL = confidentialDataManager
-                    .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email("foo@example.com"));
-        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException
-                | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static final String EMAIL_STRING = "foo@example.com";
+
+    public static final Confidential<Email> EMAIL = new Confidential<>(
+            new PersonalDataVaultMetadata(),
+            UUID.randomUUID().toString()
+    );
 
     public static final String FAULT_CODE = "";
     public static final String FAULT_CODE_STRING = "";
@@ -62,11 +49,12 @@ public class TransactionTestUtils {
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
-    private static ConfidentialDataManager constructConfidentialDataManager() {
+    @Nonnull
+    public static SecretKeySpec constructKeySpec() {
         byte[] key = new byte[16];
         new Random().nextBytes(key);
 
-        return new ConfidentialDataManager(new SecretKeySpec(key, "AES"));
+        return new SecretKeySpec(key, "AES");
     }
 
     @Nonnull
