@@ -124,6 +124,7 @@ createMachine(
           },
           REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
+            cond: "sendpaymentresult_response_ko"
           },
           ADD_USER_RECEIPT_RETRY:{
             target: "NOTIFICATION_ERROR"
