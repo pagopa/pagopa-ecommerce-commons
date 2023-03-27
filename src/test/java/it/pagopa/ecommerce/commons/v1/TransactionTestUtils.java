@@ -369,6 +369,35 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent(
+                                                                                          TransactionUserReceiptData.Outcome outcome
+    ) {
+        return new TransactionUserReceiptAddErrorEvent(
+                TRANSACTION_ID,
+                new TransactionUserReceiptData(outcome)
+        );
+    }
+
+    @Nonnull
+    public static TransactionUserReceiptAddRetriedEvent transactionUserReceiptAddRetriedEvent(int retryCount) {
+        return new TransactionUserReceiptAddRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithUserReceiptError transactionWithUserReceiptError(
+                                                                                  BaseTransactionClosed baseTransactionClosed,
+                                                                                  TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
+    ) {
+        return new TransactionWithUserReceiptError(
+                baseTransactionClosed,
+                transactionUserReceiptAddErrorEvent
+        );
+    }
+
+    @Nonnull
     public static Transaction transactionDocument(
                                                   TransactionStatusDto transactionStatus,
                                                   ZonedDateTime creationDateTime

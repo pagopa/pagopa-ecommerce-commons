@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * Closed transaction.
+ * Transaction closed for which an error occurs during user receipt notification
  * </p>
  * Applicable events with resulting aggregates are:
  * <ul>
@@ -23,37 +23,46 @@ import lombok.experimental.FieldDefaults;
  * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * <li>{@link TransactionRefundRequestedEvent} -->
  * {@link TransactionWithRefundRequested}</li>
- * <li>{@link TransactionUserReceiptAddErrorEvent} -->
- * {@link TransactionWithUserReceiptError}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
  * @see Transaction
- * @see BaseTransactionClosed
+ * @see BaseTransactionWithUserReceipt
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionClosed extends BaseTransactionClosed
+/*
+ * @formatter:off
+ *
+ * Warning java:S110 - This class has x parents which is greater than 5 authorized
+ * Suppressed because the Transaction hierarchy modeled here force TransactionWithUserReceiptError
+ * to be instantiated only starting from a TransactionClosed. The hierarchy dept is strictly correlated
+ * to the depth of the graph representing the finite state machine so can be accepted that hierarchy level
+ * is deeper than the max authorized level
+ *
+ * @formatter:on
+ */
+@SuppressWarnings("java:S110")
+public final class TransactionWithUserReceiptError extends BaseTransactionWithUserReceipt
         implements Transaction {
 
     /**
-     * Primary constructor
+     * Main constructor.
      *
-     * @param baseTransaction        base transaction
-     * @param transactionClosedEvent the transaction closed event
+     * @param baseTransaction                     transaction to extend with receipt
+     *                                            data
+     * @param transactionUserReceiptAddErrorEvent transaction add user receipt error
+     *                                            event
      */
-    public TransactionClosed(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
-            TransactionClosedEvent transactionClosedEvent
+    public TransactionWithUserReceiptError(
+            BaseTransactionClosed baseTransaction,
+            TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
     ) {
-        super(baseTransaction, transactionClosedEvent.getData());
+        super(baseTransaction, transactionUserReceiptAddErrorEvent.getData());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
@@ -65,17 +74,18 @@ public final class TransactionClosed extends BaseTransactionClosed
                 }
             }
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
-            case TransactionUserReceiptAddErrorEvent e -> new TransactionWithUserReceiptError(this, e);
+            case TransactionRefundRequestedEvent e -> {
+                if (this.getTransactionUserReceiptData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.KO)) {
+                    yield new TransactionWithRefundRequested(this, e);
+                }
+                yield this;
+            }
             default -> this;
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionStatusDto.CLOSED;
+        return TransactionStatusDto.NOTIFICATION_ERROR;
     }
 }
