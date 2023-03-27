@@ -55,6 +55,9 @@ createMachine(
           REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
           },
+          ADD_USER_RECEIPT_ERROR:{
+            target: "NOTIFICATION_ERROR"
+          }
         },
       },
       CANCELLATION_REQUESTED: {
@@ -104,6 +107,27 @@ createMachine(
           CLOSURE_FAILED: {
             target: "UNAUTHORIZED",
             cond: "auth_outcome_ko"
+          }
+        },
+      },
+       NOTIFICATION_ERROR: {
+        on: {
+          ADD_USER_RECEIPT: [{
+            target: "NOTIFIED_OK",
+            cond: "sendpaymentresult_response_ok",
+          }, {
+            target: "NOTIFIED_KO",
+            cond: "sendpaymentresult_response_ko",
+          }],
+          EXPIRE: {
+            target: "EXPIRED",
+          },
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
+            cond: "sendpaymentresult_response_ko"
+          },
+          ADD_USER_RECEIPT_RETRY:{
+            target: "NOTIFICATION_ERROR"
           }
         },
       },
