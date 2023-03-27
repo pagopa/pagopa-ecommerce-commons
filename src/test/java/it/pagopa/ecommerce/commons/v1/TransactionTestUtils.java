@@ -50,14 +50,6 @@ public class TransactionTestUtils {
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
     @Nonnull
-    public static SecretKeySpec constructKeySpec() {
-        byte[] key = new byte[16];
-        new Random().nextBytes(key);
-
-        return new SecretKeySpec(key, "AES");
-    }
-
-    @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,

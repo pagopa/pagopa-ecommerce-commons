@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
-import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
@@ -18,33 +17,18 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
 import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.EMAIL_STRING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class ConfidentialDataManagerTest {
 
     private final TokenApi pdvClient = Mockito.mock(TokenApi.class);
 
-    private final ConfidentialDataManager confidentialDataManager = new ConfidentialDataManager(
-            TransactionTestUtils.constructKeySpec(),
-            pdvClient
-    );
-
-    @Test
-    void shouldEncryptAndDecryptMailSuccessfullyWithAES() {
-        Email email = new Email(EMAIL_STRING);
-        Confidential<Email> encrypted = confidentialDataManager
-                .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, email).block();
-        Email decrypted = confidentialDataManager.decrypt(encrypted, Email::new).block();
-
-        assertEquals(email, decrypted);
-    }
+    private final ConfidentialDataManager confidentialDataManager = new ConfidentialDataManager(pdvClient);
 
     @Test
     void shouldEncryptAndDecryptMailSuccessfullyWithPDV() {
@@ -64,34 +48,6 @@ public class ConfidentialDataManagerTest {
 
         /* assertions */
         assertEquals(email, decrypted);
-    }
-
-    @Test
-    void shouldFailEncryptionForInvalidConfiguredKey() {
-        ConfidentialDataManager misconfiguredKeyConfidentialDataManager = new ConfidentialDataManager(
-                new SecretKeySpec(new byte[1], "AES"),
-                pdvClient
-        );
-
-        assertThrows(
-                ConfidentialDataException.class,
-                () -> misconfiguredKeyConfidentialDataManager
-                        .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email(EMAIL_STRING)).block()
-        );
-
-    }
-
-    @Test
-    void shouldFailDecryptionForInvalidConfiguredKey() {
-        ConfidentialDataManager misconfiguredKeyConfidentialDataManager = new ConfidentialDataManager(
-                new SecretKeySpec(new byte[1], "AES"),
-                pdvClient
-        );
-        assertThrows(
-                ConfidentialDataException.class,
-                () -> misconfiguredKeyConfidentialDataManager
-                        .encrypt(ConfidentialDataManager.Mode.AES_GCM_NOPAD, new Email(EMAIL_STRING)).block()
-        );
     }
 
     @Test

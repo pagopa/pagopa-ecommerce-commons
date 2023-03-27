@@ -17,11 +17,10 @@ import javax.annotation.Nonnull;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "mode", visible = true)
 @JsonSubTypes(
     {
-            @JsonSubTypes.Type(value = AESMetadata.class, name = "AES_GCM_NOPAD"),
             @JsonSubTypes.Type(value = PersonalDataVaultMetadata.class, name = "PERSONAL_DATA_VAULT")
     }
 )
-public sealed interface ConfidentialMetadata permits AESMetadata,PersonalDataVaultMetadata {
+public sealed interface ConfidentialMetadata permits PersonalDataVaultMetadata {
     /**
      * Gets the mode identifying the metadata
      *

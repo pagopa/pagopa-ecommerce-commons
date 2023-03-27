@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import it.pagopa.ecommerce.commons.domain.AESMetadata;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.ConfidentialMetadata;
 import it.pagopa.ecommerce.commons.domain.PersonalDataVaultMetadata;
@@ -9,18 +8,9 @@ import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Nonnull;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -45,12 +35,6 @@ public class ConfidentialDataManager {
      * </p>
      */
     public enum Mode {
-        /**
-         * This mode implements encryption with an AES cipher in GCM mode without
-         * padding. For more details, see {@link AESCipher}.
-         */
-        AES_GCM_NOPAD("AES/GCM/NoPadding"),
-
         /**
          * This mode implements encryption through the external service Personal Data
          * Vault.
@@ -87,22 +71,16 @@ public class ConfidentialDataManager {
         String toStringRepresentation();
     }
 
-    private final AESCipher aesCipher;
-
     private final TokenApi personalDataVaultClient;
 
     /**
      * Primary constructor.
      *
-     * @param key                     AES secret key used to handle
-     *                                {@code ConfidentialDataManager.Mode.AES_GCM_NOPAD}
      * @param personalDataVaultClient Client for Personal Data Vault
      */
     public ConfidentialDataManager(
-            @Nonnull SecretKeySpec key,
             TokenApi personalDataVaultClient
     ) {
-        this.aesCipher = new AESCipher(key);
         this.personalDataVaultClient = personalDataVaultClient;
     }
 
@@ -140,7 +118,6 @@ public class ConfidentialDataManager {
                                                                       @Nonnull T data
     ) {
         ConfidentialMetadata metadata = switch (mode) {
-            case AES_GCM_NOPAD -> new AESMetadata();
             case PERSONAL_DATA_VAULT -> new PersonalDataVaultMetadata();
             case null -> throw new IllegalArgumentException();
         };
@@ -213,14 +190,6 @@ public class ConfidentialDataManager {
     public <T extends ConfidentialData> Mono<String> decrypt(Confidential<T> data) {
 
         return switch (data.confidentialMetadata()) {
-            case AESMetadata aesMetadata -> Mono.fromCallable(() -> {
-                try {
-                    return this.aesCipher.decrypt(aesMetadata, data.opaqueData());
-                } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
-                         InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-                    throw new ConfidentialDataException(e);
-                }
-            });
             case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.findPiiUsingGET(data.opaqueData())
                     .map(PiiResourceDto::getPii)
                     .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
@@ -231,14 +200,6 @@ public class ConfidentialDataManager {
     @Nonnull
     private Mono<String> encryptData(@Nonnull ConfidentialMetadata metadata, @Nonnull String data) {
         return switch (metadata) {
-            case AESMetadata aesMetadata -> Mono.fromCallable(() -> {
-                try {
-                    return this.aesCipher.encrypt(aesMetadata, data);
-                } catch (IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException |
-                         NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException e) {
-                    throw new ConfidentialDataException(e);
-                }
-            });
             case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data))
                     .map(TokenResourceDto::getToken)
                     .map(UUID::toString)

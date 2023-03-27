@@ -21,27 +21,28 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class ConfidentialTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TokenApi personalDataVaultClient = Mockito.mock(TokenApi.class);
-    private final ConfidentialDataManager confidentialDataManager;
-
-    ConfidentialTest() {
-        byte[] key = new byte[16];
-        new Random().nextBytes(key);
-
-        SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
-        this.confidentialDataManager = new ConfidentialDataManager(secretKey, personalDataVaultClient);
-    }
+    private final ConfidentialDataManager confidentialDataManager = new ConfidentialDataManager(
+            personalDataVaultClient
+    );;
 
     @Test
     void confidentialJsonRepresentationIsOK() throws JsonProcessingException {
         Email email = new Email("foo@example.com");
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
+        /* preconditions */
+        Mockito.when(personalDataVaultClient.saveUsingPUT(any()))
+                .thenReturn(Mono.just(new TokenResourceDto().token(UUID.randomUUID())));
+
+        /* test */
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.PERSONAL_DATA_VAULT, email)
+                .block();
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
 
@@ -49,47 +50,8 @@ class ConfidentialTest {
         };
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
+        /* assertions */
         assertEquals(Set.of("data", "metadata"), jsonData.keySet());
-    }
-
-    @Test
-    void roundtripEncryptionDecryptionIsSuccessful() throws JsonProcessingException {
-        Email email = new Email("foo@example.com");
-
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
-
-        String serialized = objectMapper.writeValueAsString(confidentialEmail);
-
-        TypeReference<Confidential<Email>> typeRef = new TypeReference<>() {
-        };
-        Confidential<Email> deserialized = objectMapper.readValue(serialized, typeRef);
-
-        Email decryptedEmail = confidentialDataManager.decrypt(deserialized, Email::new).block();
-
-        assertEquals(email, decryptedEmail);
-    }
-
-    @Test
-    void deserializationFailsOnInvalidMetadata() throws JsonProcessingException {
-        Email email = new Email("foo@example.com");
-
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.AES_GCM_NOPAD, email).block();
-
-        String serialized = objectMapper.writeValueAsString(confidentialEmail);
-
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
-        };
-        Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
-        jsonData.put("metadata", Map.of("mode", Mode.AES_GCM_NOPAD));
-
-        String tamperedValue = objectMapper.writeValueAsString(jsonData);
-        TypeReference<Confidential<Email>> confidentialEmailTypeRef = new TypeReference<>() {
-        };
-
-        assertThrows(
-                ValueInstantiationException.class,
-                () -> objectMapper.readValue(tamperedValue, confidentialEmailTypeRef)
-        );
     }
 
     @Test
