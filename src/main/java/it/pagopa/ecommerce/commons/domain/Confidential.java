@@ -1,9 +1,9 @@
 package it.pagopa.ecommerce.commons.domain;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * <p>
@@ -21,9 +21,8 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
  * @formatter:on
  */
 @SuppressWarnings("java:S2326")
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public record Confidential<T extends ConfidentialDataManager.ConfidentialData> (
-        @JsonProperty("data") String opaqueData
+        @JsonProperty("data") @Field("data") String opaqueData
 ) {
     /**
      * Constructs a {@link Confidential} from existing data
