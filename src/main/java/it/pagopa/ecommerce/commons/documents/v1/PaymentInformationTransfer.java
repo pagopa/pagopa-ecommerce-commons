@@ -6,21 +6,16 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Base persistence view for notice code.
  */
 @Data
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
+@Document
 @Generated
-public class PaymentNotice {
-    private String paymentToken;
-    private String rptId; // TODO To be splitted
-    private String description;
-    private Integer amount;
-    private String paymentContextCode;
-    private List<PaymentInformationTransfer> transferList;
+public class PaymentInformationTransfer {
+    private String paFiscalCode;
+    private Boolean digitalStamp;
+    private String transferCategory;
 }
