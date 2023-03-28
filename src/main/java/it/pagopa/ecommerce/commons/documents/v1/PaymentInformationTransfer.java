@@ -17,5 +17,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PaymentInformationTransfer {
     private String paFiscalCode;
     private Boolean digitalStamp;
+    private Integer amount;
     private String transferCategory;
 }
