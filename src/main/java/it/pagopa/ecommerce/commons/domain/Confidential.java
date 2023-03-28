@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * <p>
@@ -21,16 +22,13 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
  */
 @SuppressWarnings("java:S2326")
 public record Confidential<T extends ConfidentialDataManager.ConfidentialData> (
-        @JsonProperty("metadata") ConfidentialMetadata confidentialMetadata,
-        @JsonProperty("data") String opaqueData
+        @JsonProperty("data") @Field("data") String opaqueData
 ) {
     /**
      * Constructs a {@link Confidential} from existing data
      *
-     * @param confidentialMetadata metadata about how this confidential data was
-     *                             protected
-     * @param opaqueData           opaque data (e.g. a ciphertext, a token to an
-     *                             external service, etc.)
+     * @param opaqueData opaque data (e.g. a ciphertext, a token to an external
+     *                   service, etc.)
      */
     /*
      * @formatter:off

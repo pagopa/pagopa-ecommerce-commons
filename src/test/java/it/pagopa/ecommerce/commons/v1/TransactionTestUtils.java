@@ -3,14 +3,12 @@ package it.pagopa.ecommerce.commons.v1;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.PersonalDataVaultMetadata;
 import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
-import javax.crypto.spec.SecretKeySpec;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -28,7 +26,6 @@ public class TransactionTestUtils {
     public static final String EMAIL_STRING = "foo@example.com";
 
     public static final Confidential<Email> EMAIL = new Confidential<>(
-            new PersonalDataVaultMetadata(),
             UUID.randomUUID().toString()
     );
 
@@ -48,14 +45,6 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
-
-    @Nonnull
-    public static SecretKeySpec constructKeySpec() {
-        byte[] key = new byte[16];
-        new Random().nextBytes(key);
-
-        return new SecretKeySpec(key, "AES");
-    }
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
