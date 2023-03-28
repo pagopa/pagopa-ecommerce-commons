@@ -1,8 +1,6 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.ConfidentialMetadata;
-import it.pagopa.ecommerce.commons.domain.PersonalDataVaultMetadata;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
@@ -21,35 +19,11 @@ import java.util.function.Function;
  * </p>
  * <p>
  * This class is meant to be the entry point for an application to handle data
- * in and out of {@link Confidential} via the
- * {@link #encrypt(Mode, ConfidentialData)} and {@link #decrypt(Confidential)}
- * methods
+ * in and out of {@link Confidential} via the {@link #encrypt(ConfidentialData)}
+ * and {@link #decrypt(Confidential)} methods
  * </p>
  */
 public class ConfidentialDataManager {
-    /**
-     * <p>
-     * Mode for ensuring secrecy of confidential data. Each mode corresponds to a
-     * different class implementing procedures to encrypt/mask/tokenize/etc
-     * confidential data.
-     * </p>
-     */
-    public enum Mode {
-        /**
-         * This mode implements encryption through the external service Personal Data
-         * Vault.
-         */
-        PERSONAL_DATA_VAULT("PersonalDataVault");
-
-        /**
-         * String representation of the mode. Must be unique for each mode.
-         */
-        public final String value;
-
-        Mode(String value) {
-            this.value = value;
-        }
-    }
 
     /**
      * <p>
@@ -105,30 +79,15 @@ public class ConfidentialDataManager {
      * <li>InvalidKeyException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
      * </ul>
      *
-     * @param mode the mode used to encrypt data with. See the mode details for more
-     *             information.
      * @param data the unencrypted data
      * @return a {@link Confidential} instance containing the encrypted data and the
      *         algorithm metadata
      * @param <T> type of the unencrypted data
      */
     @Nonnull
-    public <T extends ConfidentialData> Mono<Confidential<T>> encrypt(
-                                                                      @Nonnull Mode mode,
-                                                                      @Nonnull T data
-    ) {
-        ConfidentialMetadata metadata = switch (mode) {
-            case PERSONAL_DATA_VAULT -> new PersonalDataVaultMetadata();
-            case null -> throw new IllegalArgumentException();
-        };
-
-        return encryptData(metadata, data.toStringRepresentation())
-                .map(
-                        encrypted -> new Confidential<T>(
-                                metadata,
-                                encrypted
-                        )
-                );
+    public <T extends ConfidentialData> Mono<Confidential<T>> encrypt(@Nonnull T data) {
+        return encryptData(data.toStringRepresentation())
+                .map(Confidential::new);
     }
 
     /**
@@ -168,18 +127,24 @@ public class ConfidentialDataManager {
 
     /**
      * <p>
-     * Decrypts the data to string without conversion. Prefer {@link ConfidentialDataManager#decrypt(Confidential, Function)} to this.
+     * Decrypts the data to string without conversion. Prefer
+     * {@link ConfidentialDataManager#decrypt(Confidential, Function)} to this.
      * </p>
      * <br>
      * <p>
-     * In case of error the returned {@link Mono} contains a {@link ConfidentialDataException} wrapping one of the following exceptions:
+     * In case of error the returned {@link Mono} contains a
+     * {@link ConfidentialDataException} wrapping one of the following exceptions:
      * <ul>
-     *      <li>InvalidAlgorithmParameterException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
-     *      <li>NoSuchPaddingException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
-     *      <li>IllegalBlockSizeException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
-     *      <li>NoSuchAlgorithmException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
-     *      <li>BadPaddingException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
-     *      <li>InvalidKeyException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>InvalidAlgorithmParameterException See
+     * {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>NoSuchPaddingException See
+     * {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>IllegalBlockSizeException See
+     * {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>NoSuchAlgorithmException See
+     * {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>BadPaddingException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
+     * <li>InvalidKeyException See {@link javax.crypto.Cipher#doFinal(byte[])}</li>
      * </ul>
      *
      * @param data the data to be decrypted
@@ -188,23 +153,16 @@ public class ConfidentialDataManager {
      */
     @Nonnull
     public <T extends ConfidentialData> Mono<String> decrypt(Confidential<T> data) {
-
-        return switch (data.confidentialMetadata()) {
-            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.findPiiUsingGET(data.opaqueData())
-                    .map(PiiResourceDto::getPii)
-                    .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
-            default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
-        };
+        return this.personalDataVaultClient.findPiiUsingGET(data.opaqueData())
+                .map(PiiResourceDto::getPii)
+                .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
     }
 
     @Nonnull
-    private Mono<String> encryptData(@Nonnull ConfidentialMetadata metadata, @Nonnull String data) {
-        return switch (metadata) {
-            case PersonalDataVaultMetadata ignored -> this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data))
-                    .map(TokenResourceDto::getToken)
-                    .map(UUID::toString)
-                    .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
-            default -> throw new IllegalArgumentException("Unsupported cipher metadata!");
-        };
+    private Mono<String> encryptData(@Nonnull String data) {
+        return this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data))
+                .map(TokenResourceDto::getToken)
+                .map(UUID::toString)
+                .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
     }
 }

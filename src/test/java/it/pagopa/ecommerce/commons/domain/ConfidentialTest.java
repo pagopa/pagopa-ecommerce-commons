@@ -3,10 +3,8 @@ package it.pagopa.ecommerce.commons.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
-import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager.Mode;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
@@ -16,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +25,7 @@ class ConfidentialTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TokenApi personalDataVaultClient = Mockito.mock(TokenApi.class);
+
     private final ConfidentialDataManager confidentialDataManager = new ConfidentialDataManager(
             personalDataVaultClient
     );;
@@ -41,7 +39,7 @@ class ConfidentialTest {
                 .thenReturn(Mono.just(new TokenResourceDto().token(UUID.randomUUID())));
 
         /* test */
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.PERSONAL_DATA_VAULT, email)
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(email)
                 .block();
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);
@@ -51,7 +49,7 @@ class ConfidentialTest {
         Map<String, Object> jsonData = objectMapper.readValue(serialized, typeRef);
 
         /* assertions */
-        assertEquals(Set.of("data", "metadata"), jsonData.keySet());
+        assertEquals(Set.of("data"), jsonData.keySet());
     }
 
     @Test
@@ -69,7 +67,7 @@ class ConfidentialTest {
 
         /* test */
 
-        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(Mode.PERSONAL_DATA_VAULT, email)
+        Confidential<Email> confidentialEmail = this.confidentialDataManager.encrypt(email)
                 .block();
 
         String serialized = objectMapper.writeValueAsString(confidentialEmail);

@@ -43,7 +43,7 @@ public class ConfidentialDataManagerTest {
 
         /* test */
         Confidential<Email> encrypted = confidentialDataManager
-                .encrypt(ConfidentialDataManager.Mode.PERSONAL_DATA_VAULT, email).block();
+                .encrypt(email).block();
         Email decrypted = confidentialDataManager.decrypt(encrypted, Email::new).block();
 
         /* assertions */
@@ -68,7 +68,7 @@ public class ConfidentialDataManagerTest {
                 .thenReturn(Mono.error(responseException));
 
         /* assertions */
-        StepVerifier.create(confidentialDataManager.encrypt(ConfidentialDataManager.Mode.PERSONAL_DATA_VAULT, email))
+        StepVerifier.create(confidentialDataManager.encrypt(email))
                 .expectError(ConfidentialDataException.class)
                 .verify();
     }
@@ -95,7 +95,7 @@ public class ConfidentialDataManagerTest {
 
         /* test */
         Confidential<Email> encrypted = confidentialDataManager
-                .encrypt(ConfidentialDataManager.Mode.PERSONAL_DATA_VAULT, email).block();
+                .encrypt(email).block();
 
         /* assertions */
         StepVerifier.create(confidentialDataManager.decrypt(encrypted, Email::new))
