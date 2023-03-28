@@ -22,5 +22,5 @@ public class PaymentNotice {
     private String description;
     private Integer amount;
     private String paymentContextCode;
-    private List<PaymentInformationTransfer> transferList;
+    private List<PaymentTransferInformation> transferList;
 }

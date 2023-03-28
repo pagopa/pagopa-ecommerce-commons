@@ -10,15 +10,15 @@ import org.springframework.lang.Nullable;
  *
  * @param paFiscalCode     Fiscal code of the beneficiary entity
  * @param digitalStamp     boolean identifies the presence of the stamp
- * @param transferCategory transfer category information
  * @param transferAmount   transfer amount
+ * @param transferCategory transfer category information
  */
 @ValueObject
 public record PaymentTransferInfo(
         @NonNull String paFiscalCode,
         @NonNull Boolean digitalStamp,
-        @Nullable String transferCategory,
-        @NonNull Integer transferAmount
+        @NonNull Integer transferAmount,
+        @Nullable String transferCategory
 
 ) {
     /**
@@ -26,8 +26,8 @@ public record PaymentTransferInfo(
      *
      * @param paFiscalCode     Fiscal code of the beneficiary entity
      * @param digitalStamp     boolean identifies the presence of the stamp
-     * @param transferCategory transfer category information
      * @param transferAmount   transfer amount
+     * @param transferCategory transfer category information
      */
     @PersistenceConstructor
     public PaymentTransferInfo {

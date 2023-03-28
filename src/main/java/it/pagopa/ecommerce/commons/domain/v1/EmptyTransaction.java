@@ -31,7 +31,16 @@ public final class EmptyTransaction implements Transaction {
                                         new RptId(n.getRptId()),
                                         new TransactionAmount(n.getAmount()),
                                         new TransactionDescription(n.getDescription()),
-                                        new PaymentContextCode(n.getPaymentContextCode())
+                                        new PaymentContextCode(n.getPaymentContextCode()),
+                                        n.getTransferList().stream()
+                                                .map(
+                                                        tx -> new PaymentTransferInfo(
+                                                                tx.getPaFiscalCode(),
+                                                                tx.getDigitalStamp(),
+                                                                tx.getTransferAmount(),
+                                                                tx.getTransferCategory()
+                                                        )
+                                                ).toList()
                                 )
                         ).collect(Collectors.toList()),
                 event.getData().getEmail(),

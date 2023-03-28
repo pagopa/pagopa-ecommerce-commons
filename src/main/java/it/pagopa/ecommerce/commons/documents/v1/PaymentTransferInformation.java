@@ -14,9 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document
 @Generated
-public class PaymentInformationTransfer {
+public class PaymentTransferInformation {
     private String paFiscalCode;
     private Boolean digitalStamp;
-    private Integer amount;
+    private Integer transferAmount;
     private String transferCategory;
 }
