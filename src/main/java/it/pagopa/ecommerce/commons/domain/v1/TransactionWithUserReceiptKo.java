@@ -48,7 +48,6 @@ import lombok.experimental.FieldDefaults;
 public final class TransactionWithUserReceiptKo extends BaseTransactionWithUserReceipt
         implements Transaction {
 
-
     /**
      * Main constructor.
      *

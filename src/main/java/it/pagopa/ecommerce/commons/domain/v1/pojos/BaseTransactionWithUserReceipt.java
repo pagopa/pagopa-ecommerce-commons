@@ -45,7 +45,8 @@ public abstract class BaseTransactionWithUserReceipt extends BaseTransactionWith
      */
     protected BaseTransactionWithUserReceipt(
             BaseTransactionWithRequestedUserReceipt baseTransaction,
-            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent) {
+            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+    ) {
         super(
                 baseTransaction,
                 baseTransaction.getTransactionUserReceiptData()
