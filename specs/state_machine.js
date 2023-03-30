@@ -42,21 +42,15 @@ createMachine(
           sendpaymentresult_response: "KO"
         }),
         on: {
-          ADD_USER_RECEIPT: [{
-            target: "NOTIFIED_OK",
-            cond: "sendpaymentresult_response_ok",
-          }, {
-            target: "NOTIFIED_KO",
-            cond: "sendpaymentresult_response_ko",
-          }],
+          SEND_USER_RECEIPT: {
+            target: "NOTIFICATION_REQUESTED",
+
+          },
           EXPIRE: {
             target: "EXPIRED",
           },
           REFUND_REQUESTED: {
             target: "REFUND_REQUESTED",
-          },
-          ADD_USER_RECEIPT_ERROR:{
-            target: "NOTIFICATION_ERROR"
           }
         },
       },
@@ -110,9 +104,30 @@ createMachine(
           }
         },
       },
+      NOTIFICATION_REQUESTED: {
+        on: {
+          USER_RECEIPT_ADDED: [{
+            target: "NOTIFIED_OK",
+            cond: "sendpaymentresult_response_ok",
+          }, {
+            target: "NOTIFIED_KO",
+            cond: "sendpaymentresult_response_ko",
+          }],
+          EXPIRE: {
+            target: "EXPIRED",
+          },
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
+            cond: "sendpaymentresult_response_ko"
+          },
+          ADD_USER_RECEIPT_ERROR:{
+            target: "NOTIFICATION_ERROR"
+          }
+        },
+      },
        NOTIFICATION_ERROR: {
         on: {
-          ADD_USER_RECEIPT: [{
+          USER_RECEIPT_ADDED: [{
             target: "NOTIFIED_OK",
             cond: "sendpaymentresult_response_ok",
           }, {
