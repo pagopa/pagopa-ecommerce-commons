@@ -9,8 +9,12 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class TransactionTestUtils {
 
@@ -45,6 +49,15 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
+
+    public static final String LANGUAGE = "it-IT";
+    public static final String PAYMENT_METHOD_LOGO = "paymentMethodLogo";
+
+    public static final OffsetDateTime PAYMENT_DATE = OffsetDateTime.now();
+
+    public static final String RECEIVING_OFFICE_NAME = "receivingOfficeName";
+
+    public static final String PAYMENT_DESCRIPTION = "paymentDescription";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -209,11 +222,23 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-                                                                                    TransactionUserReceiptData.Outcome outcome
+                                                                                    TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddedEvent(
                 TRANSACTION_ID,
-                new TransactionUserReceiptData(outcome)
+                data
+        );
+    }
+
+    public static TransactionUserReceiptData transactionUserReceiptData(TransactionUserReceiptData.Outcome outcome) {
+        return new TransactionUserReceiptData(
+                outcome,
+                LANGUAGE,
+                PAYMENT_METHOD_LOGO,
+                PAYMENT_DATE,
+                RECEIVING_OFFICE_NAME,
+                PAYMENT_DESCRIPTION
+
         );
     }
 
@@ -359,11 +384,11 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent(
-                                                                                          TransactionUserReceiptData.Outcome outcome
+                                                                                          TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddErrorEvent(
                 TRANSACTION_ID,
-                new TransactionUserReceiptData(outcome)
+                data
         );
     }
 

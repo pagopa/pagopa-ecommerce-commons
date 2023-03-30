@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 
 /**
  * Data related to Nodo send payment result operation such as outcome (OK/KO)
@@ -19,6 +20,33 @@ public class TransactionUserReceiptData {
      */
     @NotNull
     private Outcome responseOutcome;
+
+    /**
+     * Notification language
+     */
+    @NotNull
+    private String language;
+    /**
+     * Notification payment method logo
+     */
+    @NotNull
+    private String paymentMethodLogo;
+
+    /**
+     * Send payment result payment date field
+     */
+    @NotNull
+    private OffsetDateTime paymentDate;
+    /**
+     * Send payment result receiving office name
+     */
+    @NotNull
+    private String receivingOfficeName;
+    /**
+     * Send payment result payment description
+     */
+    @NotNull
+    private String paymentDescription;
 
     /**
      * Enumeration of Nodo sendPaymentResult outcome
