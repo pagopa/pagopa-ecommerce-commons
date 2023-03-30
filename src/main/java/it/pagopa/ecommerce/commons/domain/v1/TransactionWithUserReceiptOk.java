@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedUserReceipt;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -50,10 +50,10 @@ public final class TransactionWithUserReceiptOk extends BaseTransactionWithUserR
      * @param transactionUserReceiptAddedEvent transaction user receipt added event
      */
     public TransactionWithUserReceiptOk(
-            BaseTransactionClosed baseTransaction,
+            BaseTransactionWithRequestedUserReceipt baseTransaction,
             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
-        super(baseTransaction, transactionUserReceiptAddedEvent.getData());
+        super(baseTransaction, transactionUserReceiptAddedEvent);
     }
 
     @Override

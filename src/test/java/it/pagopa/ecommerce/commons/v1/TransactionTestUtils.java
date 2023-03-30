@@ -104,8 +104,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithRequestedAuthorization transactionWithRequestedAuthorization(
-                                                                                              TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
-                                                                                              TransactionActivated transactionActivated
+            TransactionAuthorizationRequestedEvent authorizationRequestedEvent,
+            TransactionActivated transactionActivated
     ) {
         return new TransactionWithRequestedAuthorization(
                 transactionActivated,
@@ -142,7 +142,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                AuthorizationResultDto authorizationResultDto
+            AuthorizationResultDto authorizationResultDto
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
@@ -152,8 +152,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationCompleted transactionAuthorizationCompleted(
-                                                                                      TransactionAuthorizationCompletedEvent authorizedEvent,
-                                                                                      TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
+            TransactionAuthorizationCompletedEvent authorizedEvent,
+            TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
     ) {
         return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
@@ -178,8 +178,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithClosureError transactionWithClosureError(
-                                                                          TransactionClosureErrorEvent transactionClosureErrorEvent,
-                                                                          BaseTransaction transaction
+            TransactionClosureErrorEvent transactionClosureErrorEvent,
+            BaseTransaction transaction
     ) {
         return new TransactionWithClosureError(
                 transaction,
@@ -189,8 +189,8 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
-                                                      TransactionClosedEvent transactionClosedEvent
+            BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+            TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionClosed(
                 transactionWithCompletedAuthorization,
@@ -200,29 +200,29 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
-                                                                            BaseTransactionClosed baseTransactionClosed,
-                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+            BaseTransactionWithRequestedUserReceipt baseTransaction,
+            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptOk(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
     public static TransactionWithUserReceiptKo transactionWithUserReceiptKo(
-                                                                            BaseTransactionClosed baseTransactionClosed,
-                                                                            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
+            BaseTransactionWithRequestedUserReceipt baseTransaction,
+            TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptKo(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
     public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-                                                                                    TransactionUserReceiptData data
+            TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddedEvent(
                 TRANSACTION_ID,
@@ -244,72 +244,72 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpired transactionExpired(
-                                                        BaseTransactionWithRequestedAuthorization transaction,
-                                                        TransactionExpiredEvent expiredEvent
+            BaseTransactionWithRequestedAuthorization transaction,
+            TransactionExpiredEvent expiredEvent
     ) {
         return new TransactionExpired(transaction, expiredEvent);
     }
 
     @Nonnull
     public static TransactionRefunded transactionRefunded(
-                                                          BaseTransactionWithRefundRequested transaction,
-                                                          TransactionRefundedEvent transactionRefundedEvent
+            BaseTransactionWithRefundRequested transaction,
+            TransactionRefundedEvent transactionRefundedEvent
     ) {
         return new TransactionRefunded(transaction, transactionRefundedEvent);
     }
 
     @Nonnull
     public static TransactionUnauthorized transactionUnauthorized(
-                                                                  BaseTransactionWithCompletedAuthorization transaction,
-                                                                  TransactionClosureFailedEvent transactionClosureFailedEvent
+            BaseTransactionWithCompletedAuthorization transaction,
+            TransactionClosureFailedEvent transactionClosureFailedEvent
     ) {
         return new TransactionUnauthorized(transaction, transactionClosureFailedEvent);
     }
 
     @Nonnull
     public static TransactionUserCanceled transactionUserCanceled(
-                                                                  BaseTransactionWithCancellationRequested transaction,
-                                                                  TransactionClosedEvent transactionClosedEvent
+            BaseTransactionWithCancellationRequested transaction,
+            TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionUserCanceled(transaction, transactionClosedEvent);
     }
 
     @Nonnull
     public static TransactionWithCancellationRequested transactionWithCancellationRequested(
-                                                                                            BaseTransactionWithPaymentToken baseTransaction,
-                                                                                            TransactionUserCanceledEvent transactionUserCanceledEvent
+            BaseTransactionWithPaymentToken baseTransaction,
+            TransactionUserCanceledEvent transactionUserCanceledEvent
     ) {
         return new TransactionWithCancellationRequested(baseTransaction, transactionUserCanceledEvent);
     }
 
     @Nonnull
     public static TransactionCancellationExpired transactionCancellationExpired(
-                                                                                BaseTransactionWithCancellationRequested baseTransaction,
-                                                                                TransactionExpiredEvent transactionExpiredEvent
+            BaseTransactionWithCancellationRequested baseTransaction,
+            TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionCancellationExpired(baseTransaction, transactionExpiredEvent);
     }
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-                                                                                  BaseTransaction transaction,
-                                                                                  TransactionExpiredEvent transactionExpiredEvent
+            BaseTransaction transaction,
+            TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
     }
 
     @Nonnull
     public static TransactionWithRefundError transactionWithRefundError(
-                                                                        BaseTransactionWithRefundRequested baseTransaction,
-                                                                        TransactionRefundErrorEvent transactionRefundErrorEvent
+            BaseTransactionWithRefundRequested baseTransaction,
+            TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
         return new TransactionWithRefundError(baseTransaction, transactionRefundErrorEvent);
     }
 
     @Nonnull
     public static TransactionWithRefundRequested transactionWithRefundRequested(
-                                                                                BaseTransactionWithRequestedAuthorization baseTransaction,
-                                                                                TransactionRefundRequestedEvent transactionRefundRequestedEvent
+            BaseTransactionWithRequestedAuthorization baseTransaction,
+            TransactionRefundRequestedEvent transactionRefundRequestedEvent
     ) {
         return new TransactionWithRefundRequested(
                 baseTransaction,
@@ -366,7 +366,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
-                                                                                  BaseTransaction baseTransaction
+            BaseTransaction baseTransaction
     ) {
         return new TransactionRefundRequestedEvent(
                 TRANSACTION_ID,
@@ -384,7 +384,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent(
-                                                                                          TransactionUserReceiptData data
+            TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddErrorEvent(
                 TRANSACTION_ID,
@@ -402,19 +402,19 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptError transactionWithUserReceiptError(
-                                                                                  BaseTransactionClosed baseTransactionClosed,
-                                                                                  TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
+            BaseTransactionWithRequestedUserReceipt baseTransaction,
+            TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
     ) {
         return new TransactionWithUserReceiptError(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddErrorEvent
         );
     }
 
     @Nonnull
     public static Transaction transactionDocument(
-                                                  TransactionStatusDto transactionStatus,
-                                                  ZonedDateTime creationDateTime
+            TransactionStatusDto transactionStatus,
+            ZonedDateTime creationDateTime
     ) {
         return new Transaction(
                 TRANSACTION_ID,
@@ -436,6 +436,20 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt(BaseTransactionClosed baseTransactionClosed,
+                                                                                          TransactionSendUserReceiptEvent transactionSendUserReceiptEvent) {
+        return new TransactionWithRequestedUserReceipt(baseTransactionClosed, transactionSendUserReceiptEvent);
+    }
+
+    @Nonnull
+    public static TransactionSendUserReceiptEvent transactionSendUserReceiptEvent(TransactionUserReceiptData transactionUserReceiptData) {
+        return new TransactionSendUserReceiptEvent(
+                TRANSACTION_ID,
+                transactionUserReceiptData
+        );
+    }
+
+    @Nonnull
     public static BaseTransaction reduceEvents(TransactionEvent<?>... events) {
         List<Object> reductionList = new ArrayList<>();
         reductionList.add(new EmptyTransaction());
@@ -444,8 +458,8 @@ public class TransactionTestUtils {
                 .stream()
                 .reduce(
                         (
-                         trx,
-                         event
+                                trx,
+                                event
                         ) -> ((it.pagopa.ecommerce.commons.domain.v1.Transaction) trx).applyEvent(event)
                 )
                 .orElseThrow(

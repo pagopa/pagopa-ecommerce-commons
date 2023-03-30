@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithUserReceipt;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,7 +31,7 @@ import lombok.experimental.FieldDefaults;
  * Any other event than the above ones will be discarded.
  *
  * @see Transaction
- * @see BaseTransactionWithUserReceipt
+ * @see BaseTransactionWithRequestedUserReceipt
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString
@@ -49,7 +49,7 @@ import lombok.experimental.FieldDefaults;
  * @formatter:on
  */
 @SuppressWarnings("java:S110")
-public final class TransactionWithRequestedUserReceipt extends BaseTransactionWithUserReceipt
+public final class TransactionWithRequestedUserReceipt extends BaseTransactionWithRequestedUserReceipt
         implements Transaction {
 
     /**
