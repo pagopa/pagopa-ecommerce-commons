@@ -33,7 +33,8 @@ public class TransactionUserReceiptData {
     private String paymentMethodLogo;
 
     /**
-     * Payment date upon call from Nodo's `sendPaymentResult` (aka `PATCH user-receipts` endpoint)
+     * Payment date upon call from Nodo's `sendPaymentResult` (aka `PATCH
+     * user-receipts` endpoint)
      */
     @NotNull
     private OffsetDateTime paymentDate;
