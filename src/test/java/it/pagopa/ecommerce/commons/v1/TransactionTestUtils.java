@@ -9,6 +9,8 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -51,7 +53,15 @@ public class TransactionTestUtils {
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
 
     public static final String LANGUAGE = "it-IT";
-    public static final String PAYMENT_METHOD_LOGO = "paymentMethodLogo";
+    public static final URI PAYMENT_METHOD_LOGO_URL;
+
+    static {
+        try {
+            PAYMENT_METHOD_LOGO_URL = new URI("http://paymentMethodLogo.it");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static final OffsetDateTime PAYMENT_DATE = OffsetDateTime.now();
 
@@ -234,7 +244,7 @@ public class TransactionTestUtils {
         return new TransactionUserReceiptData(
                 outcome,
                 LANGUAGE,
-                PAYMENT_METHOD_LOGO,
+                PAYMENT_METHOD_LOGO_URL,
                 PAYMENT_DATE,
                 RECEIVING_OFFICE_NAME,
                 PAYMENT_DESCRIPTION

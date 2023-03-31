@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.OffsetDateTime;
 
 /**
@@ -27,10 +28,10 @@ public class TransactionUserReceiptData {
     @NotNull
     private String language;
     /**
-     * Notification payment method logo
+     * Notification payment method logo URI
      */
     @NotNull
-    private String paymentMethodLogo;
+    private URI paymentMethodLogoUri;
 
     /**
      * Payment date upon call from Nodo's `sendPaymentResult` (aka `PATCH
