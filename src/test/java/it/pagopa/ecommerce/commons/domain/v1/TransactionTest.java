@@ -269,13 +269,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
 
         Flux<Object> events = Flux.just(
@@ -283,7 +283,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent
         );
 
@@ -305,7 +305,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptOk expected = TransactionTestUtils.transactionWithUserReceiptOk(
                 transactionWithRequestedUserReceipt,
@@ -373,13 +373,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
 
         Flux<Object> events = Flux.just(
@@ -388,7 +388,7 @@ class TransactionTest {
                 authorizedEvent,
                 closureSentEvent,
                 transactionUserReceiptAddedEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent,
                 closureSentEvent
         );
@@ -408,7 +408,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptOk expected = TransactionTestUtils.transactionWithUserReceiptOk(
                 transactionWithRequestedUserReceipt,
@@ -936,7 +936,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        TransactionTestUtils.transactionAddUserReceiptEvent(
+                        TransactionTestUtils.transactionUserReceiptRequestedEvent(
                                 TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
                         )
                 );
@@ -1822,13 +1822,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
 
         Flux<Object> events = Flux.just(
@@ -1836,7 +1836,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent
         );
 
@@ -1858,7 +1858,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptOk expected = TransactionTestUtils.transactionWithUserReceiptOk(
                 transactionWithRequestedUserReceipt,
@@ -1887,13 +1887,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
 
         Flux<Object> events = Flux.just(
@@ -1901,7 +1901,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent
         );
 
@@ -1923,7 +1923,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptKo expected = TransactionTestUtils.transactionWithUserReceiptKo(
                 transactionWithRequestedUserReceipt,
@@ -1952,13 +1952,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
 
         Flux<Object> events = Flux.just(
@@ -1967,7 +1967,7 @@ class TransactionTest {
                 authorizedEvent,
                 closureSentEvent,
                 authorizationRequestedEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 closureSentEvent,
                 transactionUserReceiptAddedEvent,
                 authorizedEvent,
@@ -1992,7 +1992,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptKo expected = TransactionTestUtils.transactionWithUserReceiptKo(
                 transactionWithRequestedUserReceipt,
@@ -3142,13 +3142,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -3168,7 +3168,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptKo transactionWithUserReceiptKo = TransactionTestUtils.transactionWithUserReceiptKo(
                 transactionWithRequestedUserReceipt,
@@ -3182,7 +3182,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent,
                 transactionRefundRequestedEvent
         );
@@ -3212,13 +3212,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -3238,7 +3238,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptKo transactionWithUserReceiptKo = TransactionTestUtils.transactionWithUserReceiptKo(
                 transactionWithRequestedUserReceipt,
@@ -3257,7 +3257,7 @@ class TransactionTest {
                 closureSentEvent,
                 authorizationRequestedEvent,
                 transactionRefundRequestedEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent
         );
 
@@ -3370,13 +3370,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
                 );
         TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         TransactionExpiredEvent expiredEvent = TransactionTestUtils.transactionExpiredEvent(
                 TransactionTestUtils.reduceEvents(
@@ -3384,7 +3384,7 @@ class TransactionTest {
                         authorizationRequestedEvent,
                         authorizedEvent,
                         closureSentEvent,
-                        transactionAddUserReceiptEvent,
+                        transactionUserReceiptRequestedEvent,
                         transactionUserReceiptAddedEvent
                 )
         );
@@ -3393,7 +3393,7 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 transactionUserReceiptAddedEvent,
                 expiredEvent
         );
@@ -3416,7 +3416,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptKo transactionWithUserReceiptKo = TransactionTestUtils.transactionWithUserReceiptKo(
                 transactionWithRequestedUserReceipt,
@@ -3451,20 +3451,20 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         transactionUserReceiptData
                 );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 userReceiptAddErrorEvent
         );
 
@@ -3486,7 +3486,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptError expected = TransactionTestUtils
                 .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
@@ -3517,13 +3517,13 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         transactionUserReceiptData
                 );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -3531,7 +3531,7 @@ class TransactionTest {
                 authorizedEvent,
                 userReceiptAddErrorEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 userReceiptAddErrorEvent,
                 closureSentEvent,
                 authorizationRequestedEvent
@@ -3555,7 +3555,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptError expected = TransactionTestUtils
                 .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
@@ -3587,20 +3587,20 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.KO);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         transactionUserReceiptData
                 );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 userReceiptAddErrorEvent
         );
 
@@ -3622,7 +3622,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptError expected = TransactionTestUtils
                 .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
@@ -3654,23 +3654,23 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent transactionAddUserReceiptEvent = TransactionTestUtils
-                .transactionAddUserReceiptEvent(
+        TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
                         transactionUserReceiptData
                 );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
-                        transactionAddUserReceiptEvent.getData()
+                        transactionUserReceiptRequestedEvent.getData()
                 );
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
                 authorizationRequestedEvent,
                 authorizedEvent,
                 userReceiptAddErrorEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 closureSentEvent,
                 userReceiptAddErrorEvent,
-                transactionAddUserReceiptEvent,
+                transactionUserReceiptRequestedEvent,
                 closureSentEvent,
                 authorizationRequestedEvent,
                 userReceiptAddErrorEvent
@@ -3694,7 +3694,7 @@ class TransactionTest {
         TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
                 .transactionWithRequestedUserReceipt(
                         transactionClosed,
-                        transactionAddUserReceiptEvent
+                        transactionUserReceiptRequestedEvent
                 );
         TransactionWithUserReceiptError expected = TransactionTestUtils
                 .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
@@ -3725,9 +3725,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.KO);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                transactionUserReceiptData
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
                         addUserReceiptEvent.getData()
@@ -3797,9 +3798,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                transactionUserReceiptData
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
                         addUserReceiptEvent.getData()
@@ -3868,9 +3870,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
+                );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
                         addUserReceiptEvent.getData()
@@ -3944,9 +3947,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO)
+                );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
                         addUserReceiptEvent.getData()
@@ -4018,9 +4022,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
+                );
         TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
                 .transactionUserReceiptAddErrorEvent(
                         addUserReceiptEvent.getData()
@@ -4091,9 +4096,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
+                );
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
                 TransactionTestUtils.reduceEvents(
                         transactionActivatedEvent,
@@ -4167,9 +4173,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        TransactionTestUtils.transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK)
+                );
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
                 TransactionTestUtils.reduceEvents(
                         transactionActivatedEvent,
@@ -4247,9 +4254,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                transactionUserReceiptData
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -4308,9 +4316,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent();
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        TransactionAddUserReceiptEvent addUserReceiptEvent = TransactionTestUtils.transactionAddUserReceiptEvent(
-                transactionUserReceiptData
-        );
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
