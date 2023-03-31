@@ -116,10 +116,6 @@ createMachine(
           EXPIRE: {
             target: "EXPIRED",
           },
-          REFUND_REQUESTED: {
-            target: "REFUND_REQUESTED",
-            cond: "sendpaymentresult_response_ko"
-          },
           ADD_USER_RECEIPT_ERROR:{
             target: "NOTIFICATION_ERROR"
           }
