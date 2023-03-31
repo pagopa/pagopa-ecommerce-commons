@@ -39,9 +39,8 @@ public abstract class BaseTransactionWithUserReceipt extends BaseTransactionWith
     /**
      * Primary constructor
      *
-     * @param transactionUserReceiptData       transaction user receipt data
      * @param baseTransaction                  base transaction
-     * @param transactionUserReceiptAddedEvent
+     * @param transactionUserReceiptAddedEvent transaction user receipt added event
      */
     protected BaseTransactionWithUserReceipt(
             BaseTransactionWithRequestedUserReceipt baseTransaction,

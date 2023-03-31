@@ -55,15 +55,14 @@ public final class TransactionWithRequestedUserReceipt extends BaseTransactionWi
     /**
      * Main constructor.
      *
-     * @param baseTransaction                 transaction to extend with receipt
-     *                                        data
-     * @param transactionSendUserReceiptEvent transaction user receipt added event
+     * @param baseTransaction                transaction to extend with receipt data
+     * @param transactionAddUserReceiptEvent transaction user receipt added event
      */
     public TransactionWithRequestedUserReceipt(
             BaseTransactionClosed baseTransaction,
-            TransactionSendUserReceiptEvent transactionSendUserReceiptEvent
+            TransactionAddUserReceiptEvent transactionAddUserReceiptEvent
     ) {
-        super(baseTransaction, transactionSendUserReceiptEvent.getData());
+        super(baseTransaction, transactionAddUserReceiptEvent.getData());
     }
 
     /**
