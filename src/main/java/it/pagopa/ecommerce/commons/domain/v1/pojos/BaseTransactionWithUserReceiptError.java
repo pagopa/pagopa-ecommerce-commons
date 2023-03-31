@@ -32,7 +32,6 @@ import lombok.experimental.FieldDefaults;
  */
 @SuppressWarnings("java:S110")
 public abstract class BaseTransactionWithUserReceiptError extends BaseTransactionWithRequestedUserReceipt {
-    TransactionUserReceiptData transactionUserReceiptData;
 
     /**
      * Primary constructor
@@ -48,6 +47,5 @@ public abstract class BaseTransactionWithUserReceiptError extends BaseTransactio
                 baseTransaction,
                 transactionUserReceiptData
         );
-        this.transactionUserReceiptData = transactionUserReceiptData;
     }
 }
