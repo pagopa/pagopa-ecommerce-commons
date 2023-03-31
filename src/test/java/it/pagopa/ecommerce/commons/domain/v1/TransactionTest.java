@@ -1779,7 +1779,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent();
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
@@ -2663,7 +2663,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
@@ -2712,7 +2712,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
@@ -3023,7 +3023,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent();
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
 
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
