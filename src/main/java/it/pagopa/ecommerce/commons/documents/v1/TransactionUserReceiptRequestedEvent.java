@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionAddUserReceiptEvent extends TransactionEvent<TransactionUserReceiptData> {
+public final class TransactionUserReceiptRequestedEvent extends TransactionEvent<TransactionUserReceiptData> {
 
     /**
      * Convenience constructor which sets the creation date to now
@@ -19,10 +19,10 @@ public final class TransactionAddUserReceiptEvent extends TransactionEvent<Trans
      * @param transactionId              transaction unique id
      * @param transactionUserReceiptData transaction user receipt event related data
      */
-    public TransactionAddUserReceiptEvent(
+    public TransactionUserReceiptRequestedEvent(
             String transactionId,
             TransactionUserReceiptData transactionUserReceiptData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_ADD_USER_RECEIPT_EVENT, transactionUserReceiptData);
+        super(transactionId, TransactionEventCode.TRANSACTION_USER_RECEIPT_REQUESTED_EVENT, transactionUserReceiptData);
     }
 }

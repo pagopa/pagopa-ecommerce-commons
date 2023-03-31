@@ -438,16 +438,16 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt(
                                                                                           BaseTransactionClosed baseTransactionClosed,
-                                                                                          TransactionAddUserReceiptEvent transactionAddUserReceiptEvent
+                                                                                          TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent
     ) {
-        return new TransactionWithRequestedUserReceipt(baseTransactionClosed, transactionAddUserReceiptEvent);
+        return new TransactionWithRequestedUserReceipt(baseTransactionClosed, transactionUserReceiptRequestedEvent);
     }
 
     @Nonnull
-    public static TransactionAddUserReceiptEvent transactionAddUserReceiptEvent(
-                                                                                TransactionUserReceiptData transactionUserReceiptData
+    public static TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent(
+                                                                                            TransactionUserReceiptData transactionUserReceiptData
     ) {
-        return new TransactionAddUserReceiptEvent(
+        return new TransactionUserReceiptRequestedEvent(
                 TRANSACTION_ID,
                 transactionUserReceiptData
         );
