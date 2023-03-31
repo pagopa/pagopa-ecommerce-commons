@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.OffsetDateTime;
 
 /**
@@ -27,13 +28,14 @@ public class TransactionUserReceiptData {
     @NotNull
     private String language;
     /**
-     * Notification payment method logo
+     * Notification payment method logo URI
      */
     @NotNull
-    private String paymentMethodLogo;
+    private URI paymentMethodLogoUri;
 
     /**
-     * Send payment result payment date field
+     * Payment date upon call from Nodo's `sendPaymentResult` (aka `PATCH
+     * user-receipts` endpoint)
      */
     @NotNull
     private OffsetDateTime paymentDate;
