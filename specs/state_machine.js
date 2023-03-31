@@ -42,7 +42,7 @@ createMachine(
           sendpaymentresult_response: "KO"
         }),
         on: {
-          SEND_USER_RECEIPT: {
+          ADD_USER_RECEIPT: {
             target: "NOTIFICATION_REQUESTED",
 
           },
