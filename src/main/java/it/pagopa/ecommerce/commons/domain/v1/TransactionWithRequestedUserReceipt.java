@@ -13,8 +13,8 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction closed for which email communication process has been requested
- * (by meaning of notifications-service has take in charge successful mail
- * sending to the user)
+ * (this means that notifications-service has taken successfully in charge sending an email
+ * to the user)
  * </p>
  * Applicable events with resulting aggregates are:
  * <ul>
