@@ -3113,8 +3113,8 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
-                transactionUserReceiptAddedEvent,
                 transactionAddUserReceiptEvent,
+                transactionUserReceiptAddedEvent,
                 transactionRefundRequestedEvent
         );
 

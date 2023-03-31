@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * POJO for a transaction with a user receipt requested
+ * POJO for a transaction for which has been requested to add an user receipt
  * </p>
  *
  * @see BaseTransactionClosed
@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
  * @formatter:off
  *
  * Warning java:S110 - This class has x parents which is greater than 5 authorized
- * Suppressed because the Transaction hierarchy modeled here force BaseTransactionWithUserReceipt
+ * Suppressed because the Transaction hierarchy modeled here force BaseTransactionWithRequestedUserReceipt
  * to be instantiated only starting from a TransactionClosed. The hierarchy dept is strictly correlated
  * to the depth of the graph representing the finite state machine so can be accepted that hierarchy level
  * is deeper than the max authorized level

@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v1.TransactionClosureData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionUserReceiptAddedEvent;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -14,7 +13,7 @@ import lombok.experimental.FieldDefaults;
  * </p>
  *
  * @see BaseTransactionClosed
- * @see TransactionClosureData
+ * @see BaseTransactionWithRequestedUserReceipt
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)

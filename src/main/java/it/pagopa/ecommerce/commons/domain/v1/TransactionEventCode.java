@@ -74,7 +74,7 @@ public enum TransactionEventCode {
      */
     TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT("TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT"),
     /**
-     * User receipt added event
+     * Add user receipt event
      */
     TRANSACTION_ADD_USER_RECEIPT_EVENT("TRANSACTION_ADD_USER_RECEIPT_EVENT"),
     ;

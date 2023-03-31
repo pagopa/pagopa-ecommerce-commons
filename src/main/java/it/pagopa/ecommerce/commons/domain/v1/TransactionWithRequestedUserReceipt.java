@@ -23,8 +23,6 @@ import lombok.experimental.FieldDefaults;
  * <li>{@link TransactionUserReceiptAddedEvent} with KO send payment result
  * outcome --> {@link TransactionWithUserReceiptKo}</li>
  * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
- * <li>{@link TransactionRefundRequestedEvent} -->
- * {@link TransactionWithRefundRequested}</li>
  * <li>{@link TransactionUserReceiptAddErrorEvent} -->
  * {@link TransactionWithUserReceiptError}</li>
  * </ul>
@@ -79,7 +77,6 @@ public final class TransactionWithRequestedUserReceipt extends BaseTransactionWi
                 }
             }
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
             case TransactionUserReceiptAddErrorEvent e -> new TransactionWithUserReceiptError(this, e);
             default -> this;
         };
