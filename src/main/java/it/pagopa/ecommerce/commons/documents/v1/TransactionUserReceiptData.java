@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
  * Data related to Nodo send payment result operation such as outcome (OK/KO)
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Document
 public class TransactionUserReceiptData {
