@@ -45,6 +45,10 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
+    public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
+    public static final Boolean TRANSFER_DIGITAL_STAMP = true;
+    public static final Integer TRANSFER_AMOUNT = 0;
+    public static final String TRANSFER_CATEGORY = "transferCategory";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -58,7 +62,15 @@ public class TransactionTestUtils {
                                         RPT_ID,
                                         DESCRIPTION,
                                         AMOUNT,
-                                        PAYMENT_CONTEXT_CODE
+                                        PAYMENT_CONTEXT_CODE,
+                                        List.of(
+                                                new PaymentTransferInformation(
+                                                        TRANSFER_PA_FISCAL_CODE,
+                                                        TRANSFER_DIGITAL_STAMP,
+                                                        TRANSFER_AMOUNT,
+                                                        TRANSFER_CATEGORY
+                                                )
+                                        )
                                 )
                         ),
                         FAULT_CODE,
@@ -78,7 +90,15 @@ public class TransactionTestUtils {
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
                                 new TransactionDescription(DESCRIPTION),
-                                new PaymentContextCode(PAYMENT_CONTEXT_CODE)
+                                new PaymentContextCode(PAYMENT_CONTEXT_CODE),
+                                List.of(
+                                        new PaymentTransferInfo(
+                                                TRANSFER_PA_FISCAL_CODE,
+                                                TRANSFER_DIGITAL_STAMP,
+                                                TRANSFER_AMOUNT,
+                                                TRANSFER_CATEGORY
+                                        )
+                                )
                         )
                 ),
                 EMAIL,
@@ -399,7 +419,15 @@ public class TransactionTestUtils {
                                 RPT_ID,
                                 DESCRIPTION,
                                 AMOUNT,
-                                PAYMENT_CONTEXT_CODE
+                                PAYMENT_CONTEXT_CODE,
+                                List.of(
+                                        new PaymentTransferInformation(
+                                                TRANSFER_PA_FISCAL_CODE,
+                                                TRANSFER_DIGITAL_STAMP,
+                                                TRANSFER_AMOUNT,
+                                                TRANSFER_CATEGORY
+                                        )
+                                )
                         )
                 ),
                 null,

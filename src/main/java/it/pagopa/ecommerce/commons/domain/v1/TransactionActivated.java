@@ -1,10 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction.ClientId;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -73,7 +70,17 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                                 n.rptId().value(),
                                                 n.transactionDescription().value(),
                                                 n.transactionAmount().value(),
-                                                n.paymentContextCode().value()
+                                                n.paymentContextCode().value(),
+                                                n.transferList().stream()
+                                                        .map(
+                                                                tx -> new PaymentTransferInformation(
+                                                                        tx.paFiscalCode(),
+                                                                        tx.digitalStamp(),
+                                                                        tx.transferAmount(),
+                                                                        tx.transferCategory()
+                                                                )
+                                                        ).toList()
+
                                         )
                                 ).toList(),
                         faultCode,
