@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
-import java.time.OffsetDateTime;
 
 /**
  * Data related to Nodo send payment result operation such as outcome (OK/KO)
@@ -40,7 +39,7 @@ public class TransactionUserReceiptData {
      * user-receipts` endpoint)
      */
     @NotNull
-    private OffsetDateTime paymentDate;
+    private String paymentDate;
     /**
      * Send payment result receiving office name
      */
