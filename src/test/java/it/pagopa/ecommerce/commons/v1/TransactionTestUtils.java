@@ -73,23 +73,6 @@ public class TransactionTestUtils {
 
     public static final String PAYMENT_DESCRIPTION = "paymentDescription";
 
-    public static final String LANGUAGE = "it-IT";
-    public static final URI PAYMENT_METHOD_LOGO_URL;
-
-    static {
-        try {
-            PAYMENT_METHOD_LOGO_URL = new URI("http://paymentMethodLogo.it");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static final OffsetDateTime PAYMENT_DATE = OffsetDateTime.now();
-
-    public static final String RECEIVING_OFFICE_NAME = "receivingOfficeName";
-
-    public static final String PAYMENT_DESCRIPTION = "paymentDescription";
-
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
