@@ -1779,7 +1779,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent();
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
 
@@ -2732,7 +2732,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
@@ -2781,7 +2781,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
@@ -3092,7 +3092,7 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent();
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
 
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
@@ -4364,6 +4364,192 @@ class TransactionTest {
                         }
                 )
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreTransactionClosedEventForNotAuthorizedTransactionInTransactionAuthorizationCompletedState() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                closureSentEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted expected = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> {
+                            TransactionAuthorizationCompleted tx = (TransactionAuthorizationCompleted) t;
+                            return expected.equals(tx)
+                                    && tx.getStatus()
+                                            .equals(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+                        }
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreTransactionClosureFailedEventForAuthorizedTransactionInTransactionAuthorizationCompletedState() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+        TransactionClosureFailedEvent closureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                closureFailedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted expected = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> {
+                            TransactionAuthorizationCompleted tx = (TransactionAuthorizationCompleted) t;
+                            return expected.equals(tx)
+                                    && tx.getStatus()
+                                            .equals(TransactionStatusDto.AUTHORIZATION_COMPLETED);
+                        }
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreTransactionClosedEventForNotAuthorizedTransactionInTransactionClosureErrorState() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.KO);
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
+                .transactionClosureErrorEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionClosedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionWithClosureError expected = TransactionTestUtils
+                .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> {
+                            TransactionWithClosureError tx = (TransactionWithClosureError) t;
+                            return expected.equals(tx)
+                                    && tx.getStatus()
+                                            .equals(TransactionStatusDto.CLOSURE_ERROR);
+                        }
+                ).verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreTransactionClosureFailedEventForAuthorizedTransactionInTransactionClosureErrorState() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(AuthorizationResultDto.OK);
+        TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
+                .transactionClosureErrorEvent();
+        TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureErrorEvent,
+                transactionClosureFailedEvent
+        );
+
+        TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionWithClosureError expected = TransactionTestUtils
+                .transactionWithClosureError(transactionClosureErrorEvent, transactionAuthorizationCompleted);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> {
+                            TransactionWithClosureError tx = (TransactionWithClosureError) t;
+                            return expected.equals(tx)
+                                    && tx.getStatus()
+                                            .equals(TransactionStatusDto.CLOSURE_ERROR);
+                        }
+                ).verifyComplete();
     }
 
 }

@@ -76,14 +76,30 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                                     new TransactionCancellationExpired(trxWithCancellation, e);
                             default -> this;
                         },
-                        trxWithAuthorizationCompleted -> switch (event) {
-                            case TransactionClosedEvent e -> new TransactionClosed(trxWithAuthorizationCompleted, e);
-                            case TransactionExpiredEvent e -> new TransactionExpired(trxWithAuthorizationCompleted, e);
-                            case TransactionRefundRequestedEvent e ->
-                                    new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
-                            case TransactionClosureFailedEvent e ->
-                                    new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
-                            default -> this;
+                        trxWithAuthorizationCompleted ->
+                        {
+                            boolean wasTransactionAuthorized = trxWithAuthorizationCompleted.wasTransactionAuthorized();
+                            return switch (event) {
+                                case TransactionClosedEvent e -> {
+                                    if (wasTransactionAuthorized) {
+                                        yield new TransactionClosed(trxWithAuthorizationCompleted, e);
+                                    } else {
+                                        yield this;
+                                    }
+                                }
+                                case TransactionExpiredEvent e ->
+                                        new TransactionExpired(trxWithAuthorizationCompleted, e);
+                                case TransactionRefundRequestedEvent e ->
+                                        new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
+                                case TransactionClosureFailedEvent e -> {
+                                    if (!wasTransactionAuthorized) {
+                                        yield new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
+                                    } else {
+                                        yield this;
+                                    }
+                                }
+                                default -> this;
+                            };
                         }
                 ))
                 .orElse(this);

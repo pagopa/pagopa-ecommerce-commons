@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,5 +42,16 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
     ) {
         super(baseTransaction, baseTransaction.getTransactionAuthorizationRequestData());
         this.transactionAuthorizationCompletedData = transactionAuthorizationCompletedData;
+    }
+
+    /**
+     * Check if the transaction was authorized checking if the returned
+     * authorization outcome equals to {@link AuthorizationResultDto#OK}
+     *
+     * @return true iff the transaction was authorized
+     */
+    public boolean wasTransactionAuthorized() {
+        return this.getTransactionAuthorizationCompletedData().getAuthorizationResultDto()
+                .equals(AuthorizationResultDto.OK);
     }
 }
