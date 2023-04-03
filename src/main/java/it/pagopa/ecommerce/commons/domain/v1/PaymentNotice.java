@@ -2,6 +2,8 @@ package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
 
+import java.util.List;
+
 /**
  * <p>
  * A value object holding a notice code params.
@@ -18,6 +20,8 @@ public record PaymentNotice(
         RptId rptId,
         TransactionAmount transactionAmount,
         TransactionDescription transactionDescription,
-        PaymentContextCode paymentContextCode
+        PaymentContextCode paymentContextCode,
+
+        List<PaymentTransferInfo> transferList
 ) {
 }
