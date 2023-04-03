@@ -32,7 +32,8 @@ class TransactionUtilsTest {
             TransactionStatusDto.REFUND_REQUESTED,
             TransactionStatusDto.REFUND_ERROR,
             TransactionStatusDto.CANCELLATION_REQUESTED,
-            TransactionStatusDto.NOTIFICATION_ERROR
+            TransactionStatusDto.NOTIFICATION_ERROR,
+            TransactionStatusDto.NOTIFICATION_REQUESTED
 
     );
 

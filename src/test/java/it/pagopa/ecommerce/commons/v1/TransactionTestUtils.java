@@ -9,8 +9,14 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 
 import javax.annotation.Nonnull;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class TransactionTestUtils {
 
@@ -49,6 +55,23 @@ public class TransactionTestUtils {
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
     public static final Integer TRANSFER_AMOUNT = 0;
     public static final String TRANSFER_CATEGORY = "transferCategory";
+
+    public static final String LANGUAGE = "it-IT";
+    public static final URI PAYMENT_METHOD_LOGO_URL;
+
+    static {
+        try {
+            PAYMENT_METHOD_LOGO_URL = new URI("http://paymentMethodLogo.it");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final OffsetDateTime PAYMENT_DATE = OffsetDateTime.now();
+
+    public static final String RECEIVING_OFFICE_NAME = "receivingOfficeName";
+
+    public static final String PAYMENT_DESCRIPTION = "paymentDescription";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -207,33 +230,45 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
-                                                                            BaseTransactionClosed baseTransactionClosed,
+                                                                            BaseTransactionWithRequestedUserReceipt baseTransaction,
                                                                             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptOk(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
     public static TransactionWithUserReceiptKo transactionWithUserReceiptKo(
-                                                                            BaseTransactionClosed baseTransactionClosed,
+                                                                            BaseTransactionWithRequestedUserReceipt baseTransaction,
                                                                             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
     ) {
         return new TransactionWithUserReceiptKo(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddedEvent
         );
     }
 
     @Nonnull
     public static TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent(
-                                                                                    TransactionUserReceiptData.Outcome outcome
+                                                                                    TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddedEvent(
                 TRANSACTION_ID,
-                new TransactionUserReceiptData(outcome)
+                data
+        );
+    }
+
+    public static TransactionUserReceiptData transactionUserReceiptData(TransactionUserReceiptData.Outcome outcome) {
+        return new TransactionUserReceiptData(
+                outcome,
+                LANGUAGE,
+                PAYMENT_METHOD_LOGO_URL,
+                PAYMENT_DATE,
+                RECEIVING_OFFICE_NAME,
+                PAYMENT_DESCRIPTION
+
         );
     }
 
@@ -379,11 +414,11 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent(
-                                                                                          TransactionUserReceiptData.Outcome outcome
+                                                                                          TransactionUserReceiptData data
     ) {
         return new TransactionUserReceiptAddErrorEvent(
                 TRANSACTION_ID,
-                new TransactionUserReceiptData(outcome)
+                data
         );
     }
 
@@ -397,11 +432,11 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionWithUserReceiptError transactionWithUserReceiptError(
-                                                                                  BaseTransactionClosed baseTransactionClosed,
+                                                                                  BaseTransactionWithRequestedUserReceipt baseTransaction,
                                                                                   TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
     ) {
         return new TransactionWithUserReceiptError(
-                baseTransactionClosed,
+                baseTransaction,
                 transactionUserReceiptAddErrorEvent
         );
     }
@@ -435,6 +470,24 @@ public class TransactionTestUtils {
                 transactionStatus,
                 Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString()
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt(
+                                                                                          BaseTransactionClosed baseTransactionClosed,
+                                                                                          TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent
+    ) {
+        return new TransactionWithRequestedUserReceipt(baseTransactionClosed, transactionUserReceiptRequestedEvent);
+    }
+
+    @Nonnull
+    public static TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent(
+                                                                                            TransactionUserReceiptData transactionUserReceiptData
+    ) {
+        return new TransactionUserReceiptRequestedEvent(
+                TRANSACTION_ID,
+                transactionUserReceiptData
         );
     }
 
