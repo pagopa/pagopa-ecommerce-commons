@@ -11,7 +11,6 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +66,7 @@ public class TransactionTestUtils {
         }
     }
 
-    public static final OffsetDateTime PAYMENT_DATE = OffsetDateTime.now();
+    public static final String PAYMENT_DATE = ZonedDateTime.now().toString();
 
     public static final String RECEIVING_OFFICE_NAME = "receivingOfficeName";
 
