@@ -22,4 +22,5 @@ public class TransactionAuthorizationRequestData {
     private String paymentMethodName;
     private String pspBusinessName;
     private String authorizationRequestId;
+    private String paymentGateway;
 }
