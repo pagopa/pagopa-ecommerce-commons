@@ -73,6 +73,10 @@ public enum TransactionEventCode {
      * User receipt sending error event
      */
     TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT("TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT"),
+    /**
+     * User receipt requested event
+     */
+    TRANSACTION_USER_RECEIPT_REQUESTED_EVENT("TRANSACTION_USER_RECEIPT_REQUESTED_EVENT"),
     ;
 
     private final String code;

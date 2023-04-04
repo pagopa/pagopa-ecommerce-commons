@@ -57,7 +57,16 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                                         new RptId(noticeCode.getRptId()),
                                         new TransactionAmount(noticeCode.getAmount()),
                                         new TransactionDescription(noticeCode.getDescription()),
-                                        new PaymentContextCode(noticeCode.getPaymentContextCode())
+                                        new PaymentContextCode(noticeCode.getPaymentContextCode()),
+                                        noticeCode.getTransferList().stream()
+                                                .map(
+                                                        tx -> new PaymentTransferInfo(
+                                                                tx.getPaFiscalCode(),
+                                                                tx.getDigitalStamp(),
+                                                                tx.getTransferAmount(),
+                                                                tx.getTransferCategory()
+                                                        )
+                                                ).toList()
                                 )
                         ).toList(),
                 baseTransaction.getEmail(),

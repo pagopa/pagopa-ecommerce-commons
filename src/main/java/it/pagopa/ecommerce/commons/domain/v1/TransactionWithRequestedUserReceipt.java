@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -11,17 +12,19 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * Transaction closed for which an error occurs during user receipt notification
+ * Transaction closed for which email communication process has been requested
+ * (this means that notifications-service has taken successfully in charge
+ * sending an email to the user)
  * </p>
  * Applicable events with resulting aggregates are:
  * <ul>
- * <li>{@link TransactionUserReceiptAddedEvent} with OK send payment result
+ * <li>{@link TransactionUserReceiptAddedEvent} with OK `sendPaymentResult`
  * outcome --> {@link TransactionWithUserReceiptOk}</li>
  * <li>{@link TransactionUserReceiptAddedEvent} with KO send payment result
  * outcome --> {@link TransactionWithUserReceiptKo}</li>
  * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
- * <li>{@link TransactionRefundRequestedEvent} -->
- * {@link TransactionWithRefundRequested}</li>
+ * <li>{@link TransactionUserReceiptAddErrorEvent} -->
+ * {@link TransactionWithUserReceiptError}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -36,7 +39,7 @@ import lombok.experimental.FieldDefaults;
  * @formatter:off
  *
  * Warning java:S110 - This class has x parents which is greater than 5 authorized
- * Suppressed because the Transaction hierarchy modeled here force TransactionWithUserReceiptError
+ * Suppressed because the Transaction hierarchy modeled here force TransactionWithUserReceiptOk
  * to be instantiated only starting from a TransactionClosed. The hierarchy dept is strictly correlated
  * to the depth of the graph representing the finite state machine so can be accepted that hierarchy level
  * is deeper than the max authorized level
@@ -44,24 +47,27 @@ import lombok.experimental.FieldDefaults;
  * @formatter:on
  */
 @SuppressWarnings("java:S110")
-public final class TransactionWithUserReceiptError extends BaseTransactionWithRequestedUserReceipt
+public final class TransactionWithRequestedUserReceipt extends BaseTransactionWithRequestedUserReceipt
         implements Transaction {
 
     /**
      * Main constructor.
      *
-     * @param baseTransaction                     transaction to extend with receipt
-     *                                            data
-     * @param transactionUserReceiptAddErrorEvent transaction add user receipt error
-     *                                            event
+     * @param baseTransaction                      transaction to extend with
+     *                                             receipt data
+     * @param transactionUserReceiptRequestedEvent transaction user receipt added
+     *                                             event
      */
-    public TransactionWithUserReceiptError(
-            BaseTransactionWithRequestedUserReceipt baseTransaction,
-            TransactionUserReceiptAddErrorEvent transactionUserReceiptAddErrorEvent
+    public TransactionWithRequestedUserReceipt(
+            BaseTransactionClosed baseTransaction,
+            TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent
     ) {
-        super(baseTransaction, transactionUserReceiptAddErrorEvent.getData());
+        super(baseTransaction, transactionUserReceiptRequestedEvent.getData());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction applyEvent(Object event) {
         return switch (event) {
@@ -73,18 +79,13 @@ public final class TransactionWithUserReceiptError extends BaseTransactionWithRe
                 }
             }
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionRefundRequestedEvent e -> {
-                if (this.getTransactionUserReceiptData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.KO)) {
-                    yield new TransactionWithRefundRequested(this, e);
-                }
-                yield this;
-            }
+            case TransactionUserReceiptAddErrorEvent e -> new TransactionWithUserReceiptError(this, e);
             default -> this;
         };
     }
 
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionStatusDto.NOTIFICATION_ERROR;
+        return TransactionStatusDto.NOTIFICATION_REQUESTED;
     }
 }
