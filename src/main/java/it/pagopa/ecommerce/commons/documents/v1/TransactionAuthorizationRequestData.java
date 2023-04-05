@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class TransactionAuthorizationRequestData {
 
+
     private int amount;
     private int fee;
     private String paymentInstrumentId;
@@ -22,5 +23,20 @@ public class TransactionAuthorizationRequestData {
     private String paymentMethodName;
     private String pspBusinessName;
     private String authorizationRequestId;
-    private String paymentGateway;
+    private PaymentGateway paymentGateway;
+
+    /**
+     * Enum class to handle different payment gateways
+     **/
+    public enum PaymentGateway {
+        VPOS("VPOS"),
+        XPAY("XPAY"),
+        POSTEPAY("POSTEPAY");
+
+        public final String value;
+
+        PaymentGateway(String paymentGateway) {
+            this.value = paymentGateway;
+        }
+    }
 }
