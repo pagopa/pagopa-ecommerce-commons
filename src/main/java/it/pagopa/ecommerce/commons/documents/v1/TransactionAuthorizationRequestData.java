@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class TransactionAuthorizationRequestData {
 
-
     private int amount;
     private int fee;
     private String paymentInstrumentId;
