@@ -50,7 +50,7 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
-    public static final String PAYMENT_GATEWAY = "PAYMENT_GATEWAY";
+    public static final String PAYMENT_GATEWAY = "VPOS";
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
@@ -159,8 +159,7 @@ public class TransactionTestUtils {
                         PAYMENT_METHOD_NAME,
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
-                        PAYMENT_GATEWAY
-
+                        TransactionAuthorizationRequestData.PaymentGateway.valueOf(PAYMENT_GATEWAY)
                 )
         );
     }
