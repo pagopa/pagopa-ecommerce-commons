@@ -25,17 +25,20 @@ public class TransactionAuthorizationRequestData {
     private PaymentGateway paymentGateway;
 
     /**
-     * Enum class to handle different payment gateways
-     **/
+     * Enumeration of different PaymentGateway
+     */
     public enum PaymentGateway {
-        VPOS("VPOS"),
-        XPAY("XPAY"),
-        POSTEPAY("POSTEPAY");
-
-        public final String value;
-
-        PaymentGateway(String paymentGateway) {
-            this.value = paymentGateway;
-        }
+        /**
+         * VPOS payment gateway
+         */
+        VPOS,
+        /**
+         * XPAY payment gateway
+         */
+        XPAY,
+        /**
+         * POSTEPAY payment gateway
+         */
+        POSTEPAY
     }
 }
