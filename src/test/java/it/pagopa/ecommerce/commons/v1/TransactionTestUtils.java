@@ -165,7 +165,9 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(TransactionAuthorizationRequestData.PaymentGateway paymentGateway) {
+    public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(
+                                                                                                TransactionAuthorizationRequestData.PaymentGateway paymentGateway
+    ) {
         return new TransactionAuthorizationRequestedEvent(
                 TRANSACTION_ID,
                 new TransactionAuthorizationRequestData(
