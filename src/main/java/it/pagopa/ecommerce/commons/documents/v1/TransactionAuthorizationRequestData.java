@@ -22,4 +22,23 @@ public class TransactionAuthorizationRequestData {
     private String paymentMethodName;
     private String pspBusinessName;
     private String authorizationRequestId;
+    private PaymentGateway paymentGateway;
+
+    /**
+     * Enumeration of different PaymentGateway
+     */
+    public enum PaymentGateway {
+        /**
+         * VPOS payment gateway
+         */
+        VPOS,
+        /**
+         * XPAY payment gateway
+         */
+        XPAY,
+        /**
+         * POSTEPAY payment gateway
+         */
+        POSTEPAY
+    }
 }
