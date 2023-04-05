@@ -165,6 +165,26 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(TransactionAuthorizationRequestData.PaymentGateway paymentGateway) {
+        return new TransactionAuthorizationRequestedEvent(
+                TRANSACTION_ID,
+                new TransactionAuthorizationRequestData(
+                        AMOUNT,
+                        10,
+                        PAYMENT_INSTRUMENT_ID,
+                        PSP_ID,
+                        PAYMENT_TYPE_CODE,
+                        BROKER_NAME,
+                        PSP_CHANNEL_CODE,
+                        PAYMENT_METHOD_NAME,
+                        PSP_BUSINESS_NAME,
+                        AUTHORIZATION_REQUEST_ID,
+                        paymentGateway
+                )
+        );
+    }
+
+    @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
