@@ -30,8 +30,6 @@ public class TransactionUtils {
                 || TransactionStatusDto.CLOSED == status
                 || TransactionStatusDto.EXPIRED == status
                 || TransactionStatusDto.NOTIFIED_KO == status
-                || TransactionStatusDto.REFUND_REQUESTED == status
-                || TransactionStatusDto.REFUND_ERROR == status
                 || TransactionStatusDto.NOTIFICATION_ERROR == status
                 || TransactionStatusDto.NOTIFICATION_REQUESTED == status;
     }
