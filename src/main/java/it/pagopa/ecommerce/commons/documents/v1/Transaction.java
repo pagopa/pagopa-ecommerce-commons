@@ -33,6 +33,8 @@ public class Transaction {
     private Integer feeTotal;
     private String creationDate;
     private List<PaymentNotice> paymentNotices;
+    @Nullable
+    private String idCart;
 
     /**
      * Enumeration of transaction client initiators
@@ -76,6 +78,7 @@ public class Transaction {
      * @param clientId       the client identifier
      * @param feeTotal       transaction total fee
      * @param creationDate   transaction creation date
+     * @param idCart         the ec cart id
      */
     @PersistenceConstructor
     public Transaction(
@@ -85,7 +88,8 @@ public class Transaction {
             Confidential<Email> email,
             TransactionStatusDto status,
             ClientId clientId,
-            String creationDate
+            String creationDate,
+            @Nullable String idCart
     ) {
         this.transactionId = transactionId;
         this.email = email;
@@ -94,6 +98,7 @@ public class Transaction {
         this.feeTotal = feeTotal;
         this.clientId = clientId;
         this.creationDate = creationDate;
+        this.idCart = idCart;
     }
 
     /**
@@ -110,7 +115,8 @@ public class Transaction {
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
                 transaction.getTransactionActivatedData().getClientId(),
-                transaction.getCreationDate().toString()
+                transaction.getCreationDate().toString(),
+                transaction.getTransactionActivatedData().getIdCart()
         );
     }
 

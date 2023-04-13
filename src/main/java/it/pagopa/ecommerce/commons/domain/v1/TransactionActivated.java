@@ -43,6 +43,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCodeString fault code auxiliary description
      * @param creationDate    creation date of this transaction
      * @param clientId        a {@link ClientId} object
+     * @param idCart          the ec cart id
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -51,7 +52,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ZonedDateTime creationDate,
-            ClientId clientId
+            ClientId clientId,
+            String idCart
     ) {
         super(
 
@@ -85,7 +87,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                 ).toList(),
                         faultCode,
                         faultCodeString,
-                        clientId
+                        clientId,
+                        idCart
                 )
         );
     }
@@ -99,6 +102,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCode       fault code generated during activation
      * @param faultCodeString fault code auxiliary description
      * @param clientId        the origin from which the transaction started from
+     * @param idCart          the ec id cart
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -106,7 +110,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             Confidential<Email> email,
             String faultCode,
             String faultCodeString,
-            ClientId clientId
+            ClientId clientId,
+            String idCart
     ) {
         this(
                 transactionId,
@@ -115,7 +120,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCode,
                 faultCodeString,
                 ZonedDateTime.now(),
-                clientId
+                clientId,
+                idCart
         );
     }
 
