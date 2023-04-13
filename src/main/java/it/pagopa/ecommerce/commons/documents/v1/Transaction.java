@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
@@ -70,6 +71,7 @@ public class Transaction {
 
     /**
      * Primary persistence constructor
+     * Warning java:S107 - Methods should not have too many parameters
      *
      * @param transactionId  transaction unique id
      * @param paymentNotices notice code list
@@ -80,6 +82,12 @@ public class Transaction {
      * @param creationDate   transaction creation date
      * @param idCart         the ec cart id
      */
+    @JsonCreator
+    @SuppressWarnings(
+            {
+                    "java:S107"
+            }
+    )
     @PersistenceConstructor
     public Transaction(
             String transactionId,
