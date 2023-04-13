@@ -70,8 +70,8 @@ public class Transaction {
     }
 
     /**
-     * Primary persistence constructor
-     * Warning java:S107 - Methods should not have too many parameters
+     * Primary persistence constructor. Warning java:S107 - Methods should not have
+     * too many parameters
      *
      * @param transactionId  transaction unique id
      * @param paymentNotices notice code list
@@ -84,9 +84,9 @@ public class Transaction {
      */
     @JsonCreator
     @SuppressWarnings(
-            {
-                    "java:S107"
-            }
+        {
+                "java:S107"
+        }
     )
     @PersistenceConstructor
     public Transaction(
