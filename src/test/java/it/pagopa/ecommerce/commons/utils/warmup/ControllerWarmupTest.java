@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.internal.stubbing.answers.AnswersWithDelay;
+import org.mockito.internal.stubbing.answers.Returns;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -28,8 +30,8 @@ class ControllerWarmupTest {
 
     private final Sentinel sentinel = new Sentinel() {
         @Override
-        public void warmUp() {
-
+        public boolean warmUp() {
+            return true;
         }
     };
     private final Sentinel warmupSentinel = Mockito.spy(sentinel);
@@ -39,8 +41,6 @@ class ControllerWarmupTest {
     private final MockedRestControllerWithWarmupMethods mockRestController = new MockedRestControllerWithWarmupMethods();
 
     private final MockedRestControllerWithoutWarmupMethods mockRestControllerWithoutWarmup = new MockedRestControllerWithoutWarmupMethods();
-
-    private final MockedRestControllerWithWarmupMethodsWithSleeps mockedRestControllerWithSleeps = new MockedRestControllerWithWarmupMethodsWithSleeps();
 
     @Test
     void shouldCallWarmupMethods() {
@@ -72,7 +72,8 @@ class ControllerWarmupTest {
          */
         Mockito.when(contextRefreshedEvent.getApplicationContext()).thenReturn(applicationContext);
         Mockito.when(applicationContext.getBeansWithAnnotation(RestController.class))
-                .thenReturn(Map.of("mockRestController", mockedRestControllerWithSleeps));
+                .thenReturn(Map.of("mockRestController", mockRestController));
+        Mockito.doAnswer(new AnswersWithDelay(1000, new Returns(true))).when(warmupSentinel).warmUp();
 
         /*
          * Test
@@ -85,7 +86,7 @@ class ControllerWarmupTest {
          */
         Mockito.verify(contextRefreshedEvent, Mockito.times(1)).getApplicationContext();
         Mockito.verify(applicationContext, Mockito.times(1)).getBeansWithAnnotation(RestController.class);
-        Mockito.verify(warmupSentinel, Mockito.times(3)).warmUp();
+        Mockito.verify(warmupSentinel, Mockito.times(2)).warmUp();
         Mockito.verify(otherMethodSentinel, Mockito.times(0)).warmUp();
         /*
          * mockedRestControllerWithSleeps has 3 warmup methods with a sleep of 1000 ms
@@ -93,7 +94,7 @@ class ControllerWarmupTest {
          * performed against the onApplicationEvent method duration that should be
          * comparable with a single warmup method duration
          */
-        assertTrue(elapsedTime < 3000);
+        assertTrue(elapsedTime < 2000);
 
     }
 
@@ -145,7 +146,7 @@ class ControllerWarmupTest {
     }
 
     private interface Sentinel {
-        void warmUp();
+        boolean warmUp();
     }
 
     private class MockedRestControllerWithWarmupMethods {
@@ -166,31 +167,6 @@ class ControllerWarmupTest {
             otherMethodSentinel.warmUp();
 
         }
-    }
-
-    private class MockedRestControllerWithWarmupMethodsWithSleeps {
-
-        @Warmup
-        public void firstWarmupMethod() throws InterruptedException {
-            Thread.sleep(1000);
-            warmupSentinel.warmUp();
-
-        }
-
-        @Warmup
-        public void secondWarmupMethod() throws InterruptedException {
-            Thread.sleep(1000);
-            warmupSentinel.warmUp();
-
-        }
-
-        @Warmup
-        public void thirdWarmupMethod() throws InterruptedException {
-            Thread.sleep(1000);
-            warmupSentinel.warmUp();
-
-        }
-
     }
 
     private class MockedRestControllerWithoutWarmupMethods {
