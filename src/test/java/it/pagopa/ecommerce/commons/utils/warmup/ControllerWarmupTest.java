@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.utils.warmup;
 
-import it.pagopa.ecommerce.commons.annotations.WarmupMethod;
+import it.pagopa.ecommerce.commons.annotations.Warmup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +12,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+
+import static com.mongodb.internal.connection.tlschannel.util.Util.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class ControllerWarmupTest {
@@ -38,6 +40,8 @@ class ControllerWarmupTest {
 
     private final MockedRestControllerWithoutWarmupMethods mockRestControllerWithoutWarmup = new MockedRestControllerWithoutWarmupMethods();
 
+    private final MockedRestControllerWithWarmupMethodsWithSleeps mockedRestControllerWithSleeps = new MockedRestControllerWithWarmupMethodsWithSleeps();
+
     @Test
     void shouldCallWarmupMethods() {
         /*
@@ -58,6 +62,38 @@ class ControllerWarmupTest {
         Mockito.verify(applicationContext, Mockito.times(1)).getBeansWithAnnotation(RestController.class);
         Mockito.verify(warmupSentinel, Mockito.times(2)).warmUp();
         Mockito.verify(otherMethodSentinel, Mockito.times(0)).warmUp();
+
+    }
+
+    @Test
+    void shouldCallWarmupMethodInParallel() {
+        /*
+         * pre-conditions
+         */
+        Mockito.when(contextRefreshedEvent.getApplicationContext()).thenReturn(applicationContext);
+        Mockito.when(applicationContext.getBeansWithAnnotation(RestController.class))
+                .thenReturn(Map.of("mockRestController", mockedRestControllerWithSleeps));
+
+        /*
+         * Test
+         */
+        long startTime = System.currentTimeMillis();
+        controllerWarmup.onApplicationEvent(contextRefreshedEvent);
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        /*
+         * Assertions
+         */
+        Mockito.verify(contextRefreshedEvent, Mockito.times(1)).getApplicationContext();
+        Mockito.verify(applicationContext, Mockito.times(1)).getBeansWithAnnotation(RestController.class);
+        Mockito.verify(warmupSentinel, Mockito.times(3)).warmUp();
+        Mockito.verify(otherMethodSentinel, Mockito.times(0)).warmUp();
+        /*
+         * mockedRestControllerWithSleeps has 3 warmup methods with a sleep of 1000 ms
+         * each. To check here that all those methods are run in parallel a check is
+         * performed against the onApplicationEvent method duration that should be
+         * comparable with a single warmup method duration
+         */
+        assertTrue(elapsedTime / 1000 == 1);
 
     }
 
@@ -114,13 +150,13 @@ class ControllerWarmupTest {
 
     private class MockedRestControllerWithWarmupMethods {
 
-        @WarmupMethod
+        @Warmup
         public void warmupMethod() {
             warmupSentinel.warmUp();
 
         }
 
-        @WarmupMethod
+        @Warmup
         public void otherWarmupMethod() {
             warmupSentinel.warmUp();
 
@@ -130,6 +166,31 @@ class ControllerWarmupTest {
             otherMethodSentinel.warmUp();
 
         }
+    }
+
+    private class MockedRestControllerWithWarmupMethodsWithSleeps {
+
+        @Warmup
+        public void firstWarmupMethod() throws InterruptedException {
+            Thread.sleep(1000);
+            warmupSentinel.warmUp();
+
+        }
+
+        @Warmup
+        public void secondWarmupMethod() throws InterruptedException {
+            Thread.sleep(1000);
+            warmupSentinel.warmUp();
+
+        }
+
+        @Warmup
+        public void thirdWarmupMethod() throws InterruptedException {
+            Thread.sleep(1000);
+            warmupSentinel.warmUp();
+
+        }
+
     }
 
     private class MockedRestControllerWithoutWarmupMethods {

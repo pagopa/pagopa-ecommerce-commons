@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.utils.warmup;
 
-import it.pagopa.ecommerce.commons.annotations.WarmupMethod;
+import it.pagopa.ecommerce.commons.annotations.Warmup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controller warmup logic. This class is an {@link ApplicationListener} for the
  * {@link ContextRefreshedEvent} raised when an ApplicationContext gets
  * initialized or refreshed. Once the event is fired the classpath is scanned
  * searching for all {@link RestController} an, for each of those, searching for
- * methods annotated with {@link WarmupMethod} to be executed
+ * methods annotated with {@link Warmup} to be executed
  *
- * @see WarmupMethod
+ * @see Warmup
  * @see ContextRefreshedEvent
  * @see ApplicationListener
  */
@@ -43,13 +42,12 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
 
     private void warmupController(Object controller) {
         Class<?> controllerClass = ClassUtils.getUserClass(controller.getClass());
-        AtomicInteger warmUpMethods = new AtomicInteger();
         long startTime = System.currentTimeMillis();
-        Arrays.stream(controllerClass.getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(WarmupMethod.class))
-                .forEach(method -> {
+        int warmUpMethods = Arrays.stream(controllerClass.getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(Warmup.class))
+                .parallel()
+                .mapToInt(method -> {
                     long methodStartTime = System.currentTimeMillis();
-                    warmUpMethods.incrementAndGet();
                     try {
                         log.info("Invoking method: [{}]", method);
                         method.invoke(controller);
@@ -64,7 +62,9 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                         );
                     }
 
-                });
+                    return 1;
+                })
+                .sum();
         long elapsedTime = System.currentTimeMillis() - startTime;
         log.info(
                 "Controller: [{}] warm-up executed methods: [{}], elapsed time: [{}] ms",
@@ -73,4 +73,5 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                 elapsedTime
         );
     }
+
 }
