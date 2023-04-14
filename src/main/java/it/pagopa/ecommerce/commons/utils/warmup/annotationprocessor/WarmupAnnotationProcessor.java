@@ -9,7 +9,10 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.element.*;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic;
 import java.util.List;
 import java.util.Set;
@@ -44,31 +47,34 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
                            RoundEnvironment roundEnv
     ) {
         logger.info("WarmupAnnotationProcessor start process");
-        Class<?> declaringClass;
-        Name warmupMethod;
+        Element declaringClass;
+        String className;
+        String warmupMethod;
         for (Element element : roundEnv.getElementsAnnotatedWith(Warmup.class)) {
             if (!(element instanceof ExecutableElement executableElement)) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation should be on method.");
                 continue;
             }
+            declaringClass = executableElement.getEnclosingElement();
 
+            className = declaringClass.toString();
+            warmupMethod = executableElement.getSimpleName().toString();
             List<? extends VariableElement> parameters = executableElement.getParameters();
-            declaringClass = executableElement.getClass();
-            warmupMethod = executableElement.getSimpleName();
             if (!parameters.isEmpty()) {
                 processingEnv.getMessager()
                         .printMessage(
                                 Diagnostic.Kind.ERROR,
-                                "Warmup method: [%s] should not have arguments".formatted(warmupMethod)
+                                "Warmup method: [%s.%s] should not have arguments".formatted(className, warmupMethod)
                         );
             }
-            if (!declaringClass.isAnnotationPresent(RestController.class)) {
+            if (declaringClass.getAnnotation(RestController.class) == null) {
                 processingEnv.getMessager().printMessage(
                         Diagnostic.Kind.ERROR,
                         "Found warmup method in class [%s] but is not annotated with @RestController"
-                                .formatted(declaringClass)
+                                .formatted(className)
                 );
             }
+
         }
         return true; // no further processing of this annotation type
     }
