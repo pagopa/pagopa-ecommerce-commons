@@ -56,7 +56,7 @@ public class TransactionTestUtils {
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
     public static final Integer TRANSFER_AMOUNT = 0;
     public static final String TRANSFER_CATEGORY = "transferCategory";
-
+    public static final String ID_CART = "ecIdCart";
     public static final String LANGUAGE = "it-IT";
     public static final URI PAYMENT_METHOD_LOGO_URL;
 
@@ -99,7 +99,8 @@ public class TransactionTestUtils {
                         ),
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.ClientId.CHECKOUT
+                        Transaction.ClientId.CHECKOUT,
+                        ID_CART
                 )
         );
     }
@@ -129,7 +130,8 @@ public class TransactionTestUtils {
                 FAULT_CODE,
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
-                Transaction.ClientId.CHECKOUT
+                Transaction.ClientId.CHECKOUT,
+                ID_CART
         );
     }
 
@@ -493,7 +495,8 @@ public class TransactionTestUtils {
                 EMAIL,
                 transactionStatus,
                 Transaction.ClientId.CHECKOUT,
-                creationDateTime.toString()
+                creationDateTime.toString(),
+                ID_CART
         );
     }
 

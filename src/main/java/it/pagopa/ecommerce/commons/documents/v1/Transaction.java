@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
@@ -33,6 +34,8 @@ public class Transaction {
     private Integer feeTotal;
     private String creationDate;
     private List<PaymentNotice> paymentNotices;
+    @Nullable
+    private String idCart;
 
     /**
      * Enumeration of transaction client initiators
@@ -67,7 +70,8 @@ public class Transaction {
     }
 
     /**
-     * Primary persistence constructor
+     * Primary persistence constructor. Warning java:S107 - Methods should not have
+     * too many parameters
      *
      * @param transactionId  transaction unique id
      * @param paymentNotices notice code list
@@ -76,7 +80,22 @@ public class Transaction {
      * @param clientId       the client identifier
      * @param feeTotal       transaction total fee
      * @param creationDate   transaction creation date
+     * @param idCart         the ec cart id
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because the Transaction is a simple data container with no logic.
+     *
+     * @formatter:on
+     */
+    @JsonCreator
+    @SuppressWarnings(
+        {
+                "java:S107"
+        }
+    )
     @PersistenceConstructor
     public Transaction(
             String transactionId,
@@ -85,7 +104,8 @@ public class Transaction {
             Confidential<Email> email,
             TransactionStatusDto status,
             ClientId clientId,
-            String creationDate
+            String creationDate,
+            @Nullable String idCart
     ) {
         this.transactionId = transactionId;
         this.email = email;
@@ -94,6 +114,7 @@ public class Transaction {
         this.feeTotal = feeTotal;
         this.clientId = clientId;
         this.creationDate = creationDate;
+        this.idCart = idCart;
     }
 
     /**
@@ -110,7 +131,8 @@ public class Transaction {
                 transaction.getTransactionActivatedData().getEmail(),
                 transaction.getStatus(),
                 transaction.getTransactionActivatedData().getClientId(),
-                transaction.getCreationDate().toString()
+                transaction.getCreationDate().toString(),
+                transaction.getTransactionActivatedData().getIdCart()
         );
     }
 
