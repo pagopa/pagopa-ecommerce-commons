@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -24,5 +25,7 @@ public class TransactionActivatedData {
     private String faultCode; // TODO enum with all PAA & PTT
     private String faultCodeString;
     private Transaction.ClientId clientId;
+    @Nullable
+    private String idCart;
 
 }

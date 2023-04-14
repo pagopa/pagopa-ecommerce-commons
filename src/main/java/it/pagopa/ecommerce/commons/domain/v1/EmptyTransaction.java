@@ -47,7 +47,8 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getFaultCode(),
                 event.getData().getFaultCodeString(),
                 ZonedDateTime.parse(event.getCreationDate()),
-                event.getData().getClientId()
+                event.getData().getClientId(),
+                event.getData().getIdCart()
         );
     }
 
