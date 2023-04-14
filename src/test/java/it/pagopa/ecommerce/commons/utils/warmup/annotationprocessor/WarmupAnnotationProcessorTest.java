@@ -193,6 +193,40 @@ class WarmupAnnotationProcessorTest {
     }
 
     @Test
+    void shouldRaiseErrorForAnnotationAppliedOnInvalidElement() {
+        /*
+         * pre-requisite
+         */
+        Mockito.when(processingEnv.getMessager()).thenReturn(messager);
+        Mockito.when(roundEnv.getElementsAnnotatedWith(Warmup.class)).thenReturn((Set) Set.of(variableElement));
+        Mockito.when(variableElement.getKind()).thenReturn(ElementKind.FIELD);
+        Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
+                .thenReturn(restControllerAnnotation);
+        /*
+         * Test
+         */
+        warmupAnnotationProcessor.init(processingEnv);
+        boolean returnValue = warmupAnnotationProcessor.process(Collections.emptySet(), roundEnv);
+
+        /*
+         * Assertions
+         */
+        assertTrue(returnValue);
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                argThat(
+                        message -> message.equals(
+                                "Invalid annotation location, annotation expected on method but found on: [FIELD]"
+                        )
+                )
+        );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
+    }
+
+    @Test
     void shouldRaiseAllValidationErrors() {
         /*
          * pre-requisite

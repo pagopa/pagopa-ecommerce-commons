@@ -50,35 +50,40 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
         Set<Modifier> modifiers;
         List<? extends VariableElement> parameters;
         for (Element element : roundEnv.getElementsAnnotatedWith(Warmup.class)) {
-            if (!(element instanceof ExecutableElement executableElement)) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation should be on method.");
-                continue;
-            }
-            declaringClass = executableElement.getEnclosingElement();
-            modifiers = executableElement.getModifiers();
-            className = declaringClass.toString();
-            warmupMethod = executableElement.getSimpleName().toString();
-            parameters = executableElement.getParameters();
-            if (!parameters.isEmpty()) {
-                processingEnv.getMessager()
-                        .printMessage(
-                                Diagnostic.Kind.ERROR,
-                                "Warmup method: [%s.%s] should not have arguments".formatted(className, warmupMethod)
-                        );
-            }
-            if (modifiers.size() != 1 || !modifiers.contains(Modifier.PUBLIC)) {
-                processingEnv.getMessager()
-                        .printMessage(
-                                Diagnostic.Kind.ERROR,
-                                "Warmup method: [%s.%s] should have only public modifier"
-                                        .formatted(className, warmupMethod)
-                        );
-            }
-            if (declaringClass.getAnnotation(RestController.class) == null) {
+            if (element instanceof ExecutableElement executableElement) {
+                declaringClass = executableElement.getEnclosingElement();
+                modifiers = executableElement.getModifiers();
+                className = declaringClass.toString();
+                warmupMethod = executableElement.getSimpleName().toString();
+                parameters = executableElement.getParameters();
+                if (!parameters.isEmpty()) {
+                    processingEnv.getMessager()
+                            .printMessage(
+                                    Diagnostic.Kind.ERROR,
+                                    "Warmup method: [%s.%s] should not have arguments"
+                                            .formatted(className, warmupMethod)
+                            );
+                }
+                if (modifiers.size() != 1 || !modifiers.contains(Modifier.PUBLIC)) {
+                    processingEnv.getMessager()
+                            .printMessage(
+                                    Diagnostic.Kind.ERROR,
+                                    "Warmup method: [%s.%s] should have only public modifier"
+                                            .formatted(className, warmupMethod)
+                            );
+                }
+                if (declaringClass.getAnnotation(RestController.class) == null) {
+                    processingEnv.getMessager().printMessage(
+                            Diagnostic.Kind.ERROR,
+                            "Found warmup method in class [%s] but is not annotated with @RestController"
+                                    .formatted(className)
+                    );
+                }
+            } else {
                 processingEnv.getMessager().printMessage(
                         Diagnostic.Kind.ERROR,
-                        "Found warmup method in class [%s] but is not annotated with @RestController"
-                                .formatted(className)
+                        "Invalid annotation location, annotation expected on method but found on: [%s]"
+                                .formatted(element.getKind())
                 );
             }
 
