@@ -117,7 +117,7 @@ class WarmupAnnotationProcessorTest {
     }
 
     @Test
-    void shouldRaiseErrorForWarmupMethodWithInvalidModifiers() {
+    void shouldRaiseErrorForWarmupMethodWithInvalidVisibility() {
         /*
          * pre-requisite
          */
@@ -128,6 +128,44 @@ class WarmupAnnotationProcessorTest {
         Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
         Mockito.when(executableElement.getParameters()).thenReturn(List.of());
         Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PRIVATE));
+        Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
+                .thenReturn(restControllerAnnotation);
+        /*
+         * Test
+         */
+        warmupAnnotationProcessor.init(processingEnv);
+        boolean returnValue = warmupAnnotationProcessor.process(Collections.emptySet(), roundEnv);
+
+        /*
+         * Assertions
+         */
+        assertTrue(returnValue);
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                argThat(
+                        message -> message.equals(
+                                "Warmup method: [warmupMethodEnclosingElement.executableElementName] should have only public modifier"
+                        )
+                )
+        );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
+    }
+
+    @Test
+    void shouldRaiseErrorForWarmupMethodWithInvalidModifiers() {
+        /*
+         * pre-requisite
+         */
+        Mockito.when(processingEnv.getMessager()).thenReturn(messager);
+        Mockito.when(roundEnv.getElementsAnnotatedWith(Warmup.class)).thenReturn((Set) Set.of(executableElement));
+        Mockito.when(executableElement.getEnclosingElement()).thenReturn(warmupMethodEnclosingElement);
+        Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
+        Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
+        Mockito.when(executableElement.getParameters()).thenReturn(List.of());
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PRIVATE, Modifier.STATIC));
         Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
                 .thenReturn(restControllerAnnotation);
         /*
