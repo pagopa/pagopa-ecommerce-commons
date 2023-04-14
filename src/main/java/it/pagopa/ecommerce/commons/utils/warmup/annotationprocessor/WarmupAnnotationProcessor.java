@@ -9,10 +9,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import java.util.List;
 import java.util.Set;
@@ -50,21 +47,31 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
         Element declaringClass;
         String className;
         String warmupMethod;
+        Set<Modifier> modifiers;
+        List<? extends VariableElement> parameters;
         for (Element element : roundEnv.getElementsAnnotatedWith(Warmup.class)) {
             if (!(element instanceof ExecutableElement executableElement)) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation should be on method.");
                 continue;
             }
             declaringClass = executableElement.getEnclosingElement();
-
+            modifiers = executableElement.getModifiers();
             className = declaringClass.toString();
             warmupMethod = executableElement.getSimpleName().toString();
-            List<? extends VariableElement> parameters = executableElement.getParameters();
+            parameters = executableElement.getParameters();
             if (!parameters.isEmpty()) {
                 processingEnv.getMessager()
                         .printMessage(
                                 Diagnostic.Kind.ERROR,
                                 "Warmup method: [%s.%s] should not have arguments".formatted(className, warmupMethod)
+                        );
+            }
+            if (modifiers.size() != 1 || !modifiers.contains(Modifier.PUBLIC)) {
+                processingEnv.getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.ERROR,
+                                "Warmup method: [%s.%s] should have only public modifier"
+                                        .formatted(className, warmupMethod)
                         );
             }
             if (declaringClass.getAnnotation(RestController.class) == null) {

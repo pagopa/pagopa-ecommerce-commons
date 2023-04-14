@@ -10,18 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class WarmupAnnotationProcessorTest {
@@ -57,6 +53,7 @@ class WarmupAnnotationProcessorTest {
         Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
         Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
         Mockito.when(executableElement.getParameters()).thenReturn((List) List.of(variableElement));
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PUBLIC));
         Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
                 .thenReturn(restControllerAnnotation);
         /*
@@ -76,6 +73,10 @@ class WarmupAnnotationProcessorTest {
                         )
                 )
         );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
     }
 
     @Test
@@ -89,6 +90,7 @@ class WarmupAnnotationProcessorTest {
         Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
         Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
         Mockito.when(executableElement.getParameters()).thenReturn(List.of());
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PUBLIC));
         Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class)).thenReturn(null);
         /*
          * Test
@@ -108,10 +110,52 @@ class WarmupAnnotationProcessorTest {
                         )
                 )
         );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
     }
 
     @Test
-    void shouldRaiseErrorForWarmupMethodWithParametersInClassThatHasNotRestControllerAnnotation() {
+    void shouldRaiseErrorForWarmupMethodWithInvalidModifiers() {
+        /*
+         * pre-requisite
+         */
+        Mockito.when(processingEnv.getMessager()).thenReturn(messager);
+        Mockito.when(roundEnv.getElementsAnnotatedWith(Warmup.class)).thenReturn((Set) Set.of(executableElement));
+        Mockito.when(executableElement.getEnclosingElement()).thenReturn(warmupMethodEnclosingElement);
+        Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
+        Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
+        Mockito.when(executableElement.getParameters()).thenReturn(List.of());
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PRIVATE));
+        Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
+                .thenReturn(restControllerAnnotation);
+        /*
+         * Test
+         */
+        warmupAnnotationProcessor.init(processingEnv);
+        boolean returnValue = warmupAnnotationProcessor.process(Collections.emptySet(), roundEnv);
+
+        /*
+         * Assertions
+         */
+        assertTrue(returnValue);
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                argThat(
+                        message -> message.equals(
+                                "Warmup method: [warmupMethodEnclosingElement.executableElementName] should have only public modifier"
+                        )
+                )
+        );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
+    }
+
+    @Test
+    void shouldRaiseAllValidationErrors() {
         /*
          * pre-requisite
          */
@@ -121,6 +165,7 @@ class WarmupAnnotationProcessorTest {
         Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
         Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
         Mockito.when(executableElement.getParameters()).thenReturn((List) List.of(variableElement));
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PRIVATE));
         Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class)).thenReturn(null);
         /*
          * Test
@@ -148,10 +193,22 @@ class WarmupAnnotationProcessorTest {
                         )
                 )
         );
+        Mockito.verify(messager, Mockito.times(1)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                argThat(
+                        message -> message.equals(
+                                "Warmup method: [warmupMethodEnclosingElement.executableElementName] should have only public modifier"
+                        )
+                )
+        );
+        Mockito.verify(messager, Mockito.times(3)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
+        );
     }
 
     @Test
-    void shouldNotRaiseErrorForMethodAnnotatedWithWarmupInRestControllerAnnotatedClass() {
+    void shouldNotRaiseErrorForMethodAnnotatedWithWarmupInRestControllerAnnotatedClassAndCorrectVisibility() {
         /*
          * pre-requisite
          */
@@ -161,6 +218,7 @@ class WarmupAnnotationProcessorTest {
         Mockito.when(executableElement.getSimpleName()).thenReturn(executableElementName);
         Mockito.when(executableElementName.toString()).thenReturn("executableElementName");
         Mockito.when(executableElement.getParameters()).thenReturn(List.of());
+        Mockito.when(executableElement.getModifiers()).thenReturn(Set.of(Modifier.PUBLIC));
         Mockito.when(warmupMethodEnclosingElement.getAnnotation(RestController.class))
                 .thenReturn(restControllerAnnotation);
         /*
@@ -188,6 +246,10 @@ class WarmupAnnotationProcessorTest {
                                 "Warmup method: [warmupMethodEnclosingElement.executableElementName] should not have arguments"
                         )
                 )
+        );
+        Mockito.verify(messager, Mockito.times(0)).printMessage(
+                eq(Diagnostic.Kind.ERROR),
+                any()
         );
     }
 }
