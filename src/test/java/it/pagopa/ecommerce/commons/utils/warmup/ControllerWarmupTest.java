@@ -149,6 +149,7 @@ class ControllerWarmupTest {
         boolean warmUp();
     }
 
+    @RestController
     private class MockedRestControllerWithWarmupMethods {
 
         @Warmup
