@@ -1,15 +1,15 @@
 package it.pagopa.ecommerce.commons.utils.warmup.annotationprocessor;
 
 import it.pagopa.ecommerce.commons.annotations.Warmup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import java.util.List;
 import java.util.Set;
@@ -19,8 +19,16 @@ import java.util.Set;
  * the {@link Warmup} annotated method has no arguments and that it's declaring
  * class is a {@link RestController} annotated ones
  */
-@SupportedAnnotationTypes("it.pagopa.ecommerce.commons.annotations.WarmupMethod")
+@SupportedAnnotationTypes("it.pagopa.ecommerce.commons.annotations.Warmup")
 public class WarmupAnnotationProcessor extends AbstractProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(WarmupAnnotationProcessor.class);
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        logger.info("WarmupAnnotationProcessor initialized");
+    }
 
     /**
      * Process all annotated methods
@@ -35,7 +43,9 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
                            Set<? extends TypeElement> annotations,
                            RoundEnvironment roundEnv
     ) {
-
+        logger.info("WarmupAnnotationProcessor start process");
+        Class<?> declaringClass;
+        Name warmupMethod;
         for (Element element : roundEnv.getElementsAnnotatedWith(Warmup.class)) {
             if (!(element instanceof ExecutableElement executableElement)) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation should be on method.");
@@ -43,14 +53,20 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
             }
 
             List<? extends VariableElement> parameters = executableElement.getParameters();
+            declaringClass = executableElement.getClass();
+            warmupMethod = executableElement.getSimpleName();
             if (!parameters.isEmpty()) {
                 processingEnv.getMessager()
-                        .printMessage(Diagnostic.Kind.ERROR, "Warmup Method should not have arguments");
+                        .printMessage(
+                                Diagnostic.Kind.ERROR,
+                                "Warmup method: [%s] should not have arguments".formatted(warmupMethod)
+                        );
             }
-            if (!executableElement.getClass().isAnnotationPresent(RestController.class)) {
+            if (!declaringClass.isAnnotationPresent(RestController.class)) {
                 processingEnv.getMessager().printMessage(
                         Diagnostic.Kind.ERROR,
-                        "Warmup Method should be add inside a Controller class annotated with @RestController"
+                        "Found warmup method in class [%s] but is not annotated with @RestController"
+                                .formatted(declaringClass)
                 );
             }
         }
