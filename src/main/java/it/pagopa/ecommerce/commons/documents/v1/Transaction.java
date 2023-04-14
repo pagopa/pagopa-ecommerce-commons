@@ -82,6 +82,14 @@ public class Transaction {
      * @param creationDate   transaction creation date
      * @param idCart         the ec cart id
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because the Transaction is a simple data container with no logic.
+     *
+     * @formatter:on
+     */
     @JsonCreator
     @SuppressWarnings(
         {
