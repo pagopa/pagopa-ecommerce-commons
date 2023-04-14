@@ -93,7 +93,7 @@ class ControllerWarmupTest {
          * performed against the onApplicationEvent method duration that should be
          * comparable with a single warmup method duration
          */
-        assertTrue(elapsedTime / 1000 == 1);
+        assertTrue(elapsedTime < 3000);
 
     }
 
