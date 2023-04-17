@@ -16,7 +16,7 @@ import java.util.Set;
 
 /**
  * {@link Warmup} annotation processor. This annotation processor checks that
- * the {@link Warmup} annotated method has no arguments and that it's declaring
+ * the {@link Warmup} annotated method has no arguments and that its declaring
  * class is a {@link RestController} annotated ones
  */
 @SupportedAnnotationTypes("it.pagopa.ecommerce.commons.annotations.Warmup")
