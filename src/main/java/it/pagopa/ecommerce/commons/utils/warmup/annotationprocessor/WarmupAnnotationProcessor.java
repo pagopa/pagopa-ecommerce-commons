@@ -44,18 +44,16 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
                            RoundEnvironment roundEnv
     ) {
         logger.info("WarmupAnnotationProcessor start process");
-        Element declaringClass;
-        String className;
-        String warmupMethod;
-        Set<Modifier> modifiers;
-        List<? extends VariableElement> parameters;
+
         for (Element element : roundEnv.getElementsAnnotatedWith(Warmup.class)) {
+
             if (element instanceof ExecutableElement executableElement) {
-                declaringClass = executableElement.getEnclosingElement();
-                modifiers = executableElement.getModifiers();
-                className = declaringClass.toString();
-                warmupMethod = executableElement.getSimpleName().toString();
-                parameters = executableElement.getParameters();
+                Element declaringClass = executableElement.getEnclosingElement();
+                Set<Modifier> modifiers = executableElement.getModifiers();
+                String className = declaringClass.toString();
+                String warmupMethod = executableElement.getSimpleName().toString();
+                List<? extends VariableElement> parameters = executableElement.getParameters();
+
                 if (!parameters.isEmpty()) {
                     processingEnv.getMessager()
                             .printMessage(
