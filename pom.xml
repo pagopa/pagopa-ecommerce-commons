@@ -185,6 +185,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <!--
+                There are two compilation executions:
+                the first one compile the annotation processor alone excluding all annotations processors
+                from compilation phase, the second one compile all other classes.
+                This double compilation executions are needed because otherwise compilation will fail
+                during annotation processor scanning because of missing WarmupAnnotationProcessor compiled
+                class.
+                The annotation processors are compiled in the execution with id 'default-compile' so that
+                it's executed as the first one.
+                The other project classes are compiled in the execution with id 'compile-project'
+                -->
                 <executions>
                     <execution>
                         <id>default-compile</id>
