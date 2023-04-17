@@ -188,7 +188,7 @@
                 <!--
                 There are two compilation executions:
                 the first one compiles the annotation processor alone excluding all annotations processors
-                from compilation phase, the second one compile all other classes.
+                from the compilation phase, the second one compiles all other classes.
                 This double compilation executions are needed because otherwise compilation will fail
                 during annotation processor scanning because of missing WarmupAnnotationProcessor compiled
                 class.
