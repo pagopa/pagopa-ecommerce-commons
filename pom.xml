@@ -189,12 +189,12 @@
                 There are two compilation executions:
                 the first one compiles the annotation processor alone excluding all annotations processors
                 from the compilation phase, the second one compiles all other classes.
-                This double compilation executions are needed because otherwise compilation will fail
-                during annotation processor scanning because of missing WarmupAnnotationProcessor compiled
+                This double compilation execution is needed because otherwise compilation will fail
+                during annotation processor scanning because of a missing WarmupAnnotationProcessor compiled
                 class.
-                The annotation processors are compiled in the execution with id 'default-compile' so that
-                it's executed as the first one.
-                The other project classes are compiled in the execution with id 'compile-project'
+                The annotation processors are compiled in the execution with id `default-compile` so that
+                it's execute the first.
+                The other project classes are compiled in the execution with id `compile-project`
                 -->
                 <executions>
                     <execution>
