@@ -14,6 +14,13 @@ import java.util.UUID;
 @ValueObject
 public record TransactionId(UUID value) {
 
+    /**
+     * Create transaction id object parsing input String value.
+     *
+     * @param value - the UUID string without `-` chars
+     * @throws IllegalArgumentException if input value is not a valid UUID string
+     *                                  without dashes
+     */
     public TransactionId(String value) {
         this(TransactionId.fromTrimmedUUIDString(value));
 
