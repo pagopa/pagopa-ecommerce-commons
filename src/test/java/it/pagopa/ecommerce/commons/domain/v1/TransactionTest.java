@@ -4571,12 +4571,23 @@ class TransactionTest {
 
     @Test
     void shouldFailReducingEventForInvalidTransactionIdNotAValidUUID() {
+        TransactionActivatedEvent transactionActivatedEvent = Mockito
+                .spy(TransactionTestUtils.transactionActivateEvent());
+        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn("transactionIdtransactionIdtransa");
 
-        TransactionActivatedEvent transactionActivatedEvent = new TransactionActivatedEvent(
-                "transactionIdtransactionIdtransa",
-                ZonedDateTime.now().toString(),
-                TransactionTestUtils.transactionActivateEvent().getData()
-        );
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
+                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+        StepVerifier.create(reducedEvent)
+                .expectError(IllegalArgumentException.class)
+                .verify();
+
+    }
+
+    @Test
+    void shouldFailReducingEventForInvalidTransactionIdNull() {
+        TransactionActivatedEvent transactionActivatedEvent = Mockito
+                .spy(TransactionTestUtils.transactionActivateEvent());
+        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn(null);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
                 .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
@@ -4590,11 +4601,10 @@ class TransactionTest {
     void shouldConvertTransactionIdSuccessfully() {
         UUID transactionId = UUID.randomUUID();
         String trimmedTransactionId = transactionId.toString().replace("-", "");
-        TransactionActivatedEvent transactionActivatedEvent = new TransactionActivatedEvent(
-                trimmedTransactionId,
-                ZonedDateTime.now().toString(),
-                TransactionTestUtils.transactionActivateEvent().getData()
-        );
+
+        TransactionActivatedEvent transactionActivatedEvent = Mockito
+                .spy(TransactionTestUtils.transactionActivateEvent());
+        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn(trimmedTransactionId);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
                 .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
