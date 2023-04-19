@@ -12,9 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TransactionIdTests {
 
-
     @ParameterizedTest
-    @ValueSource(strings = {"", "transactionIdtransactionIdtransa"})
+    @ValueSource(
+            strings = {
+                    "",
+                    "transactionIdtransactionIdtransa"
+            }
+    )
     @NullSource
     void shouldFailCreateTransactionIdForInvalidInput(String transactionId) {
         assertThrows(IllegalArgumentException.class, () -> new TransactionId(transactionId));
