@@ -35,6 +35,7 @@ class TransactionDocumentTest {
         assertEquals(TransactionTestUtils.RPT_ID, transaction.getPaymentNotices().get(0).getRptId());
         assertEquals(TransactionTestUtils.DESCRIPTION, transaction.getPaymentNotices().get(0).getDescription());
         assertEquals(TransactionTestUtils.AMOUNT, transaction.getPaymentNotices().get(0).getAmount());
+        assertEquals(TransactionTestUtils.TRANSACTION_ID, transaction.getTransactionId());
         assertEquals(transactionStatus, transaction.getStatus());
 
         assertNotEquals(transaction, differentTransaction);
@@ -76,4 +77,5 @@ class TransactionDocumentTest {
             assertEquals(Transaction.ClientId.fromString(clientId.toString()).toString(), clientId.toString());
         }
     }
+
 }

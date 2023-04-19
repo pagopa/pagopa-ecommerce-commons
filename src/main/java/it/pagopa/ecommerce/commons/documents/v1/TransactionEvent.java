@@ -41,6 +41,17 @@ public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureE
             String creationDate,
             T data
     ) {
+        /*
+         * CHK-1413 -> transaction id length lesser than 35 chars here is checked that
+         * transaction id is 32 chars long that is UUID with trimmed '-' chars length
+         */
+
+        if (transactionId == null || transactionId.length() != 32) {
+            throw new IllegalArgumentException(
+                    "Invalid input transaction id: [%s]. Transaction id must be length 32 chars (UUID with trimmed dash)"
+                            .formatted(transactionId)
+            );
+        }
         this.id = UUID.randomUUID().toString();
         this.transactionId = transactionId;
         this.eventCode = eventCode;
@@ -53,10 +64,6 @@ public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureE
             TransactionEventCode eventCode,
             T data
     ) {
-        this.id = UUID.randomUUID().toString();
-        this.transactionId = transactionId;
-        this.eventCode = eventCode;
-        this.data = data;
-        this.creationDate = now().toString();
+        this(transactionId, eventCode, now().toString(), data);
     }
 }

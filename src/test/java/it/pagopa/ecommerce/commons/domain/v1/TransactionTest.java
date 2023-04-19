@@ -9,11 +9,13 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -4550,6 +4552,60 @@ class TransactionTest {
                                             .equals(TransactionStatusDto.CLOSURE_ERROR);
                         }
                 ).verifyComplete();
+    }
+
+    @Test
+    void shouldFailReducingEventForInvalidTransactionIdTooShort() {
+
+        TransactionActivatedEvent transactionActivatedEvent = Mockito
+                .spy(TransactionTestUtils.transactionActivateEvent());
+        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn("");
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
+                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+        StepVerifier.create(reducedEvent)
+                .expectError(IllegalArgumentException.class)
+                .verify();
+
+    }
+
+    @Test
+    void shouldFailReducingEventForInvalidTransactionIdNotAValidUUID() {
+
+        TransactionActivatedEvent transactionActivatedEvent = new TransactionActivatedEvent(
+                "transactionIdtransactionIdtransa",
+                ZonedDateTime.now().toString(),
+                TransactionTestUtils.transactionActivateEvent().getData()
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
+                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+        StepVerifier.create(reducedEvent)
+                .expectError(IllegalArgumentException.class)
+                .verify();
+
+    }
+
+    @Test
+    void shouldConvertTransactionIdSuccessfully() {
+        UUID transactionId = UUID.randomUUID();
+        String trimmedTransactionId = transactionId.toString().replace("-", "");
+        TransactionActivatedEvent transactionActivatedEvent = new TransactionActivatedEvent(
+                trimmedTransactionId,
+                ZonedDateTime.now().toString(),
+                TransactionTestUtils.transactionActivateEvent().getData()
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
+                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
+        StepVerifier.create(reducedEvent)
+                .expectNextMatches(t -> {
+                    TransactionActivated tx = (TransactionActivated) t;
+                    return tx.getTransactionId().value()
+                            .equals(transactionId);
+                })
+                .verifyComplete();
+
     }
 
 }
