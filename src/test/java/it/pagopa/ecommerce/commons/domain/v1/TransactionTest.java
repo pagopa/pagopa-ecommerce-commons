@@ -9,6 +9,9 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -4554,40 +4557,19 @@ class TransactionTest {
                 ).verifyComplete();
     }
 
-    @Test
-    void shouldFailReducingEventForInvalidTransactionIdTooShort() {
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                    "",
+                    "transactionIdtransactionIdtransa"
+            }
+    )
+    @NullSource
+    void shouldFailReducingEvent(String transactionId) {
 
         TransactionActivatedEvent transactionActivatedEvent = Mockito
                 .spy(TransactionTestUtils.transactionActivateEvent());
-        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn("");
-
-        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
-                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
-        StepVerifier.create(reducedEvent)
-                .expectError(IllegalArgumentException.class)
-                .verify();
-
-    }
-
-    @Test
-    void shouldFailReducingEventForInvalidTransactionIdNotAValidUUID() {
-        TransactionActivatedEvent transactionActivatedEvent = Mockito
-                .spy(TransactionTestUtils.transactionActivateEvent());
-        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn("transactionIdtransactionIdtransa");
-
-        Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
-                .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);
-        StepVerifier.create(reducedEvent)
-                .expectError(IllegalArgumentException.class)
-                .verify();
-
-    }
-
-    @Test
-    void shouldFailReducingEventForInvalidTransactionIdNull() {
-        TransactionActivatedEvent transactionActivatedEvent = Mockito
-                .spy(TransactionTestUtils.transactionActivateEvent());
-        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn(null);
+        Mockito.when(transactionActivatedEvent.getTransactionId()).thenReturn(transactionId);
 
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> reducedEvent = Flux.just(transactionActivatedEvent)
                 .reduce(new EmptyTransaction(), it.pagopa.ecommerce.commons.domain.v1.Transaction::applyEvent);

@@ -27,16 +27,6 @@ public record TransactionId(UUID uuid) {
     }
 
     /**
-     * Get transaction id as {@link UUID} object
-     *
-     * @return the {@link UUID} transaction id representation
-     */
-    @Override
-    public UUID uuid() {
-        return uuid;
-    }
-
-    /**
      * Get transaction id string value
      *
      * @return transaction id as UUID string without dashes
