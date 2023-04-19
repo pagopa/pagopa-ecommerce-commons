@@ -9,10 +9,10 @@ import java.util.UUID;
  * Value object holding a transaction id.
  * </p>
  *
- * @param value the transaction id
+ * @param uuid the transaction id
  */
 @ValueObject
-public record TransactionId(UUID value) {
+public record TransactionId(UUID uuid) {
 
     /**
      * Create transaction id object parsing input String value.
@@ -24,6 +24,25 @@ public record TransactionId(UUID value) {
     public TransactionId(String value) {
         this(TransactionId.fromTrimmedUUIDString(value));
 
+    }
+
+    /**
+     * Get transaction id as {@link UUID} object
+     *
+     * @return the {@link UUID} transaction id representation
+     */
+    @Override
+    public UUID uuid() {
+        return uuid;
+    }
+
+    /**
+     * Get transaction id string value
+     *
+     * @return transaction id as UUID string without dashes
+     */
+    public String value() {
+        return uuid.toString().replace("-", "");
     }
 
     private static UUID fromTrimmedUUIDString(String trimmedUUIDString) {

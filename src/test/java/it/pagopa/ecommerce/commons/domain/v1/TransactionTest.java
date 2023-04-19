@@ -4611,8 +4611,9 @@ class TransactionTest {
         StepVerifier.create(reducedEvent)
                 .expectNextMatches(t -> {
                     TransactionActivated tx = (TransactionActivated) t;
-                    return tx.getTransactionId().value()
-                            .equals(transactionId);
+                    return tx.getTransactionId().uuid()
+                            .equals(transactionId)
+                            && tx.getTransactionId().value().equals(trimmedTransactionId);
                 })
                 .verifyComplete();
 
