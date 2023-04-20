@@ -51,7 +51,7 @@ public class TransactionTestUtils {
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
     public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.VPOS;
-    public static final String TRANSACTION_ID = UUID.randomUUID().toString();
+    public static final String TRANSACTION_ID = UUID.randomUUID().toString().replace("-", "");
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
     public static final Integer TRANSFER_AMOUNT = 0;
@@ -108,7 +108,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionActivated transactionActivated(String creationDate) {
         return new TransactionActivated(
-                new TransactionId(UUID.fromString(TRANSACTION_ID)),
+                new TransactionId(TRANSACTION_ID),
                 List.of(
                         new it.pagopa.ecommerce.commons.domain.v1.PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),

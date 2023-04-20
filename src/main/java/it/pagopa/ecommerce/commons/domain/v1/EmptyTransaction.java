@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public final class EmptyTransaction implements Transaction {
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
-                new TransactionId(UUID.fromString(event.getTransactionId())),
+                new TransactionId(event.getTransactionId()),
                 event.getData().getPaymentNotices().stream()
                         .map(
                                 n -> new PaymentNotice(
