@@ -44,7 +44,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param creationDate    creation date of this transaction
      * @param clientId        a {@link ClientId} object
      * @param idCart          the ec cart id
-     * @param rrn             the rrn information
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -54,8 +53,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ZonedDateTime creationDate,
             ClientId clientId,
-            String idCart,
-            String rrn
+            String idCart
     ) {
         super(
 
@@ -90,8 +88,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         faultCode,
                         faultCodeString,
                         clientId,
-                        idCart,
-                        rrn
+                        idCart
                 )
         );
     }
@@ -106,7 +103,6 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param faultCodeString fault code auxiliary description
      * @param clientId        the origin from which the transaction started from
      * @param idCart          the ec id cart
-     * @param rrn             the rrn information
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -115,8 +111,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ClientId clientId,
-            String idCart,
-            String rrn
+            String idCart
     ) {
         this(
                 transactionId,
@@ -126,8 +121,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCodeString,
                 ZonedDateTime.now(),
                 clientId,
-                idCart,
-                rrn
+                idCart
         );
     }
 

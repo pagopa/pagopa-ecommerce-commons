@@ -138,7 +138,7 @@ public class Transaction {
                 transaction.getTransactionActivatedData().getClientId(),
                 transaction.getCreationDate().toString(),
                 transaction.getTransactionActivatedData().getIdCart(),
-                transaction.getTransactionActivatedData().getRrn()
+                null
         );
     }
 
