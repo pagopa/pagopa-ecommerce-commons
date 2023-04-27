@@ -99,7 +99,8 @@ public class TransactionTestUtils {
                         FAULT_CODE,
                         FAULT_CODE_STRING,
                         Transaction.ClientId.CHECKOUT,
-                        ID_CART
+                        ID_CART,
+                        RRN
                 )
         );
     }
@@ -130,7 +131,8 @@ public class TransactionTestUtils {
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
                 Transaction.ClientId.CHECKOUT,
-                ID_CART
+                ID_CART,
+                RRN
         );
     }
 

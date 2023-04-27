@@ -27,5 +27,7 @@ public class TransactionActivatedData {
     private Transaction.ClientId clientId;
     @Nullable
     private String idCart;
+    @Nullable
+    private String rrn;
 
 }
