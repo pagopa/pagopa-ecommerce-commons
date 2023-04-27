@@ -52,11 +52,6 @@ public class TransactionUserReceiptData {
     private String paymentDescription;
 
     /**
-     * RRN information for vpos payment
-     */
-    private String rrn;
-
-    /**
      * Enumeration of Nodo sendPaymentResult outcome
      */
     public enum Outcome {

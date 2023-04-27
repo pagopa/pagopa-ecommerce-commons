@@ -292,9 +292,7 @@ public class TransactionTestUtils {
                 PAYMENT_METHOD_LOGO_URL,
                 PAYMENT_DATE,
                 RECEIVING_OFFICE_NAME,
-                PAYMENT_DESCRIPTION,
-                RRN
-
+                PAYMENT_DESCRIPTION
         );
     }
 
