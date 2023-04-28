@@ -36,6 +36,8 @@ public class Transaction {
     private List<PaymentNotice> paymentNotices;
     @Nullable
     private String idCart;
+    @Nullable
+    private String rrn;
 
     /**
      * Enumeration of transaction client initiators
@@ -81,6 +83,7 @@ public class Transaction {
      * @param feeTotal       transaction total fee
      * @param creationDate   transaction creation date
      * @param idCart         the ec cart id
+     * @param rrn            the rrn information
      */
     /*
      * @formatter:off
@@ -105,7 +108,8 @@ public class Transaction {
             TransactionStatusDto status,
             ClientId clientId,
             String creationDate,
-            @Nullable String idCart
+            @Nullable String idCart,
+            @Nullable String rrn
     ) {
         this.transactionId = transactionId;
         this.email = email;
@@ -115,6 +119,7 @@ public class Transaction {
         this.clientId = clientId;
         this.creationDate = creationDate;
         this.idCart = idCart;
+        this.rrn = rrn;
     }
 
     /**
@@ -132,7 +137,8 @@ public class Transaction {
                 transaction.getStatus(),
                 transaction.getTransactionActivatedData().getClientId(),
                 transaction.getCreationDate().toString(),
-                transaction.getTransactionActivatedData().getIdCart()
+                transaction.getTransactionActivatedData().getIdCart(),
+                null
         );
     }
 
