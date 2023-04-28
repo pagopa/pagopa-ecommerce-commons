@@ -206,6 +206,17 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
+                                                                                                AuthorizationResultDto authorizationResultDto,
+                                                                                                String rnn
+    ) {
+        return new TransactionAuthorizationCompletedEvent(
+                TRANSACTION_ID,
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, rnn, authorizationResultDto)
+        );
+    }
+
+    @Nonnull
     public static TransactionAuthorizationCompleted transactionAuthorizationCompleted(
                                                                                       TransactionAuthorizationCompletedEvent authorizedEvent,
                                                                                       TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
