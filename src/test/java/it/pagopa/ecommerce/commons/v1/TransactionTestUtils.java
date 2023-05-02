@@ -57,11 +57,11 @@ public class TransactionTestUtils {
     public static final String TRANSFER_CATEGORY = "transferCategory";
     public static final String ID_CART = "ecIdCart";
     public static final String LANGUAGE = "it-IT";
-    public static final URI PAYMENT_METHOD_LOGO_URL;
+    public static final URI LOGO_URI;
 
     static {
         try {
-            PAYMENT_METHOD_LOGO_URL = new URI("http://paymentMethodLogo.it");
+            LOGO_URI = new URI("http://paymentMethodLogo.it");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -160,7 +160,8 @@ public class TransactionTestUtils {
                         PAYMENT_METHOD_NAME,
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
-                        PAYMENT_GATEWAY
+                        PAYMENT_GATEWAY,
+                        LOGO_URI
                 )
         );
     }
@@ -182,7 +183,8 @@ public class TransactionTestUtils {
                         PAYMENT_METHOD_NAME,
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
-                        paymentGateway
+                        paymentGateway,
+                        LOGO_URI
                 )
         );
     }
@@ -300,7 +302,6 @@ public class TransactionTestUtils {
         return new TransactionUserReceiptData(
                 outcome,
                 LANGUAGE,
-                PAYMENT_METHOD_LOGO_URL,
                 PAYMENT_DATE,
                 RECEIVING_OFFICE_NAME,
                 PAYMENT_DESCRIPTION
