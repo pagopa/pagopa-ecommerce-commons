@@ -44,9 +44,8 @@ public class TransactionTestUtils {
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
-
     public static final String AUTHORIZATION_CODE = "authorizationCode";
-
+    public static final String RRN = "rrn";
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
@@ -192,7 +191,7 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, AUTHORIZATION_RESULT_DTO)
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, AUTHORIZATION_RESULT_DTO)
         );
     }
 
@@ -202,7 +201,18 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, authorizationResultDto)
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, authorizationResultDto)
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
+                                                                                                AuthorizationResultDto authorizationResultDto,
+                                                                                                String rnn
+    ) {
+        return new TransactionAuthorizationCompletedEvent(
+                TRANSACTION_ID,
+                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, rnn, authorizationResultDto)
         );
     }
 
@@ -294,7 +304,6 @@ public class TransactionTestUtils {
                 PAYMENT_DATE,
                 RECEIVING_OFFICE_NAME,
                 PAYMENT_DESCRIPTION
-
         );
     }
 
@@ -496,7 +505,8 @@ public class TransactionTestUtils {
                 transactionStatus,
                 Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString(),
-                ID_CART
+                ID_CART,
+                RRN
         );
     }
 

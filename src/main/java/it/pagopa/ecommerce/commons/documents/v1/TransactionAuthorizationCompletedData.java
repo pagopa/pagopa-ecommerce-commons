@@ -18,6 +18,13 @@ public class TransactionAuthorizationCompletedData {
      */
     @Nullable
     private String authorizationCode;
+
+    /**
+     * The rrn information
+     */
+    @Nullable
+    private String rrn;
+
     /**
      * The payment gateway authorization outcome
      */
