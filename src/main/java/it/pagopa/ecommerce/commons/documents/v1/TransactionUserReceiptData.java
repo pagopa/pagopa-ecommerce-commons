@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
-import java.net.URI;
 
 /**
  * Data related to Nodo send payment result operation such as outcome (OK/KO)
@@ -28,11 +27,6 @@ public class TransactionUserReceiptData {
      */
     @NotNull
     private String language;
-    /**
-     * Notification payment method logo URI
-     */
-    @NotNull
-    private URI paymentMethodLogoUri;
 
     /**
      * Payment date upon call from Nodo's `sendPaymentResult` (aka `PATCH
