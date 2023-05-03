@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.net.URI;
+
 /**
  * Additional data when requesting a payment authorization
  */
@@ -23,6 +25,7 @@ public class TransactionAuthorizationRequestData {
     private String pspBusinessName;
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
+    private URI logo;
 
     /**
      * Enumeration of different PaymentGateway
