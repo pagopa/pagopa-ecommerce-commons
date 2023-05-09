@@ -11,6 +11,7 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -193,7 +194,12 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, AUTHORIZATION_RESULT_DTO)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        RRN,
+                        OffsetDateTime.now(),
+                        AUTHORIZATION_RESULT_DTO
+                )
         );
     }
 
@@ -203,7 +209,12 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, authorizationResultDto)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        RRN,
+                        OffsetDateTime.now(),
+                        authorizationResultDto
+                )
         );
     }
 
@@ -214,7 +225,12 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, rnn, authorizationResultDto)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        rnn,
+                        OffsetDateTime.now(),
+                        authorizationResultDto
+                )
         );
     }
 

@@ -6,6 +6,8 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
+import java.time.OffsetDateTime;
+
 /**
  * Data related to authorization status update by a payment gateway
  */
@@ -24,6 +26,12 @@ public class TransactionAuthorizationCompletedData {
      */
     @Nullable
     private String rrn;
+
+    /**
+     * PGS authorization completion timestamp
+     */
+    @Nullable
+    private OffsetDateTime timestampOperation;
 
     /**
      * The payment gateway authorization outcome
