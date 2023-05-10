@@ -30,8 +30,7 @@ public class TransactionAuthorizationCompletedData {
     /**
      * PGS authorization completion timestamp
      */
-    @Nullable
-    private OffsetDateTime timestampOperation;
+    private String timestampOperation;
 
     /**
      * The payment gateway authorization outcome
