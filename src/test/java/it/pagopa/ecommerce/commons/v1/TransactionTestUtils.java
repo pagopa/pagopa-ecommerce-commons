@@ -11,7 +11,6 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +29,8 @@ public class TransactionTestUtils {
     public static final int AMOUNT = 100;
 
     public static final String EMAIL_STRING = "foo@example.com";
+
+    private static final String timestampOperation = "2023-01-01T01:02:03";
 
     public static final Confidential<Email> EMAIL = new Confidential<>(
             UUID.randomUUID().toString()
@@ -197,7 +198,7 @@ public class TransactionTestUtils {
                 new TransactionAuthorizationCompletedData(
                         AUTHORIZATION_CODE,
                         RRN,
-                        OffsetDateTime.now(),
+                        timestampOperation,
                         AUTHORIZATION_RESULT_DTO
                 )
         );
@@ -212,7 +213,7 @@ public class TransactionTestUtils {
                 new TransactionAuthorizationCompletedData(
                         AUTHORIZATION_CODE,
                         RRN,
-                        OffsetDateTime.now(),
+                        timestampOperation,
                         authorizationResultDto
                 )
         );
@@ -228,7 +229,7 @@ public class TransactionTestUtils {
                 new TransactionAuthorizationCompletedData(
                         AUTHORIZATION_CODE,
                         rnn,
-                        OffsetDateTime.now(),
+                        timestampOperation,
                         authorizationResultDto
                 )
         );

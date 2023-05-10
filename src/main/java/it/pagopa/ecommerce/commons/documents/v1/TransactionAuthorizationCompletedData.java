@@ -6,7 +6,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
-import java.time.OffsetDateTime;
+import javax.validation.constraints.NotNull;
 
 /**
  * Data related to authorization status update by a payment gateway
@@ -30,6 +30,7 @@ public class TransactionAuthorizationCompletedData {
     /**
      * PGS authorization completion timestamp
      */
+    @NotNull
     private String timestampOperation;
 
     /**
