@@ -30,7 +30,7 @@ public class TransactionTestUtils {
 
     public static final String EMAIL_STRING = "foo@example.com";
 
-    private static final String timestampOperation = "2023-01-01T01:02:03";
+    private static final String timestampOperation = "2023-01-01T01:02:03+01:00";
 
     public static final Confidential<Email> EMAIL = new Confidential<>(
             UUID.randomUUID().toString()
