@@ -49,7 +49,7 @@ abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTem
      * @param key - the key of the entity to be found
      * @return an Optional object valued with the found entity, if any
      */
-    public Optional<V> findByKey(String key) {
+    public Optional<V> findById(String key) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(compoundKeyWithKeyspace(key)));
     }
 
