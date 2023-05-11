@@ -54,6 +54,16 @@ abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTem
     }
 
     /**
+     * Delete the entity for the given key and return it
+     *
+     * @param key - the entity key to be deleted
+     * @return the deleted key
+     */
+    public V deleteById(String key) {
+        return redisTemplate.opsForValue().getAndDelete(compoundKeyWithKeyspace(key));
+    }
+
+    /**
      * Get the Redis key from the input entity
      *
      * @param value - the entity value from which retrieve the Redis key
