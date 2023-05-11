@@ -40,7 +40,7 @@ public class RedisTemplateWrapperBuilder {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(jacksonRedisSerializer);
         redisTemplate.afterPropertiesSet();
-        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", Duration.ofMillis(10));
+        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", Duration.ofMinutes(10));
     }
 
     /**
