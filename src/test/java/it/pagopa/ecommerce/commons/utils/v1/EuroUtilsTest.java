@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EuroUtilsTest {
 
@@ -29,6 +29,8 @@ public class EuroUtilsTest {
     public void testConstructorIsPrivate()
             throws NoSuchMethodException {
         Constructor<EuroUtils> constructor = EuroUtils.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        assertThrows(InvocationTargetException.class, constructor::newInstance);
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
     }
 
