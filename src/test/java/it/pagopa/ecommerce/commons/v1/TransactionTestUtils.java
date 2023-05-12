@@ -30,6 +30,8 @@ public class TransactionTestUtils {
 
     public static final String EMAIL_STRING = "foo@example.com";
 
+    private static final String timestampOperation = "2023-01-01T01:02:03+01:00";
+
     public static final Confidential<Email> EMAIL = new Confidential<>(
             UUID.randomUUID().toString()
     );
@@ -193,7 +195,12 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, AUTHORIZATION_RESULT_DTO)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        RRN,
+                        timestampOperation,
+                        AUTHORIZATION_RESULT_DTO
+                )
         );
     }
 
@@ -203,7 +210,12 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, RRN, authorizationResultDto)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        RRN,
+                        timestampOperation,
+                        authorizationResultDto
+                )
         );
     }
 
@@ -214,7 +226,12 @@ public class TransactionTestUtils {
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(AUTHORIZATION_CODE, rnn, authorizationResultDto)
+                new TransactionAuthorizationCompletedData(
+                        AUTHORIZATION_CODE,
+                        rnn,
+                        timestampOperation,
+                        authorizationResultDto
+                )
         );
     }
 
