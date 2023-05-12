@@ -11,6 +11,13 @@ import java.math.RoundingMode;
 public class EuroUtils {
 
     /**
+     * Create EuroUtils object.
+     */
+    private EuroUtils() {
+        throw new IllegalStateException("Utility EuroUtils class");
+    }
+
+    /**
      *
      * Method to convert euroCent value to euro.
      *

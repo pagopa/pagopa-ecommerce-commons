@@ -2,8 +2,13 @@ package it.pagopa.ecommerce.commons.utils.v1;
 
 import it.pagopa.ecommerce.commons.utils.EuroUtils;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EuroUtilsTest {
 
@@ -18,6 +23,13 @@ public class EuroUtilsTest {
     void shouldConvertEuroToEuroCentSuccessfully() {
         Integer euroCent = EuroUtils.euroToEuroCents(BigDecimal.valueOf(111, 2));
         assertEquals(euroCent.toString(), "111");
+    }
+
+    @Test
+    public void testConstructorIsPrivate()
+            throws NoSuchMethodException {
+        Constructor<EuroUtils> constructor = EuroUtils.class.getDeclaredConstructor();
+        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
     }
 
 }
