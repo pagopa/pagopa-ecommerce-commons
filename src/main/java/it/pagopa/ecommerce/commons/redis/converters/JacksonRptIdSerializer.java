@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * {@link RptId} jackson serializer
  */
-public class JacksonRptSerializer extends JsonSerializer<RptId> {
+public class JacksonRptIdSerializer extends JsonSerializer<RptId> {
 
     /**
      * @param value       Value to serialize; can <b>not</b> be null.

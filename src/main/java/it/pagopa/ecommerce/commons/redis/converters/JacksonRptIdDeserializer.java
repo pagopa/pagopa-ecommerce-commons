@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * {@link RptId} jackson deserializer
  */
-public class JacksonRptDeserializer extends JsonDeserializer<RptId> {
+public class JacksonRptIdDeserializer extends JsonDeserializer<RptId> {
     /**
      * Deserialize json object to {@link RptId}
      *

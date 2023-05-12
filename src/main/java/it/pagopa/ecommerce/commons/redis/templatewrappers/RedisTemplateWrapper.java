@@ -64,6 +64,15 @@ abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTem
     }
 
     /**
+     * Unwrap this returning the underling used {@link RedisTemplate} instance
+     *
+     * @return this wrapper associated RedisTemplate instance
+     */
+    public RedisTemplate<String, V> unwrap() {
+        return redisTemplate;
+    }
+
+    /**
      * Get the Redis key from the input entity
      *
      * @param value - the entity value from which retrieve the Redis key
