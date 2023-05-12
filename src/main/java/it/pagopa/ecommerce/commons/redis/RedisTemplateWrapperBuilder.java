@@ -25,6 +25,13 @@ import java.time.Duration;
 public class RedisTemplateWrapperBuilder {
 
     /**
+     * Private constructor used to hide default public ones
+     */
+    private RedisTemplateWrapperBuilder() {
+        // Utility class, no need to instantiate it
+    }
+
+    /**
      * Build {@link PaymentRequestInfoRedisTemplateWrapper} instance using input
      * redis connection factory and configuring custom converters for {@link RptId},
      * {@link IdempotencyKey} and other domain objects
