@@ -75,16 +75,13 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     @Test
     void shouldDeleteEntitySuccessfully() {
         // assertions
-        PaymentRequestInfo expected = TransactionTestUtils.paymentRequestInfo();
-        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        Mockito.when(valueOperations.getAndDelete("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
-                .thenReturn(expected);
+        Mockito.when(redisTemplate.delete("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
+                .thenReturn(Boolean.TRUE);
         // test
-        PaymentRequestInfo actual = paymentRequestInfoRedisTemplateWrapper.deleteById(TransactionTestUtils.RPT_ID);
-
+        Boolean deleteResult = paymentRequestInfoRedisTemplateWrapper.deleteById(TransactionTestUtils.RPT_ID);
         // assertions
-        Mockito.verify(valueOperations, Mockito.times(1))
-                .getAndDelete("keys:%s".formatted(TransactionTestUtils.RPT_ID));
-        assertEquals(expected, actual);
+        Mockito.verify(redisTemplate, Mockito.times(1))
+                .delete("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        assertTrue(deleteResult);
     }
 }
