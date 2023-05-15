@@ -1,0 +1,30 @@
+package it.pagopa.ecommerce.commons.redis.converters;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import it.pagopa.ecommerce.commons.domain.v1.RptId;
+
+import java.io.IOException;
+
+/**
+ * {@link RptId} jackson serializer
+ */
+public class JacksonRptIdSerializer extends JsonSerializer<RptId> {
+
+    /**
+     * @param value       Value to serialize; can <b>not</b> be null.
+     * @param gen         Generator used to output resulting Json content
+     * @param serializers Provider that can be used to get serializers for
+     *                    serializing Objects value contains, if any.
+     * @throws IOException - in case an error occurs writing value as json
+     */
+    @Override
+    public void serialize(
+                          RptId value,
+                          JsonGenerator gen,
+                          SerializerProvider serializers
+    ) throws IOException {
+        gen.writeString(value.value());
+    }
+}

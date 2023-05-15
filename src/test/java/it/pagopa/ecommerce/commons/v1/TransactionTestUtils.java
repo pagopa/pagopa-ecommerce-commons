@@ -7,6 +7,7 @@ import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
+import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -74,6 +75,13 @@ public class TransactionTestUtils {
     public static final String RECEIVING_OFFICE_NAME = "receivingOfficeName";
 
     public static final String PAYMENT_DESCRIPTION = "paymentDescription";
+
+    public static final String PA_FISCAL_CODE = "paFiscalCode";
+
+    public static final String PA_NAME = "paName";
+
+    public static final String DUE_DATE = "1900-01-01";
+    public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -543,6 +551,27 @@ public class TransactionTestUtils {
         return new TransactionUserReceiptRequestedEvent(
                 TRANSACTION_ID,
                 transactionUserReceiptData
+        );
+    }
+
+    public static PaymentRequestInfo paymentRequestInfo() {
+        return new PaymentRequestInfo(
+                new RptId(RPT_ID),
+                PA_FISCAL_CODE,
+                PA_NAME,
+                DESCRIPTION,
+                AMOUNT,
+                DUE_DATE,
+                PAYMENT_TOKEN,
+                new IdempotencyKey(IDEMPOTENCY_KEY),
+                List.of(
+                        new PaymentTransferInfo(
+                                TRANSFER_PA_FISCAL_CODE,
+                                TRANSFER_DIGITAL_STAMP,
+                                TRANSFER_AMOUNT,
+                                TRANSFER_CATEGORY
+                        )
+                )
         );
     }
 
