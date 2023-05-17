@@ -37,7 +37,6 @@ public class TransactionUserReceiptData {
     /**
      * Send payment result receiving office name
      */
-    @NotNull
     private String receivingOfficeName;
     /**
      * Send payment result payment description
