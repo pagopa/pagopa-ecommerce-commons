@@ -39,6 +39,16 @@ public class Transaction {
     @Nullable
     private String rrn;
 
+    @Nullable
+    private String paymentGateway;
+
+    @Nullable
+    private String sendPaymentResultOutcome;
+
+    @Nullable
+    private String authorizationOutcome;
+
+
     /**
      * Enumeration of transaction client initiators
      */
