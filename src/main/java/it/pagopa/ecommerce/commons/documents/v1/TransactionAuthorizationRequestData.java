@@ -28,7 +28,7 @@ public class TransactionAuthorizationRequestData {
     private PaymentGateway paymentGateway;
     private URI logo;
     @Nullable
-    private String brand;
+    private BrandType brand;
 
     /**
      * Enumeration of different PaymentGateway
@@ -46,5 +46,35 @@ public class TransactionAuthorizationRequestData {
          * POSTEPAY payment gateway
          */
         POSTEPAY
+    }
+
+    /**
+     * Enumeration of different brand type
+     */
+    public enum BrandType {
+        /**
+         * brand type VISA
+         */
+        VISA,
+        /**
+         * brand type MASTERCARD
+         */
+        MASTERCARD,
+        /**
+         * brand type UNKNOWN
+         */
+        UNKNOWN,
+        /**
+         * brand type DINERS
+         */
+        DINERS,
+        /**
+         * brand type MAESTRO
+         */
+        MAESTRO,
+        /**
+         * brand type AMEX
+         */
+        AMEX;
     }
 }
