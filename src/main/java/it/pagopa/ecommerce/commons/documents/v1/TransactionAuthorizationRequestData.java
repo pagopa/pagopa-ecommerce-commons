@@ -26,6 +26,7 @@ public class TransactionAuthorizationRequestData {
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
+    private String brand;
 
     /**
      * Enumeration of different PaymentGateway

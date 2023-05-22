@@ -83,6 +83,8 @@ public class TransactionTestUtils {
     public static final String DUE_DATE = "1900-01-01";
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
+    public static final String BRAND = "VISA";
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return new TransactionActivatedEvent(
@@ -171,7 +173,8 @@ public class TransactionTestUtils {
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
                         PAYMENT_GATEWAY,
-                        LOGO_URI
+                        LOGO_URI,
+                        BRAND
                 )
         );
     }
@@ -194,7 +197,8 @@ public class TransactionTestUtils {
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
-                        LOGO_URI
+                        LOGO_URI,
+                        BRAND
                 )
         );
     }
