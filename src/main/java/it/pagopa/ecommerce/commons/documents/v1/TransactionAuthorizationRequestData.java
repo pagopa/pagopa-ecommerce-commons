@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.net.URI;
 
@@ -26,6 +27,7 @@ public class TransactionAuthorizationRequestData {
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
+    @Nullable
     private String brand;
 
     /**
