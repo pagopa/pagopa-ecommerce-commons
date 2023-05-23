@@ -28,7 +28,7 @@ public class TransactionAuthorizationRequestData {
     private PaymentGateway paymentGateway;
     private URI logo;
     @Nullable
-    private BrandType brand;
+    private CardBrand brand;
 
     /**
      * Enumeration of different PaymentGateway
@@ -51,7 +51,7 @@ public class TransactionAuthorizationRequestData {
     /**
      * Enumeration of different brand type
      */
-    public enum BrandType {
+    public enum CardBrand {
         /**
          * brand type VISA
          */
