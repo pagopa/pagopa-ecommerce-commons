@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.net.URI;
 
@@ -26,6 +27,8 @@ public class TransactionAuthorizationRequestData {
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
+    @Nullable
+    private CardBrand brand;
 
     /**
      * Enumeration of different PaymentGateway
@@ -43,5 +46,35 @@ public class TransactionAuthorizationRequestData {
          * POSTEPAY payment gateway
          */
         POSTEPAY
+    }
+
+    /**
+     * Enumeration of different brand type
+     */
+    public enum CardBrand {
+        /**
+         * brand type VISA
+         */
+        VISA,
+        /**
+         * brand type MASTERCARD
+         */
+        MASTERCARD,
+        /**
+         * brand type UNKNOWN
+         */
+        UNKNOWN,
+        /**
+         * brand type DINERS
+         */
+        DINERS,
+        /**
+         * brand type MAESTRO
+         */
+        MAESTRO,
+        /**
+         * brand type AMEX
+         */
+        AMEX;
     }
 }

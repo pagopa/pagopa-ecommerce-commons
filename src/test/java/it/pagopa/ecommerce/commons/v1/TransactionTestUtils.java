@@ -171,7 +171,8 @@ public class TransactionTestUtils {
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
                         PAYMENT_GATEWAY,
-                        LOGO_URI
+                        LOGO_URI,
+                        TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );
     }
@@ -194,7 +195,8 @@ public class TransactionTestUtils {
                         PSP_BUSINESS_NAME,
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
-                        LOGO_URI
+                        LOGO_URI,
+                        TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );
     }
@@ -207,6 +209,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
+                        null,
                         AUTHORIZATION_RESULT_DTO
                 )
         );
@@ -222,6 +225,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
+                        null,
                         authorizationResultDto
                 )
         );
@@ -238,6 +242,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         rnn,
                         timestampOperation,
+                        null,
                         authorizationResultDto
                 )
         );
