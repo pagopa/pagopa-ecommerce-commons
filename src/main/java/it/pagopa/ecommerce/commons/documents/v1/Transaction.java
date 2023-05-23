@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -38,6 +39,18 @@ public class Transaction {
     private String idCart;
     @Nullable
     private String rrn;
+
+    @Nullable
+    private String paymentGateway;
+
+    @Nullable
+    private AuthorizationResultDto sendPaymentResultOutcome;
+
+    @Nullable
+    private String authorizationCode;
+
+    @Nullable
+    private String authorizationErrorCode;
 
     /**
      * Enumeration of transaction client initiators
