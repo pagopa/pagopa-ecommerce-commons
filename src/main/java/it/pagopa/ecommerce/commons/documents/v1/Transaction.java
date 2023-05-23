@@ -48,7 +48,6 @@ public class Transaction {
     @Nullable
     private String authorizationOutcome;
 
-
     /**
      * Enumeration of transaction client initiators
      */
