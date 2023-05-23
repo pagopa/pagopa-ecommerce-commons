@@ -209,7 +209,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        "",
+                        null,
                         AUTHORIZATION_RESULT_DTO
                 )
         );
@@ -225,7 +225,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        "",
+                        null,
                         authorizationResultDto
                 )
         );
@@ -242,7 +242,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         rnn,
                         timestampOperation,
-                        "",
+                        null,
                         authorizationResultDto
                 )
         );
