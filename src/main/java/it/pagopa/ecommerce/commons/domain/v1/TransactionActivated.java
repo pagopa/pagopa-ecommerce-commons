@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -36,14 +37,16 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     /**
      * Primary constructor
      *
-     * @param transactionId   transaction id
-     * @param paymentNotices  notice code list
-     * @param email           email where the payment receipt will be sent to
-     * @param faultCode       fault code generated during activation
-     * @param faultCodeString fault code auxiliary description
-     * @param creationDate    creation date of this transaction
-     * @param clientId        a {@link ClientId} object
-     * @param idCart          the ec cart id
+     * @param transactionId               transaction id
+     * @param paymentNotices              notice code list
+     * @param email                       email where the payment receipt will be
+     *                                    sent to
+     * @param faultCode                   fault code generated during activation
+     * @param faultCodeString             fault code auxiliary description
+     * @param creationDate                creation date of this transaction
+     * @param clientId                    a {@link ClientId} object
+     * @param idCart                      the ec cart id
+     * @param paymentTokenValidityTimeSec the payment token validity time in seconds
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -53,7 +56,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ZonedDateTime creationDate,
             ClientId clientId,
-            String idCart
+            String idCart,
+            BigInteger paymentTokenValidityTimeSec
     ) {
         super(
 
@@ -88,7 +92,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         faultCode,
                         faultCodeString,
                         clientId,
-                        idCart
+                        idCart,
+                        paymentTokenValidityTimeSec
                 )
         );
     }
@@ -96,13 +101,16 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     /**
      * Convenience constructor with creation date set to now.
      *
-     * @param transactionId   transaction id
-     * @param paymentNotices  notice code list
-     * @param email           email where the payment receipt will be sent to
-     * @param faultCode       fault code generated during activation
-     * @param faultCodeString fault code auxiliary description
-     * @param clientId        the origin from which the transaction started from
-     * @param idCart          the ec id cart
+     * @param transactionId               transaction id
+     * @param paymentNotices              notice code list
+     * @param email                       email where the payment receipt will be
+     *                                    sent to
+     * @param faultCode                   fault code generated during activation
+     * @param faultCodeString             fault code auxiliary description
+     * @param clientId                    the origin from which the transaction
+     *                                    started from
+     * @param idCart                      the ec id cart
+     * @param paymentTokenValidityTimeSec the payment token validity time in seconds
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -111,7 +119,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCode,
             String faultCodeString,
             ClientId clientId,
-            String idCart
+            String idCart,
+            BigInteger paymentTokenValidityTimeSec
     ) {
         this(
                 transactionId,
@@ -121,7 +130,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 faultCodeString,
                 ZonedDateTime.now(),
                 clientId,
-                idCart
+                idCart,
+                paymentTokenValidityTimeSec
         );
     }
 
