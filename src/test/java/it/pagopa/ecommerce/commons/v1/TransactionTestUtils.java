@@ -88,8 +88,14 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
+        return transactionActivateEvent(ZonedDateTime.now().toString());
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(String creationDate) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
+                creationDate,
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
