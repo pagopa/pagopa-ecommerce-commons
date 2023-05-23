@@ -34,6 +34,12 @@ public class TransactionAuthorizationCompletedData {
     private String timestampOperation;
 
     /**
+     * The PGS errorCode
+     */
+    @Nullable
+    private String errorCode;
+
+    /**
      * The payment gateway authorization outcome
      */
     private AuthorizationResultDto authorizationResultDto;
