@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -28,6 +27,6 @@ public class TransactionActivatedData {
     private Transaction.ClientId clientId;
     @Nullable
     private String idCart;
-    private BigInteger paymentTokenValiditySeconds;
+    private int paymentTokenValiditySeconds;
 
 }

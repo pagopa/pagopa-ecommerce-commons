@@ -10,7 +10,6 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
-import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -84,7 +83,7 @@ public class TransactionTestUtils {
     public static final String DUE_DATE = "1900-01-01";
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
-    public static final BigInteger PAYMENT_TOKEN_VALIDITY_TIME_SEC = BigInteger.valueOf(900);
+    public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {

@@ -8,7 +8,6 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ZonedDateTime creationDate,
             ClientId clientId,
             String idCart,
-            BigInteger paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec
     ) {
         super(
 
@@ -120,7 +119,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ClientId clientId,
             String idCart,
-            BigInteger paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec
     ) {
         this(
                 transactionId,
