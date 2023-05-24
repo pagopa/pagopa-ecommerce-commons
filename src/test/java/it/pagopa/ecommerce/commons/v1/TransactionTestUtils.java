@@ -83,10 +83,18 @@ public class TransactionTestUtils {
     public static final String DUE_DATE = "1900-01-01";
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
+    public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
+        return transactionActivateEvent(ZonedDateTime.now().toString());
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(String creationDate) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
+                creationDate,
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
@@ -109,7 +117,8 @@ public class TransactionTestUtils {
                         FAULT_CODE,
                         FAULT_CODE_STRING,
                         Transaction.ClientId.CHECKOUT,
-                        ID_CART
+                        ID_CART,
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC
                 )
         );
     }
@@ -140,7 +149,8 @@ public class TransactionTestUtils {
                 FAULT_CODE_STRING,
                 ZonedDateTime.parse(creationDate),
                 Transaction.ClientId.CHECKOUT,
-                ID_CART
+                ID_CART,
+                PAYMENT_TOKEN_VALIDITY_TIME_SEC
         );
     }
 

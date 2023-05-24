@@ -27,5 +27,6 @@ public class TransactionActivatedData {
     private Transaction.ClientId clientId;
     @Nullable
     private String idCart;
+    private int paymentTokenValiditySeconds;
 
 }
