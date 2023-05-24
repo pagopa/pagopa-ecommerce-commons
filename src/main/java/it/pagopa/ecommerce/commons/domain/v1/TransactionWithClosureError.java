@@ -56,7 +56,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      * @param event           closure error event
      */
     public TransactionWithClosureError(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithPaymentToken baseTransaction,
             TransactionClosureErrorEvent event
     ) {
         super(baseTransaction, event);
