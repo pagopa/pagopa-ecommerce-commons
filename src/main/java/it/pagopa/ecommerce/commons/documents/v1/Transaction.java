@@ -44,7 +44,7 @@ public class Transaction {
     private String paymentGateway;
 
     @Nullable
-    private AuthorizationResultDto sendPaymentResultOutcome;
+    private TransactionUserReceiptData.Outcome sendPaymentResultOutcome;
 
     @Nullable
     private String authorizationCode;
