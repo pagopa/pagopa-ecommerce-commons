@@ -14,16 +14,18 @@ import lombok.experimental.FieldDefaults;
  * does hold any additional data.
  * </p>
  *
- * @see BaseTransaction
+ * @see BaseTransactionWithPaymentToken
  * @see TransactionClosureErrorEvent
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionWithClosureError extends BaseTransaction {
+public abstract class BaseTransactionWithClosureError extends BaseTransactionWithPaymentToken {
 
     BaseTransaction transactionAtPreviousState;
+
+    TransactionClosureErrorEvent transactionClosureErrorEvent;
 
     /**
      * Primary constructor
@@ -32,16 +34,14 @@ public abstract class BaseTransactionWithClosureError extends BaseTransaction {
      * @param event           data related to closure error event
      */
     protected BaseTransactionWithClosureError(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithPaymentToken baseTransaction,
             TransactionClosureErrorEvent event
     ) {
         super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
+                baseTransaction,
+                baseTransaction.getTransactionActivatedData()
         );
         this.transactionAtPreviousState = baseTransaction;
+        this.transactionClosureErrorEvent = event;
     }
 }
