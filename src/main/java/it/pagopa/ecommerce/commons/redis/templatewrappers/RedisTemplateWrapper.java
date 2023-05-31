@@ -35,12 +35,36 @@ abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTem
     }
 
     /**
-     * Save the input entity into Redis
+     * Save the input entity into Redis. The entity TTL will be set to the default
+     * configured one
      *
      * @param value - the entity to be saved
      */
     public void save(V value) {
+        save(value, getDefaultTTL());
+    }
+
+    /**
+     * Save the input entity into Redis
+     *
+     * @param value the entity to be saved
+     * @param ttl   the TTL for the entity to be saved. This parameter will override
+     *              the default TTL value
+     */
+    public void save(
+                     V value,
+                     Duration ttl
+    ) {
         redisTemplate.opsForValue().set(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
+    }
+
+    /**
+     * Get the default configured TTL
+     *
+     * @return the default configured TTL
+     */
+    public Duration getDefaultTTL() {
+        return this.ttl;
     }
 
     /**
@@ -54,13 +78,30 @@ abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTem
     }
 
     /**
-     * Delete the entity for the given key and return it
+     * Delete the entity for the given key
      *
      * @param key - the entity key to be deleted
-     * @return the deleted key
+     * @return true if the key has been removed
      */
     public Boolean deleteById(String key) {
         return redisTemplate.delete(compoundKeyWithKeyspace(key));
+    }
+
+    /**
+     * Get TTL duration for the entity with the given key Negative duration has the
+     * following meaning:
+     * <ul>
+     * <li>-1: entity that has no expiration set</li>
+     * <li>-2: input key does not exist</li>
+     * <li>-3: redis returned expiration is null</li>
+     * </ul>
+     *
+     * @param key - the entity key for which retrieve TTL
+     * @return the entity associated TTL duration.
+     */
+    public Duration getTTL(String key) {
+        Long duration = redisTemplate.getExpire(compoundKeyWithKeyspace(key));
+        return duration != null ? Duration.ofSeconds(duration) : Duration.ofSeconds(-3);
     }
 
     /**

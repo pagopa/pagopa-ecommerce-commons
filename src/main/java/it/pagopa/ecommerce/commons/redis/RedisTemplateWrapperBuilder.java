@@ -37,11 +37,13 @@ public class RedisTemplateWrapperBuilder {
      * {@link IdempotencyKey} and other domain objects
      *
      * @param redisConnectionFactory - the redis connection factory to be used for
-     *                               RedisTemplate
+     * @param entitiesTTL            - the default TTL to be applied to all saved
+     *                               entities if not overridden
      * @return PaymentRequestInfoRedisTemplateWrapper new instance
      */
     public static PaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
-                                                                                                     RedisConnectionFactory redisConnectionFactory
+                                                                                                     RedisConnectionFactory redisConnectionFactory,
+                                                                                                     Duration entitiesTTL
     ) {
         RedisTemplate<String, PaymentRequestInfo> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -51,7 +53,7 @@ public class RedisTemplateWrapperBuilder {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(jacksonRedisSerializer);
         redisTemplate.afterPropertiesSet();
-        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", Duration.ofMinutes(10));
+        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", entitiesTTL);
     }
 
     /**

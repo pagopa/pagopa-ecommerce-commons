@@ -84,4 +84,37 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
                 .delete("keys:%s".formatted(TransactionTestUtils.RPT_ID));
         assertTrue(deleteResult);
     }
+
+    @Test
+    void shouldReturnTTLSuccessfully() {
+        Duration entityExpiration = Duration.ofSeconds(10);
+        Mockito.when(redisTemplate.getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
+                .thenReturn(entityExpiration.getSeconds());
+
+        Duration ttl = paymentRequestInfoRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
+        Mockito.verify(redisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        assertEquals(entityExpiration, ttl);
+    }
+
+    @Test
+    void shouldReturnDefaultTTL() {
+        assertEquals(ttl, paymentRequestInfoRedisTemplateWrapper.getDefaultTTL());
+    }
+
+    @Test
+    void shouldSaveEntityWithCustomTTLSuccessfully() {
+        // assertions
+        Duration customTTL = Duration.ofMillis(100);
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.doNothing().when(valueOperations)
+                .set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
+        // test
+        paymentRequestInfoRedisTemplateWrapper.save(paymentRequestInfo, customTTL);
+
+        // assertions
+        Mockito.verify(valueOperations, Mockito.times(1))
+                .set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
+    }
+
 }
