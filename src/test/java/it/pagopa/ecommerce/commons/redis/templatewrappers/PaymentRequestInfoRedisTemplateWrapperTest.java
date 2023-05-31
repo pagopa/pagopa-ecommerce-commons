@@ -97,7 +97,18 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     }
 
     @Test
-    void shouldReturnDefaultTTL() {
+    void shouldReturnTTLForNullTTLReturnedByRedis() {
+        Duration expectedDuration = Duration.ofSeconds(-3);
+        Mockito.when(redisTemplate.getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
+                .thenReturn(null);
+
+        Duration ttl = paymentRequestInfoRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
+        Mockito.verify(redisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        assertEquals(expectedDuration, ttl);
+    }
+
+    @Test
+    void shouldReturnRepositoryDefaultTTL() {
         assertEquals(ttl, paymentRequestInfoRedisTemplateWrapper.getDefaultTTL());
     }
 
