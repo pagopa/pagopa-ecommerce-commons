@@ -37,7 +37,6 @@ public record PaymentRequestInfo(
         @Nullable String paymentToken,
         @Nullable IdempotencyKey idempotencyKey,
         @Nullable List<PaymentTransferInfo> transferList,
-
         @Nullable Boolean allCCP
 ) {
     /**
@@ -54,6 +53,7 @@ public record PaymentRequestInfo(
      * @param paymentToken   Payment token associated to this payment request
      * @param idempotencyKey Idempotency key associated to the payment request
      * @param transferList   Payment transfer list information
+     * @param allCCP         allCCP flag
      */
     @PersistenceConstructor
     public PaymentRequestInfo {
