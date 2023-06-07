@@ -578,6 +578,7 @@ public class TransactionTestUtils {
                 AMOUNT,
                 DUE_DATE,
                 PAYMENT_TOKEN,
+                ZonedDateTime.now().toString(),
                 new IdempotencyKey(IDEMPOTENCY_KEY),
                 List.of(
                         new PaymentTransferInfo(

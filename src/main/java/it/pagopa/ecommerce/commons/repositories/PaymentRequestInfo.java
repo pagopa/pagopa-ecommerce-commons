@@ -8,6 +8,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public record PaymentRequestInfo(
         @Nullable Integer amount,
         @Nullable String dueDate,
         @Nullable String paymentToken,
+        @Nullable String activationDate,
         @Nullable IdempotencyKey idempotencyKey,
         @Nullable List<PaymentTransferInfo> transferList,
         @Nullable Boolean allCCP
@@ -51,6 +53,7 @@ public record PaymentRequestInfo(
      * @param amount         Amount on the payment notice
      * @param dueDate        Payment's due date
      * @param paymentToken   Payment token associated to this payment request
+     * @param activationDate Transaction activation date
      * @param idempotencyKey Idempotency key associated to the payment request
      * @param transferList   Payment transfer list information
      * @param allCCP         allCCP flag
