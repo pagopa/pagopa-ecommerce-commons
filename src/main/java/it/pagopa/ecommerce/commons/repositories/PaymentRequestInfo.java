@@ -24,6 +24,7 @@ import java.util.List;
  * @param paymentToken   Payment token associated to this payment request
  * @param idempotencyKey Idempotency key associated to the payment request
  * @param transferList   Payment transfer list information
+ * @param allCCP         allCCP flag
  */
 @RedisHash(value = "keys", timeToLive = 10 * 60)
 public record PaymentRequestInfo(
@@ -37,7 +38,7 @@ public record PaymentRequestInfo(
         @Nullable IdempotencyKey idempotencyKey,
         @Nullable List<PaymentTransferInfo> transferList,
 
-        @Nullable boolean allCCP
+        @Nullable Boolean allCCP
 ) {
     /**
      * Construct a {@link PaymentRequestInfo} from its components
@@ -55,7 +56,7 @@ public record PaymentRequestInfo(
      * @param transferList   Payment transfer list information
      */
     @PersistenceConstructor
-gi    public PaymentRequestInfo {
+    public PaymentRequestInfo {
         // Do nothing
     }
 }
