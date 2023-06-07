@@ -35,7 +35,9 @@ public record PaymentRequestInfo(
         @Nullable String dueDate,
         @Nullable String paymentToken,
         @Nullable IdempotencyKey idempotencyKey,
-        @Nullable List<PaymentTransferInfo> transferList
+        @Nullable List<PaymentTransferInfo> transferList,
+
+        @Nullable boolean allCCP
 ) {
     /**
      * Construct a {@link PaymentRequestInfo} from its components
@@ -53,7 +55,7 @@ public record PaymentRequestInfo(
      * @param transferList   Payment transfer list information
      */
     @PersistenceConstructor
-    public PaymentRequestInfo {
+gi    public PaymentRequestInfo {
         // Do nothing
     }
 }
