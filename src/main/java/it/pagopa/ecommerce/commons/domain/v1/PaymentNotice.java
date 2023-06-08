@@ -22,6 +22,8 @@ public record PaymentNotice(
         TransactionDescription transactionDescription,
         PaymentContextCode paymentContextCode,
 
-        List<PaymentTransferInfo> transferList
+        List<PaymentTransferInfo> transferList,
+
+        boolean allCCP
 ) {
 }
