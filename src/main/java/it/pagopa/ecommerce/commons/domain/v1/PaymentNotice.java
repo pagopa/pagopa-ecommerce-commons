@@ -24,6 +24,6 @@ public record PaymentNotice(
 
         List<PaymentTransferInfo> transferList,
 
-        boolean allCCP
+        boolean isAllCCP
 ) {
 }
