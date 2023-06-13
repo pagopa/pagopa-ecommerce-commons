@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Base persistence view for transactions.
  */
 @Data
-@Document(collection = "view")
+@Document(collection = "transactions-view")
 public class Transaction {
 
     @Id
