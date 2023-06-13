@@ -12,6 +12,7 @@ import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -270,10 +271,13 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosedEvent transactionClosedEvent(TransactionClosureData.Outcome outcome) {
+    public static TransactionClosedEvent transactionClosedEvent(
+                                                                TransactionClosureData.Outcome outcome
+
+    ) {
         return new TransactionClosedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, OffsetDateTime.now())
         );
     }
 
@@ -442,7 +446,7 @@ public class TransactionTestUtils {
     public static TransactionClosureFailedEvent transactionClosureFailedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureFailedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, null)
         );
     }
 
