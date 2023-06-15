@@ -25,7 +25,8 @@ import java.util.List;
  * @param paymentToken   Payment token associated to this payment request
  * @param idempotencyKey Idempotency key associated to the payment request
  * @param transferList   Payment transfer list information
- * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles, false excludes them
+ * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles,
+ *                       false excludes them
  */
 @RedisHash(value = "keys", timeToLive = 10 * 60)
 public record PaymentRequestInfo(
@@ -56,7 +57,8 @@ public record PaymentRequestInfo(
      * @param activationDate Transaction activation date
      * @param idempotencyKey Idempotency key associated to the payment request
      * @param transferList   Payment transfer list information
-     * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles, false excludes them
+     * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles,
+     *                       false excludes them
      */
     @PersistenceConstructor
     public PaymentRequestInfo {
