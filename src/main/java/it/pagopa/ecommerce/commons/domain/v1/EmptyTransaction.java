@@ -39,7 +39,8 @@ public final class EmptyTransaction implements Transaction {
                                                                 tx.getTransferAmount(),
                                                                 tx.getTransferCategory()
                                                         )
-                                                ).toList()
+                                                ).toList(),
+                                        n.isAllCCP()
                                 )
                         ).collect(Collectors.toList()),
                 event.getData().getEmail(),

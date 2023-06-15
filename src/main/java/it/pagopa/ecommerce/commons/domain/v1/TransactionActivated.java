@@ -84,8 +84,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                                                         tx.transferAmount(),
                                                                         tx.transferCategory()
                                                                 )
-                                                        ).toList()
-
+                                                        ).toList(),
+                                                n.isAllCCP()
                                         )
                                 ).toList(),
                         faultCode,

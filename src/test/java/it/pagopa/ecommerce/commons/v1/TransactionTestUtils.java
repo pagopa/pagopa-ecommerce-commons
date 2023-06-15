@@ -62,6 +62,8 @@ public class TransactionTestUtils {
     public static final String LANGUAGE = "it-IT";
     public static final URI LOGO_URI;
 
+    private static final boolean IS_ALL_CCP_FALSE = false;
+
     static {
         try {
             LOGO_URI = new URI("http://paymentMethodLogo.it");
@@ -111,7 +113,8 @@ public class TransactionTestUtils {
                                                         TRANSFER_AMOUNT,
                                                         TRANSFER_CATEGORY
                                                 )
-                                        )
+                                        ),
+                                        IS_ALL_CCP_FALSE
                                 )
                         ),
                         FAULT_CODE,
@@ -141,7 +144,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_AMOUNT,
                                                 TRANSFER_CATEGORY
                                         )
-                                )
+                                ),
+                                IS_ALL_CCP_FALSE
                         )
                 ),
                 EMAIL,
@@ -538,7 +542,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_AMOUNT,
                                                 TRANSFER_CATEGORY
                                         )
-                                )
+                                ),
+                                IS_ALL_CCP_FALSE
                         )
                 ),
                 null,
@@ -587,7 +592,8 @@ public class TransactionTestUtils {
                                 TRANSFER_AMOUNT,
                                 TRANSFER_CATEGORY
                         )
-                )
+                ),
+                false
         );
     }
 
