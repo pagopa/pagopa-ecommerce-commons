@@ -55,6 +55,10 @@ public class TransactionUserReceiptData {
         /**
          * sendPaymentResult KO outcome
          */
-        KO
+        KO,
+        /**
+         * sendPaymentResult not received yet
+         */
+        NOT_RECEIVED
     }
 }
