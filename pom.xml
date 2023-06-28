@@ -122,6 +122,10 @@
             <artifactId>vavr</artifactId>
             <version>0.10.4</version>
         </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.jacoco</groupId>
@@ -149,6 +153,13 @@
                 <groupId>com.azure.spring</groupId>
                 <artifactId>spring-cloud-azure-dependencies</artifactId>
                 <version>${spring-cloud-azure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-bom</artifactId>
+                <version>1.27.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
