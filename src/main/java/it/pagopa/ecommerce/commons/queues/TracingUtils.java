@@ -1,11 +1,10 @@
-package it.pagopa.ecommerce.commons.utils;
+package it.pagopa.ecommerce.commons.queues;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
-import it.pagopa.ecommerce.commons.queues.TracingInfo;
 import org.springframework.lang.NonNull;
 import reactor.core.publisher.Mono;
 
