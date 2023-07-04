@@ -1,6 +1,8 @@
 package it.pagopa.ecommerce.commons.queues;
 
 import org.springframework.lang.NonNull;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -62,6 +64,15 @@ public final class TracingInfo {
         return baggage;
     }
 
+    @JsonCreator
+    private static TracingInfo deserializer(
+                                            @JsonProperty("traceparent") String traceparent,
+                                            @JsonProperty("tracestate") String tracestate,
+                                            @JsonProperty("baggage") String baggage
+    ) {
+        return new TracingInfo(traceparent, tracestate, baggage);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
@@ -86,5 +97,4 @@ public final class TracingInfo {
                 "tracestate=" + tracestate + ", " +
                 "baggage=" + baggage + ']';
     }
-
 }
