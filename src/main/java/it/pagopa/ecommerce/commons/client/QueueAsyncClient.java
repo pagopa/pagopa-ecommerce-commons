@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.client;
 
 import com.azure.core.http.rest.Response;
 import com.azure.core.util.BinaryData;
+import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.storage.queue.models.SendMessageResult;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
@@ -26,13 +27,20 @@ import java.time.Duration;
 public class QueueAsyncClient {
     private final com.azure.storage.queue.QueueAsyncClient innerClient;
 
+    private final JsonSerializer jsonSerializer;
+
     /**
      * Primary constructor
      *
-     * @param innerClient wrapped client
+     * @param innerClient    wrapped client
+     * @param jsonSerializer JSON serializer
      */
-    public QueueAsyncClient(com.azure.storage.queue.QueueAsyncClient innerClient) {
+    public QueueAsyncClient(
+            com.azure.storage.queue.QueueAsyncClient innerClient,
+            JsonSerializer jsonSerializer
+    ) {
         this.innerClient = innerClient;
+        this.jsonSerializer = jsonSerializer;
     }
 
     /**
@@ -52,7 +60,7 @@ public class QueueAsyncClient {
                                                                                                      Duration timeToLive
     ) {
         log.debug("Sending event {} with tracing info: {}", event.event(), event.tracingInfo());
-        return BinaryData.fromObjectAsync(event)
+        return BinaryData.fromObjectAsync(event, jsonSerializer)
                 .flatMap(e -> innerClient.sendMessageWithResponse(e, visibilityTimeout, timeToLive));
     }
 
