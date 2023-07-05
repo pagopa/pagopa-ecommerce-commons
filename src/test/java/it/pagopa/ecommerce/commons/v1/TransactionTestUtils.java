@@ -183,10 +183,10 @@ public class TransactionTestUtils {
                         PSP_CHANNEL_CODE,
                         PAYMENT_METHOD_NAME,
                         PSP_BUSINESS_NAME,
+                        false,
                         AUTHORIZATION_REQUEST_ID,
                         PAYMENT_GATEWAY,
                         LOGO_URI,
-                        false,
                         TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );
@@ -208,10 +208,10 @@ public class TransactionTestUtils {
                         PSP_CHANNEL_CODE,
                         PAYMENT_METHOD_NAME,
                         PSP_BUSINESS_NAME,
+                        false,
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
                         LOGO_URI,
-                        false,
                         TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );

@@ -24,10 +24,10 @@ public class TransactionAuthorizationRequestData {
     private String pspChannelCode;
     private String paymentMethodName;
     private String pspBusinessName;
+    private boolean pspOnUs;
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
-    private boolean pspOnUs;
     @Nullable
     private CardBrand brand;
 
