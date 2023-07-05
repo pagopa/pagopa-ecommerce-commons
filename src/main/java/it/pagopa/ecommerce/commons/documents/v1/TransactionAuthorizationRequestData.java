@@ -27,6 +27,7 @@ public class TransactionAuthorizationRequestData {
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
+    private boolean pspOnUs;
     @Nullable
     private CardBrand brand;
 
