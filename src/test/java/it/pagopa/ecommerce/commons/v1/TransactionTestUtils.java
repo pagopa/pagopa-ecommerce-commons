@@ -186,6 +186,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_REQUEST_ID,
                         PAYMENT_GATEWAY,
                         LOGO_URI,
+                        false,
                         TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );
@@ -210,6 +211,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
                         LOGO_URI,
+                        false,
                         TransactionAuthorizationRequestData.CardBrand.VISA
                 )
         );
