@@ -5,6 +5,8 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +21,8 @@ import java.util.function.Function;
  * </p>
  */
 public class TracingUtils {
+    private static final Logger logger = LoggerFactory.getLogger(TracingUtils.class);
+
     private final OpenTelemetry openTelemetry;
     private final Tracer tracer;
 
@@ -86,6 +90,8 @@ public class TracingUtils {
                              value
                             ) -> map.put(header, value)
                     );
+
+                    logger.debug("Raw tracing info: {}", rawTracingInfo);
 
                     TracingInfo tracingInfo = new TracingInfo(
                             rawTracingInfo.get("traceparent"),
