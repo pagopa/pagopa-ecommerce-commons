@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
-
-;
+import java.util.Optional;
 
 /**
  * <p>
@@ -17,8 +16,10 @@ import java.util.Objects;
  */
 public final class TracingInfo {
     private final String traceparent;
-    private final @NonNull String tracestate;
-    private final @NonNull String baggage;
+
+    private final @NonNull Optional<String> tracestate;
+
+    private final @NonNull Optional<String> baggage;
 
     /**
      * @param traceparent traceparent header – Used to identify the trace
@@ -29,8 +30,8 @@ public final class TracingInfo {
      */
     TracingInfo(
             @NonNull String traceparent,
-            @NonNull String tracestate,
-            @NonNull String baggage
+            @NonNull Optional<String> tracestate,
+            @NonNull Optional<String> baggage
     ) {
         this.traceparent = Objects.requireNonNull(traceparent);
         this.tracestate = Objects.requireNonNull(tracestate);
@@ -51,7 +52,7 @@ public final class TracingInfo {
      *
      * @return value of the tracestate header
      */
-    public @NonNull String getTracestate() {
+    public @NonNull Optional<String> getTracestate() {
         return tracestate;
     }
 
@@ -60,15 +61,15 @@ public final class TracingInfo {
      *
      * @return value of the baggage header
      */
-    public @NonNull String getBaggage() {
+    public @NonNull Optional<String> getBaggage() {
         return baggage;
     }
 
     @JsonCreator
     private static TracingInfo deserializer(
                                             @JsonProperty("traceparent") String traceparent,
-                                            @JsonProperty("tracestate") String tracestate,
-                                            @JsonProperty("baggage") String baggage
+                                            @JsonProperty("tracestate") Optional<String> tracestate,
+                                            @JsonProperty("baggage") Optional<String> baggage
     ) {
         return new TracingInfo(traceparent, tracestate, baggage);
     }
