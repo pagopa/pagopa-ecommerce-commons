@@ -1,9 +1,11 @@
 package it.pagopa.ecommerce.commons.queues;
 
+import java.util.Optional;
+
 public class TracingInfoTest {
     public static final TracingInfo MOCK_TRACING_INFO = new TracingInfo(
             "mock_traceparent",
-            "mock_tracestate",
-            "mock_baggage"
+            Optional.of("mock_tracestate"),
+            Optional.of("mock_baggage")
     );
 }

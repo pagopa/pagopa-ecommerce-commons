@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -88,8 +89,8 @@ public class TracingUtils {
 
                     TracingInfo tracingInfo = new TracingInfo(
                             rawTracingInfo.get("traceparent"),
-                            rawTracingInfo.get("tracestate"),
-                            rawTracingInfo.get("baggage")
+                            Optional.ofNullable(rawTracingInfo.get("tracestate")),
+                            Optional.ofNullable(rawTracingInfo.get("baggage"))
                     );
 
                     return new TracingContext(span, tracingInfo);
