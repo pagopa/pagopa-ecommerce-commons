@@ -94,6 +94,14 @@ public class TracingUtils {
                                  @NonNull String spanName,
                                  @NonNull Function<TracingInfo, Mono<T>> traced
     ) {
+        /*
+         * Here we don't write the span to Reactor's Context because we assume that the
+         * caller is already set up with correct span propagation (otherwise context
+         * extraction wouldn't work). Under these conditions it is not necessary to
+         * write to Reactor's Context after starting a new span.
+         *
+         * (See `traceMonoWithSpan`)
+         */
         return Mono.using(
                 () -> {
                     Span span = tracer.spanBuilder(spanName)
@@ -197,6 +205,16 @@ public class TracingUtils {
                                                    @NonNull Span span,
                                                    @NonNull Mono<T> operation
     ) {
+        /* @formatter:off
+         *
+         * Writing to `PARENT_TRACE_CONTEXT_KEY` is necessary when instrumenting
+         * manually to propagate the tracing context through Azure SDK.
+         * (See `traceMono`)
+         *
+         * See: https://learn.microsoft.com/en-us/java/api/overview/azure/core-tracing-opentelemetry-readme?view=azure-java-preview#asynchronous-clients
+         *
+         * @formatter:on
+         */
         return Mono.using(
                 () -> span,
                 s -> operation.contextWrite(
