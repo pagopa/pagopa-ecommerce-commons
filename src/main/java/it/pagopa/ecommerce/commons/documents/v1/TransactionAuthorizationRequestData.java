@@ -24,6 +24,7 @@ public class TransactionAuthorizationRequestData {
     private String pspChannelCode;
     private String paymentMethodName;
     private String pspBusinessName;
+    private boolean isPspOnUs;
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
     private URI logo;
