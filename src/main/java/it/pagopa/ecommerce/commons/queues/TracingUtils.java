@@ -54,8 +54,8 @@ public class TracingUtils {
      * @param tracer        Tracer from which to create spans
      */
     public TracingUtils(
-            OpenTelemetry openTelemetry,
-            Tracer tracer
+            @NonNull OpenTelemetry openTelemetry,
+            @NonNull Tracer tracer
     ) {
         this.tracer = tracer;
         this.openTelemetry = openTelemetry;
@@ -91,8 +91,8 @@ public class TracingUtils {
      * @param <T> type parameter of {@link Mono}
      */
     public <T> Mono<T> traceMono(
-                                 String spanName,
-                                 Function<TracingInfo, Mono<T>> traced
+                                 @NonNull String spanName,
+                                 @NonNull Function<TracingInfo, Mono<T>> traced
     ) {
         return Mono.using(
                 () -> {
