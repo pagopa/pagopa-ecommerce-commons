@@ -4,7 +4,7 @@ import com.azure.core.http.rest.Response;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.storage.queue.models.SendMessageResult;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
+import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -54,10 +54,10 @@ public class QueueAsyncClient {
      * @return wrapped client response
      * @param <T> type of event
      */
-    public <T extends TransactionEvent<?>> Mono<Response<SendMessageResult>> sendMessageWithResponse(
-                                                                                                     QueueEvent<T> event,
-                                                                                                     Duration visibilityTimeout,
-                                                                                                     Duration timeToLive
+    public <T extends BaseTransactionEvent<?>> Mono<Response<SendMessageResult>> sendMessageWithResponse(
+                                                                                                         QueueEvent<T> event,
+                                                                                                         Duration visibilityTimeout,
+                                                                                                         Duration timeToLive
     ) {
         log.debug("Sending event {} with tracing info: {}", event.event(), event.tracingInfo());
         return BinaryData.fromObjectAsync(event, jsonSerializer)
