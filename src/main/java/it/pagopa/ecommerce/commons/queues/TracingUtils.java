@@ -113,11 +113,7 @@ public class TracingUtils {
                     openTelemetry.getPropagators().getTextMapPropagator().inject(
                             Context.current(),
                             rawTracingInfo,
-                            (
-                             map,
-                             header,
-                             value
-                            ) -> map.put(header, value)
+                            HashMap::put
                     );
 
                     logger.debug("Raw tracing info: {}", rawTracingInfo);
