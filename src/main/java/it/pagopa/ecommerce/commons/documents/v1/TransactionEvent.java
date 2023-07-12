@@ -1,11 +1,9 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,11 +17,13 @@ import static java.time.ZonedDateTime.now;
  * @param <T> additional data type
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "eventstore")
 @Generated
 @NoArgsConstructor
 @ToString
-public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
+public abstract sealed class TransactionEvent<T> extends
+        BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
 
     @Id
     private String id;
@@ -32,8 +32,6 @@ public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureE
     private String transactionId;
 
     private TransactionEventCode eventCode;
-    private String creationDate;
-    private T data;
 
     TransactionEvent(
             String transactionId,
@@ -41,6 +39,8 @@ public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureE
             String creationDate,
             T data
     ) {
+        super(UUID.randomUUID().toString(), transactionId, creationDate, data);
+
         /*
          * CHK-1413 -> transaction id length lesser than 35 chars here is checked that
          * transaction id is 32 chars long that is UUID with trimmed '-' chars length
@@ -55,8 +55,6 @@ public abstract sealed class TransactionEvent<T> permits BaseTransactionClosureE
         this.id = UUID.randomUUID().toString();
         this.transactionId = transactionId;
         this.eventCode = eventCode;
-        this.data = data;
-        this.creationDate = creationDate;
     }
 
     TransactionEvent(
