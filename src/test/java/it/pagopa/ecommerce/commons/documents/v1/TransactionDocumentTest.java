@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
@@ -9,11 +10,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionDocumentTest {
+    @Test
+    void v1TransactionEventIsBaseTransactionEvent() {
+        TransactionEvent<TransactionActivatedData> t = TransactionTestUtils.transactionActivateEvent();
+
+        assertInstanceOf(BaseTransactionEvent.class, t);
+    }
 
     @Test
     void shouldGetAndSetTransaction() {
