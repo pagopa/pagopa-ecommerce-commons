@@ -4,6 +4,7 @@ import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
@@ -32,7 +33,7 @@ public class TracingUtilsTests {
 
     @BeforeEach
     public void setUpOpenTelemetryMocks() {
-        TextMapPropagator textMapPropagator = Mockito.mock(TextMapPropagator.class);
+        TextMapPropagator textMapPropagator = Mockito.spy(W3CTraceContextPropagator.getInstance());
 
         Mockito.doAnswer(invocation -> {
             HashMap<String, String> map = invocation.getArgument(1);
