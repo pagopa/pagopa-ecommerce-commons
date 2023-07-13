@@ -33,8 +33,9 @@ public class StrictJsonSerializerProvider implements JsonSerializerProvider {
                     JsonTypeInfo.As.PROPERTY
             )
             .registerModule(new Jdk8Module())
-            .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
             .configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, true)
+            .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
+            .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
     /**
