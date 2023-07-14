@@ -1,6 +1,9 @@
 package it.pagopa.ecommerce.commons.documents;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import it.pagopa.ecommerce.commons.documents.v1.serialization.TransactionEventTypeResolver;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "eventstore")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode")
+@JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract class BaseTransactionEvent<T> {
     @Id
     private String id;

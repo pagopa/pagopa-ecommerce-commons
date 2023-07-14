@@ -1,9 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
-import it.pagopa.ecommerce.commons.documents.v1.serialization.TransactionEventTypeResolver;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,8 +20,6 @@ import static java.time.ZonedDateTime.now;
 @Generated
 @NoArgsConstructor
 @ToString
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode")
-@JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract sealed class TransactionEvent<T> extends
         BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
     private TransactionEventCode eventCode;
