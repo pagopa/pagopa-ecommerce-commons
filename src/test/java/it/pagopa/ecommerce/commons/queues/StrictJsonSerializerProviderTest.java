@@ -2,13 +2,11 @@ package it.pagopa.ecommerce.commons.queues;
 
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
-import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.vavr.control.Either;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
-import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,44 +50,23 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void serializeObjectWithTypeId() {
-        String classCanonicalName = Simple.class.getName();
-        String serialized = new String(jsonSerializer.serializeToBytes(new Simple(0)));
-
-        String expectedSerialized = """
-                {
-                    "@class": "%s",
-                    "bar": 0
-                }
-                """
-                .formatted(classCanonicalName)
-                .replace(" ", "")
-                .replace("\n", "");
-
-        assertEquals(expectedSerialized, serialized);
-    }
-
-    @Test
     public void dontAllowArbitrarySubtypeDeserialization() {
-        Exception exception = assertThrows(Exception.class, () -> {
+        assertThrows(Exception.class, () -> {
             TransactionEvent<?> event = TransactionTestUtils.transactionActivateEvent();
 
             byte[] serialized = jsonSerializer.serializeToBytes(event);
-            jsonSerializer.deserializeFromBytes(serialized, new TypeReference<>() {
+            jsonSerializer.deserializeFromBytes(serialized, new TypeReference<TransactionRefundRequestedEvent>() {
             });
         });
-
-        assertEquals(InvalidTypeIdException.class, exception.getCause().getClass());
     }
 
     @Test
     public void disallowNullPrimitiveProperty() {
         String serializedWithNull = """
                 {
-                    "@class": "%s",
                     "bar": null
                 }
-                """.formatted(Simple.class.getName());
+                """;
 
         Exception exception = assertThrows(
                 Exception.class,
@@ -104,9 +81,8 @@ public class StrictJsonSerializerProviderTest {
     public void disallowMissingPrimitiveProperty() {
         String serializedWithMissingProperty = """
                 {
-                    "@class": "%s"
                 }
-                """.formatted(Simple.class.getName());
+                """;
 
         Exception exception = assertThrows(
                 Exception.class,
@@ -123,10 +99,9 @@ public class StrictJsonSerializerProviderTest {
     public void disallowNullObjectProperty() {
         String serializedWithNull = """
                 {
-                    "@class": "%s",
                     "bar": null
                 }
-                """.formatted(SimpleWithObject.class.getName());
+                """;
 
         Exception exception = assertThrows(
                 Exception.class,
@@ -143,9 +118,8 @@ public class StrictJsonSerializerProviderTest {
     public void disallowMissingObjectProperty() {
         String serializedWithMissingProperty = """
                 {
-                    "@class": "%s"
                 }
-                """.formatted(SimpleWithObject.class.getName());
+                """;
 
         Exception exception = assertThrows(
                 Exception.class,
@@ -162,11 +136,10 @@ public class StrictJsonSerializerProviderTest {
     public void disallowExtraProperties() {
         String serializedWithExtraProperty = """
                 {
-                    "@class": "%s",
                     "quux": "a",
                     "bar": 1
                 }
-                """.formatted(SimpleWithObject.class.getName());
+                """;
 
         Exception exception = assertThrows(
                 Exception.class,
@@ -181,30 +154,79 @@ public class StrictJsonSerializerProviderTest {
 
     @Test
     public void canRoundtripQueueEventSerialization() {
-        QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
-                TransactionTestUtils.transactionActivateEvent(),
+        QueueEvent<TransactionRefundRequestedEvent> originalEvent = new QueueEvent<>(
+                new TransactionRefundRequestedEvent(
+                        TransactionTestUtils.TRANSACTION_ID,
+                        new TransactionRefundedData(TransactionStatusDto.REFUND_REQUESTED)
+                ),
                 MOCK_TRACING_INFO
         );
         byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
 
-        Mono<Either<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>> roundTripWithFailure = jsonSerializer
+        Mono<QueueEvent<TransactionRefundRequestedEvent>> refundRequestDeserialized = jsonSerializer
                 .deserializeFromBytesAsync(
                         serialized,
-                        new TypeReference<QueueEvent<TransactionRefundRequestedEvent>>() {
+                        new TypeReference<>() {
                         }
-                )
-                .map(Either::<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>left)
+                );
+        Mono<QueueEvent<TransactionActivatedEvent>> activatedEventDeserialized = jsonSerializer
+                .deserializeFromBytesAsync(
+                        serialized,
+                        new TypeReference<>() {
+                        }
+                );
+
+        Mono<Either<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>> roundTripWithFailure = activatedEventDeserialized
+                .map(Either::<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>right)
                 .onErrorResume(
-                        (e) -> jsonSerializer.deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
-                                }
-                        )
-                                .map(Either::right)
+                        (e) -> refundRequestDeserialized
+                                .map(Either::left)
                 );
 
         StepVerifier.create(roundTripWithFailure)
-                .expectNext(Either.right(originalEvent))
+                .expectNextMatches(e -> e.fold(ev -> {
+                    TransactionRefundRequestedEvent event = ev.event();
+                    TransactionRefundRequestedEvent originalTransactionEvent = originalEvent.event();
+                    return event.getData().equals(originalTransactionEvent.getData());
+                }, r -> {
+                    throw new RuntimeException("Event deserialized as incorrect type!");
+                }))
+                .verifyComplete();
+    }
+
+    @Test
+    public void serializerDisambiguatesTypesWithSameShape() {
+        QueueEvent<TransactionClosedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionClosedEvent(TransactionClosureData.Outcome.KO),
+                MOCK_TRACING_INFO
+        );
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        Mono<QueueEvent<TransactionClosedEvent>> closedDeserialized = jsonSerializer
+                .deserializeFromBytesAsync(
+                        serialized,
+                        new TypeReference<>() {
+                        }
+                );
+        Mono<QueueEvent<TransactionClosureFailedEvent>> closureFailedDeserialized = jsonSerializer
+                .deserializeFromBytesAsync(
+                        serialized,
+                        new TypeReference<>() {
+                        }
+                );
+
+        Mono<Either<QueueEvent<TransactionClosedEvent>, QueueEvent<TransactionClosureFailedEvent>>> roundTripWithFailure = closureFailedDeserialized
+                .map(Either::<QueueEvent<TransactionClosedEvent>, QueueEvent<TransactionClosureFailedEvent>>right)
+                .onErrorResume(
+                        (e) -> closedDeserialized
+                                .map(Either::left)
+                );
+
+        StepVerifier.create(roundTripWithFailure)
+                .expectNextMatches(v -> v.getLeft().event().getData().equals(originalEvent.event().getData()))
                 .verifyComplete();
     }
 }
