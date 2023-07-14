@@ -5,14 +5,20 @@ import com.azure.core.util.serializer.TypeReference;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import io.vavr.control.Either;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.Optional;
 
+import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -171,5 +177,34 @@ public class StrictJsonSerializerProviderTest {
         );
 
         assertEquals(UnrecognizedPropertyException.class, exception.getCause().getClass());
+    }
+
+    @Test
+    public void canRoundtripQueueEventSerialization() {
+        QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionActivateEvent(),
+                MOCK_TRACING_INFO
+        );
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+
+        Mono<Either<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>> roundTripWithFailure = jsonSerializer
+                .deserializeFromBytesAsync(
+                        serialized,
+                        new TypeReference<QueueEvent<TransactionRefundRequestedEvent>>() {
+                        }
+                )
+                .map(Either::<QueueEvent<TransactionRefundRequestedEvent>, QueueEvent<TransactionActivatedEvent>>left)
+                .onErrorResume(
+                        (e) -> jsonSerializer.deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                }
+                        )
+                                .map(Either::right)
+                );
+
+        StepVerifier.create(roundTripWithFailure)
+                .expectNext(Either.right(originalEvent))
+                .verifyComplete();
     }
 }
