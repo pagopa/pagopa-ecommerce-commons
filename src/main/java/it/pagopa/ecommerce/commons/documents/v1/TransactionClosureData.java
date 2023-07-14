@@ -1,7 +1,10 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -32,5 +35,9 @@ public class TransactionClosureData {
          * closePayment KO outcome
          */
         KO
+    }
+
+    @JsonCreator
+    private TransactionClosureData() {
     }
 }
