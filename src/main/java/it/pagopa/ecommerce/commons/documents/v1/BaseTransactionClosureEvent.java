@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public sealed class BaseTransactionClosureEvent extends
+public abstract sealed class BaseTransactionClosureEvent extends
         TransactionEvent<TransactionClosureData>permits TransactionClosedEvent,TransactionClosureFailedEvent {
 
     /**

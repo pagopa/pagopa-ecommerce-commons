@@ -4,124 +4,106 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Jackson type resolver for deserializing {@link TransactionEvent}s
  */
 public class TransactionEventTypeResolver extends TypeIdResolverBase {
+    private static final Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> CLASS_TO_EVENT_CODE_MAP;
+
+    private static final Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> EVENT_CODE_TO_CLASS_MAP;
+
+    private static final String BASE_PACKAGE = "it/pagopa/ecommerce/commons/documents/v1";
+
     private JavaType superType;
 
-    private static final Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> CLASS_TO_EVENT_CODE_MAP = Map
-            .ofEntries(
-                    Map.entry(TransactionActivatedEvent.class, TransactionEventCode.TRANSACTION_ACTIVATED_EVENT),
-                    Map.entry(
-                            TransactionAuthorizationCompletedEvent.class,
-                            TransactionEventCode.TRANSACTION_AUTHORIZATION_COMPLETED_EVENT
-                    ),
-                    Map.entry(
-                            TransactionAuthorizationRequestedEvent.class,
-                            TransactionEventCode.TRANSACTION_AUTHORIZATION_REQUESTED_EVENT
-                    ),
-                    Map.entry(TransactionClosedEvent.class, TransactionEventCode.TRANSACTION_CLOSED_EVENT),
-                    Map.entry(
-                            TransactionClosureFailedEvent.class,
-                            TransactionEventCode.TRANSACTION_CLOSURE_FAILED_EVENT
-                    ),
-                    Map.entry(TransactionClosureErrorEvent.class, TransactionEventCode.TRANSACTION_CLOSURE_ERROR_EVENT),
-                    Map.entry(
-                            TransactionClosureRetriedEvent.class,
-                            TransactionEventCode.TRANSACTION_CLOSURE_RETRIED_EVENT
-                    ),
-                    Map.entry(TransactionExpiredEvent.class, TransactionEventCode.TRANSACTION_EXPIRED_EVENT),
-                    Map.entry(TransactionRefundErrorEvent.class, TransactionEventCode.TRANSACTION_REFUND_ERROR_EVENT),
-                    Map.entry(
-                            TransactionRefundRequestedEvent.class,
-                            TransactionEventCode.TRANSACTION_REFUND_REQUESTED_EVENT
-                    ),
-                    Map.entry(
-                            TransactionRefundRetriedEvent.class,
-                            TransactionEventCode.TRANSACTION_REFUND_RETRIED_EVENT
-                    ),
-                    Map.entry(TransactionRefundedEvent.class, TransactionEventCode.TRANSACTION_REFUNDED_EVENT),
-                    Map.entry(
-                            TransactionUserReceiptRequestedEvent.class,
-                            TransactionEventCode.TRANSACTION_USER_RECEIPT_REQUESTED_EVENT
-                    ),
-                    Map.entry(TransactionUserCanceledEvent.class, TransactionEventCode.TRANSACTION_USER_CANCELED_EVENT),
-                    Map.entry(
-                            TransactionUserReceiptAddErrorEvent.class,
-                            TransactionEventCode.TRANSACTION_ADD_USER_RECEIPT_ERROR_EVENT
-                    ),
-                    Map.entry(
-                            TransactionUserReceiptAddRetriedEvent.class,
-                            TransactionEventCode.TRANSACTION_ADD_USER_RECEIPT_RETRY_EVENT
-                    ),
-                    Map.entry(
-                            TransactionUserReceiptAddedEvent.class,
-                            TransactionEventCode.TRANSACTION_USER_RECEIPT_ADDED_EVENT
-                    )
-            );
-
-    private static final Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> EVENT_CODE_TO_CLASS_MAP = CLASS_TO_EVENT_CODE_MAP
-            .entrySet().stream().collect(
-                    Collectors.toMap(
-                            Map.Entry::getValue,
-                            Map.Entry::getKey,
-                            (
-                             class1,
-                             class2
-                            ) -> {
-                                throw new IllegalStateException(
-                                        "Cannot have more than one class associated to a single event code! Found ambiguous association: %s => [%s, %s]"
-                                                .formatted(
-                                                        CLASS_TO_EVENT_CODE_MAP.get(class1),
-                                                        class1.getName(),
-                                                        class2.getName()
-                                                )
-                                );
-                            }
-                    )
-            );
-
     static {
+        Tuple2<Map<Class<? extends TransactionEvent<?>>, TransactionEventCode>, Map<TransactionEventCode, Class<? extends TransactionEvent<?>>>> classToEventCodeMappings = initializeEventCodeToClassAssociations(
+                BASE_PACKAGE
+        );
+
+        CLASS_TO_EVENT_CODE_MAP = classToEventCodeMappings._1();
+        EVENT_CODE_TO_CLASS_MAP = classToEventCodeMappings._2();
+
+        checkEventCodeToClassAssociations(BASE_PACKAGE, CLASS_TO_EVENT_CODE_MAP, EVENT_CODE_TO_CLASS_MAP);
+    }
+
+    private static Tuple2<Map<Class<? extends TransactionEvent<?>>, TransactionEventCode>, Map<TransactionEventCode, Class<? extends TransactionEvent<?>>>> initializeEventCodeToClassAssociations(
+                                                                                                                                                                                                   String basePackage
+    ) {
+        final Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> CLASS_TO_EVENT_CODE_MAP = generateClassToEventMap(
+                basePackage
+        );
+
+        final Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> EVENT_CODE_TO_CLASS_MAP = CLASS_TO_EVENT_CODE_MAP
+                .entrySet().stream().collect(
+                        Collectors.toMap(
+                                Map.Entry::getValue,
+                                Map.Entry::getKey,
+                                (
+                                 class1,
+                                 class2
+                                ) -> {
+                                    throw new IllegalStateException(
+                                            "Cannot have more than one class associated to a single event code! Found ambiguous association: %s => [%s, %s]"
+                                                    .formatted(
+                                                            CLASS_TO_EVENT_CODE_MAP.get(class1),
+                                                            class1.getName(),
+                                                            class2.getName()
+                                                    )
+                                    );
+                                }
+                        )
+                );
+
+        return Tuple.of(CLASS_TO_EVENT_CODE_MAP, EVENT_CODE_TO_CLASS_MAP);
+    }
+
+    private static void checkEventCodeToClassAssociations(
+                                                          String basePackage,
+                                                          Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> classToEventCodeMap,
+                                                          Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> eventCodeToClassMap
+    ) {
         /* Check that all event codes are present inside the maps */
         Set<TransactionEventCode> eventCodes = Arrays.stream(TransactionEventCode.values()).collect(Collectors.toSet());
 
         Set<TransactionEventCode> missingEventCodesTargets = eventCodes.stream()
-                .filter(c -> !CLASS_TO_EVENT_CODE_MAP.containsValue(c)).collect(Collectors.toSet());
-        assert CLASS_TO_EVENT_CODE_MAP.values().containsAll(eventCodes)
+                .filter(c -> !classToEventCodeMap.containsValue(c)).collect(Collectors.toSet());
+        assert classToEventCodeMap.values().containsAll(eventCodes)
                 : "Invalid association `v1.TransactionEventCode` <-> `v1.TransactionEvent`! Missing event codes: "
                         + missingEventCodesTargets;
 
         Set<TransactionEventCode> missingEventCodesSource = eventCodes.stream()
-                .filter(c -> !EVENT_CODE_TO_CLASS_MAP.containsKey(c)).collect(Collectors.toSet());
-        assert EVENT_CODE_TO_CLASS_MAP.keySet().containsAll(eventCodes)
+                .filter(c -> !eventCodeToClassMap.containsKey(c)).collect(Collectors.toSet());
+        assert eventCodeToClassMap.keySet().containsAll(eventCodes)
                 : "Invalid association `v1.TransactionEventCode` <-> `v1.TransactionEvent`! Missing event codes: "
                         + missingEventCodesSource;
 
         /* Check that all classes are present inside the maps */
-        Set<Class<? extends TransactionEvent<?>>> eventClasses = getEventClasses();
+        Set<Class<? extends TransactionEvent<?>>> eventClasses = getEventClasses(basePackage);
 
-        Set<Class<?>> missingClassesSource = eventClasses.stream().filter(c -> !CLASS_TO_EVENT_CODE_MAP.containsKey(c))
+        Set<Class<?>> missingClassesSource = eventClasses.stream().filter(c -> !classToEventCodeMap.containsKey(c))
                 .collect(Collectors.toSet());
-        assert CLASS_TO_EVENT_CODE_MAP.keySet().containsAll(eventClasses)
+        assert classToEventCodeMap.keySet().containsAll(eventClasses)
                 : "Invalid association `v1.TransactionEventCode` <-> `v1.TransactionEvent`! Missing classes: "
                         + missingClassesSource;
 
         Set<Class<?>> missingClassesTargets = eventClasses.stream()
-                .filter(c -> !EVENT_CODE_TO_CLASS_MAP.containsValue(c)).collect(Collectors.toSet());
-        assert EVENT_CODE_TO_CLASS_MAP.values().containsAll(eventClasses)
+                .filter(c -> !eventCodeToClassMap.containsValue(c)).collect(Collectors.toSet());
+        assert eventCodeToClassMap.values().containsAll(eventClasses)
                 : "Invalid association `v1.TransactionEventCode` <-> `v1.TransactionEvent`! Missing classes: "
                         + missingClassesTargets;
 
@@ -185,7 +167,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         return context.constructSpecializedType(superType, subType);
     }
 
-    private static Set<Class<? extends TransactionEvent<?>>> getEventClasses() {
+    private static Set<Class<? extends TransactionEvent<?>>> getEventClasses(String basePackage) {
         /*
          * Check that all classes that inherit from `TransactionEvent` are present
          * https://stackoverflow.com/a/495851
@@ -194,7 +176,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         provider.addIncludeFilter(new AssignableTypeFilter(TransactionEvent.class));
 
         Set<Class<? extends TransactionEvent<?>>> eventClasses = provider
-                .findCandidateComponents("it/pagopa/ecommerce/commons/documents/v1/")
+                .findCandidateComponents(basePackage)
                 .stream()
                 .map(c -> {
                     try {
@@ -203,8 +185,43 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                         throw new RuntimeException(e);
                     }
                 })
-                .filter(c -> Modifier.isAbstract(c.getModifiers()))
+                .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .collect(Collectors.toSet());
         return eventClasses;
+    }
+
+    private static Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> generateClassToEventMap(
+                                                                                                           String basePackage
+    ) {
+        Set<Class<? extends TransactionEvent<?>>> transactionEventClasses = getEventClasses(basePackage);
+
+        Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> result = transactionEventClasses.stream()
+                .map(transactionEventClass -> {
+                    try {
+                        Constructor<? extends TransactionEvent<?>> constructor = (Constructor<? extends TransactionEvent<?>>) Arrays
+                                .stream(transactionEventClass.getConstructors())
+                                .toList()
+                                .stream()
+                                .filter(c -> c.getParameterTypes().length != 0)
+                                .findFirst()
+                                .orElseThrow();
+
+                        List<Object> constructorArguments = new ArrayList<>(
+                                List.of(new TransactionId(UUID.randomUUID()).value())
+                        );
+                        int numberOfOtherParams = constructor.getParameterCount() - 1;
+
+                        for (int i = 0; i < numberOfOtherParams; i++) {
+                            constructorArguments.add(null);
+                        }
+                        TransactionEventCode transactionEventCode = constructor
+                                .newInstance(constructorArguments.toArray()).getEventCode();
+
+                        return Tuple.of(transactionEventClass, transactionEventCode);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toMap(Tuple2::_1, Tuple2::_2));
+        return result;
     }
 }
