@@ -50,7 +50,7 @@ jobs:
         shell: bash
       - name: Azure Pipelines Action
         uses: jacopocarlini/azure-pipelines@v1.3
-        if: steps.configure_pipeline_parameters.outputs.SKIP_RELEASE == false
+        if: steps.configure_pipeline_parameters.outputs.SKIP_RELEASE == 'false'
         with:
           azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
           azure-pipeline-name: 'pagopa-ecommerce-commons.deploy'
