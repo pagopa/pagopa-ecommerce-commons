@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: semver_labels
     environment: prod
-    if: needs.semver_labels.outputs.skip_release == false
     steps:
       - name: Configure pipeline parameters
         id: configure_pipeline_parameters
@@ -50,6 +49,7 @@ jobs:
         shell: bash
       - name: Azure Pipelines Action
         uses: jacopocarlini/azure-pipelines@v1.3
+        if: steps.configure_pipeline_parameters.outputs.skip_release == false
         with:
           azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
           azure-pipeline-name: 'pagopa-ecommerce-commons.deploy'
