@@ -12,6 +12,8 @@ class EmailTest {
     private static final String INVALID_EMAIL = "";
     private static final String VALID_EMAIL = "foo@example.com";
 
+    private static final String UPPER_CASE_MAIL = "FOO@EXAMPLE.COM";
+
     @Test
     void shouldConstructValidEmail() {
         assertDoesNotThrow(() -> new Email(VALID_EMAIL));
@@ -20,5 +22,10 @@ class EmailTest {
     @Test
     void shouldThrowOnInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () -> new Email(INVALID_EMAIL));
+    }
+
+    @Test
+    void shouldConstructValidEmailForUpperCaseMail() {
+        assertDoesNotThrow(() -> new Email(UPPER_CASE_MAIL));
     }
 }
