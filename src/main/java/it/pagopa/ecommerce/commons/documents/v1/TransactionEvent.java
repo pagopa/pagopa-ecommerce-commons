@@ -1,10 +1,8 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
-import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
@@ -24,13 +22,6 @@ import static java.time.ZonedDateTime.now;
 @ToString
 public abstract sealed class TransactionEvent<T> extends
         BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
-
-    @Id
-    private String id;
-
-    @PartitionKey
-    private String transactionId;
-
     private TransactionEventCode eventCode;
 
     TransactionEvent(
@@ -52,8 +43,6 @@ public abstract sealed class TransactionEvent<T> extends
                             .formatted(transactionId)
             );
         }
-        this.id = UUID.randomUUID().toString();
-        this.transactionId = transactionId;
         this.eventCode = eventCode;
     }
 
