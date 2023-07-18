@@ -30,6 +30,7 @@ public class TransactionAuthorizationRequestData {
     private URI logo;
     @Nullable
     private CardBrand brand;
+    private String paymentMethodDescription;
 
     /**
      * Enumeration of different PaymentGateway
