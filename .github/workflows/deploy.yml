@@ -46,10 +46,11 @@ jobs:
         run: |
           echo "🪛 Pipeline parameters"
           echo "RELEASE_SEMVER=${{ steps.configure_pipeline_parameters.outputs.RELEASE_SEMVER }}"
+          echo "SKIP_RELEASE=${{ steps.configure_pipeline_parameters.outputs.SKIP_RELEASE }}"
         shell: bash
       - name: Azure Pipelines Action
         uses: jacopocarlini/azure-pipelines@v1.3
-        if: steps.configure_pipeline_parameters.outputs.skip_release == false
+        if: steps.configure_pipeline_parameters.outputs.SKIP_RELEASE == false
         with:
           azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
           azure-pipeline-name: 'pagopa-ecommerce-commons.deploy'
