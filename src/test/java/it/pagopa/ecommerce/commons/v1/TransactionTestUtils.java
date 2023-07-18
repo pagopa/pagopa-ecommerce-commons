@@ -46,7 +46,6 @@ public class TransactionTestUtils {
     public static final String BROKER_NAME = "brokerName";
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
     public static final String PAYMENT_METHOD_NAME = "paymentMethodName";
-
     public static final String PAYMENT_METHOD_DESCRIPTION = "paymentMethodDescription";
     public static final String PSP_BUSINESS_NAME = "pspBusinessName";
     public static final String AUTHORIZATION_CODE = "authorizationCode";
