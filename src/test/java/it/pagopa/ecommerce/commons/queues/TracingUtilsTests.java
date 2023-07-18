@@ -32,7 +32,7 @@ public class TracingUtilsTests {
     private final TracingUtils tracingUtils = new TracingUtils(openTelemetry, tracer);
 
     @BeforeEach
-    public void setUpOpenTelemetryMocks() {
+    void setUpOpenTelemetryMocks() {
         TextMapPropagator textMapPropagator = Mockito.spy(W3CTraceContextPropagator.getInstance());
 
         Mockito.doAnswer(invocation -> {
@@ -64,7 +64,7 @@ public class TracingUtilsTests {
     }
 
     @Test
-    public void traceMonoWithRemoteSpanWithMonoValueReturnsValue() {
+    void traceMonoWithRemoteSpanWithMonoValueReturnsValue() {
         int expected = 0;
         Mono<Integer> operation = Mono.just(expected);
 
@@ -74,7 +74,7 @@ public class TracingUtilsTests {
     }
 
     @Test
-    public void traceMonoWithRemoteSpanWithMonoErrorReturnsError() {
+    void traceMonoWithRemoteSpanWithMonoErrorReturnsError() {
         RuntimeException expected = new RuntimeException("error!");
         Mono<Integer> operation = Mono.error(expected);
 
@@ -84,7 +84,7 @@ public class TracingUtilsTests {
     }
 
     @Test
-    public void traceMonoWithMonoValueReturnsValue() {
+    void traceMonoWithMonoValueReturnsValue() {
         int expected = 0;
         Mono<Integer> operation = Mono.just(expected);
 
@@ -94,7 +94,7 @@ public class TracingUtilsTests {
     }
 
     @Test
-    public void traceMonoWithMonoErrorReturnsError() {
+    void traceMonoWithMonoErrorReturnsError() {
         RuntimeException expected = new RuntimeException("error!");
         Mono<Integer> operation = Mono.error(expected);
 

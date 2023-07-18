@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
-import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -44,11 +44,11 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
     private static Tuple2<Map<Class<? extends TransactionEvent<?>>, TransactionEventCode>, Map<TransactionEventCode, Class<? extends TransactionEvent<?>>>> initializeEventCodeToClassAssociations(
                                                                                                                                                                                                    String basePackage
     ) {
-        final Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> CLASS_TO_EVENT_CODE_MAP = generateClassToEventMap(
+        final Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> classToEventCodeMap = generateClassToEventMap(
                 basePackage
         );
 
-        final Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> EVENT_CODE_TO_CLASS_MAP = CLASS_TO_EVENT_CODE_MAP
+        final Map<TransactionEventCode, Class<? extends TransactionEvent<?>>> eventCodeToClassMap = classToEventCodeMap
                 .entrySet().stream().collect(
                         Collectors.toMap(
                                 Map.Entry::getValue,
@@ -60,7 +60,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                                     throw new IllegalStateException(
                                             "Cannot have more than one class associated to a single event code! Found ambiguous association: %s => [%s, %s]"
                                                     .formatted(
-                                                            CLASS_TO_EVENT_CODE_MAP.get(class1),
+                                                            classToEventCodeMap.get(class1),
                                                             class1.getName(),
                                                             class2.getName()
                                                     )
@@ -69,7 +69,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                         )
                 );
 
-        return Tuple.of(CLASS_TO_EVENT_CODE_MAP, EVENT_CODE_TO_CLASS_MAP);
+        return Tuple.of(classToEventCodeMap, eventCodeToClassMap);
     }
 
     private static void checkEventCodeToClassAssociations(
@@ -175,7 +175,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
         provider.addIncludeFilter(new AssignableTypeFilter(TransactionEvent.class));
 
-        Set<Class<? extends TransactionEvent<?>>> eventClasses = provider
+        return provider
                 .findCandidateComponents(basePackage)
                 .stream()
                 .map(c -> {
@@ -187,7 +187,6 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                 })
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .collect(Collectors.toSet());
-        return eventClasses;
     }
 
     private static Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> generateClassToEventMap(
@@ -195,7 +194,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
     ) {
         Set<Class<? extends TransactionEvent<?>>> transactionEventClasses = getEventClasses(basePackage);
 
-        Map<Class<? extends TransactionEvent<?>>, TransactionEventCode> result = transactionEventClasses.stream()
+        return transactionEventClasses.stream()
                 .map(transactionEventClass -> {
                     try {
                         Constructor<? extends TransactionEvent<?>> constructor = (Constructor<? extends TransactionEvent<?>>) Arrays
@@ -222,6 +221,5 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toMap(Tuple2::_1, Tuple2::_2));
-        return result;
     }
 }

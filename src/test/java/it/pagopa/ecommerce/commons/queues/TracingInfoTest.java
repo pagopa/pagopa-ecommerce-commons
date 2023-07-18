@@ -17,7 +17,7 @@ public class TracingInfoTest {
     );
 
     @Test
-    public void throwsOnNullValues() {
+    void throwsOnNullValues() {
         assertThrows(Exception.class, () -> new TracingInfo(null, Optional.of(""), Optional.of("")));
         assertThrows(Exception.class, () -> new TracingInfo("", null, Optional.of("")));
         assertThrows(Exception.class, () -> new TracingInfo("", Optional.of(""), null));

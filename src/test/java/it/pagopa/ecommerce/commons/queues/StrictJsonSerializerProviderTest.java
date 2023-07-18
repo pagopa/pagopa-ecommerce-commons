@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class StrictJsonSerializerProviderTest {
+class StrictJsonSerializerProviderTest {
     private final JsonSerializer jsonSerializer = new StrictJsonSerializerProvider().createInstance();
 
     record Simple(int bar) {
@@ -31,7 +31,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void serializeEmptyOptionalAsNull() {
+    void serializeEmptyOptionalAsNull() {
         Optional<Integer> value = Optional.empty();
 
         String serialized = new String(jsonSerializer.serializeToBytes(value));
@@ -40,7 +40,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void serializeValuedOptionalAsValue() {
+    void serializeValuedOptionalAsValue() {
         int rawValue = 1;
         Optional<Integer> value = Optional.of(rawValue);
 
@@ -50,7 +50,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void dontAllowArbitrarySubtypeDeserialization() {
+    void dontAllowArbitrarySubtypeDeserialization() {
         assertThrows(Exception.class, () -> {
             TransactionEvent<?> event = TransactionTestUtils.transactionActivateEvent();
 
@@ -61,7 +61,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void disallowNullPrimitiveProperty() {
+    void disallowNullPrimitiveProperty() {
         String serializedWithNull = """
                 {
                     "bar": null
@@ -78,7 +78,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void disallowMissingPrimitiveProperty() {
+    void disallowMissingPrimitiveProperty() {
         String serializedWithMissingProperty = """
                 {
                 }
@@ -96,7 +96,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void disallowNullObjectProperty() {
+    void disallowNullObjectProperty() {
         String serializedWithNull = """
                 {
                     "bar": null
@@ -115,7 +115,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void disallowMissingObjectProperty() {
+    void disallowMissingObjectProperty() {
         String serializedWithMissingProperty = """
                 {
                 }
@@ -133,7 +133,7 @@ public class StrictJsonSerializerProviderTest {
     }
 
     @Test
-    public void disallowExtraProperties() {
+    void disallowExtraProperties() {
         String serializedWithExtraProperty = """
                 {
                     "quux": "a",

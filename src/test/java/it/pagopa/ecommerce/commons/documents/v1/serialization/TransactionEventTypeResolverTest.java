@@ -17,11 +17,11 @@ import reactor.test.StepVerifier;
 import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionEventTypeResolverTest {
+class TransactionEventTypeResolverTest {
     private final JsonSerializer jsonSerializer = new StrictJsonSerializerProvider().createInstance();
 
     @Test
-    public void canRoundtripQueueEventSerialization() {
+    void canRoundtripQueueEventSerialization() {
         QueueEvent<TransactionRefundRequestedEvent> originalEvent = new QueueEvent<>(
                 new TransactionRefundRequestedEvent(
                         TransactionTestUtils.TRANSACTION_ID,
@@ -63,7 +63,7 @@ public class TransactionEventTypeResolverTest {
     }
 
     @Test
-    public void serializerDisambiguatesTypesWithSameShape() {
+    void serializerDisambiguatesTypesWithSameShape() {
         QueueEvent<TransactionClosedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionClosedEvent(TransactionClosureData.Outcome.KO),
                 MOCK_TRACING_INFO

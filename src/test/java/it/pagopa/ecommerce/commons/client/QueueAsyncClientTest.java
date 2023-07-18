@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class QueueAsyncClientTest {
+class QueueAsyncClientTest {
     private final com.azure.storage.queue.QueueAsyncClient azureQueueAsyncClient = Mockito
             .mock(com.azure.storage.queue.QueueAsyncClient.class);
 
@@ -36,7 +36,7 @@ public class QueueAsyncClientTest {
     private final QueueAsyncClient queueAsyncClient = new QueueAsyncClient(azureQueueAsyncClient, jsonSerializer);
 
     @Test
-    public void clientForwardsParametersToInnerClient() {
+    void clientForwardsParametersToInnerClient() {
         /* preconditions */
         Mono<Response<SendMessageResult>> queueResponse = queueSuccessfulResponse();
         QueueEvent<TransactionActivatedEvent> queueEvent = new QueueEvent<>(
@@ -70,7 +70,7 @@ public class QueueAsyncClientTest {
     }
 
     @Test
-    public void queueNameForwardsToInnerClient() {
+    void queueNameForwardsToInnerClient() {
         /* preconditions */
         String expectedQueueName = "queue-name";
         Mockito.when(
