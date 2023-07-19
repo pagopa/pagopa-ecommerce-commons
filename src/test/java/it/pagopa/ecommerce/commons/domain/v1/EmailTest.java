@@ -19,7 +19,13 @@ class EmailTest {
     private static final String MIXED_CASE_MAIL = "FoO@eXaMpLe.CoM";
 
     @ParameterizedTest
-    @ValueSource(strings = {VALID_EMAIL, UPPER_CASE_MAIL, MIXED_CASE_MAIL})
+    @ValueSource(
+            strings = {
+                    VALID_EMAIL,
+                    UPPER_CASE_MAIL,
+                    MIXED_CASE_MAIL
+            }
+    )
     void shouldConstructValidEmail(String email) {
         assertDoesNotThrow(() -> new Email(email));
     }
