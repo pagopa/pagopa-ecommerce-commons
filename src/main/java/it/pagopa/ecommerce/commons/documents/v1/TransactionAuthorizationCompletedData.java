@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,4 +44,8 @@ public class TransactionAuthorizationCompletedData {
      * The payment gateway authorization outcome
      */
     private AuthorizationResultDto authorizationResultDto;
+
+    @JsonCreator
+    private TransactionAuthorizationCompletedData() {
+    }
 }
