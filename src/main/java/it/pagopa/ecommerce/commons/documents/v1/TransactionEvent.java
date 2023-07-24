@@ -23,7 +23,7 @@ import static java.time.ZonedDateTime.now;
 @Generated
 @NoArgsConstructor
 @ToString
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode", visible = true)
 @JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract sealed class TransactionEvent<T> extends
         BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
