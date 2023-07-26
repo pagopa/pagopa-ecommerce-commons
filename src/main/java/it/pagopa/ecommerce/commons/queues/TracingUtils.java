@@ -5,9 +5,7 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
-import io.vavr.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -66,12 +64,10 @@ public class TracingUtils {
     /**
      * Tracing context to propagate span information
      *
-     * @param scope       scope created from span
      * @param span        span to propagate
      * @param tracingInfo tracing information used to propagate current span context
      */
     private record TracingContext(
-            @NonNull Scope scope,
             @NonNull Span span,
             @NonNull TracingInfo tracingInfo
     ) {
@@ -128,15 +124,10 @@ public class TracingUtils {
                             Optional.ofNullable(rawTracingInfo.get(BAGGAGE))
                     );
 
-                    Scope scope = span.makeCurrent();
-
-                    return new TracingContext(scope, span, tracingInfo);
+                    return new TracingContext(span, tracingInfo);
                 },
                 tracingContext -> traced.apply(tracingContext.tracingInfo),
-                tracingContext -> {
-                    tracingContext.scope.close();
-                    tracingContext.span.end();
-                }
+                tracingContext -> tracingContext.span.end()
         );
     }
 
