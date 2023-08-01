@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  */
 @ValueObject
 public record RptId(String value) {
-    private static final Pattern rptIdRegex = Pattern.compile("([a-zA-Z\\d]{29})");
+    private static final Pattern rptIdRegex = Pattern.compile("^([0-9]{29})$");
 
     /**
      * Construct an {@code RptId} from a {@link String} value.
