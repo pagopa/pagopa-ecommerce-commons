@@ -47,7 +47,8 @@ public class NpgClient {
      * method to invoke the orders/build api
      *
      * @param createHostedOrderRequestDto the request to create the session
-     * @return An object containing sessionId, sessionToken and the fields list to show on the client-side
+     * @return An object containing sessionId, sessionToken and the fields list to
+     *         show on the client-side
      */
     public Mono<PostMessageDto> createHostedOrder(
                                                   CreateHostedOrderRequestDto createHostedOrderRequestDto
