@@ -7,6 +7,7 @@ import it.pagopa.generated.ecommerce.npg.v1.dto.PostMessageDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class NpgClient {
                 .getWebClient()
                 .post()
                 .uri(
-                        uriBuilder -> uriBuilder.build()
+                        UriBuilder::build
                 )
                 .header("ocp-apim-subscription-key", npgKey) // TODO Check the name
                 .header(
