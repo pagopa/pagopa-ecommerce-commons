@@ -20,17 +20,17 @@ import java.util.UUID;
 public class NpgClient {
 
     /**
-     * Npg Api
+     * The npg Api
      */
     private final HostedFieldsApi hostedFieldsApi;
 
     /**
-     * Npg key
+     * The npg api key
      */
     private final String npgKey;
 
     /**
-     * Npg constructor
+     * Instantiate a npg-client to establish communication via the npg api
      *
      * @param hostedFieldsApi the api
      * @param npgKey          the api key
@@ -46,8 +46,8 @@ public class NpgClient {
     /**
      * method to invoke the orders/build api
      *
-     * @param createHostedOrderRequestDto the reqeust to create the session
-     * @return Object containing sessionId, sessionToken and the fields list
+     * @param createHostedOrderRequestDto the request to create the session
+     * @return An object containing sessionId, sessionToken and the fields list to show on the client-side
      */
     public Mono<PostMessageDto> createHostedOrder(
                                                   CreateHostedOrderRequestDto createHostedOrderRequestDto
