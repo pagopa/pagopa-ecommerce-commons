@@ -22,7 +22,10 @@ public class NpgClient {
     @Qualifier("ecommercePaymentInstrumentsWebClient")
     private HostedFieldsApi hostedFieldsApi;
 
-    public Mono<PostMessageDto> createHostedOrder(String paymentMethodId, CreateHostedOrderRequestDto createHostedOrderRequestDto) {
+    public Mono<PostMessageDto> createHostedOrder(
+                                                  String paymentMethodId,
+                                                  CreateHostedOrderRequestDto createHostedOrderRequestDto
+    ) {
 
         return hostedFieldsApi
                 .getApiClient()
@@ -31,8 +34,11 @@ public class NpgClient {
                 .uri(
                         uriBuilder -> uriBuilder.build()
                 )
-                .header("Correlation-Id",UUID
-                        .randomUUID().toString())
+                .header(
+                        "Correlation-Id",
+                        UUID
+                                .randomUUID().toString()
+                )
                 .body(Mono.just(createHostedOrderRequestDto), CreateHostedOrderRequestDto.class)
                 .retrieve()
                 .onStatus(
