@@ -19,10 +19,22 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
+    /**
+     * Npg Api
+     */
     private final HostedFieldsApi hostedFieldsApi;
 
+    /**
+     * Npg key
+     */
     private final String npgKey;
 
+    /**
+     * Npg constructor
+     *
+     * @param hostedFieldsApi the api
+     * @param npgKey          the api key
+     */
     public NpgClient(
             HostedFieldsApi hostedFieldsApi,
             String npgKey
