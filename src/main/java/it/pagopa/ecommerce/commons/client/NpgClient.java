@@ -31,7 +31,6 @@ public class NpgClient {
         this.npgKey = npgKey;
     }
 
-
     /**
      * method to invoke the orders/build api
      *
@@ -49,7 +48,7 @@ public class NpgClient {
                 .uri(
                         uriBuilder -> uriBuilder.build()
                 )
-                .header("ocp-apim-subscription-key", npgKey) //TODO Check the name
+                .header("ocp-apim-subscription-key", npgKey) // TODO Check the name
                 .header(
                         "Correlation-Id",
                         UUID
