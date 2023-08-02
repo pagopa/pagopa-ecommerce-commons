@@ -1,15 +1,11 @@
 package it.pagopa.ecommerce.commons.client;
 
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
-import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.generated.ecommerce.npg.v1.api.HostedFieldsApi;
 import it.pagopa.generated.ecommerce.npg.v1.dto.CreateHostedOrderRequestDto;
 import it.pagopa.generated.ecommerce.npg.v1.dto.PostMessageDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
@@ -23,19 +19,26 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
-    @Autowired
-    @Qualifier("ecommercePaymentInstrumentsWebClient")
-    private HostedFieldsApi hostedFieldsApi;
+    private final HostedFieldsApi hostedFieldsApi;
+
+    private final String npgKey;
+
+    public NpgClient(
+            HostedFieldsApi hostedFieldsApi,
+            String npgKey
+    ) {
+        this.hostedFieldsApi = hostedFieldsApi;
+        this.npgKey = npgKey;
+    }
+
 
     /**
      * method to invoke the orders/build api
      *
-     * @param paymentMethodId             the payment method id
      * @param createHostedOrderRequestDto the reqeust to create the session
      * @return Object containing sessionId, sessionToken and the fields list
      */
     public Mono<PostMessageDto> createHostedOrder(
-                                                  String paymentMethodId,
                                                   CreateHostedOrderRequestDto createHostedOrderRequestDto
     ) {
 
@@ -46,6 +49,7 @@ public class NpgClient {
                 .uri(
                         uriBuilder -> uriBuilder.build()
                 )
+                .header("ocp-apim-subscription-key", npgKey) //TODO Check the name
                 .header(
                         "Correlation-Id",
                         UUID
