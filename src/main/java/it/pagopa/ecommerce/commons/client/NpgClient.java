@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.client;
 
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
+import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.generated.ecommerce.npg.v1.api.HostedFieldsApi;
 import it.pagopa.generated.ecommerce.npg.v1.dto.CreateHostedOrderRequestDto;
 import it.pagopa.generated.ecommerce.npg.v1.dto.PostMessageDto;
@@ -14,7 +15,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-@Component
+/**
+ * <p>
+ * NpgClient instance to communicate with npg.
+ * </p>
+ */
 @Slf4j
 public class NpgClient {
 
@@ -22,6 +27,13 @@ public class NpgClient {
     @Qualifier("ecommercePaymentInstrumentsWebClient")
     private HostedFieldsApi hostedFieldsApi;
 
+    /**
+     * method to invoke the orders/build api
+     *
+     * @param paymentMethodId             the payment method id
+     * @param createHostedOrderRequestDto the reqeust to create the session
+     * @return Object containing sessionId, sessionToken and the fields list
+     */
     public Mono<PostMessageDto> createHostedOrder(
                                                   String paymentMethodId,
                                                   CreateHostedOrderRequestDto createHostedOrderRequestDto
