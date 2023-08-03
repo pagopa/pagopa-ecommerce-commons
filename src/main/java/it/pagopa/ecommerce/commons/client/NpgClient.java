@@ -62,7 +62,7 @@ public class NpgClient {
                 .uri(
                         UriBuilder::build
                 )
-                .header("ocp-apim-subscription-key", npgKey) // TODO Check the name
+                .header("X-Api-Key", npgKey)
                 .header(
                         "Correlation-Id",
                         UUID
