@@ -375,8 +375,8 @@
                                 <swaggerAnnotations>false</swaggerAnnotations>
                                 <openApiNullable>false</openApiNullable>
                             </configOptions>
-                            <modelPackage>it.pagopa.generated.ecommerce.npg.v1.dto</modelPackage>
-                            <apiPackage>it.pagopa.generated.ecommerce.npg.v1.api</apiPackage>
+                            <modelPackage>it.pagopa.ecommerce.commons.generated.npg.v1.dto</modelPackage>
+                            <apiPackage>it.pagopa.ecommerce.commons.generated.npg.v1.api</apiPackage>
                             <modelNameSuffix>dto</modelNameSuffix>
                         </configuration>
                     </execution>
