@@ -72,29 +72,10 @@ public class NpgClient {
                                      @NotNull String orderId,
                                      @NotNull String customerId
     ) {
-        return buildForm(
-                correlationId,
-                buildOrderRequestDto(merchantUrl, resultUrl, notificationUrl, cancelUrl, orderId, customerId)
-        );
-    }
-
-    /**
-     * @deprecated method to invoke the orders/build api in order to start a payment
-     *             session, retrieve the sessionId and sessionToken and the fields
-     *             of the form to display in the webview. This method allows to use
-     *             the original dto to send the request to npg. This method
-     *             is @deprecated , and it is used for develop purpose only. It will
-     *             be removed as soon as the npg api will be stable.
-     */
-    @Deprecated(forRemoval = true)
-    public Mono<FieldsDto> buildForm(
-                                     @NotNull UUID correlationId,
-                                     @NotNull CreateHostedOrderRequestDto createHostedOrderRequestDto
-    ) {
 
         return paymentServicesApi.apiOrdersBuildPost(
                 correlationId,
-                createHostedOrderRequestDto
+                buildOrderRequestDto(merchantUrl, resultUrl, notificationUrl, cancelUrl, orderId, customerId)
         ).doOnError(
                 WebClientResponseException.class,
                 e -> log.info(
@@ -105,7 +86,6 @@ public class NpgClient {
                 .onErrorMap(
                         err -> new NpgResponseException("Error while invoke method for build order", err)
                 );
-
     }
 
     private CreateHostedOrderRequestDto buildOrderRequestDto(

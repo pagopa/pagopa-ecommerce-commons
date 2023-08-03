@@ -85,26 +85,6 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrieveFieldsDto() {
-        FieldsDto fieldsDto = buildTestFieldsDto();
-
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
-
-        Mockito.when(
-                paymentServicesApi.apiOrdersBuildPost(
-                        correlationUUID,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(npgClient.buildForm(correlationUUID, requestDto))
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
-    @Test
     void shouldThrowException() {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
@@ -129,7 +109,17 @@ class NpgClientTests {
                 );
 
         StepVerifier
-                .create(npgClient.buildForm(correlationUUID, requestDto))
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID
+                        )
+                )
                 .expectError(NpgResponseException.class)
                 .verify();
     }
