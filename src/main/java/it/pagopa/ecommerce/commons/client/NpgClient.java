@@ -19,6 +19,11 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
+    public static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
+    public static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
+    public static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
+    public static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
+    public static final String CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
     /**
      * The npg Api
      */
@@ -115,21 +120,21 @@ public class NpgClient {
                                                              String customerId
     ) {
         return new CreateHostedOrderRequestDto()
-                .version("2")
+                .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
                 .merchantUrl(merchantUrl.toString())
                 .order(
                         new OrderDto()
                                 .orderId(orderId)
-                                .amount("0")
-                                .currency("EUR")
+                                .amount(CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT)
+                                .currency(CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(customerId)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.VERIFY)
-                                .amount("0")
-                                .language("ITA")
-                                .paymentService("CARDS")
+                                .amount(CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT)
+                                .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
+                                .paymentService(CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
                                 .notificationUrl(notificationUrl.toString())
