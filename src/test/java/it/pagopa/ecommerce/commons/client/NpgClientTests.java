@@ -1,32 +1,24 @@
 package it.pagopa.ecommerce.commons.client;
 
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
-import it.pagopa.generated.ecommerce.npg.v1.ApiClient;
-import it.pagopa.generated.ecommerce.npg.v1.api.PaymentServicesApi;
-import it.pagopa.generated.ecommerce.npg.v1.dto.*;
+import it.pagopa.ecommerce.commons.generated.npg.v1.ApiClient;
+import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {

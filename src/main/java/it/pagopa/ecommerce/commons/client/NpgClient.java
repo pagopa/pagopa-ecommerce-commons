@@ -1,16 +1,11 @@
 package it.pagopa.ecommerce.commons.client;
 
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
-import it.pagopa.generated.ecommerce.npg.v1.api.HostedFieldsApi;
-import it.pagopa.generated.ecommerce.npg.v1.api.PaymentServicesApi;
-import it.pagopa.generated.ecommerce.npg.v1.dto.CreateHostedOrderRequestDto;
-import it.pagopa.generated.ecommerce.npg.v1.dto.FieldsDto;
-import it.pagopa.generated.ecommerce.npg.v1.dto.PostMessageDto;
+import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.CreateHostedOrderRequestDto;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.FieldsDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
