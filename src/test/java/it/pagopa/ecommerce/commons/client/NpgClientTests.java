@@ -138,7 +138,7 @@ class NpgClientTests {
                 );
     }
 
-    private FieldsDto getFieldsDto() {
+    private FieldsDto buildTestFieldsDto() {
         return new FieldsDto()
                 .sessionId("sessionId")
                 .securityToken("securityToken")
