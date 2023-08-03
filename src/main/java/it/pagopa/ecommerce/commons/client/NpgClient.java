@@ -19,11 +19,11 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
-    public static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
-    public static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
-    public static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
-    public static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
-    public static final String CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
     /**
      * The npg Api
      */
@@ -63,36 +63,33 @@ public class NpgClient {
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
-    public Mono<FieldsDto> buildForms(
-                                      @NotNull UUID correlationId,
-                                      @NotNull URI merchantUrl,
-                                      @NotNull URI resultUrl,
-                                      @NotNull URI notificationUrl,
-                                      @NotNull URI cancelUrl,
-                                      @NotNull String orderId,
-                                      @NotNull String customerId
+    public Mono<FieldsDto> buildForm(
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId
     ) {
-        return buildForms(
+        return buildForm(
                 correlationId,
                 buildOrderRequestDto(merchantUrl, resultUrl, notificationUrl, cancelUrl, orderId, customerId)
         );
     }
 
     /**
-     * method to invoke the orders/build api in order to start a payment session,
-     * retrieve the sessionId and sessionToken and the fields of the form to display
-     * in the webview. This method allows to use the original dto to send the
-     * request to npg.
-     *
-     * @param createHostedOrderRequestDto the request to create the session
-     * @param correlationId               the unique id to identify the rest api
-     *                                    invocation
-     * @return An object containing sessionId, sessionToken and the fields list to
-     *         show on the client-side
+     * @deprecated method to invoke the orders/build api in order to start a payment
+     *             session, retrieve the sessionId and sessionToken and the fields
+     *             of the form to display in the webview. This method allows to use
+     *             the original dto to send the request to npg. This method
+     *             is @deprecated , and it is used for develop purpose only. It will
+     *             be removed as soon as the npg api will be stable.
      */
-    public Mono<FieldsDto> buildForms(
-                                      @NotNull UUID correlationId,
-                                      @NotNull CreateHostedOrderRequestDto createHostedOrderRequestDto
+    @Deprecated(forRemoval = true)
+    public Mono<FieldsDto> buildForm(
+                                     @NotNull UUID correlationId,
+                                     @NotNull CreateHostedOrderRequestDto createHostedOrderRequestDto
     ) {
 
         return paymentServicesApi.apiOrdersBuildPost(

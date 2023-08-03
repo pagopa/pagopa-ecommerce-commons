@@ -23,23 +23,23 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {
     private static final String MOCKED_API_KEY = "mocked-api-key";
-    public static final String ORDER_REQUEST_VERSION = "2";
-    public static final String MERCHANT_URL = "localhost/merchant";
-    public static final String ORDER_REQUEST_ORDER_ID = "orderId";
-    public static final String ORDER_REQUEST_AMOUNT = "0";
-    public static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
-    public static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
-    public static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
-    public static final String ORDER_REQUEST_LANGUAGE_ITA = "ITA";
-    public static final String CANCEL_URL = "localhost/cancel";
-    public static final String NOTIFICATION_URL = "localhost/notification";
-    public static final String RESULT_URL = "localhost/result";
-    public static final String SESSION_ID = "sessionId";
-    public static final String SECURITY_TOKEN = "securityToken";
-    public static final String TEST_1 = "test1";
-    public static final String SRC_1 = "src1";
-    public static final String PROPERTY_1 = "property1";
-    public static final String TYPE_1 = "type1";
+    private static final String ORDER_REQUEST_VERSION = "2";
+    private static final String MERCHANT_URL = "localhost/merchant";
+    private static final String ORDER_REQUEST_ORDER_ID = "orderId";
+    private static final String ORDER_REQUEST_AMOUNT = "0";
+    private static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
+    private static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
+    private static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
+    private static final String ORDER_REQUEST_LANGUAGE_ITA = "ITA";
+    private static final String CANCEL_URL = "localhost/cancel";
+    private static final String NOTIFICATION_URL = "localhost/notification";
+    private static final String RESULT_URL = "localhost/result";
+    private static final String SESSION_ID = "sessionId";
+    private static final String SECURITY_TOKEN = "securityToken";
+    private static final String TEST_1 = "test1";
+    private static final String SRC_1 = "src1";
+    private static final String PROPERTY_1 = "property1";
+    private static final String TYPE_1 = "type1";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -70,7 +70,7 @@ class NpgClientTests {
 
         StepVerifier
                 .create(
-                        npgClient.buildForms(
+                        npgClient.buildForm(
                                 correlationUUID,
                                 URI.create(MERCHANT_URL),
                                 URI.create(RESULT_URL),
@@ -99,7 +99,7 @@ class NpgClientTests {
         ).thenReturn(Mono.just(fieldsDto));
 
         StepVerifier
-                .create(npgClient.buildForms(correlationUUID, requestDto))
+                .create(npgClient.buildForm(correlationUUID, requestDto))
                 .expectNext(fieldsDto)
                 .verifyComplete();
     }
@@ -129,7 +129,7 @@ class NpgClientTests {
                 );
 
         StepVerifier
-                .create(npgClient.buildForms(correlationUUID, requestDto))
+                .create(npgClient.buildForm(correlationUUID, requestDto))
                 .expectError(NpgResponseException.class)
                 .verify();
     }
