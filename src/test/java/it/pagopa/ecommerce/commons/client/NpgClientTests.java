@@ -12,11 +12,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -54,7 +58,7 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrievePostMessageDto() {
+    void shouldRetrieveFieldsDto() {
         FieldsDto fieldsDto = getFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
@@ -71,6 +75,36 @@ class NpgClientTests {
                 .create(npgClient.buildOrders(correlationUUID, requestDto))
                 .expectNext(fieldsDto)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldThrowException() {
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = getRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.apiOrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Test error when calling apiOrdersBuildPost",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        null,
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(npgClient.buildOrders(correlationUUID, requestDto))
+                .expectError(NpgResponseException.class)
+                .verify();
     }
 
     private CreateHostedOrderRequestDto getRequestDto() {

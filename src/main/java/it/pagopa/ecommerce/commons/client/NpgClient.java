@@ -68,7 +68,7 @@ public class NpgClient {
                 )
         )
                 .onErrorMap(
-                        err -> new NpgResponseException("Error while invoke method for read psp list")
+                        err -> new NpgResponseException("Error while invoke method for build order", err)
                 );
 
     }
