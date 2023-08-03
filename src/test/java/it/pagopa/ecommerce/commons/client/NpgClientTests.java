@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -40,10 +39,10 @@ class NpgClientTests {
 
     @Test
     void shouldRetrieveFieldsDtoUsingExplicitParameters() {
-        FieldsDto fieldsDto = getFieldsDto();
+        FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = getRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
@@ -67,10 +66,10 @@ class NpgClientTests {
     }
     @Test
     void shouldRetrieveFieldsDto() {
-        FieldsDto fieldsDto = getFieldsDto();
+        FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = getRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
@@ -88,7 +87,7 @@ class NpgClientTests {
     @Test
     void shouldThrowException() {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = getRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
@@ -115,7 +114,7 @@ class NpgClientTests {
                 .verify();
     }
 
-    private CreateHostedOrderRequestDto getRequestDto() {
+    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
         return new CreateHostedOrderRequestDto()
                 .version("2")
                 .merchantUrl("localhost/merchant")

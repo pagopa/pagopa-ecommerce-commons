@@ -74,7 +74,9 @@ public class NpgClient {
     }
 
     /**
-     * method to invoke the orders/build api
+     * method to invoke the orders/build api in order to start a payment session,
+     * retrieve the sessionId and sessionToken and the fields of the form to display
+     * in the webview. This method allows to use the original dto to send the request to npg.
      *
      * @param createHostedOrderRequestDto the request to create the session
      * @param correlationId               the unique id to identify the rest api
