@@ -46,6 +46,8 @@ public class NpgClient {
      * method to invoke the orders/build api
      *
      * @param createHostedOrderRequestDto the request to create the session
+     * @param correlationId               the unique id to identify the rest api
+     *                                    invocation
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */

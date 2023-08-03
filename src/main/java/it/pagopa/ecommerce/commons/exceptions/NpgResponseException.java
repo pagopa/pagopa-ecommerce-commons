@@ -9,7 +9,7 @@ package it.pagopa.ecommerce.commons.exceptions;
 public class NpgResponseException extends RuntimeException {
 
     /**
-     * Exception constructor for npg client with status code and reason
+     * Exception constructor for npg client with message
      *
      * @param message the error message
      * @see RuntimeException
@@ -18,6 +18,13 @@ public class NpgResponseException extends RuntimeException {
         super(message);
     }
 
+    /**
+     * Exception constructor for npg client with message and @see Throwable
+     *
+     * @param message the error message
+     * @param t       the throwable instance
+     * @see RuntimeException
+     */
     public NpgResponseException(
             String message,
             Throwable t
