@@ -43,10 +43,10 @@ public class NpgClient {
      *
      * @param correlationId   the unique id to identify the rest api invocation
      * @param merchantUrl     the merchant url of the payment session
-     * @param resultUrl       the result url where the user should be redirect at
+     * @param resultUrl       the result url where the user should be redirected at
      *                        the end of the payment session
      * @param notificationUrl the notification url where notify the session
-     * @param cancelUrl       the url where the user should be redirect if the
+     * @param cancelUrl       the url where the user should be redirected if the
      *                        session is canceled by the user
      * @param orderId         the orderId of the payment session
      * @param customerId      the customerId url of the api
