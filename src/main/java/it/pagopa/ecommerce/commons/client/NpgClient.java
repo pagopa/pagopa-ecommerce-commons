@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -35,8 +36,8 @@ public class NpgClient {
      * @param npgKey             the api key
      */
     public NpgClient(
-            PaymentServicesApi paymentServicesApi,
-            String npgKey
+            @NotNull PaymentServicesApi paymentServicesApi,
+            @NotNull String npgKey
     ) {
         this.paymentServicesApi = paymentServicesApi;
         this.paymentServicesApi.getApiClient().setApiKey(npgKey);
@@ -62,9 +63,8 @@ public class NpgClient {
         ).doOnError(
                 WebClientResponseException.class,
                 e -> log.info(
-                        "Got bad response from npg-service [HTTP {}]: {}",
-                        e.getStatusCode(),
-                        e.getResponseBodyAsString()
+                        "Got bad response from npg-service [HTTP {}]",
+                        e.getStatusCode()
                 )
         )
                 .onErrorMap(
