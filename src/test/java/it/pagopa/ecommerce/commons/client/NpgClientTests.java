@@ -23,6 +23,7 @@ import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {
+    private static final String MOCKED_API_KEY = "mocked-api-key";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -34,7 +35,7 @@ class NpgClientTests {
     @BeforeEach
     public void init() {
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        npgClient = new NpgClient(paymentServicesApi, "xxx");
+        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY);
     }
 
     @Test
@@ -52,21 +53,18 @@ class NpgClientTests {
         ).thenReturn(Mono.just(fieldsDto));
 
         StepVerifier
-                .create(
-                        npgClient.buildOrders(
-                                correlationUUID,
-                                URI.create("localhost/merchant"),
-                                URI.create("localhost/result"),
-                                URI.create("localhost/notification"),
-                                URI.create("localhost/cancel"),
-                                "orderId",
-                                "customerId"
-                        )
-                )
+                .create(npgClient.buildForms(
+                        correlationUUID,
+                        URI.create("localhost/merchant"),
+                        URI.create("localhost/result"),
+                        URI.create("localhost/notification"),
+                        URI.create("localhost/cancel"),
+                        "orderId",
+                        "customerId"
+                ))
                 .expectNext(fieldsDto)
                 .verifyComplete();
     }
-
     @Test
     void shouldRetrieveFieldsDto() {
         FieldsDto fieldsDto = getFieldsDto();
@@ -82,7 +80,7 @@ class NpgClientTests {
         ).thenReturn(Mono.just(fieldsDto));
 
         StepVerifier
-                .create(npgClient.buildOrders(correlationUUID, requestDto))
+                .create(npgClient.buildForms(correlationUUID, requestDto))
                 .expectNext(fieldsDto)
                 .verifyComplete();
     }
@@ -112,7 +110,7 @@ class NpgClientTests {
                 );
 
         StepVerifier
-                .create(npgClient.buildOrders(correlationUUID, requestDto))
+                .create(npgClient.buildForms(correlationUUID, requestDto))
                 .expectError(NpgResponseException.class)
                 .verify();
     }

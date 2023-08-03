@@ -39,7 +39,12 @@ public class NpgClient {
     }
 
     /**
-     * method to invoke the orders/build api
+     * method to invoke the orders/build api in order to start a payment session,
+     * retrieve the sessionId and sessionToken and the fields of the form to display
+     * in the webview. This method ensures that the request dto for the orders/build
+     * api will be built in the right way (it is easy to build it manually with
+     * wrong values, e.g. <i>amount</i> or <i>currency</i> as a string can be easily
+     * confused).
      *
      * @param correlationId   the unique id to identify the rest api invocation
      * @param merchantUrl     the merchant url of the payment session
@@ -53,16 +58,16 @@ public class NpgClient {
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
-    public Mono<FieldsDto> buildOrders(
-                                       @NotNull UUID correlationId,
-                                       @NotNull URI merchantUrl,
-                                       @NotNull URI resultUrl,
-                                       @NotNull URI notificationUrl,
-                                       @NotNull URI cancelUrl,
-                                       @NotNull String orderId,
-                                       @NotNull String customerId
+    public Mono<FieldsDto> buildForms(
+                                      @NotNull UUID correlationId,
+                                      @NotNull URI merchantUrl,
+                                      @NotNull URI resultUrl,
+                                      @NotNull URI notificationUrl,
+                                      @NotNull URI cancelUrl,
+                                      @NotNull String orderId,
+                                      @NotNull String customerId
     ) {
-        return buildOrders(
+        return buildForms(
                 correlationId,
                 buildOrderRequestDto(merchantUrl, resultUrl, notificationUrl, cancelUrl, orderId, customerId)
         );
@@ -77,7 +82,7 @@ public class NpgClient {
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
-    public Mono<FieldsDto> buildOrders(
+    public Mono<FieldsDto> buildForms(
                                        @NotNull UUID correlationId,
                                        @NotNull CreateHostedOrderRequestDto createHostedOrderRequestDto
     ) {
