@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class NpgClientTests {
+class NpgClientTests {
     @Mock
     private ApiClient apiClient;
     @Mock

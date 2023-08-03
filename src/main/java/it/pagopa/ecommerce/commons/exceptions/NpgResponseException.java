@@ -13,12 +13,12 @@ public class NpgResponseException extends RuntimeException {
     /**
      * Http status code @see org.springframework.http.HttpStatus
      */
-    public HttpStatus status;
+    private HttpStatus status;
 
     /**
      * Error reason
      */
-    public String reason;
+    private String reason;
 
     /**
      * Exception constructor for npg client with status code and reason
@@ -33,5 +33,13 @@ public class NpgResponseException extends RuntimeException {
     ) {
         this.reason = reason;
         this.status = statusCode;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public String getReason() {
+        return reason;
     }
 }
