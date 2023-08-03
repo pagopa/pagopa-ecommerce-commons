@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.client;
 
+import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.generated.ecommerce.npg.v1.ApiClient;
 import it.pagopa.generated.ecommerce.npg.v1.api.HostedFieldsApi;
 import it.pagopa.generated.ecommerce.npg.v1.dto.*;
@@ -23,7 +24,7 @@ import java.util.function.Predicate;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class NpgClientTest {
+public class NpgClientTests {
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -92,7 +93,7 @@ public class NpgClientTest {
         Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         Mockito.when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
         Mockito.when(responseSpec.bodyToMono(PostMessageDto.class))
-                .thenReturn(Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)));
+                .thenReturn(Mono.error(new NpgResponseException(HttpStatus.INTERNAL_SERVER_ERROR, "error_test")));
 
         StepVerifier
                 .create(npgClient.createHostedOrder(new CreateHostedOrderRequestDto()))
