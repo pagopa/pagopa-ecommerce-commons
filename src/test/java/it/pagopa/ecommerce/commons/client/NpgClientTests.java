@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,36 @@ class NpgClientTests {
     public void init() {
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         npgClient = new NpgClient(paymentServicesApi, "xxx");
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParameters() {
+        FieldsDto fieldsDto = getFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = getRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.apiOrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildOrders(
+                                correlationUUID,
+                                URI.create("localhost/merchant"),
+                                URI.create("localhost/result"),
+                                URI.create("localhost/notification"),
+                                URI.create("localhost/cancel"),
+                                "orderId",
+                                "customerId"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
     }
 
     @Test
@@ -88,18 +119,21 @@ class NpgClientTests {
 
     private CreateHostedOrderRequestDto getRequestDto() {
         return new CreateHostedOrderRequestDto()
+                .version("2")
                 .merchantUrl("localhost/merchant")
                 .order(
                         new OrderDto()
-                                .orderId("testId")
+                                .orderId("orderId")
                                 .amount("0")
                                 .currency("EUR")
                                 .customerId("customerId")
                 )
                 .paymentSession(
                         new PaymentSessionDto()
-                                .paymentService("paymentService")
-                                .amount("0").actionType(ActionTypeDto.PAY)
+                                .paymentService("CARDS")
+                                .amount("0")
+                                .actionType(ActionTypeDto.VERIFY)
+                                .language("ITA")
                                 .cancelUrl("localhost/cancel")
                                 .notificationUrl("localhost/notification")
                                 .resultUrl("localhost/result")
