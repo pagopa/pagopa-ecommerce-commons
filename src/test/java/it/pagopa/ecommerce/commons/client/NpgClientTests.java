@@ -23,6 +23,23 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {
     private static final String MOCKED_API_KEY = "mocked-api-key";
+    public static final String ORDER_REQUEST_VERSION = "2";
+    public static final String MERCHANT_URL = "localhost/merchant";
+    public static final String ORDER_REQUEST_ORDER_ID = "orderId";
+    public static final String ORDER_REQUEST_AMOUNT = "0";
+    public static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
+    public static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
+    public static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
+    public static final String ORDER_REQUEST_LANGUAGE_ITA = "ITA";
+    public static final String CANCEL_URL = "localhost/cancel";
+    public static final String NOTIFICATION_URL = "localhost/notification";
+    public static final String RESULT_URL = "localhost/result";
+    public static final String SESSION_ID = "sessionId";
+    public static final String SECURITY_TOKEN = "securityToken";
+    public static final String TEST_1 = "test1";
+    public static final String SRC_1 = "src1";
+    public static final String PROPERTY_1 = "property1";
+    public static final String TYPE_1 = "type1";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -52,18 +69,21 @@ class NpgClientTests {
         ).thenReturn(Mono.just(fieldsDto));
 
         StepVerifier
-                .create(npgClient.buildForms(
-                        correlationUUID,
-                        URI.create("localhost/merchant"),
-                        URI.create("localhost/result"),
-                        URI.create("localhost/notification"),
-                        URI.create("localhost/cancel"),
-                        "orderId",
-                        "customerId"
-                ))
+                .create(
+                        npgClient.buildForms(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID
+                        )
+                )
                 .expectNext(fieldsDto)
                 .verifyComplete();
     }
+
     @Test
     void shouldRetrieveFieldsDto() {
         FieldsDto fieldsDto = buildTestFieldsDto();
@@ -116,34 +136,34 @@ class NpgClientTests {
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
         return new CreateHostedOrderRequestDto()
-                .version("2")
-                .merchantUrl("localhost/merchant")
+                .version(ORDER_REQUEST_VERSION)
+                .merchantUrl(MERCHANT_URL)
                 .order(
                         new OrderDto()
-                                .orderId("orderId")
-                                .amount("0")
-                                .currency("EUR")
-                                .customerId("customerId")
+                                .orderId(ORDER_REQUEST_ORDER_ID)
+                                .amount(ORDER_REQUEST_AMOUNT)
+                                .currency(ORDER_REQUEST_CURRENCY_EUR)
+                                .customerId(ORDER_REQUEST_CUSTOMER_ID)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
-                                .paymentService("CARDS")
-                                .amount("0")
+                                .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
+                                .amount(ORDER_REQUEST_AMOUNT)
                                 .actionType(ActionTypeDto.VERIFY)
-                                .language("ITA")
-                                .cancelUrl("localhost/cancel")
-                                .notificationUrl("localhost/notification")
-                                .resultUrl("localhost/result")
+                                .language(ORDER_REQUEST_LANGUAGE_ITA)
+                                .cancelUrl(CANCEL_URL)
+                                .notificationUrl(NOTIFICATION_URL)
+                                .resultUrl(RESULT_URL)
                 );
     }
 
     private FieldsDto buildTestFieldsDto() {
         return new FieldsDto()
-                .sessionId("sessionId")
-                .securityToken("securityToken")
+                .sessionId(SESSION_ID)
+                .securityToken(SECURITY_TOKEN)
                 .fields(
                         List.of(
-                                new FieldDto().id("test1").src("src1").propertyClass("property1").type("type1")
+                                new FieldDto().id(TEST_1).src(SRC_1).propertyClass(PROPERTY_1).type(TYPE_1)
                         )
                 );
     }
