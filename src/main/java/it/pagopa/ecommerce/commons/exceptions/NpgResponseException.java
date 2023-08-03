@@ -1,7 +1,5 @@
 package it.pagopa.ecommerce.commons.exceptions;
 
-import org.springframework.http.HttpStatus;
-
 /**
  * Exception class wrapping checked exceptions that can occur during npg
  * invocation
@@ -11,35 +9,19 @@ import org.springframework.http.HttpStatus;
 public class NpgResponseException extends RuntimeException {
 
     /**
-     * Http status code @see org.springframework.http.HttpStatus
-     */
-    private HttpStatus status;
-
-    /**
-     * Error reason
-     */
-    private String reason;
-
-    /**
      * Exception constructor for npg client with status code and reason
      *
-     * @param statusCode the http status code
-     * @param reason     the error reason
-     * @see it.pagopa.ecommerce.commons.client.NpgClient
+     * @param message the error message
+     * @see RuntimeException
      */
+    public NpgResponseException(String message) {
+        super(message);
+    }
+
     public NpgResponseException(
-            HttpStatus statusCode,
-            String reason
+            String message,
+            Throwable t
     ) {
-        this.reason = reason;
-        this.status = statusCode;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public String getReason() {
-        return reason;
+        super(message, t);
     }
 }
