@@ -53,8 +53,8 @@ public class NpgClient {
      *         show on the client-side
      */
     public Mono<FieldsDto> buildOrders(
-                                       UUID correlationId,
-                                       CreateHostedOrderRequestDto createHostedOrderRequestDto
+                                       @NotNull UUID correlationId,
+                                       @NotNull CreateHostedOrderRequestDto createHostedOrderRequestDto
     ) {
 
         return paymentServicesApi.apiOrdersBuildPost(

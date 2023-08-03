@@ -1,5 +1,7 @@
 package it.pagopa.ecommerce.commons.exceptions;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Exception class wrapping checked exceptions that can occur during npg
  * invocation
@@ -15,8 +17,8 @@ public class NpgResponseException extends RuntimeException {
      * @see RuntimeException
      */
     public NpgResponseException(
-            String message,
-            Throwable t
+            @NotNull String message,
+            @NotNull Throwable t
     ) {
         super(message, t);
     }
