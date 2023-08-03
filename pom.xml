@@ -377,7 +377,7 @@
                             </configOptions>
                             <modelPackage>it.pagopa.ecommerce.commons.generated.npg.v1.dto</modelPackage>
                             <apiPackage>it.pagopa.ecommerce.commons.generated.npg.v1.api</apiPackage>
-                            <modelNameSuffix>dto</modelNameSuffix>
+                            <modelNameSuffix>Dto</modelNameSuffix>
                         </configuration>
                     </execution>
                 </executions>
