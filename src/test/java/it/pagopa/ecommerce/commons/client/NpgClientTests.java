@@ -25,19 +25,6 @@ class NpgClientTests {
     @Mock
     private ApiClient apiClient;
     @Mock
-    private WebClient webClient;
-
-    @Mock
-    private WebClient.RequestBodySpec requestBodySpec;
-    @Mock
-    private WebClient.RequestBodyUriSpec requestBodyUriSpec;
-
-    @Mock
-    private WebClient.RequestHeadersSpec requestHeadersSpec;
-
-    @Mock
-    private WebClient.ResponseSpec responseSpec;
-    @Mock
     @Qualifier("npgWebClient")
     private PaymentServicesApi paymentServicesApi;
 
