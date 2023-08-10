@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * platform.
  *
  * <p>
- * It <b>MUST</b> adhere to the following format: {@code ([a-zA-Z\d]{29})}
+ * It <b>MUST</b> adhere to the following format: {@code \d{29})}
  *
  * @param value RPT id value
  */
