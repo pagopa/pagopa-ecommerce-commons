@@ -19,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public abstract class BaseTransactionWithRefundRequested extends BaseTransactionWithRequestedAuthorization {
 
-    BaseTransactionWithRequestedAuthorization transactionAtPreviousStep;
+    BaseTransactionWithRequestedAuthorization transactionAtPreviousState;
 
     /**
      * Primary constructor
@@ -33,6 +33,6 @@ public abstract class BaseTransactionWithRefundRequested extends BaseTransaction
                 baseTransaction,
                 baseTransaction.getTransactionAuthorizationRequestData()
         );
-        this.transactionAtPreviousStep = baseTransaction;
+        this.transactionAtPreviousState = baseTransaction;
     }
 }

@@ -1240,7 +1240,7 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                 .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
@@ -1297,7 +1297,7 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                 .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
@@ -2451,7 +2451,7 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                 .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
@@ -2728,7 +2728,7 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                         .equals(transactionAuthorizationCompleted)
                 )
                 .verifyComplete();
@@ -3207,7 +3207,7 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                         .equals(transactionWithUserReceiptKo)
                 )
                 .verifyComplete();
@@ -3285,7 +3285,7 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
-                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                         .equals(transactionWithUserReceiptKo)
                 )
                 .verifyComplete();
@@ -4023,7 +4023,7 @@ class TransactionTest {
                         t -> expected.equals(t)
                                 && (((TransactionWithRefundRequested) t).getStatus())
                                         .equals(TransactionStatusDto.REFUND_REQUESTED)
-                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousState())
                                         .equals(transactionWithUserReceiptError)
                 )
                 .verifyComplete();
