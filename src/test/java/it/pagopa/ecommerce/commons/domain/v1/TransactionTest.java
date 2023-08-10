@@ -1,10 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransaction;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCancellationRequested;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithCompletedAuthorization;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
@@ -1234,7 +1231,7 @@ class TransactionTest {
 
         TransactionWithRefundRequested expected = TransactionTestUtils
                 .transactionWithRefundRequested(
-                        (BaseTransactionWithCompletedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionExpired.getTransactionAtPreviousState(),
                         transactionRefundRequestedEvent
                 );
         Mono<it.pagopa.ecommerce.commons.domain.v1.Transaction> actual = events
@@ -1243,6 +1240,8 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
     }
@@ -1288,7 +1287,7 @@ class TransactionTest {
 
         TransactionWithRefundRequested expected = TransactionTestUtils
                 .transactionWithRefundRequested(
-                        (BaseTransactionWithRequestedAuthorization) transactionExpired.getTransactionAtPreviousState(),
+                        transactionExpired.getTransactionAtPreviousState(),
                         transactionRefundedEvent
                 );
 
@@ -1298,6 +1297,8 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
     }
@@ -2450,6 +2451,8 @@ class TransactionTest {
         StepVerifier.create(actual).expectNextMatches(
                 t -> expected.equals(t)
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                        && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                .equals(transactionAuthorizationCompleted)
         )
                 .verifyComplete();
     }
@@ -2725,6 +2728,8 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                        .equals(transactionAuthorizationCompleted)
                 )
                 .verifyComplete();
     }
@@ -3202,6 +3207,8 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                        .equals(transactionWithUserReceiptKo)
                 )
                 .verifyComplete();
     }
@@ -3258,6 +3265,8 @@ class TransactionTest {
                 authorizationRequestedEvent,
                 authorizedEvent,
                 closureSentEvent,
+                transactionUserReceiptRequestedEvent,
+                closureSentEvent,
                 transactionUserReceiptAddedEvent,
                 closureSentEvent,
                 authorizationRequestedEvent,
@@ -3276,6 +3285,8 @@ class TransactionTest {
                 .expectNextMatches(
                         t -> expected.equals(t)
                                 && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.REFUND_REQUESTED)
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                        .equals(transactionWithUserReceiptKo)
                 )
                 .verifyComplete();
     }
@@ -4012,6 +4023,8 @@ class TransactionTest {
                         t -> expected.equals(t)
                                 && (((TransactionWithRefundRequested) t).getStatus())
                                         .equals(TransactionStatusDto.REFUND_REQUESTED)
+                                && (((BaseTransactionWithRefundRequested) t).getTransactionAtPreviousStep())
+                                        .equals(transactionWithUserReceiptError)
                 )
                 .verifyComplete();
     }
