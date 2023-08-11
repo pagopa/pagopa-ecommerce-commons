@@ -29,7 +29,7 @@ class NpgClientTests {
     private static final String ORDER_REQUEST_AMOUNT = "0";
     private static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
-    private static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
+    private static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = NpgClient.PaymentMethod.CARDS.serviceName;
     private static final String ORDER_REQUEST_LANGUAGE_ITA = "ITA";
     private static final String CANCEL_URL = "localhost/cancel";
     private static final String NOTIFICATION_URL = "localhost/notification";
@@ -77,7 +77,8 @@ class NpgClientTests {
                                 URI.create(NOTIFICATION_URL),
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS
                         )
                 )
                 .expectNext(fieldsDto)
@@ -117,7 +118,8 @@ class NpgClientTests {
                                 URI.create(NOTIFICATION_URL),
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS
                         )
                 )
                 .expectError(NpgResponseException.class)
