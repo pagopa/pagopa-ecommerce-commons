@@ -159,6 +159,15 @@ public class NpgClient {
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildForm(
                                      @NotNull UUID correlationId,
                                      @NotNull URI merchantUrl,
