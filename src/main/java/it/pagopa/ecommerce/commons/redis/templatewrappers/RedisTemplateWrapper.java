@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @param <V> - the RedisTemplate value type
  */
-abstract class RedisTemplateWrapper<V> {
+public abstract class RedisTemplateWrapper<V> {
 
     private final RedisTemplate<String, V> redisTemplate;
 
@@ -21,6 +21,13 @@ abstract class RedisTemplateWrapper<V> {
 
     private final Duration ttl;
 
+    /**
+     * Primary constructor
+     *
+     * @param redisTemplate inner redis template
+     * @param keyspace      keyspace associated to this wrapper
+     * @param ttl           time to live for keys
+     */
     protected RedisTemplateWrapper(
             @NonNull RedisTemplate<String, V> redisTemplate,
             @NonNull String keyspace,
