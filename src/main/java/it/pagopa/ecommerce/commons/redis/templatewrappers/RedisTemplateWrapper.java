@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @param <V> - the RedisTemplate value type
  */
-abstract sealed class RedisTemplateWrapper<V> permits PaymentRequestInfoRedisTemplateWrapper {
+abstract class RedisTemplateWrapper<V> {
 
     private final RedisTemplate<String, V> redisTemplate;
 
