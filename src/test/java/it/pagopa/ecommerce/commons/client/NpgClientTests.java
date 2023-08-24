@@ -1,5 +1,8 @@
 package it.pagopa.ecommerce.commons.client;
 
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanBuilder;
+import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
@@ -19,6 +22,9 @@ import reactor.test.StepVerifier;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {
@@ -46,12 +52,23 @@ class NpgClientTests {
     @Qualifier("npgWebClient")
     private PaymentServicesApi paymentServicesApi;
 
+    @Mock
+    private Tracer tracer;
+
     private NpgClient npgClient;
 
     @BeforeEach
     public void init() {
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY);
+
+        SpanBuilder spanBuilder = Mockito.mock(SpanBuilder.class);
+        Mockito.when(spanBuilder.setParent(any())).thenReturn(spanBuilder);
+        Mockito.when(spanBuilder.setAttribute(anyString(), anyString())).thenReturn(spanBuilder);
+        Mockito.when(spanBuilder.startSpan()).thenReturn(Span.getInvalid());
+
+        Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
+
+        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY, tracer);
     }
 
     @Test

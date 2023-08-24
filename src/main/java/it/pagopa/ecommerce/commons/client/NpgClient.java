@@ -1,5 +1,8 @@
 package it.pagopa.ecommerce.commons.client;
 
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Context;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
@@ -24,11 +27,14 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
+    private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
 
     /**
      * The npg Api
      */
     private final PaymentServicesApi paymentServicesApi;
+
+    private final Tracer tracer;
 
     /**
      * <p>
@@ -129,12 +135,16 @@ public class NpgClient {
      *
      * @param paymentServicesApi the api
      * @param npgKey             the api key
+     * @param tracer             the OpenTelemetry {@link Tracer} used to add
+     *                           monitoring info to this client
      */
     public NpgClient(
             @NotNull PaymentServicesApi paymentServicesApi,
-            @NotNull String npgKey
+            @NotNull String npgKey,
+            @NotNull Tracer tracer
     ) {
         this.paymentServicesApi = paymentServicesApi;
+        this.tracer = tracer;
         this.paymentServicesApi.getApiClient().setApiKey(npgKey);
     }
 
@@ -178,28 +188,34 @@ public class NpgClient {
                                      @NotNull String customerId,
                                      @NonNull PaymentMethod paymentMethod
     ) {
-
-        return paymentServicesApi.apiOrdersBuildPost(
-                correlationId,
-                buildOrderRequestDto(
-                        merchantUrl,
-                        resultUrl,
-                        notificationUrl,
-                        cancelUrl,
-                        orderId,
-                        customerId,
-                        paymentMethod
+        return Mono.using(
+                () -> tracer.spanBuilder("NpgClient#buildForm")
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.apiOrdersBuildPost(
+                        correlationId,
+                        buildOrderRequestDto(
+                                merchantUrl,
+                                resultUrl,
+                                notificationUrl,
+                                cancelUrl,
+                                orderId,
+                                customerId,
+                                paymentMethod
+                        )
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                "Got bad response from npg-service [HTTP {}]",
+                                e.getStatusCode()
+                        )
                 )
-        ).doOnError(
-                WebClientResponseException.class,
-                e -> log.info(
-                        "Got bad response from npg-service [HTTP {}]",
-                        e.getStatusCode()
-                )
-        )
-                .onErrorMap(
-                        err -> new NpgResponseException("Error while invoke method for build order", err)
-                );
+                        .onErrorMap(
+                                err -> new NpgResponseException("Error while invoke method for build order", err)
+                        ),
+                Span::end
+        );
     }
 
     private CreateHostedOrderRequestDto buildOrderRequestDto(
