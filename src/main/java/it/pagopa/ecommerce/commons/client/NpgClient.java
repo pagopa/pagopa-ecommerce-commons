@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.client;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -23,11 +24,105 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
-    private static final String CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS = "CARDS";
+
     /**
      * The npg Api
      */
     private final PaymentServicesApi paymentServicesApi;
+
+    /**
+     * <p>
+     * Enumeration for payment methods which NPG can do payments with.
+     * </p>
+     * <p>
+     * Maps to the `paymentService` field when initiating a payment.
+     * </p>
+     */
+    public enum PaymentMethod {
+        /**
+         * Credit cards
+         */
+        CARDS("CARDS"),
+        /**
+         * PayPal
+         */
+        PAYPAL("PAYPAL"),
+        /**
+         * PayPal with Pay in 3 option
+         */
+        PAYPAL_PAGAIN3("PAYPAL_PAGAIN3"),
+        /**
+         * GiroPay
+         */
+        GIROPAY("GIROPAY"),
+        /**
+         * Ideal
+         */
+        IDEAL("IDEAL"),
+        /**
+         * MyBank
+         */
+        MYBANK("MYBANK"),
+        /**
+         * Google Pay
+         */
+        GOOGLEPAY("GOOGLEPAY"),
+        /**
+         * Apple Pay
+         */
+        APPLEPAY("APPLEPAY"),
+        /**
+         * Bancomat Pay
+         */
+        BANCOMATPAY("BANCOMATPAY"),
+        /**
+         * Bancontact
+         */
+        BANCONTACT("BANCONTACT"),
+        /**
+         * Multibanco
+         */
+        MULTIBANCO("MULTIBANCO"),
+        /**
+         * WeChat
+         */
+        WECHAT("WECHAT"),
+        /**
+         * AliPay
+         */
+        ALIPAY("ALIPAY"),
+        /**
+         * PIS (3DS2 Payment Initiation Service)
+         */
+        PIS("PIS");
+
+        /**
+         * API value for `serviceName`
+         */
+        public final String serviceName;
+
+        PaymentMethod(String serviceName) {
+            this.serviceName = serviceName;
+        }
+
+        /**
+         * Retrieves a {@link PaymentMethod} by its service name
+         *
+         * @param serviceName the service name
+         * @return the corresponding payment method
+         * @throws IllegalArgumentException if no payment method exists for the given
+         *                                  service name
+         */
+        public static PaymentMethod fromServiceName(String serviceName) {
+            for (PaymentMethod paymentMethod : PaymentMethod.values()) {
+                if (paymentMethod.serviceName.equals(serviceName)) {
+                    return paymentMethod;
+                }
+            }
+
+            throw new IllegalArgumentException("Invalid payment method service name: '%s'".formatted(serviceName));
+        }
+    }
 
     /**
      * Instantiate a npg-client to establish communication via the npg api
@@ -60,9 +155,19 @@ public class NpgClient {
      *                        session is canceled by the user
      * @param orderId         the orderId of the payment session
      * @param customerId      the customerId url of the api
+     * @param paymentMethod   the payment method for which the form should be built
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildForm(
                                      @NotNull UUID correlationId,
                                      @NotNull URI merchantUrl,
@@ -70,12 +175,21 @@ public class NpgClient {
                                      @NotNull URI notificationUrl,
                                      @NotNull URI cancelUrl,
                                      @NotNull String orderId,
-                                     @NotNull String customerId
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod
     ) {
 
         return paymentServicesApi.apiOrdersBuildPost(
                 correlationId,
-                buildOrderRequestDto(merchantUrl, resultUrl, notificationUrl, cancelUrl, orderId, customerId)
+                buildOrderRequestDto(
+                        merchantUrl,
+                        resultUrl,
+                        notificationUrl,
+                        cancelUrl,
+                        orderId,
+                        customerId,
+                        paymentMethod
+                )
         ).doOnError(
                 WebClientResponseException.class,
                 e -> log.info(
@@ -94,7 +208,8 @@ public class NpgClient {
                                                              URI notificationUrl,
                                                              URI cancelUrl,
                                                              String orderId,
-                                                             String customerId
+                                                             String customerId,
+                                                             PaymentMethod paymentMethod
     ) {
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
@@ -111,7 +226,7 @@ public class NpgClient {
                                 .actionType(ActionTypeDto.VERIFY)
                                 .amount(CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT)
                                 .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
-                                .paymentService(CREATE_HOSTED_ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
+                                .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
                                 .notificationUrl(notificationUrl.toString())
