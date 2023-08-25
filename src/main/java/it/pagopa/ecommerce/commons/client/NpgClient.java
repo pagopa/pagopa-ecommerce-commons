@@ -218,6 +218,41 @@ public class NpgClient {
         );
     }
 
+    /**
+     * method for retrieving the card data value using a sessionId passed as input.
+     *
+     * @param correlationId the unique id to identify the rest api invocation
+     * @param sessionId     the session id used for retrieve a card data
+     * @return An object containing sessionId, sessionToken and the fields list to
+     *         show on the client-side
+     */
+    public Mono<CardDataResponseDto> getCardData(
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String sessionId
+    ) {
+
+        return Mono.using(
+                () -> tracer.spanBuilder("NpgClient#getCardData")
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.apiBuildCardDataGet(
+                        correlationId,
+                        sessionId
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                "Got bad response from npg-service [HTTP {}]",
+                                e.getStatusCode()
+                        )
+                )
+                        .onErrorMap(
+                                err -> new NpgResponseException("Error while invoke method for get card data", err)
+                        ),
+                Span::end
+        );
+    }
+
     private CreateHostedOrderRequestDto buildOrderRequestDto(
                                                              URI merchantUrl,
                                                              URI resultUrl,

@@ -46,6 +46,8 @@ class NpgClientTests {
     private static final String SRC_1 = "src1";
     private static final String PROPERTY_1 = "property1";
     private static final String TYPE_1 = "type1";
+    private static final String BIN = "123456";
+    private static final String CIRCUIT = "VISA";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -140,6 +142,67 @@ class NpgClientTests {
                         )
                 )
                 .expectError(NpgResponseException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldRetrieveCardDataWithSuccess() {
+        UUID correlationUUID = UUID.randomUUID();
+        CardDataResponseDto expectedResponse = new CardDataResponseDto().bin(BIN).circuit(CIRCUIT).expiringDate("0426")
+                .lastFourDigits("1234");
+        Mockito.when(
+                paymentServicesApi.apiBuildCardDataGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        ).thenReturn(Mono.just(expectedResponse));
+
+        StepVerifier
+                .create(
+                        npgClient.getCardData(
+                                correlationUUID,
+                                SESSION_ID
+                        )
+                )
+                .expectNext(expectedResponse)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldThrowExceptionWhileRetrieveCardData() {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(
+                paymentServicesApi.apiBuildCardDataGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for get card data",
+                                        HttpStatus.NOT_FOUND.value(),
+                                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                        null,
+                                        null,
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.getCardData(
+                                correlationUUID,
+                                SESSION_ID
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getMessage()
+                                        .equals("Error while invoke method for get card data")
+                )
                 .verify();
     }
 
