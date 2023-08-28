@@ -507,7 +507,10 @@ public class NpgClient {
                 errors = responseErrors.stream()
                         .map(error -> GatewayError.valueOf(error.getCode())).toList();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                String errorMessage = "Invalid error response from NPG with status code %s";
+                log.error(errorMessage.formatted(e.getStatusCode()));
+
+                return new NpgResponseException(errorMessage.formatted(e.getStatusCode()), ex);
             }
         }
 

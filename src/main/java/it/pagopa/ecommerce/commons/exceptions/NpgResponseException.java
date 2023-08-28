@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.exceptions;
 
 import it.pagopa.ecommerce.commons.client.NpgClient;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
