@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import static it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider.OBJECT_MAPPER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -70,7 +71,7 @@ class NpgClientTests {
 
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
 
-        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY, tracer);
+        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY, tracer, OBJECT_MAPPER);
     }
 
     @Test

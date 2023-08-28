@@ -1,5 +1,7 @@
 package it.pagopa.ecommerce.commons.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
@@ -12,7 +14,9 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,6 +39,8 @@ public class NpgClient {
     private final PaymentServicesApi paymentServicesApi;
 
     private final Tracer tracer;
+
+    private final ObjectMapper objectMapper;
 
     /**
      * <p>
@@ -131,20 +137,212 @@ public class NpgClient {
     }
 
     /**
+     * Enumeration for possible errors produced by NPG
+     */
+    public enum GatewayError {
+        /**
+         * Merchant url may contain syntax errors
+         **/
+        GW0001("Merchant url may contain syntax errors"),
+        /**
+         * The configuration of this field is invalid or not found
+         **/
+        GW0002("The configuration of this field is invalid or not found"),
+        /**
+         * The language configuration of this field is invalid or not found
+         **/
+        GW0003("The language configuration of this field is invalid or not found"),
+        /**
+         * Payment session with given Session-Id is not found
+         **/
+        GW0004("Payment session with given Session-Id is not found"),
+        /**
+         * Invalid jwt claims
+         **/
+        GW0005("Invalid jwt claims"),
+        /**
+         * The requested value has not been found
+         **/
+        GW0006("The requested value has not been found"),
+        /**
+         * Order not found
+         **/
+        GW0007("Order not found"),
+        /**
+         * This operation is not allowed
+         **/
+        GW0008("This operation is not allowed"),
+        /**
+         * This operation is not allowed in the current state
+         **/
+        GW0009("This operation is not allowed in the current state"),
+        /**
+         * The reached payment state is not valid
+         **/
+        GW0010("The reached payment state is not valid"),
+        /**
+         * Invalid payment method
+         **/
+        GW0011("Invalid payment method"),
+        /**
+         * The provided field is not a valid TEXT type
+         **/
+        GW0012("The provided field is not a valid TEXT type"),
+        /**
+         * Configuration of input TEXT fields is not completed
+         **/
+        GW0013("Configuration of input TEXT fields is not completed"),
+        /**
+         * The provided configuration is not a valid ACTION
+         **/
+        GW0014("The provided configuration is not a valid ACTION"),
+        /**
+         * Payment set up failed. Card information may be wrong
+         **/
+        GW0015("Payment set up failed. Card information may be wrong"),
+        /**
+         * Payment set up failed due to internal errors
+         **/
+        GW0016("Payment set up failed due to internal errors"),
+        /**
+         * An operation of the same type already exist
+         **/
+        GW0017("An operation of the same type already exist"),
+        /**
+         * The provided order id cannot be null
+         **/
+        GW0018("The provided order id cannot be null"),
+        /**
+         * Order amount can not be null or less than zero
+         **/
+        GW0019("Order amount can not be null or less than zero"),
+        /**
+         * Installment amounts can not be null or less than zero
+         **/
+        GW0020("Installment amounts can not be null or less than zero"),
+        /**
+         * Amounts can not be literals
+         **/
+        GW0021("Amounts can not be literals"),
+        /**
+         * Language format is not valid
+         **/
+        GW0022("Language format is not valid"),
+        /**
+         * Customer id can not be empty
+         **/
+        GW0023("Customer id can not be empty"),
+        /**
+         * Order with the same id already exists
+         **/
+        GW0024("Order with the same id already exists"),
+        /**
+         * Merchant not enabled for this apm
+         **/
+        GW0025("Merchant not enabled for this apm"),
+        /**
+         * The terminal provided doesn't exist
+         **/
+        GW0026("The terminal provided doesn't exist"),
+        /**
+         * Internal Rest communication error during payment
+         **/
+        GW0027("Internal Rest communication error during payment"),
+        /**
+         * Order recurring information not found
+         **/
+        GW0028("Order recurring information not found"),
+        /**
+         * Order recurring information cannot be retrieved
+         **/
+        GW0029("Order recurring information cannot be retrieved"),
+        /**
+         * Invalid GDI URL
+         **/
+        GW0030("Invalid GDI URL"),
+        /**
+         * Authorization Bearer is invalid or null
+         **/
+        GW0031("Authorization Bearer is invalid or null"),
+        /**
+         * Payment validation failed due to internal errors
+         **/
+        GW0032("Payment validation failed due to internal errors"),
+        /**
+         * No operation related to the order has been found
+         **/
+        GW0033("No operation related to the order has been found"),
+        /**
+         * Payment failed due to internal errors
+         **/
+        GW0034("Payment failed due to internal errors"),
+        /**
+         * We encounter an internal error
+         **/
+        GW0035("We encounter an internal error"),
+        /**
+         * This api can't be called while paying with an APM
+         **/
+        GW0036("This api can't be called while paying with an APM"),
+        /**
+         * Required all the card's values before calling this api
+         **/
+        GW0037("Required all the card's values before calling this api"),
+        /**
+         * Service temporarily unavailable
+         **/
+        GW0038("Service temporarily unavailable"),
+        /**
+         * Invalid Apm
+         **/
+        GW0039("Invalid Apm"),
+        /**
+         * Invalid field
+         **/
+        GW0040("Invalid field"),
+        /**
+         * Hosted log not found
+         **/
+        GW0041("Hosted log not found"),
+        /**
+         * Transaction not found
+         **/
+        GW0042("Transaction not found"),
+        /**
+         * The order doesn't meet the requirements for the payment service
+         **/
+        GW0043("The order doesn't meet the requirements for the payment service"),
+        /**
+         * The terminal doesn't belong to the same multi acquiring group as the original
+         * terminal caller
+         **/
+        GW0044("The terminal doesn't belong to the same multi acquiring group as the original terminal caller");
+
+        public final String description;
+
+        GatewayError(String description) {
+            this.description = description;
+        }
+    }
+
+    /**
      * Instantiate a npg-client to establish communication via the npg api
      *
      * @param paymentServicesApi the api
      * @param npgKey             the api key
      * @param tracer             the OpenTelemetry {@link Tracer} used to add
      *                           monitoring info to this client
+     * @param objectMapper       object mapper used to decode error response bodies
      */
     public NpgClient(
             @NotNull PaymentServicesApi paymentServicesApi,
             @NotNull String npgKey,
-            @NotNull Tracer tracer
+            @NotNull Tracer tracer,
+            @NotNull ObjectMapper objectMapper
     ) {
         this.paymentServicesApi = paymentServicesApi;
         this.tracer = tracer;
+        this.objectMapper = objectMapper;
         this.paymentServicesApi.getApiClient().setApiKey(npgKey);
     }
 
@@ -212,7 +410,36 @@ public class NpgClient {
                         )
                 )
                         .onErrorMap(
-                                err -> new NpgResponseException("Error while invoke method for build order", err)
+                                err -> {
+                                    List<GatewayError> errors = List.of();
+
+                                    if (err instanceof WebClientResponseException e) {
+                                        try {
+                                            List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
+                                                case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
+                                                        e.getResponseBodyAsByteArray(),
+                                                        ServerErrorDto.class
+                                                ).getErrors();
+                                                case BAD_REQUEST -> objectMapper.readValue(
+                                                        e.getResponseBodyAsByteArray(),
+                                                        ClientErrorDto.class
+                                                ).getErrors();
+                                                default -> List.of();
+                                            };
+
+                                            errors = responseErrors.stream()
+                                                    .map(error -> GatewayError.valueOf(error.getCode())).toList();
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+
+                                    return new NpgResponseException(
+                                            "Error while invoke method for build order",
+                                            errors,
+                                            err
+                                    );
+                                }
                         ),
                 Span::end
         );
