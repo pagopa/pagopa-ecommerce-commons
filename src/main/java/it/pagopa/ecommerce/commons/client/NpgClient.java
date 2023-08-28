@@ -2,7 +2,9 @@ package it.pagopa.ecommerce.commons.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
@@ -32,6 +34,8 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
     private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
+
+    private static final String NPG_ERROR_CODES_ATTRIBUTE_NAME = "npg.error_codes";
 
     /**
      * The npg Api
@@ -433,6 +437,12 @@ public class NpgClient {
                                             throw new RuntimeException(ex);
                                         }
                                     }
+
+                                    span.setAttribute(
+                                            AttributeKey.stringArrayKey(NPG_ERROR_CODES_ATTRIBUTE_NAME),
+                                            errors.stream().map(GatewayError::name).toList()
+                                    );
+                                    span.setStatus(StatusCode.ERROR);
 
                                     return new NpgResponseException(
                                             "Error while invoke method for build order",
