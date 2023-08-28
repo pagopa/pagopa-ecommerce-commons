@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
@@ -106,7 +107,7 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldThrowException() {
+    void shouldThrowExceptionWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
@@ -123,7 +124,52 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS
+                        )
+                )
+                .expectError(NpgResponseException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhenBuildFormThrows() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.apiOrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Test error when calling apiOrdersBuildPost",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
                                         null
                                 )
                         )
@@ -170,7 +216,7 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldThrowExceptionWhileRetrieveCardData() {
+    void shouldThrowExceptionWhileRetrieveCardData() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
@@ -186,7 +232,45 @@ class NpgClientTests {
                                         HttpStatus.NOT_FOUND.value(),
                                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                                         null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.getCardData(
+                                correlationUUID,
+                                SESSION_ID
+                        )
+                )
+                .expectError(NpgResponseException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhileRetrieveCardData() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(
+                paymentServicesApi.apiBuildCardDataGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for get card data",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
                                         null
                                 )
                         )
@@ -201,10 +285,20 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getMessage()
-                                        .equals("Error while invoke method for get card data")
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
                 )
                 .verify();
+    }
+
+    private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
+        return new ClientErrorDto()
+                .errors(
+                        List.of(
+                                new ErrorsInnerDto()
+                                        .code(gatewayError.name())
+                                        .description(gatewayError.description)
+                        )
+                );
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {

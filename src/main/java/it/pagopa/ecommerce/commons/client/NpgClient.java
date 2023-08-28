@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
@@ -413,44 +412,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(
-                                err -> {
-                                    List<GatewayError> errors = List.of();
-
-                                    if (err instanceof WebClientResponseException e) {
-                                        try {
-                                            List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
-                                                case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
-                                                        e.getResponseBodyAsByteArray(),
-                                                        ServerErrorDto.class
-                                                ).getErrors();
-                                                case BAD_REQUEST -> objectMapper.readValue(
-                                                        e.getResponseBodyAsByteArray(),
-                                                        ClientErrorDto.class
-                                                ).getErrors();
-                                                default -> List.of();
-                                            };
-
-                                            errors = responseErrors.stream()
-                                                    .map(error -> GatewayError.valueOf(error.getCode())).toList();
-                                        } catch (IOException ex) {
-                                            throw new RuntimeException(ex);
-                                        }
-                                    }
-
-                                    span.setAttribute(
-                                            AttributeKey.stringArrayKey(NPG_ERROR_CODES_ATTRIBUTE_NAME),
-                                            errors.stream().map(GatewayError::name).toList()
-                                    );
-                                    span.setStatus(StatusCode.ERROR);
-
-                                    return new NpgResponseException(
-                                            "Error while invoke method for build order",
-                                            errors,
-                                            err
-                                    );
-                                }
-                        ),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
                 Span::end
         );
     }
@@ -483,9 +445,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(
-                                err -> new NpgResponseException("Error while invoke method for get card data", err)
-                        ),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
                 Span::end
         );
     }
@@ -521,4 +481,43 @@ public class NpgClient {
                 );
     }
 
+    private NpgResponseException exceptionToNpgResponseException(
+                                                                 Throwable err,
+                                                                 Span span
+    ) {
+        List<GatewayError> errors = List.of();
+
+        if (err instanceof WebClientResponseException e) {
+            try {
+                List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
+                    case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
+                            e.getResponseBodyAsByteArray(),
+                            ServerErrorDto.class
+                    ).getErrors();
+                    case BAD_REQUEST -> objectMapper.readValue(
+                            e.getResponseBodyAsByteArray(),
+                            ClientErrorDto.class
+                    ).getErrors();
+                    default -> List.of();
+                };
+
+                errors = responseErrors.stream()
+                        .map(error -> GatewayError.valueOf(error.getCode())).toList();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        span.setAttribute(
+                AttributeKey.stringArrayKey(NPG_ERROR_CODES_ATTRIBUTE_NAME),
+                errors.stream().map(GatewayError::name).toList()
+        );
+        span.setStatus(StatusCode.ERROR);
+
+        return new NpgResponseException(
+                "Error while invoke method for build order",
+                errors,
+                err
+        );
+    }
 }

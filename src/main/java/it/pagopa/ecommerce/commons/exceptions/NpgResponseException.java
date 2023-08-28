@@ -46,8 +46,13 @@ public class NpgResponseException extends RuntimeException {
         this(message, List.of(), t);
     }
 
+    /**
+     * Errors getter
+     *
+     * @return error codes returned by NPG
+     */
     @NotNull
-    List<NpgClient.GatewayError> getErrors() {
+    public List<NpgClient.GatewayError> getErrors() {
         return errors;
     }
 }
