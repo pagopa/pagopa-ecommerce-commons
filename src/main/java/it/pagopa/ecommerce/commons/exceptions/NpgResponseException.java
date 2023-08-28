@@ -13,6 +13,9 @@ import java.util.List;
  * @see it.pagopa.ecommerce.commons.client.NpgClient
  */
 public class NpgResponseException extends RuntimeException {
+    /**
+     * List of errors returned by NPG
+     */
     private final List<NpgClient.GatewayError> errors;
 
     /**

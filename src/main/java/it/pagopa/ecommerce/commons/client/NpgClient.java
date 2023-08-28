@@ -321,6 +321,9 @@ public class NpgClient {
          **/
         GW0044("The terminal doesn't belong to the same multi acquiring group as the original terminal caller");
 
+        /**
+         * Error description
+         */
         public final String description;
 
         GatewayError(String description) {
