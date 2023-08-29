@@ -72,7 +72,7 @@ class NpgClientTests {
 
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
 
-        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY, tracer, OBJECT_MAPPER);
+        npgClient = new NpgClient(paymentServicesApi, tracer, OBJECT_MAPPER);
     }
 
     @Test
@@ -85,6 +85,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         ).thenReturn(Mono.just(fieldsDto));
@@ -99,7 +100,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectNext(fieldsDto)
@@ -114,6 +116,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -142,7 +145,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -157,6 +161,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiOrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -185,7 +190,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -200,6 +206,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiBuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         ).thenReturn(Mono.just(expectedResponse));
@@ -208,6 +215,7 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
+                                MOCKED_API_KEY,
                                 SESSION_ID
                         )
                 )
@@ -222,6 +230,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiBuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -244,6 +253,7 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
+                                MOCKED_API_KEY,
                                 SESSION_ID
                         )
                 )
@@ -258,6 +268,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.apiBuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -280,6 +291,7 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
+                                MOCKED_API_KEY,
                                 SESSION_ID
                         )
                 )
