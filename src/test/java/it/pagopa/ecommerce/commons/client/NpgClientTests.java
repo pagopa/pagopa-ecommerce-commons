@@ -303,7 +303,7 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrieveStateResponseDtoGivenValidNpgSession() {
+    void shouldConfirmPaymentGivenValidNpgSession() {
         StateResponseDto stateResponseDto = buildTestRetrieveStateResponseDto();
 
         UUID correlationUUID = UUID.randomUUID();
@@ -328,6 +328,49 @@ class NpgClientTests {
                 )
                 .expectNext(stateResponseDto)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhileConfirmPayment() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.apiBuildConfirmPaymentPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        confirmPaymentRequestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for confirm payment",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.confirmPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                )
+                .verify();
     }
 
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
