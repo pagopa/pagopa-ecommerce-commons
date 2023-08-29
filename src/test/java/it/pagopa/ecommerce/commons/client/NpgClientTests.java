@@ -63,7 +63,6 @@ class NpgClientTests {
 
     @BeforeEach
     public void init() {
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         SpanBuilder spanBuilder = Mockito.mock(SpanBuilder.class);
         Mockito.when(spanBuilder.setParent(any())).thenReturn(spanBuilder);
@@ -215,8 +214,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                MOCKED_API_KEY,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectNext(expectedResponse)
@@ -253,8 +252,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                MOCKED_API_KEY,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -291,8 +290,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                MOCKED_API_KEY,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectErrorMatches(
