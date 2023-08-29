@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -301,6 +302,34 @@ class NpgClientTests {
                 .verify();
     }
 
+    @Test
+    void shouldRetrieveStateResponseDtoGivenValidNpgSession() {
+        StateResponseDto stateResponseDto = buildTestRetrieveStateResponseDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.apiBuildConfirmPaymentPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        confirmPaymentRequestDto
+                )
+        ).thenReturn(Mono.just(stateResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.confirmPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectNext(stateResponseDto)
+                .verifyComplete();
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
@@ -344,6 +373,18 @@ class NpgClientTests {
                                 new FieldDto().id(TEST_1).src(SRC_1).propertyClass(PROPERTY_1).type(TYPE_1)
                         )
                 );
+    }
+
+    private StateResponseDto buildTestRetrieveStateResponseDto() {
+        return new StateResponseDto()
+                .url("https://iframe-gdi")
+                .state(StateDto.REDIRECTED_TO_EXTERNAL_DOMAIN);
+    }
+
+    private ConfirmPaymentRequestDto buildTestConfirmPaymentRequestDto() {
+        return new ConfirmPaymentRequestDto()
+                .sessionId(SESSION_ID)
+                .amount(ORDER_REQUEST_AMOUNT);
     }
 
 }
