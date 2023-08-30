@@ -397,7 +397,7 @@ public class NpgClient {
                         .setParent(Context.current().with(Span.current()))
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
-                span -> paymentServicesApi.apiOrdersBuildPost(
+                span -> paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationId,
                         buildOrderRequestDto(
                                 merchantUrl,
@@ -438,7 +438,7 @@ public class NpgClient {
                         .setParent(Context.current().with(Span.current()))
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
-                span -> paymentServicesApi.apiBuildCardDataGet(
+                span -> paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationId,
                         sessionId
                 ).doOnError(

@@ -83,7 +83,7 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
-                paymentServicesApi.apiOrdersBuildPost(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
                         requestDto
                 )
@@ -112,7 +112,7 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
-                paymentServicesApi.apiOrdersBuildPost(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
                         requestDto
                 )
@@ -155,7 +155,7 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
 
         Mockito.when(
-                paymentServicesApi.apiOrdersBuildPost(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
                         requestDto
                 )
@@ -198,7 +198,7 @@ class NpgClientTests {
         CardDataResponseDto expectedResponse = new CardDataResponseDto().bin(BIN).circuit(CIRCUIT).expiringDate("0426")
                 .lastFourDigits("1234");
         Mockito.when(
-                paymentServicesApi.apiBuildCardDataGet(
+                paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
                         SESSION_ID
                 )
@@ -220,7 +220,7 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.apiBuildCardDataGet(
+                paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
                         SESSION_ID
                 )
@@ -256,7 +256,7 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.apiBuildCardDataGet(
+                paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
                         SESSION_ID
                 )
