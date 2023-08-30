@@ -8,7 +8,7 @@ servers:
   - url: "https://{gateway_prod}/api/v1"
     description: PROD
 paths:
-  /api/orders/build:
+  /psp/api/v1/orders/build:
     post:
       tags:
         - Payment Services
@@ -92,7 +92,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /api/build/finalize_payment:
+  /psp/api/v1/build/finalize_payment:
     post:
       tags:
         - Payment Services
@@ -227,7 +227,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /api/build/confirm_payment:
+  /psp/api/v1/build/confirm_payment:
     post:
       tags:
         - Payment Services
@@ -370,7 +370,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /api/build/cancel:
+  /psp/api/v1/build/cancel:
     post:
       tags:
         - Payment Services
@@ -476,7 +476,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /api/build/state:
+  /psp/api/v1/build/state:
     get:
       tags:
         - Payment Services
@@ -626,7 +626,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /api/build/cardData:
+  /psp/api/v1/build/cardData:
     get:
       tags:
         - Payment Services
