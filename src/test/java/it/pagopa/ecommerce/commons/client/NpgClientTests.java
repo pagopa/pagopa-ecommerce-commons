@@ -310,7 +310,7 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(
-                paymentServicesApi.apiBuildConfirmPaymentPost(
+                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationUUID,
                         MOCKED_API_KEY,
                         confirmPaymentRequestDto
@@ -336,7 +336,7 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(
-                paymentServicesApi.apiBuildConfirmPaymentPost(
+                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationUUID,
                         MOCKED_API_KEY,
                         confirmPaymentRequestDto
