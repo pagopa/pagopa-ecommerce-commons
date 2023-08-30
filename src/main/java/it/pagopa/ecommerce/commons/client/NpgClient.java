@@ -11,6 +11,7 @@ import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -342,6 +343,7 @@ public class NpgClient {
      *                           monitoring info to this client
      * @param objectMapper       object mapper used to decode error response bodies
      */
+    @Autowired
     public NpgClient(
             @NotNull @Qualifier("npgWebClient") PaymentServicesApi paymentServicesApi,
             @NotNull @Value("${npg.client.apiKey}") String npgKey,
