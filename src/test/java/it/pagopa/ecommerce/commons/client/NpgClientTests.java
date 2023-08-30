@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +64,6 @@ class NpgClientTests {
 
     @BeforeEach
     public void init() {
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         SpanBuilder spanBuilder = Mockito.mock(SpanBuilder.class);
         Mockito.when(spanBuilder.setParent(any())).thenReturn(spanBuilder);
@@ -72,7 +72,7 @@ class NpgClientTests {
 
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
 
-        npgClient = new NpgClient(paymentServicesApi, MOCKED_API_KEY, tracer, OBJECT_MAPPER);
+        npgClient = new NpgClient(paymentServicesApi, tracer, OBJECT_MAPPER);
     }
 
     @Test
@@ -85,6 +85,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         ).thenReturn(Mono.just(fieldsDto));
@@ -99,7 +100,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectNext(fieldsDto)
@@ -114,6 +116,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -142,7 +145,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -157,6 +161,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -185,7 +190,8 @@ class NpgClientTests {
                                 URI.create(CANCEL_URL),
                                 ORDER_REQUEST_ORDER_ID,
                                 ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -200,6 +206,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         ).thenReturn(Mono.just(expectedResponse));
@@ -208,7 +215,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectNext(expectedResponse)
@@ -222,6 +230,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -244,7 +253,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -258,6 +268,7 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -280,7 +291,79 @@ class NpgClientTests {
                 .create(
                         npgClient.getCardData(
                                 correlationUUID,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                )
+                .verify();
+    }
+
+    @Test
+    void shouldConfirmPaymentGivenValidNpgSession() {
+        StateResponseDto stateResponseDto = buildTestRetrieveStateResponseDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        confirmPaymentRequestDto
+                )
+        ).thenReturn(Mono.just(stateResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.confirmPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectNext(stateResponseDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhileConfirmPayment() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        confirmPaymentRequestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for confirm payment",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.confirmPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                MOCKED_API_KEY
                         )
                 )
                 .expectErrorMatches(
@@ -333,6 +416,18 @@ class NpgClientTests {
                                 new FieldDto().id(TEST_1).src(SRC_1).propertyClass(PROPERTY_1).type(TYPE_1)
                         )
                 );
+    }
+
+    private StateResponseDto buildTestRetrieveStateResponseDto() {
+        return new StateResponseDto()
+                .url("https://iframe-gdi")
+                .state(StateDto.REDIRECTED_TO_EXTERNAL_DOMAIN);
+    }
+
+    private ConfirmPaymentRequestDto buildTestConfirmPaymentRequestDto() {
+        return new ConfirmPaymentRequestDto()
+                .sessionId(SESSION_ID)
+                .amount(ORDER_REQUEST_AMOUNT);
     }
 
 }

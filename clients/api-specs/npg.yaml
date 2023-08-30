@@ -7,15 +7,11 @@ servers:
     description: TEST
   - url: "https://{gateway_prod}/api/v1"
     description: PROD
-security:
-  - ApiKeyAuth: []
 paths:
   /psp/api/v1/orders/build:
     post:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Create an order and initiates a payment through build functionality.
       description: "This service is targeted to ecommerce platforms requiring to implement the payment pages in line with their own dedicated UI style guidelines. The service will return a list of fields expressed in JSON format, to be translated into HTML by the ecommerce platform web app. If the paymentService field is valued at CARDS the service will return a list of fields for the CARD_DATA_COLLECTION without going through the PAYMENT_METHOD_SELECTION state and if it's valued with an APM the service will return an url where the customer should be redirected."
       parameters:
@@ -26,6 +22,12 @@ paths:
             type: string
             format: uuid
           description: "Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity."
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Default api key"
       requestBody:
         content:
           application/json:
@@ -94,8 +96,6 @@ paths:
     post:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Finalize a payment.
       description: This service shall be invoked by the ecommerce platforms to finalize the payment. It is limited to the flow versions 1 and 3.
       parameters:
@@ -106,6 +106,12 @@ paths:
             type: string
             format: uuid
           description: Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity.
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "api key related to PSP"
       requestBody:
         content:
           application/json:
@@ -225,8 +231,6 @@ paths:
     post:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Confirm a payment.
       description: This service shall be invoked by the ecommerce platforms to finalize the payment. It is limited to the flow version 2.
       parameters:
@@ -237,6 +241,12 @@ paths:
             type: string
             format: uuid
           description: Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity.
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "api key related to PSP"
       requestBody:
         content:
           application/json:
@@ -364,8 +374,6 @@ paths:
     post:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Cancel a payment.
       description: This service is targeted to ecommerce platforms in order to cancel the current payment session. This is typically required to clean up the collected data in case the user decided to quit the payment before completion.
       parameters:
@@ -376,6 +384,12 @@ paths:
             type: string
             format: uuid
           description: Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity.
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "api key related to PSP"
       requestBody:
         content:
           application/json:
@@ -466,8 +480,6 @@ paths:
     get:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Get current payment state.
       description: This service the ecommerce platforms to retrieve the current state of a payment flow.
       parameters:
@@ -478,6 +490,12 @@ paths:
             type: string
             format: uuid
           description: Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity.
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "api key related to PSP"
         - name: sessionId
           in: query
           required: true
@@ -612,8 +630,6 @@ paths:
     get:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Get card characteristics.
       description:  It provides PCI-free non sensitive information about the payment card entered by the user along the current payment session.
       parameters:
@@ -624,6 +640,12 @@ paths:
             type: string
             format: uuid
           description: Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity.
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Default api key"
         - name: sessionId
           in: query
           required: true
@@ -1325,8 +1347,3 @@ components:
             \ card as defined in ISO 4217."
           example: EUR
       example: null
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      name: X-API-KEY
-      in: header

@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -335,21 +336,18 @@ public class NpgClient {
      * Instantiate a npg-client to establish communication via the npg api
      *
      * @param paymentServicesApi the api
-     * @param npgKey             the api key
      * @param tracer             the OpenTelemetry {@link Tracer} used to add
      *                           monitoring info to this client
      * @param objectMapper       object mapper used to decode error response bodies
      */
     public NpgClient(
             @NotNull PaymentServicesApi paymentServicesApi,
-            @NotNull String npgKey,
             @NotNull Tracer tracer,
             @NotNull ObjectMapper objectMapper
     ) {
         this.paymentServicesApi = paymentServicesApi;
         this.tracer = tracer;
         this.objectMapper = objectMapper;
-        this.paymentServicesApi.getApiClient().setApiKey(npgKey);
     }
 
     /**
@@ -370,6 +368,7 @@ public class NpgClient {
      * @param orderId         the orderId of the payment session
      * @param customerId      the customerId url of the api
      * @param paymentMethod   the payment method for which the form should be built
+     * @param defaultApiKey   default API key
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
@@ -390,7 +389,8 @@ public class NpgClient {
                                      @NotNull URI cancelUrl,
                                      @NotNull String orderId,
                                      @NotNull String customerId,
-                                     @NonNull PaymentMethod paymentMethod
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey
     ) {
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#buildForm")
@@ -399,6 +399,7 @@ public class NpgClient {
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationId,
+                        defaultApiKey,
                         buildOrderRequestDto(
                                 merchantUrl,
                                 resultUrl,
@@ -425,12 +426,15 @@ public class NpgClient {
      *
      * @param correlationId the unique id to identify the rest api invocation
      * @param sessionId     the session id used for retrieve a card data
+     * @param defaultApiKey default API key
      * @return An object containing sessionId, sessionToken and the fields list to
      *         show on the client-side
      */
     public Mono<CardDataResponseDto> getCardData(
                                                  @NotNull UUID correlationId,
-                                                 @NotNull String sessionId
+                                                 @NotNull String sessionId,
+                                                 @NonNull String defaultApiKey
+
     ) {
 
         return Mono.using(
@@ -440,7 +444,47 @@ public class NpgClient {
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationId,
+                        defaultApiKey,
                         sessionId
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                "Got bad response from npg-service [HTTP {}]",
+                                e.getStatusCode()
+                        )
+                )
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                Span::end
+        );
+    }
+
+    /**
+     * method for confirming the payment with the selected PSP.
+     *
+     * @param correlationId the unique id to identify the rest api invocation
+     * @param sessionId     the session id used for retrieve a card data
+     * @param grandTotal    ground total which is the sum of amount and fees
+     * @param pspApiKey     API key related to a PSP
+     * @return An object containing sessionId, sessionToken and the fields list to
+     *         show on the client-side
+     */
+    public Mono<StateResponseDto> confirmPayment(
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String sessionId,
+                                                 @NotNull BigDecimal grandTotal,
+                                                 @NonNull String pspApiKey
+    ) {
+
+        return Mono.using(
+                () -> tracer.spanBuilder("NpgClient#confirmPayment")
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
+                        correlationId,
+                        pspApiKey,
+                        new ConfirmPaymentRequestDto()
+                                .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
