@@ -497,6 +497,41 @@ public class NpgClient {
         );
     }
 
+    /**
+     * method to request the payment refund using a sessionId passed as input.
+     *
+     * @param correlationId the unique id to identify the rest api invocation
+     * @param sessionId     the session id used to identify a payment session
+     * @param defaultApiKey default API key
+     * @return An object containing the state of the transaction and the info about
+     *         operation details.
+     */
+    public Mono<StateResponseDto> refundPayment(
+                                                @NotNull UUID correlationId,
+                                                @NotNull String sessionId,
+                                                @NonNull String defaultApiKey
+    ) {
+        return Mono.using(
+                () -> tracer.spanBuilder("NpgClient#refundPayment")
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.pspApiV1BuildCancelPost(
+                        correlationId,
+                        defaultApiKey,
+                        new SessionIdRequestDto().sessionId(sessionId)
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                "Got bad response from npg-service [HTTP {}]",
+                                e.getStatusCode()
+                        )
+                )
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                Span::end
+        );
+    }
+
     private CreateHostedOrderRequestDto buildOrderRequestDto(
                                                              URI merchantUrl,
                                                              URI resultUrl,

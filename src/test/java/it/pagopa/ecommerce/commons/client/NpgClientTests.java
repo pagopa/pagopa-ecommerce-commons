@@ -331,6 +331,33 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldRefundPaymentGivenValidNpgSession() {
+        StateResponseDto stateResponseDto = buildTestRetrieveStateResponseDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        SessionIdRequestDto sessionIdRequestDto = buildSessionIdRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildCancelPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        sessionIdRequestDto
+                )
+        ).thenReturn(Mono.just(stateResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectNext(stateResponseDto)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldPropagateErrorCodesWhileConfirmPayment() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
@@ -373,6 +400,48 @@ class NpgClientTests {
                 .verify();
     }
 
+    @Test
+    void shouldPropagateErrorCodesWhileRefundPayment() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        SessionIdRequestDto sessionIdRequestDto = buildSessionIdRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildCancelPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        sessionIdRequestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for confirm payment",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                )
+                .verify();
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
@@ -382,6 +451,11 @@ class NpgClientTests {
                                         .description(gatewayError.description)
                         )
                 );
+    }
+
+    private SessionIdRequestDto buildSessionIdRequestDto() {
+        return new SessionIdRequestDto()
+                .sessionId(SESSION_ID);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
