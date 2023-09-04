@@ -30,7 +30,7 @@ import java.util.UUID;
 public class NpgClient {
 
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
-    private static final String CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT = "0";
+    private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
     private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
@@ -512,14 +512,14 @@ public class NpgClient {
                 .order(
                         new OrderDto()
                                 .orderId(orderId)
-                                .amount(CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT)
+                                .amount(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
                                 .currency(CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(customerId)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
-                                .actionType(ActionTypeDto.VERIFY)
-                                .amount(CREATE_HOSTED_ORDER_REQUEST_VERIFY_AMOUNT)
+                                .actionType(ActionTypeDto.PAY)
+                                .amount(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
                                 .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())

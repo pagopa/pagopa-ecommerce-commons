@@ -35,7 +35,7 @@ class NpgClientTests {
     private static final String ORDER_REQUEST_VERSION = "2";
     private static final String MERCHANT_URL = "localhost/merchant";
     private static final String ORDER_REQUEST_ORDER_ID = "orderId";
-    private static final String ORDER_REQUEST_AMOUNT = "0";
+    private static final String ORDER_REQUEST_PAY = "1";
     private static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
     private static final String ORDER_REQUEST_PAYMENT_SERVICE_CARDS = NpgClient.PaymentMethod.CARDS.serviceName;
@@ -322,7 +322,7 @@ class NpgClientTests {
                         npgClient.confirmPayment(
                                 correlationUUID,
                                 SESSION_ID,
-                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                new BigDecimal(ORDER_REQUEST_PAY),
                                 MOCKED_API_KEY
                         )
                 )
@@ -362,7 +362,7 @@ class NpgClientTests {
                         npgClient.confirmPayment(
                                 correlationUUID,
                                 SESSION_ID,
-                                new BigDecimal(ORDER_REQUEST_AMOUNT),
+                                new BigDecimal(ORDER_REQUEST_PAY),
                                 MOCKED_API_KEY
                         )
                 )
@@ -391,15 +391,15 @@ class NpgClientTests {
                 .order(
                         new OrderDto()
                                 .orderId(ORDER_REQUEST_ORDER_ID)
-                                .amount(ORDER_REQUEST_AMOUNT)
+                                .amount(ORDER_REQUEST_PAY)
                                 .currency(ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(ORDER_REQUEST_CUSTOMER_ID)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
                                 .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
-                                .amount(ORDER_REQUEST_AMOUNT)
-                                .actionType(ActionTypeDto.VERIFY)
+                                .amount(ORDER_REQUEST_PAY)
+                                .actionType(ActionTypeDto.PAY)
                                 .language(ORDER_REQUEST_LANGUAGE_ITA)
                                 .cancelUrl(CANCEL_URL)
                                 .notificationUrl(NOTIFICATION_URL)
@@ -427,7 +427,7 @@ class NpgClientTests {
     private ConfirmPaymentRequestDto buildTestConfirmPaymentRequestDto() {
         return new ConfirmPaymentRequestDto()
                 .sessionId(SESSION_ID)
-                .amount(ORDER_REQUEST_AMOUNT);
+                .amount(ORDER_REQUEST_PAY);
     }
 
 }
