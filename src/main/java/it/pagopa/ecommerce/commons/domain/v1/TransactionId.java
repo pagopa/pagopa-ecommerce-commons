@@ -1,7 +1,11 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
+import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
+import org.apache.commons.codec.binary.Base64;
 
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 /**
@@ -33,6 +37,45 @@ public record TransactionId(UUID uuid) {
      */
     public String value() {
         return uuid.toString().replace("-", "");
+    }
+
+    /**
+     * <p>
+     * Create a transaction id from a base64 encoded string.
+     * </p>
+     * <p>
+     * Inverse of {@link TransactionId#base64()}
+     * </p>
+     *
+     * @param base64 base64 encoded transaction id
+     * @return an {@link Either} containing a transaction id object or an exception
+     */
+    public static Either<IllegalArgumentException, TransactionId> fromBase64(String base64) {
+        try {
+            byte[] bytes = Base64.decodeBase64(base64);
+            ByteBuffer bb = ByteBuffer.wrap(bytes);
+            return Either.<IllegalArgumentException, UUID>right(new UUID(bb.getLong(), bb.getLong()))
+                    .map(TransactionId::new);
+        } catch (BufferUnderflowException e) {
+            return Either.left(new IllegalArgumentException("Error while decoding transactionId"));
+        }
+    }
+
+    /**
+     * <p>
+     * Returns a URL safe, base64 encoding of the transaction id.
+     * </p>
+     * <p>
+     * Inverse of {@link TransactionId#fromBase64(String)}
+     * </p>
+     *
+     * @return the encoded transaction id
+     */
+    public String base64() {
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        return Base64.encodeBase64URLSafeString(bb.array());
     }
 
     private static UUID fromTrimmedUUIDString(String trimmedUUIDString) {
