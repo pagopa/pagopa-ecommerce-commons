@@ -358,7 +358,6 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                CURRENCY,
                                 MOCKED_API_KEY
                         )
                 )
@@ -445,7 +444,6 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                CURRENCY,
                                 MOCKED_API_KEY
                         )
                 )

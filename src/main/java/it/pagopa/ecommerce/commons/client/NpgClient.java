@@ -36,6 +36,7 @@ public class NpgClient {
     private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
 
     private static final String NPG_ERROR_CODES_ATTRIBUTE_NAME = "npg.error_codes";
+    private static final String EUR_CURRENCY = "EUR";
 
     /**
      * The npg Api
@@ -505,7 +506,6 @@ public class NpgClient {
      * @param idempotenceKey the idempotenceKey used to identify a refund reqeust
      *                       for the same transaction
      * @param grandTotal     the grand total to be refunded
-     * @param currency       the currency of the refund
      * @param defaultApiKey  default API key
      * @return An object containing the state of the transaction and the info about
      *         operation details.
@@ -515,7 +515,6 @@ public class NpgClient {
                                                  @NotNull String operationId,
                                                  @NotNull String idempotenceKey,
                                                  @NotNull BigDecimal grandTotal,
-                                                 @NotNull String currency,
                                                  @NonNull String defaultApiKey
     ) {
         return Mono.using(
@@ -528,7 +527,7 @@ public class NpgClient {
                         correlationId,
                         defaultApiKey,
                         idempotenceKey,
-                        new RefundRequestDto().amount(grandTotal.toString()).currency(currency)
+                        new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
