@@ -51,6 +51,10 @@ class NpgClientTests {
     private static final String TYPE_1 = "type1";
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
+    private static final String OPERATION_ID = "OPERATION_ID";
+    private static final String IDEMPOTENCE_KEY = "IDEMPOTENCE_KEY";
+    private static final String CURRENCY = "EUR";
+    private static final String AMOUNT = "1000";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -332,28 +336,33 @@ class NpgClientTests {
 
     @Test
     void shouldRefundPaymentGivenValidNpgSession() {
-        StateResponseDto stateResponseDto = buildTestRetrieveStateResponseDto();
+        RefundResponseDto refundResponseDto = buildTestRefundResponseDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        SessionIdRequestDto sessionIdRequestDto = buildSessionIdRequestDto();
+        RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildCancelPost(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        sessionIdRequestDto
+                        IDEMPOTENCE_KEY,
+                        refundRequestDto
                 )
-        ).thenReturn(Mono.just(stateResponseDto));
+        ).thenReturn(Mono.just(refundResponseDto));
 
         StepVerifier
                 .create(
                         npgClient.refundPayment(
                                 correlationUUID,
-                                SESSION_ID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                CURRENCY,
                                 MOCKED_API_KEY
                         )
                 )
-                .expectNext(stateResponseDto)
+                .expectNext(refundResponseDto)
                 .verifyComplete();
     }
 
@@ -403,13 +412,15 @@ class NpgClientTests {
     @Test
     void shouldPropagateErrorCodesWhileRefundPayment() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        SessionIdRequestDto sessionIdRequestDto = buildSessionIdRequestDto();
+        RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildCancelPost(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        sessionIdRequestDto
+                        IDEMPOTENCE_KEY,
+                        refundRequestDto
                 )
         )
                 .thenReturn(
@@ -431,7 +442,10 @@ class NpgClientTests {
                 .create(
                         npgClient.refundPayment(
                                 correlationUUID,
-                                SESSION_ID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                CURRENCY,
                                 MOCKED_API_KEY
                         )
                 )
@@ -456,6 +470,12 @@ class NpgClientTests {
     private SessionIdRequestDto buildSessionIdRequestDto() {
         return new SessionIdRequestDto()
                 .sessionId(SESSION_ID);
+    }
+
+    private RefundRequestDto buildRefundRequestDto() {
+        return new RefundRequestDto()
+                .amount(AMOUNT)
+                .currency(CURRENCY);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
@@ -496,6 +516,10 @@ class NpgClientTests {
         return new StateResponseDto()
                 .url("https://iframe-gdi")
                 .state(StateDto.REDIRECTED_TO_EXTERNAL_DOMAIN);
+    }
+
+    private RefundResponseDto buildTestRefundResponseDto() {
+        return new RefundResponseDto().operationId("operation-id").operationTime("2022-09-01T01:20:00.001Z");
     }
 
     private ConfirmPaymentRequestDto buildTestConfirmPaymentRequestDto() {

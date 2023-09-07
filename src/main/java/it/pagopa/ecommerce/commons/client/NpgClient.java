@@ -500,26 +500,35 @@ public class NpgClient {
     /**
      * method to request the payment refund using a sessionId passed as input.
      *
-     * @param correlationId the unique id to identify the rest api invocation
-     * @param sessionId     the session id used to identify a payment session
-     * @param defaultApiKey default API key
+     * @param correlationId  the unique id to identify the rest api invocation
+     * @param operationId    the unique id used to identify a payment operation
+     * @param idempotenceKey the idempotenceKey used to identify a refund reqeust
+     *                       for the same transaction
+     * @param grandTotal     the grand total to be refunded
+     * @param currency       the currency of the refund
+     * @param defaultApiKey  default API key
      * @return An object containing the state of the transaction and the info about
      *         operation details.
      */
-    public Mono<StateResponseDto> refundPayment(
-                                                @NotNull UUID correlationId,
-                                                @NotNull String sessionId,
-                                                @NonNull String defaultApiKey
+    public Mono<RefundResponseDto> refundPayment(
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String operationId,
+                                                 @NotNull String idempotenceKey,
+                                                 @NotNull BigDecimal grandTotal,
+                                                 @NotNull String currency,
+                                                 @NonNull String defaultApiKey
     ) {
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#refundPayment")
                         .setParent(Context.current().with(Span.current()))
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
-                span -> paymentServicesApi.pspApiV1BuildCancelPost(
+                span -> paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        operationId,
                         correlationId,
                         defaultApiKey,
-                        new SessionIdRequestDto().sessionId(sessionId)
+                        idempotenceKey,
+                        new RefundRequestDto().amount(grandTotal.toString()).currency(currency)
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
