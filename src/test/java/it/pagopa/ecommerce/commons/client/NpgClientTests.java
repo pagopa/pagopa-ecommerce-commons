@@ -51,6 +51,10 @@ class NpgClientTests {
     private static final String TYPE_1 = "type1";
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
+    private static final String OPERATION_ID = "OPERATION_ID";
+    private static final String IDEMPOTENCE_KEY = "IDEMPOTENCE_KEY";
+    private static final String CURRENCY = "EUR";
+    private static final String AMOUNT = "1000";
     @Mock
     private ApiClient apiClient;
     @Mock
@@ -331,6 +335,37 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldRefundPaymentGivenValidNpgSession() {
+        RefundResponseDto refundResponseDto = buildTestRefundResponseDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        RefundRequestDto refundRequestDto = buildRefundRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY,
+                        refundRequestDto
+                )
+        ).thenReturn(Mono.just(refundResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectNext(refundResponseDto)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldPropagateErrorCodesWhileConfirmPayment() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
@@ -373,6 +408,52 @@ class NpgClientTests {
                 .verify();
     }
 
+    @Test
+    void shouldPropagateErrorCodesWhileRefundPayment() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        RefundRequestDto refundRequestDto = buildRefundRequestDto();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY,
+                        refundRequestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for confirm payment",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        OBJECT_MAPPER.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                )
+                .verify();
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
@@ -382,6 +463,17 @@ class NpgClientTests {
                                         .description(gatewayError.description)
                         )
                 );
+    }
+
+    private SessionIdRequestDto buildSessionIdRequestDto() {
+        return new SessionIdRequestDto()
+                .sessionId(SESSION_ID);
+    }
+
+    private RefundRequestDto buildRefundRequestDto() {
+        return new RefundRequestDto()
+                .amount(AMOUNT)
+                .currency(CURRENCY);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
@@ -422,6 +514,10 @@ class NpgClientTests {
         return new StateResponseDto()
                 .url("https://iframe-gdi")
                 .state(StateDto.REDIRECTED_TO_EXTERNAL_DOMAIN);
+    }
+
+    private RefundResponseDto buildTestRefundResponseDto() {
+        return new RefundResponseDto().operationId("operation-id").operationTime("2022-09-01T01:20:00.001Z");
     }
 
     private ConfirmPaymentRequestDto buildTestConfirmPaymentRequestDto() {

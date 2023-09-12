@@ -673,6 +673,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
+  /psp/api/v1/operations/{operationId}/refunds:
+    post:
+      tags:
+        - Payment Services
+      summary: Create an order and initiates a payment through build functionality.
+      description: "This service is targeted to ecommerce platforms requiring to implement the payment pages in line with their own dedicated UI style guidelines. The service will return a list of fields expressed in JSON format, to be translated into HTML by the ecommerce platform web app. If the paymentService field is valued at CARDS the service will return a list of fields for the CARD_DATA_COLLECTION without going through the PAYMENT_METHOD_SELECTION state and if it's valued with an APM the service will return an url where the customer should be redirected."
+      parameters:
+        - name: operationId
+          required: true
+          in: path
+          schema:
+            type: string
+          description: ID of the operation
+        - name: Correlation-Id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: "Mandatory field to be valued with a UUID to be renewed at every call. The purpose of the field is to allow referring to a specific call for any integration or maintenance activity."
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Default api key"
+        - name: Idempotency-key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Idempotence key"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+        required: true
+      responses:
+        "200":
+          description: "In case of success, the service returns a list of fields to be rendered in the ecomm web app."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        "404":
+          description: Operation not found
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
 components:
   schemas:
     StateResponse:
@@ -879,6 +940,32 @@ components:
           $ref: '#/components/schemas/Order'
         paymentSession:
           $ref: '#/components/schemas/PaymentSession'
+    RefundRequest:
+      type: object
+      properties:
+        amount:
+          type: string
+          example: "100"
+          description: Amount of the refund in eurocent
+        currency:
+          type: string
+          example: "EUR"
+          description: Currency of the amount
+        description:
+          type: string
+          example: "Goods have been shipped"
+          description: Reason for refunding
+    RefundResponse:
+      type: object
+      properties:
+        operationId:
+          type: string
+          example: "3470744"
+          description: ID operation
+        operationTime:
+          type: string
+          example: "2022-09-01T01:20:00.001Z"
+          description: Datetime of the operation
     ClientError:
       type: object
       properties:
