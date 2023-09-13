@@ -872,6 +872,7 @@ components:
         - CARD_DATA_COLLECTION
         - PAYMENT_METHOD_SELECTION
         - READY_FOR_PAYMENT
+        - GDI_VERIFICATION
         - REDIRECTED_TO_EXTERNAL_DOMAIN
         - PAYMENT_COMPLETE
     PaymentMethod:
