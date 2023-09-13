@@ -48,7 +48,11 @@ public class TransactionAuthorizationRequestData {
         /**
          * POSTEPAY payment gateway
          */
-        POSTEPAY
+        POSTEPAY,
+        /**
+         * NPG payment gateway
+         */
+        NPG
     }
 
     /**
