@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -36,16 +37,19 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     /**
      * Primary constructor
      *
-     * @param transactionId               transaction id
-     * @param paymentNotices              notice code list
-     * @param email                       email where the payment receipt will be
-     *                                    sent to
-     * @param faultCode                   fault code generated during activation
-     * @param faultCodeString             fault code auxiliary description
-     * @param creationDate                creation date of this transaction
-     * @param clientId                    a {@link ClientId} object
-     * @param idCart                      the ec cart id
-     * @param paymentTokenValidityTimeSec the payment token validity time in seconds
+     * @param transactionId                    transaction id
+     * @param paymentNotices                   notice code list
+     * @param email                            email where the payment receipt will
+     *                                         be sent to
+     * @param faultCode                        fault code generated during
+     *                                         activation
+     * @param faultCodeString                  fault code auxiliary description
+     * @param creationDate                     creation date of this transaction
+     * @param clientId                         a {@link ClientId} object
+     * @param idCart                           the ec cart id
+     * @param paymentTokenValidityTimeSec      the payment token validity time in
+     *                                         seconds
+     * @param transactionGatewayActivationData transaction activation data
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -56,7 +60,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ZonedDateTime creationDate,
             ClientId clientId,
             String idCart,
-            int paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec,
+            TransactionGatewayActivationData transactionGatewayActivationData
     ) {
         super(
 
@@ -92,7 +97,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         faultCodeString,
                         clientId,
                         idCart,
-                        paymentTokenValidityTimeSec
+                        paymentTokenValidityTimeSec,
+                        transactionGatewayActivationData
                 )
         );
     }
@@ -100,16 +106,19 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
     /**
      * Convenience constructor with creation date set to now.
      *
-     * @param transactionId               transaction id
-     * @param paymentNotices              notice code list
-     * @param email                       email where the payment receipt will be
-     *                                    sent to
-     * @param faultCode                   fault code generated during activation
-     * @param faultCodeString             fault code auxiliary description
-     * @param clientId                    the origin from which the transaction
-     *                                    started from
-     * @param idCart                      the ec id cart
-     * @param paymentTokenValidityTimeSec the payment token validity time in seconds
+     * @param transactionId                    transaction id
+     * @param paymentNotices                   notice code list
+     * @param email                            email where the payment receipt will
+     *                                         be sent to
+     * @param faultCode                        fault code generated during
+     *                                         activation
+     * @param faultCodeString                  fault code auxiliary description
+     * @param clientId                         the origin from which the transaction
+     *                                         started from
+     * @param idCart                           the ec id cart
+     * @param paymentTokenValidityTimeSec      the payment token validity time in
+     *                                         seconds
+     * @param transactionGatewayActivationData transaction activation data
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -119,7 +128,9 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ClientId clientId,
             String idCart,
-            int paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec,
+
+            TransactionGatewayActivationData transactionGatewayActivationData
     ) {
         this(
                 transactionId,
@@ -130,7 +141,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 ZonedDateTime.now(),
                 clientId,
                 idCart,
-                paymentTokenValidityTimeSec
+                paymentTokenValidityTimeSec,
+                transactionGatewayActivationData
         );
     }
 

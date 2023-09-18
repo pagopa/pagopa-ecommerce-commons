@@ -2,9 +2,16 @@ package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
@@ -88,13 +95,32 @@ public class TransactionTestUtils {
 
     public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
 
+    private static final String NPG_ORDER_ID = "npgOrderId";
+
+    private static final String NPG_CORRELATION_ID = "npgCorrelationId";
+
+    private static final String NPG_SESSION_ID = "npgSessionId";
+
+    private static final String NPG_OPERATION_ID = "npgOperationId";
+    private static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
-        return transactionActivateEvent(ZonedDateTime.now().toString());
+        return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
     }
 
     @Nonnull
-    public static TransactionActivatedEvent transactionActivateEvent(String creationDate) {
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     TransactionGatewayActivationData transactionActivatedData
+    ) {
+        return transactionActivateEvent(ZonedDateTime.now().toString(), transactionActivatedData);
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData
+    ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 creationDate,
@@ -122,13 +148,24 @@ public class TransactionTestUtils {
                         FAULT_CODE_STRING,
                         Transaction.ClientId.CHECKOUT,
                         ID_CART,
-                        PAYMENT_TOKEN_VALIDITY_TIME_SEC
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                        transactionActivatedData
                 )
         );
     }
 
     @Nonnull
-    public static TransactionActivated transactionActivated(String creationDate) {
+    public static TransactionActivated transactionActivated(
+                                                            String creationDate
+    ) {
+        return transactionActivated(creationDate, new EmptyTransactionGatewayActivationData());
+    }
+
+    @Nonnull
+    public static TransactionActivated transactionActivated(
+                                                            String creationDate,
+                                                            TransactionGatewayActivationData transactionActivatedData
+    ) {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
@@ -155,7 +192,8 @@ public class TransactionTestUtils {
                 ZonedDateTime.parse(creationDate),
                 Transaction.ClientId.CHECKOUT,
                 ID_CART,
-                PAYMENT_TOKEN_VALIDITY_TIME_SEC
+                PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                transactionActivatedData
         );
     }
 
@@ -221,48 +259,16 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
-        return new TransactionAuthorizationCompletedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
-                        AUTHORIZATION_CODE,
-                        RRN,
-                        timestampOperation,
-                        null,
-                        AUTHORIZATION_RESULT_DTO
-                )
-        );
-    }
-
-    @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                AuthorizationResultDto authorizationResultDto
+                                                                                                TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
+                new it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData(
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        null,
-                        authorizationResultDto
-                )
-        );
-    }
-
-    @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                AuthorizationResultDto authorizationResultDto,
-                                                                                                String rnn
-    ) {
-        return new TransactionAuthorizationCompletedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
-                        AUTHORIZATION_CODE,
-                        rnn,
-                        timestampOperation,
-                        null,
-                        authorizationResultDto
+                        transactionGatewayAuthorizationData
                 )
         );
     }
@@ -620,6 +626,48 @@ public class TransactionTestUtils {
                                 "Error reducing input events: [%s]".formatted(Arrays.toString(events))
                         )
                 );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome
+    ) {
+        return new PgsTransactionGatewayAuthorizationData(
+                null,
+                authorizationOutcome
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome,
+                                                                                             String errorCode
+    ) {
+        return new PgsTransactionGatewayAuthorizationData(
+                errorCode,
+                authorizationOutcome
+        );
+
+    }
+
+    @Nonnull
+    public static TransactionGatewayActivationData npgTransactionGatewayActivationData() {
+        return new NpgTransactionGatewayActivationData(
+                NPG_ORDER_ID,
+                NPG_CORRELATION_ID,
+                NPG_SESSION_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData npgTransactionGatewayAuthorizationData(
+                                                                                             OperationResultDto outcomeDto
+    ) {
+        return new NpgTransactionGatewayAuthorizationData(
+                outcomeDto,
+                NPG_OPERATION_ID,
+                NPG_PAYMENT_END_TO_END_ID
+        );
     }
 
 }

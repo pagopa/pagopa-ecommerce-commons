@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionActivated;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
@@ -16,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransactionDocumentTest {
     @Test
     void v2TransactionEventIsBaseTransactionEvent() {
-        TransactionEvent<TransactionActivatedData> t = TransactionTestUtils.transactionActivateEvent();
+        TransactionEvent<TransactionActivatedData> t = TransactionTestUtils
+                .transactionActivateEvent(new EmptyTransactionGatewayActivationData());
 
         assertInstanceOf(BaseTransactionEvent.class, t);
     }
@@ -51,7 +53,8 @@ class TransactionDocumentTest {
 
     @Test
     void shouldConstructTransactionDocumentFromTransaction() {
-        TransactionActivated transaction = TransactionTestUtils.transactionActivated(ZonedDateTime.now().toString());
+        TransactionActivated transaction = TransactionTestUtils
+                .transactionActivated(ZonedDateTime.now().toString(), new EmptyTransactionGatewayActivationData());
 
         Transaction transactionDocument = Transaction.from(transaction);
 
