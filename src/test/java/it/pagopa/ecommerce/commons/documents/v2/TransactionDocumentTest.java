@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
-import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionActivated;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
@@ -18,7 +18,7 @@ class TransactionDocumentTest {
     @Test
     void v2TransactionEventIsBaseTransactionEvent() {
         TransactionEvent<TransactionActivatedData> t = TransactionTestUtils
-                .transactionActivateEvent(new EmptyTransactionActivationData());
+                .transactionActivateEvent(new EmptyTransactionGatewayActivationData());
 
         assertInstanceOf(BaseTransactionEvent.class, t);
     }
@@ -54,7 +54,7 @@ class TransactionDocumentTest {
     @Test
     void shouldConstructTransactionDocumentFromTransaction() {
         TransactionActivated transaction = TransactionTestUtils
-                .transactionActivated(ZonedDateTime.now().toString(), new EmptyTransactionActivationData());
+                .transactionActivated(ZonedDateTime.now().toString(), new EmptyTransactionGatewayActivationData());
 
         Transaction transactionDocument = Transaction.from(transaction);
 

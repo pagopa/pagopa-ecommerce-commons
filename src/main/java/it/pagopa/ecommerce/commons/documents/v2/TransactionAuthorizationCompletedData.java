@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationGatewayData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -35,7 +35,7 @@ public class TransactionAuthorizationCompletedData {
     private String timestampOperation;
 
     @NotNull
-    private TransactionAuthorizationGatewayData transactionAuthorizationGatewayData;
+    private TransactionGatewayAuthorizationData transactionGatewayAuthorizationData;
 
     @JsonCreator
     private TransactionAuthorizationCompletedData() {

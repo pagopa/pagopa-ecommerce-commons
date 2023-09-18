@@ -6,15 +6,12 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * NPG transaction activation data
+ * Empty transaction activation data indicating no additional information are
+ * available for the current transaction
  */
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class NpgTransactionActivationData implements TransactionActivationData {
-
-    private String orderId;
-
-    private String correlationId;
+public class EmptyTransactionGatewayActivationData implements TransactionGatewayActivationData {
 }

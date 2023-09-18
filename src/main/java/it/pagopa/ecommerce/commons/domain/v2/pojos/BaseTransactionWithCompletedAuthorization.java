@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.domain.v2.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionAuthorizationGatewayData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationGatewayData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationGatewayData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import lombok.AccessLevel;
@@ -54,15 +54,15 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
      * @return true iff the transaction was authorized
      */
     public boolean wasTransactionAuthorized() {
-        TransactionAuthorizationGatewayData transactionAuthorizationGatewayData = this.getTransactionAuthorizationCompletedData().getTransactionAuthorizationGatewayData();
+        TransactionGatewayAuthorizationData transactionGatewayAuthorizationData = this.getTransactionAuthorizationCompletedData().getTransactionGatewayAuthorizationData();
         return
-                switch (transactionAuthorizationGatewayData) {
-                    case PgsTransactionAuthorizationGatewayData p ->
+                switch (transactionGatewayAuthorizationData) {
+                    case PgsTransactionGatewayAuthorizationData p ->
                             p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
-                    case NpgTransactionAuthorizationGatewayData n ->
+                    case NpgTransactionGatewayAuthorizationData n ->
                             n.getOperationResult().equals(OperationResultDto.EXECUTED);
                     default ->
-                            throw new IllegalStateException("Unmanaged authorization completed data %s".formatted(transactionAuthorizationGatewayData));
+                            throw new IllegalStateException("Unmanaged authorization completed data %s".formatted(transactionGatewayAuthorizationData));
                 };
     }
 }

@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationGatewayData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -908,8 +908,8 @@ class TransactionTest {
         );
         assertEquals(
                 TransactionTestUtils.AUTHORIZATION_RESULT_DTO,
-                ((PgsTransactionAuthorizationGatewayData) transactionAuthorizationCompleted
-                        .getTransactionAuthorizationCompletedData().getTransactionAuthorizationGatewayData())
+                ((PgsTransactionGatewayAuthorizationData) transactionAuthorizationCompleted
+                        .getTransactionAuthorizationCompletedData().getTransactionGatewayAuthorizationData())
                                 .getAuthorizationResultDto()
         );
     }

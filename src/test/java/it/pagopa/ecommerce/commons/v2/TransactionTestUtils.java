@@ -2,10 +2,10 @@ package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
-import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationGatewayData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationGatewayData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
@@ -94,12 +94,12 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
-        return transactionActivateEvent(new EmptyTransactionActivationData());
+        return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
     }
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent(
-                                                                     TransactionActivationData transactionActivatedData
+                                                                     TransactionGatewayActivationData transactionActivatedData
     ) {
         return transactionActivateEvent(ZonedDateTime.now().toString(), transactionActivatedData);
     }
@@ -107,7 +107,7 @@ public class TransactionTestUtils {
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent(
                                                                      String creationDate,
-                                                                     TransactionActivationData transactionActivatedData
+                                                                     TransactionGatewayActivationData transactionActivatedData
     ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
@@ -146,13 +146,13 @@ public class TransactionTestUtils {
     public static TransactionActivated transactionActivated(
                                                             String creationDate
     ) {
-        return transactionActivated(creationDate, new EmptyTransactionActivationData());
+        return transactionActivated(creationDate, new EmptyTransactionGatewayActivationData());
     }
 
     @Nonnull
     public static TransactionActivated transactionActivated(
                                                             String creationDate,
-                                                            TransactionActivationData transactionActivatedData
+                                                            TransactionGatewayActivationData transactionActivatedData
     ) {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
@@ -248,7 +248,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                TransactionAuthorizationGatewayData transactionAuthorizationGatewayData
+                                                                                                TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
@@ -256,7 +256,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        transactionAuthorizationGatewayData
+                        transactionGatewayAuthorizationData
                 )
         );
     }
@@ -617,21 +617,21 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationGatewayData pgsTransactionAuthorizationCompletedData(
+    public static TransactionGatewayAuthorizationData pgsTransactionAuthorizationCompletedData(
                                                                                                AuthorizationResultDto authorizationOutcome
     ) {
-        return new PgsTransactionAuthorizationGatewayData(
+        return new PgsTransactionGatewayAuthorizationData(
                 null,
                 authorizationOutcome
         );
     }
 
     @Nonnull
-    public static TransactionAuthorizationGatewayData pgsTransactionAuthorizationCompletedData(
+    public static TransactionGatewayAuthorizationData pgsTransactionAuthorizationCompletedData(
                                                                                                AuthorizationResultDto authorizationOutcome,
                                                                                                String errorCode
     ) {
-        return new PgsTransactionAuthorizationGatewayData(
+        return new PgsTransactionGatewayAuthorizationData(
                 errorCode,
                 authorizationOutcome
         );

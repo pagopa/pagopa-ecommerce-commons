@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
-import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.Email;
 import lombok.AllArgsConstructor;
@@ -29,6 +29,6 @@ public class TransactionActivatedData {
     @Nullable
     private String idCart;
     private int paymentTokenValiditySeconds;
-    private TransactionActivationData transactionActivationData;
+    private TransactionGatewayActivationData transactionGatewayActivationData;
 
 }
