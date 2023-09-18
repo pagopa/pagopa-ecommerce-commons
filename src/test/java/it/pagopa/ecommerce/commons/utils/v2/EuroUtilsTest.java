@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.utils.v1;
+package it.pagopa.ecommerce.commons.utils.v2;
 
 import it.pagopa.ecommerce.commons.utils.EuroUtils;
 import org.junit.jupiter.api.Test;

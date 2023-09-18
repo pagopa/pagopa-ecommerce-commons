@@ -1,7 +1,7 @@
-package it.pagopa.ecommerce.commons.utils.v1;
+package it.pagopa.ecommerce.commons.utils.v2;
 
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.v1.Email;
+import it.pagopa.ecommerce.commons.domain.v2.Email;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
@@ -20,7 +20,7 @@ import reactor.test.StepVerifier;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.EMAIL_STRING;
+import static it.pagopa.ecommerce.commons.v2.TransactionTestUtils.EMAIL_STRING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
