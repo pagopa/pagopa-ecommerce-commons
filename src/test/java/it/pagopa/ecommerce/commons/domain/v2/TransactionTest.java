@@ -2,7 +2,9 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
@@ -80,6 +82,29 @@ class TransactionTest {
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated expected = TransactionTestUtils
                 .transactionActivated(event.getCreationDate());
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionFromInitEventStreamWithNpgInfo() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent event = TransactionTestUtils
+                .transactionActivateEvent(TransactionTestUtils.npgTransactionGatewayActivationData());
+
+        Flux<Object> events = Flux.just(event);
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated expected = TransactionTestUtils
+                .transactionActivated(
+                        event.getCreationDate(),
+                        TransactionTestUtils.npgTransactionGatewayActivationData()
+                );
 
         Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
@@ -168,6 +193,42 @@ class TransactionTest {
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                );
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted expected = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionFromAuthorizedEventStreamNpgGateway() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
 
         Flux<Object> events = Flux.just(
@@ -1908,6 +1969,119 @@ class TransactionTest {
                         && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
         )
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionUnauthorizedFromAuthorizationCompletedStreamNpgGateway() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.DENIED_BY_RISK)
+                );
+        TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureFailedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionUnauthorized expected = TransactionTestUtils
+                .transactionUnauthorized(transactionAuthorizationCompleted, transactionClosureFailedEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.UNAUTHORIZED)
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionClosedFromAuthorizationCompletedStreamNpgGateway() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionClosed expected = TransactionTestUtils
+                .transactionClosed(transactionAuthorizationCompleted, transactionClosedEvent);
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED)
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldFailConstructTransactionClosedFromAuthorizationCompletedStreamWithUnmanagedGateway() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        Mockito.mock(TransactionGatewayAuthorizationData.class)
+                );
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosedEvent
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectError(IllegalStateException.class)
+                .verify();
     }
 
     @Test

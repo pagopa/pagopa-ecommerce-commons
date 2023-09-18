@@ -3,12 +3,15 @@ package it.pagopa.ecommerce.commons.v2;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
@@ -91,6 +94,13 @@ public class TransactionTestUtils {
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
     public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
+
+    private static final String NPG_ORDER_ID = "npgOrderId";
+
+    private static final String NPG_CORRELATION_ID = "npgCorrelationId";
+
+    private static final String NPG_OPERATION_ID = "npgOperationId";
+    private static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -634,6 +644,26 @@ public class TransactionTestUtils {
         return new PgsTransactionGatewayAuthorizationData(
                 errorCode,
                 authorizationOutcome
+        );
+
+    }
+
+    @Nonnull
+    public static TransactionGatewayActivationData npgTransactionGatewayActivationData() {
+        return new NpgTransactionGatewayActivationData(
+                NPG_ORDER_ID,
+                NPG_CORRELATION_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData npgTransactionGatewayAuthorizationData(
+                                                                                             OperationResultDto outcomeDto
+    ) {
+        return new NpgTransactionGatewayAuthorizationData(
+                outcomeDto,
+                NPG_OPERATION_ID,
+                NPG_PAYMENT_END_TO_END_ID
         );
     }
 
