@@ -12,7 +12,7 @@ import java.util.Optional;
  * The utils class for transaction.
  * </p>
  */
-@Component
+@Component("TransactionUtilsV1")
 public class TransactionUtils {
 
     /**
