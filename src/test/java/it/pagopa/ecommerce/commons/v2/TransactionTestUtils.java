@@ -2,6 +2,10 @@ package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationCompletedData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
@@ -90,11 +94,21 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
-        return transactionActivateEvent(ZonedDateTime.now().toString());
+        return transactionActivateEvent(new EmptyTransactionActivationData());
     }
 
     @Nonnull
-    public static TransactionActivatedEvent transactionActivateEvent(String creationDate) {
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     TransactionActivationData transactionActivatedData
+    ) {
+        return transactionActivateEvent(ZonedDateTime.now().toString(), transactionActivatedData);
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionActivationData transactionActivatedData
+    ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 creationDate,
@@ -122,13 +136,24 @@ public class TransactionTestUtils {
                         FAULT_CODE_STRING,
                         Transaction.ClientId.CHECKOUT,
                         ID_CART,
-                        PAYMENT_TOKEN_VALIDITY_TIME_SEC
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                        transactionActivatedData
                 )
         );
     }
 
     @Nonnull
-    public static TransactionActivated transactionActivated(String creationDate) {
+    public static TransactionActivated transactionActivated(
+                                                            String creationDate
+    ) {
+        return transactionActivated(creationDate, new EmptyTransactionActivationData());
+    }
+
+    @Nonnull
+    public static TransactionActivated transactionActivated(
+                                                            String creationDate,
+                                                            TransactionActivationData transactionActivatedData
+    ) {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
@@ -155,7 +180,8 @@ public class TransactionTestUtils {
                 ZonedDateTime.parse(creationDate),
                 Transaction.ClientId.CHECKOUT,
                 ID_CART,
-                PAYMENT_TOKEN_VALIDITY_TIME_SEC
+                PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                transactionActivatedData
         );
     }
 
@@ -221,48 +247,16 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent() {
-        return new TransactionAuthorizationCompletedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
-                        AUTHORIZATION_CODE,
-                        RRN,
-                        timestampOperation,
-                        null,
-                        AUTHORIZATION_RESULT_DTO
-                )
-        );
-    }
-
-    @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                AuthorizationResultDto authorizationResultDto
+                                                                                                TransactionAuthorizationCompletedData transactionAuthorizationCompletedData
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
+                new it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData(
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        null,
-                        authorizationResultDto
-                )
-        );
-    }
-
-    @Nonnull
-    public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                AuthorizationResultDto authorizationResultDto,
-                                                                                                String rnn
-    ) {
-        return new TransactionAuthorizationCompletedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationCompletedData(
-                        AUTHORIZATION_CODE,
-                        rnn,
-                        timestampOperation,
-                        null,
-                        authorizationResultDto
+                        transactionAuthorizationCompletedData
                 )
         );
     }
@@ -620,6 +614,27 @@ public class TransactionTestUtils {
                                 "Error reducing input events: [%s]".formatted(Arrays.toString(events))
                         )
                 );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationCompletedData pgsTransactionAuthorizationCompletedData(
+                                                                                                 AuthorizationResultDto authorizationOutcome
+    ) {
+        return new PgsTransactionAuthorizationCompletedData(
+                null,
+                authorizationOutcome
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationCompletedData pgsTransactionAuthorizationCompletedData(
+                                                                                                 AuthorizationResultDto authorizationOutcome,
+                                                                                                 String errorCode
+    ) {
+        return new PgsTransactionAuthorizationCompletedData(
+                errorCode,
+                authorizationOutcome
+        );
     }
 
 }

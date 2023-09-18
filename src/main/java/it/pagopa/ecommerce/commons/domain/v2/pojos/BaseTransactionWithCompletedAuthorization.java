@@ -1,6 +1,9 @@
 package it.pagopa.ecommerce.commons.domain.v2.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,12 +18,12 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * <p>
  * Generic authorization data is exposed through
- * {@link TransactionAuthorizationCompletedData
+ * {@link it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData
  * TransactionAuthorizationStatusUpdateData}.
  * </p>
  *
  * @see BaseTransaction
- * @see TransactionAuthorizationCompletedData
+ * @see it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -28,7 +31,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public abstract class BaseTransactionWithCompletedAuthorization extends BaseTransactionWithRequestedAuthorization {
 
-    TransactionAuthorizationCompletedData transactionAuthorizationCompletedData;
+    it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData transactionAuthorizationCompletedData;
 
     /**
      * Primary constructor
@@ -38,7 +41,7 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
      */
     protected BaseTransactionWithCompletedAuthorization(
             BaseTransactionWithRequestedAuthorization baseTransaction,
-            TransactionAuthorizationCompletedData transactionAuthorizationCompletedData
+            it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedData transactionAuthorizationCompletedData
     ) {
         super(baseTransaction, baseTransaction.getTransactionAuthorizationRequestData());
         this.transactionAuthorizationCompletedData = transactionAuthorizationCompletedData;
@@ -51,7 +54,15 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
      * @return true iff the transaction was authorized
      */
     public boolean wasTransactionAuthorized() {
-        return this.getTransactionAuthorizationCompletedData().getAuthorizationResultDto()
-                .equals(AuthorizationResultDto.OK);
+        TransactionAuthorizationCompletedData transactionAuthorizationCompletedData = this.getTransactionAuthorizationCompletedData().getTransactionAuthorizationCompletedData();
+        return
+                switch (transactionAuthorizationCompletedData) {
+                    case PgsTransactionAuthorizationCompletedData p ->
+                            p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
+                    case NpgTransactionAuthorizationCompletedData n ->
+                            n.getOperationResult().equals(OperationResultDto.EXECUTED);
+                    default ->
+                            throw new IllegalStateException("Unmanaged authorization completed data %s".formatted(transactionAuthorizationCompletedData));
+                };
     }
 }

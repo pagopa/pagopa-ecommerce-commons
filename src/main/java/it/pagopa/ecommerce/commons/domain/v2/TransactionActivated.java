@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -46,6 +47,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param clientId                    a {@link ClientId} object
      * @param idCart                      the ec cart id
      * @param paymentTokenValidityTimeSec the payment token validity time in seconds
+     * @param transactionActivationData   transaction activation data
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -56,7 +58,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ZonedDateTime creationDate,
             ClientId clientId,
             String idCart,
-            int paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec,
+            TransactionActivationData transactionActivationData
     ) {
         super(
 
@@ -92,7 +95,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         faultCodeString,
                         clientId,
                         idCart,
-                        paymentTokenValidityTimeSec
+                        paymentTokenValidityTimeSec,
+                        transactionActivationData
                 )
         );
     }
@@ -110,6 +114,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      *                                    started from
      * @param idCart                      the ec id cart
      * @param paymentTokenValidityTimeSec the payment token validity time in seconds
+     * @param transactionActivationData   transaction activation data
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -119,7 +124,9 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             String faultCodeString,
             ClientId clientId,
             String idCart,
-            int paymentTokenValidityTimeSec
+            int paymentTokenValidityTimeSec,
+
+            TransactionActivationData transactionActivationData
     ) {
         this(
                 transactionId,
@@ -130,7 +137,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 ZonedDateTime.now(),
                 clientId,
                 idCart,
-                paymentTokenValidityTimeSec
+                paymentTokenValidityTimeSec,
+                transactionActivationData
         );
     }
 

@@ -49,7 +49,8 @@ public final class EmptyTransaction implements Transaction {
                 ZonedDateTime.parse(event.getCreationDate()),
                 event.getData().getClientId(),
                 event.getData().getIdCart(),
-                event.getData().getPaymentTokenValiditySeconds()
+                event.getData().getPaymentTokenValiditySeconds(),
+                event.getData().getTransactionActivationData()
         );
     }
 

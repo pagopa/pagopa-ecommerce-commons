@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,21 +28,13 @@ public class TransactionAuthorizationCompletedData {
     private String rrn;
 
     /**
-     * PGS authorization completion timestamp
+     * Authorization completion timestamp
      */
     @NotNull
     private String timestampOperation;
 
-    /**
-     * The PGS errorCode
-     */
-    @Nullable
-    private String errorCode;
-
-    /**
-     * The payment gateway authorization outcome
-     */
-    private AuthorizationResultDto authorizationResultDto;
+    @NotNull
+    private it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationCompletedData transactionAuthorizationCompletedData;
 
     @JsonCreator
     private TransactionAuthorizationCompletedData() {
