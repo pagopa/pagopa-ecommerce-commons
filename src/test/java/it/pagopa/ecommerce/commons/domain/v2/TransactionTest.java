@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
@@ -192,7 +191,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         Flux<Object> events = Flux.just(
@@ -264,7 +263,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         Flux<Object> events = Flux.just(
@@ -301,7 +300,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -346,7 +345,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -411,7 +410,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -455,7 +454,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -519,7 +518,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -559,7 +558,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -602,7 +601,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -722,7 +721,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -771,7 +770,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -827,7 +826,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
@@ -880,7 +879,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -949,7 +948,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
@@ -982,7 +981,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -1010,7 +1009,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1039,7 +1038,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
@@ -1084,7 +1083,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -1147,7 +1146,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -1216,7 +1215,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -1274,7 +1273,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -1336,7 +1335,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -1389,7 +1388,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -1448,7 +1447,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -1498,7 +1497,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -1553,7 +1552,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -1604,7 +1603,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -1659,7 +1658,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -1702,7 +1701,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -1840,7 +1839,7 @@ class TransactionTest {
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -1902,7 +1901,7 @@ class TransactionTest {
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -1938,7 +1937,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
@@ -2056,35 +2055,6 @@ class TransactionTest {
     }
 
     @Test
-    void shouldFailConstructTransactionClosedFromAuthorizationCompletedStreamWithUnmanagedGateway() {
-        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
-
-        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
-        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
-                .transactionAuthorizationCompletedEvent(
-                        Mockito.mock(TransactionGatewayAuthorizationData.class)
-                );
-        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
-                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-
-        Flux<Object> events = Flux.just(
-                transactionActivatedEvent,
-                authorizationRequestedEvent,
-                transactionAuthorizationCompletedEvent,
-                transactionClosedEvent
-        );
-
-        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
-                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
-
-        StepVerifier.create(actual)
-                .expectError(IllegalStateException.class)
-                .verify();
-    }
-
-    @Test
     void shouldConstructTransactionFromUserReceiptWithStatusNotifiedOK() {
         it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
 
@@ -2093,7 +2063,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -2161,7 +2131,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -2229,7 +2199,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -2404,7 +2374,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -2462,7 +2432,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -2524,7 +2494,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -2635,7 +2605,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -2697,7 +2667,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -2756,7 +2726,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -2822,7 +2792,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -2889,7 +2859,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -2940,7 +2910,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -2991,7 +2961,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -3046,7 +3016,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -3099,7 +3069,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -3419,7 +3389,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionUserCanceledEvent transactionUserCanceledEvent = TransactionTestUtils.transactionUserCanceledEvent();
 
@@ -3468,7 +3438,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -3543,7 +3513,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -3667,7 +3637,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -3710,7 +3680,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -3796,7 +3766,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -3866,7 +3836,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -3940,7 +3910,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.KO);
@@ -4011,7 +3981,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4086,7 +4056,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.KO);
@@ -4162,7 +4132,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4237,7 +4207,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4318,7 +4288,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4398,7 +4368,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4474,7 +4444,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4553,7 +4523,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4636,7 +4606,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4700,7 +4670,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4763,7 +4733,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionClosedEvent closureSentEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
@@ -4809,7 +4779,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureFailedEvent closureFailedEvent = TransactionTestUtils
                 .transactionClosureFailedEvent(TransactionClosureData.Outcome.OK);
@@ -4855,7 +4825,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.KO)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.KO)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
@@ -4906,7 +4876,7 @@ class TransactionTest {
                 .transactionAuthorizationRequestedEvent();
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
-                        TransactionTestUtils.pgsTransactionAuthorizationCompletedData(AuthorizationResultDto.OK)
+                        TransactionTestUtils.pgsTransactionGatewayAuthorizationData(AuthorizationResultDto.OK)
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();

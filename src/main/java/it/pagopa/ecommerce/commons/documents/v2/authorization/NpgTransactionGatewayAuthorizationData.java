@@ -13,7 +13,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class NpgTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
+public final class NpgTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
 
     /**
      * NPG operation result

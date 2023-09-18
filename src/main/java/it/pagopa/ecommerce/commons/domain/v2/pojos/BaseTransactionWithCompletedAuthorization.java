@@ -61,8 +61,6 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
                             p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
                     case NpgTransactionGatewayAuthorizationData n ->
                             n.getOperationResult().equals(OperationResultDto.EXECUTED);
-                    default ->
-                            throw new IllegalStateException("Unmanaged authorization completed data %s".formatted(transactionGatewayAuthorizationData));
                 };
     }
 }

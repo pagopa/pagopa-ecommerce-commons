@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class NpgTransactionGatewayActivationData implements TransactionGatewayActivationData {
+public final class NpgTransactionGatewayActivationData implements TransactionGatewayActivationData {
 
     private String orderId;
 

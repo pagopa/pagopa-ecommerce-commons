@@ -13,5 +13,5 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class EmptyTransactionGatewayActivationData implements TransactionGatewayActivationData {
+public final class EmptyTransactionGatewayActivationData implements TransactionGatewayActivationData {
 }

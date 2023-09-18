@@ -629,8 +629,8 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionGatewayAuthorizationData pgsTransactionAuthorizationCompletedData(
-                                                                                               AuthorizationResultDto authorizationOutcome
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome
     ) {
         return new PgsTransactionGatewayAuthorizationData(
                 null,
@@ -639,9 +639,9 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionGatewayAuthorizationData pgsTransactionAuthorizationCompletedData(
-                                                                                               AuthorizationResultDto authorizationOutcome,
-                                                                                               String errorCode
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome,
+                                                                                             String errorCode
     ) {
         return new PgsTransactionGatewayAuthorizationData(
                 errorCode,
