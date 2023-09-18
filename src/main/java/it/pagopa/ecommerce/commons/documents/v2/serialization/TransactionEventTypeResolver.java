@@ -178,7 +178,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                     try {
                         return ((Class<? extends TransactionEvent<?>>) Class.forName(c.getBeanClassName()));
                     } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalStateException(e);
                     }
                 })
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
@@ -214,7 +214,7 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
 
                         return Tuple.of(transactionEventClass, transactionEventCode);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalStateException(e);
                     }
                 }).collect(Collectors.toMap(Tuple2::_1, Tuple2::_2));
     }
