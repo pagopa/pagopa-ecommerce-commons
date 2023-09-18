@@ -1,13 +1,13 @@
 package it.pagopa.ecommerce.commons.documents.v1;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import it.pagopa.ecommerce.commons.documents.BaseTransactionView;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionActivated;
-import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.Nullable;
@@ -22,12 +22,11 @@ import java.util.stream.Collectors;
 /**
  * Base persistence view for transactions.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Document(collection = "transactions-view")
-public class Transaction {
+public class Transaction extends BaseTransactionView {
 
-    @Id
-    private String transactionId;
     private ClientId clientId;
     private Confidential<Email> email;
     private TransactionStatusDto status;
@@ -124,7 +123,7 @@ public class Transaction {
             @Nullable String idCart,
             @Nullable String rrn
     ) {
-        this.transactionId = transactionId;
+        super(transactionId);
         this.email = email;
         this.status = status;
         this.paymentNotices = paymentNotices;
