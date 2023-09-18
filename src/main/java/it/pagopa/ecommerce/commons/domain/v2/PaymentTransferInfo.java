@@ -29,6 +29,15 @@ public record PaymentTransferInfo(
      * @param transferAmount   transfer amount
      * @param transferCategory transfer category information
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S6207 - Default constructor used here as placeholder for
+     * @PersistenceConstructor annotation
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S6207")
     @PersistenceConstructor
     public PaymentTransferInfo {
         // Do nothing

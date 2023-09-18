@@ -10,23 +10,23 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EuroUtilsTest {
+class EuroUtilsTest {
 
     @Test
     void shouldConvertEuroCentToEuroSuccessfully() {
         BigDecimal euro = EuroUtils.euroCentsToEuro(111);
         System.out.println(euro);
-        assertEquals(euro.toString(), "1.11");
+        assertEquals("1.11", euro.toString());
     }
 
     @Test
     void shouldConvertEuroToEuroCentSuccessfully() {
         Integer euroCent = EuroUtils.euroToEuroCents(BigDecimal.valueOf(111, 2));
-        assertEquals(euroCent.toString(), "111");
+        assertEquals("111", euroCent.toString());
     }
 
     @Test
-    public void testConstructorIsPrivate()
+    void testConstructorIsPrivate()
             throws NoSuchMethodException {
         Constructor<EuroUtils> constructor = EuroUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);

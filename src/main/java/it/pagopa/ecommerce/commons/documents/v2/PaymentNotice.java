@@ -18,7 +18,7 @@ import java.util.List;
 @Generated
 public class PaymentNotice {
     private String paymentToken;
-    private String rptId; // TODO To be splitted
+    private String rptId;
     private String description;
     private Integer amount;
     private String paymentContextCode;

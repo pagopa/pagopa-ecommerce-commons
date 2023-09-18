@@ -142,7 +142,7 @@ public class Transaction {
      */
     public static Transaction from(TransactionActivated transaction) {
         return new Transaction(
-                transaction.getTransactionId().value().toString().replace("-", ""),
+                transaction.getTransactionId().value().replace("-", ""),
                 transaction.getTransactionActivatedData().getPaymentNotices(),
                 null,
                 transaction.getTransactionActivatedData().getEmail(),

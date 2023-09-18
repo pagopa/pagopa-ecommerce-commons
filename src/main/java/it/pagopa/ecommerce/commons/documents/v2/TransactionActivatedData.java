@@ -22,7 +22,7 @@ import java.util.List;
 public class TransactionActivatedData {
     private Confidential<Email> email;
     private List<PaymentNotice> paymentNotices;
-    private String faultCode; // TODO enum with all PAA & PTT
+    private String faultCode;
     private String faultCodeString;
     private Transaction.ClientId clientId;
     @Nullable

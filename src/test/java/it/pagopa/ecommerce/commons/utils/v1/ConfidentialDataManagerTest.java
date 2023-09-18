@@ -24,7 +24,7 @@ import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.EMAIL_STRING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class ConfidentialDataManagerTest {
+class ConfidentialDataManagerTest {
 
     private final TokenApi pdvClient = Mockito.mock(TokenApi.class);
 

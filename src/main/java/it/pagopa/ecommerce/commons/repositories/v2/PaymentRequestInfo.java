@@ -60,6 +60,15 @@ public record PaymentRequestInfo(
      * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles,
      *                       false excludes them
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S6207 - Default constructor used here as placeholder for
+     * @PersistenceConstructor annotation
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S6207")
     @PersistenceConstructor
     public PaymentRequestInfo {
         // Do nothing

@@ -80,32 +80,28 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         /* Check that all event codes are present inside the maps */
         Set<TransactionEventCode> eventCodes = Arrays.stream(TransactionEventCode.values()).collect(Collectors.toSet());
 
-        Set<TransactionEventCode> missingEventCodesTargets = eventCodes.stream()
-                .filter(c -> !classToEventCodeMap.containsValue(c)).collect(Collectors.toSet());
         assert classToEventCodeMap.values().containsAll(eventCodes)
                 : "Invalid association `v2.TransactionEventCode` <-> `v2.TransactionEvent`! Missing event codes: "
-                        + missingEventCodesTargets;
+                        + eventCodes.stream()
+                                .filter(c -> !classToEventCodeMap.containsValue(c)).collect(Collectors.toSet());
 
-        Set<TransactionEventCode> missingEventCodesSource = eventCodes.stream()
-                .filter(c -> !eventCodeToClassMap.containsKey(c)).collect(Collectors.toSet());
         assert eventCodeToClassMap.keySet().containsAll(eventCodes)
                 : "Invalid association `v2.TransactionEventCode` <-> `v2.TransactionEvent`! Missing event codes: "
-                        + missingEventCodesSource;
+                        + eventCodes.stream()
+                                .filter(c -> !eventCodeToClassMap.containsKey(c)).collect(Collectors.toSet());
 
         /* Check that all classes are present inside the maps */
         Set<Class<? extends TransactionEvent<?>>> eventClasses = getEventClasses(basePackage);
 
-        Set<Class<?>> missingClassesSource = eventClasses.stream().filter(c -> !classToEventCodeMap.containsKey(c))
-                .collect(Collectors.toSet());
         assert classToEventCodeMap.keySet().containsAll(eventClasses)
                 : "Invalid association `v2.TransactionEventCode` <-> `v2.TransactionEvent`! Missing classes: "
-                        + missingClassesSource;
+                        + eventClasses.stream().filter(c -> !classToEventCodeMap.containsKey(c))
+                                .collect(Collectors.toSet());
 
-        Set<Class<?>> missingClassesTargets = eventClasses.stream()
-                .filter(c -> !eventCodeToClassMap.containsValue(c)).collect(Collectors.toSet());
         assert eventCodeToClassMap.values().containsAll(eventClasses)
                 : "Invalid association `v2.TransactionEventCode` <-> `v2.TransactionEvent`! Missing classes: "
-                        + missingClassesTargets;
+                        + eventClasses.stream()
+                                .filter(c -> !eventCodeToClassMap.containsValue(c)).collect(Collectors.toSet());
 
         /*
          * Given that maps cannot have duplicate keys and these maps are constructed to
