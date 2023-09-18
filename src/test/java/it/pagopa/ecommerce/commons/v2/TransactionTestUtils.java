@@ -99,6 +99,8 @@ public class TransactionTestUtils {
 
     private static final String NPG_CORRELATION_ID = "npgCorrelationId";
 
+    private static final String NPG_SESSION_ID = "npgSessionId";
+
     private static final String NPG_OPERATION_ID = "npgOperationId";
     private static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
 
@@ -652,7 +654,8 @@ public class TransactionTestUtils {
     public static TransactionGatewayActivationData npgTransactionGatewayActivationData() {
         return new NpgTransactionGatewayActivationData(
                 NPG_ORDER_ID,
-                NPG_CORRELATION_ID
+                NPG_CORRELATION_ID,
+                NPG_SESSION_ID
         );
     }
 

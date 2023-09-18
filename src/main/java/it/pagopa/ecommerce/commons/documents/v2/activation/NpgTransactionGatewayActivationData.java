@@ -17,4 +17,6 @@ public class NpgTransactionGatewayActivationData implements TransactionGatewayAc
     private String orderId;
 
     private String correlationId;
+
+    private String sessionId;
 }
