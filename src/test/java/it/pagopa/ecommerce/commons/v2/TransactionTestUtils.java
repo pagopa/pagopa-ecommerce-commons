@@ -4,8 +4,8 @@ import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationCompletedData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationCompletedData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionAuthorizationGatewayData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionAuthorizationGatewayData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
@@ -248,7 +248,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent(
-                                                                                                TransactionAuthorizationCompletedData transactionAuthorizationCompletedData
+                                                                                                TransactionAuthorizationGatewayData transactionAuthorizationGatewayData
     ) {
         return new TransactionAuthorizationCompletedEvent(
                 TRANSACTION_ID,
@@ -256,7 +256,7 @@ public class TransactionTestUtils {
                         AUTHORIZATION_CODE,
                         RRN,
                         timestampOperation,
-                        transactionAuthorizationCompletedData
+                        transactionAuthorizationGatewayData
                 )
         );
     }
@@ -617,21 +617,21 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedData pgsTransactionAuthorizationCompletedData(
-                                                                                                 AuthorizationResultDto authorizationOutcome
+    public static TransactionAuthorizationGatewayData pgsTransactionAuthorizationCompletedData(
+                                                                                               AuthorizationResultDto authorizationOutcome
     ) {
-        return new PgsTransactionAuthorizationCompletedData(
+        return new PgsTransactionAuthorizationGatewayData(
                 null,
                 authorizationOutcome
         );
     }
 
     @Nonnull
-    public static TransactionAuthorizationCompletedData pgsTransactionAuthorizationCompletedData(
-                                                                                                 AuthorizationResultDto authorizationOutcome,
-                                                                                                 String errorCode
+    public static TransactionAuthorizationGatewayData pgsTransactionAuthorizationCompletedData(
+                                                                                               AuthorizationResultDto authorizationOutcome,
+                                                                                               String errorCode
     ) {
-        return new PgsTransactionAuthorizationCompletedData(
+        return new PgsTransactionAuthorizationGatewayData(
                 errorCode,
                 authorizationOutcome
         );

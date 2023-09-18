@@ -14,7 +14,7 @@ import org.springframework.lang.Nullable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class PgsTransactionAuthorizationCompletedData implements TransactionAuthorizationCompletedData {
+public class PgsTransactionAuthorizationGatewayData implements TransactionAuthorizationGatewayData {
 
     /**
      * The PGS errorCode
