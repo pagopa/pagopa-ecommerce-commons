@@ -1,13 +1,13 @@
-package it.pagopa.ecommerce.commons.v1;
+package it.pagopa.ecommerce.commons.v2;
 
-import it.pagopa.ecommerce.commons.documents.v1.Transaction;
-import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.documents.v2.Transaction;
+import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.v1.*;
-import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
+import it.pagopa.ecommerce.commons.domain.v2.*;
+import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -101,7 +101,7 @@ public class TransactionTestUtils {
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
-                                new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
+                                new it.pagopa.ecommerce.commons.documents.v2.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -132,7 +132,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
-                        new it.pagopa.ecommerce.commons.domain.v1.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.domain.v2.PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -534,7 +534,7 @@ public class TransactionTestUtils {
         return new Transaction(
                 TRANSACTION_ID,
                 List.of(
-                        new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.documents.v2.PaymentNotice(
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,
@@ -613,7 +613,7 @@ public class TransactionTestUtils {
                         (
                          trx,
                          event
-                        ) -> ((it.pagopa.ecommerce.commons.domain.v1.Transaction) trx).applyEvent(event)
+                        ) -> ((it.pagopa.ecommerce.commons.domain.v2.Transaction) trx).applyEvent(event)
                 )
                 .orElseThrow(
                         () -> new IllegalArgumentException(

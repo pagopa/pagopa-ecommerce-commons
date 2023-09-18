@@ -9,7 +9,7 @@ import it.pagopa.ecommerce.commons.redis.converters.JacksonIdempotencyKeySeriali
 import it.pagopa.ecommerce.commons.redis.converters.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.JacksonRptIdSerializer;
 import it.pagopa.ecommerce.commons.redis.templatewrappers.PaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
