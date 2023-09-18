@@ -1,5 +1,6 @@
-package it.pagopa.ecommerce.commons.redis.templatewrappers;
+package it.pagopa.ecommerce.commons.redis.v1.templatewrappers;
 
+import it.pagopa.ecommerce.commons.redis.templatewrappers.v1.PaymentRequestInfoRedisTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;

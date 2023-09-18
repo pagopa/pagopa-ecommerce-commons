@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.redis.converters;
+package it.pagopa.ecommerce.commons.redis.converters.v1;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

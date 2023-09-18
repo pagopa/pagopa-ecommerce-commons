@@ -1,9 +1,9 @@
-package it.pagopa.ecommerce.commons.redis.converters;
+package it.pagopa.ecommerce.commons.redis.converters.v2;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey;
+import it.pagopa.ecommerce.commons.domain.v2.IdempotencyKey;
 
 import java.io.IOException;
 

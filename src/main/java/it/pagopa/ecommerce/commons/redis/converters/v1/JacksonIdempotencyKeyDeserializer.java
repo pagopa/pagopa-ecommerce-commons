@@ -1,18 +1,18 @@
-package it.pagopa.ecommerce.commons.redis.converters;
+package it.pagopa.ecommerce.commons.redis.converters.v1;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import it.pagopa.ecommerce.commons.domain.v1.RptId;
+import it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey;
 
 import java.io.IOException;
 
 /**
- * {@link RptId} jackson deserializer
+ * {@link IdempotencyKey} jackson deserializer
  */
-public class JacksonRptIdDeserializer extends JsonDeserializer<RptId> {
+public class JacksonIdempotencyKeyDeserializer extends JsonDeserializer<IdempotencyKey> {
     /**
-     * Deserialize json object to {@link RptId}
+     * Deserialize json object to {@link IdempotencyKey}
      *
      * @param p    Parsed used for reading JSON content
      * @param ctxt Context that can be used to access information about this
@@ -22,10 +22,10 @@ public class JacksonRptIdDeserializer extends JsonDeserializer<RptId> {
      *                     string
      */
     @Override
-    public RptId deserialize(
-                             JsonParser p,
-                             DeserializationContext ctxt
+    public IdempotencyKey deserialize(
+                                      JsonParser p,
+                                      DeserializationContext ctxt
     ) throws IOException {
-        return new RptId(p.getValueAsString());
+        return new IdempotencyKey(p.getValueAsString());
     }
 }

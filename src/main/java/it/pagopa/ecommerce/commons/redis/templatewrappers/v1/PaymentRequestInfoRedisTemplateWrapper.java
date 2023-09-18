@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.redis.templatewrappers;
+package it.pagopa.ecommerce.commons.redis.templatewrappers.v1;
 
 import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
 import org.springframework.data.redis.core.RedisTemplate;

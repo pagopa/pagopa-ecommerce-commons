@@ -1,10 +1,12 @@
-package it.pagopa.ecommerce.commons.redis.converters;
+package it.pagopa.ecommerce.commons.redis.v1.converters;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import it.pagopa.ecommerce.commons.domain.v1.RptId;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdDeserializer;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdSerializer;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
