@@ -46,11 +46,6 @@ jobs:
           regex: true
           include: "build.gradle.kts"
 
-      - name: Create change commit
-        run: |
-          git add .
-          git commit -m "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
@@ -58,6 +53,7 @@ jobs:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
+          commit-message: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
           title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
           body: |
             <!--- Please always add a PR description as if nobody knows anything about the context these changes come from. -->
