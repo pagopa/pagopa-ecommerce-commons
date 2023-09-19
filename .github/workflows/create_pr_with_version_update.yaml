@@ -71,11 +71,10 @@ jobs:
             * update `pagopa-ecommerce-commons` version to ${{ steps.latest_tag.outputs.tag }}
             
             #### Motivation and Context
-            
             <!--- Why is this change required? What problem does it solve? -->
+            Ordinary maintenance
             
             #### How Has This Been Tested?
-            
             <!--- Please describe in detail how you tested your changes. -->
             <!--- Include details of your testing environment, tests ran to see how -->
             <!--- your change affects other areas of the code, etc. -->
@@ -96,4 +95,7 @@ jobs:
             - [ ] My change requires a change to the documentation.
             - [ ] I have updated the documentation accordingly.
           labels: |
-            automatic pr
+            🤖 automatic
+            commons
+            patch
+            chart-patch
