@@ -1,0 +1,100 @@
+name: Create PR on eCommerce project with version update
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  create_pr:
+    strategy:
+      matrix:
+        repo:
+          - pagopa-ecommerce-transactions-service
+          - pagopa-ecommerce-event-dispatcher-service
+
+    name: Create PR on ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout pagopa/${{ matrix.repo }}
+        uses: actions/checkout@v3
+        with:
+          repository: pagopa/${{ matrix.repo }}
+
+      - name: Get latest tag
+        id: latest_tag
+        uses: WyriHaximus/github-action-get-previous-tag@385a2a0b6abf6c2efeb95adfac83d96d6f968e0c
+
+      - name: Replace old version with new version (Maven)
+        uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
+        with:
+          find: "<pagopa-ecommerce-commons.version>\\d+\\.\\d+\\.\\d+</pagopa-ecommerce-commons.version>"
+          replace: "<pagopa-ecommerce-commons.version>${{ steps.latest_tag.outputs.tag }}</pagopa-ecommerce-commons.version>"
+          regex: true
+          include: "pom.xml"
+
+      - name: Replace old version with new version (Gradle)
+        uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
+        with:
+          find: "val ecommerceCommonsVersion = \"\\d+\\.\\d+\\.\\d+\""
+          replace: "val ecommerceCommonsVersion = \"${{ steps.latest_tag.outputs.tag }}\""
+          regex: true
+          include: "build.gradle.kts"
+
+      - name: Create change commit
+        run: |
+          git config user.name pagopa-platform-github-bot
+          git config user.email pagopa-github-bot@pagopa.it
+          git add .
+          git commit -m "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
+        with:
+          token: ${{ secrets.PR_ACTIONS_ACCESS_TOKEN }}
+          committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
+          title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
+          body: |
+            <!--- Please always add a PR description as if nobody knows anything about the context these changes come from. -->
+            <!--- Even if we are all from our internal team, we may not be on the same page. -->
+            <!--- Write this PR as you were contributing to a public OSS project, where nobody knows you and you have to earn their trust. -->
+            <!--- This will improve our projects in the long run! Thanks. -->
+            
+            #### List of Changes
+            
+            <!--- Describe your changes in detail -->
+            * update `pagopa-ecommerce-commons` version to ${{ steps.latest_tag.outputs.tag }}
+            
+            #### Motivation and Context
+            <!--- Why is this change required? What problem does it solve? -->
+            Ordinary maintenance
+            
+            #### How Has This Been Tested?
+            <!--- Please describe in detail how you tested your changes. -->
+            <!--- Include details of your testing environment, tests ran to see how -->
+            <!--- your change affects other areas of the code, etc. -->
+          
+            #### Types of changes
+            
+            <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+          
+            - [ ] Bug fix (non-breaking change which fixes an issue)
+            - [ ] New feature (non-breaking change which adds functionality)
+            - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+          
+            #### Checklist:
+            
+            <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+            <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+          
+            - [ ] My change requires a change to the documentation.
+            - [ ] I have updated the documentation accordingly.
+          labels: |
+            🤖 automatic
+            commons
+            patch
+            chart-patch
