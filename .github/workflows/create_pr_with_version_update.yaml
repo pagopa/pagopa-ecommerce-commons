@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   create_pr:
+    environment: prod
     strategy:
       matrix:
         repo:
@@ -47,15 +48,15 @@ jobs:
 
       - name: Create change commit
         run: |
-          git config user.name pagopa-platform-github-bot
-          git config user.email pagopa-github-bot@pagopa.it
           git add .
           git commit -m "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
-          token: ${{ secrets.PR_ACTIONS_ACCESS_TOKEN }}
+          branch: "update-commons-${{ steps.latest_tag.outputs.tag }}"
+          token: ${{ secrets.PR_GITHUB_TOKEN }}
+          author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
           body: |
