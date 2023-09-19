@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain.v1;
+package it.pagopa.ecommerce.commons.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

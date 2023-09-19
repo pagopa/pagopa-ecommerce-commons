@@ -2,8 +2,8 @@ package it.pagopa.ecommerce.commons.redis.templatewrappers.v2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import it.pagopa.ecommerce.commons.domain.v2.IdempotencyKey;
-import it.pagopa.ecommerce.commons.domain.v2.RptId;
+import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
+import it.pagopa.ecommerce.commons.domain.RptId;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeyDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySerializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;

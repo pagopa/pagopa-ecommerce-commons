@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain.v2;
+package it.pagopa.ecommerce.commons.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import it.pagopa.ecommerce.commons.annotations.ValueObject;

@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain.v1;
+package it.pagopa.ecommerce.commons.domain;
 
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.annotations.ValueObject;

@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.v2;
 
+import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
@@ -8,7 +9,7 @@ import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayAct
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
@@ -127,7 +128,7 @@ public class TransactionTestUtils {
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
-                                new it.pagopa.ecommerce.commons.documents.v2.PaymentNotice(
+                                new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -169,7 +170,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
-                        new it.pagopa.ecommerce.commons.domain.v2.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.domain.PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -540,7 +541,7 @@ public class TransactionTestUtils {
         return new Transaction(
                 TRANSACTION_ID,
                 List.of(
-                        new it.pagopa.ecommerce.commons.documents.v2.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,

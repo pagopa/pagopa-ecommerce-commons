@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents.v1;
+package it.pagopa.ecommerce.commons.documents;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

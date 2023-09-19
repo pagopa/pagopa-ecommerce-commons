@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
+import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
-import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 

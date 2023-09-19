@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.domain.v2;
+package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -29,6 +29,7 @@ public record PaymentTransferInfo(
      * @param transferAmount   transfer amount
      * @param transferCategory transfer category information
      */
+    @PersistenceConstructor
     /*
      * @formatter:off
      *
@@ -38,7 +39,6 @@ public record PaymentTransferInfo(
      * @formatter:on
      */
     @SuppressWarnings("java:S6207")
-    @PersistenceConstructor
     public PaymentTransferInfo {
         // Do nothing
     }
