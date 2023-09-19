@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.redis.templatewrappers.v1;
+package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
