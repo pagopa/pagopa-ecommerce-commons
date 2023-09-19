@@ -26,8 +26,7 @@ import static java.time.ZonedDateTime.now;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode", visible = true)
 @JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract sealed class TransactionEvent<T> extends
-        BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
-    private TransactionEventCode eventCode;
+        BaseTransactionEvent<T> permits BaseTransactionClosureEvent, TransactionActivatedEvent, TransactionAuthorizationCompletedEvent, TransactionAuthorizationRequestedEvent, TransactionClosureErrorEvent, TransactionClosureRetriedEvent, TransactionExpiredEvent, TransactionRefundErrorEvent, TransactionRefundRequestedEvent, TransactionRefundRetriedEvent, TransactionRefundedEvent, TransactionUserReceiptRequestedEvent, TransactionUserCanceledEvent, TransactionUserReceiptAddErrorEvent, TransactionUserReceiptAddRetriedEvent, TransactionUserReceiptAddedEvent {
 
     TransactionEvent(
             String transactionId,
@@ -35,7 +34,7 @@ public abstract sealed class TransactionEvent<T> extends
             String creationDate,
             T data
     ) {
-        super(UUID.randomUUID().toString(), transactionId, creationDate, data);
+        super(UUID.randomUUID().toString(), transactionId, creationDate, data, eventCode.toString());
 
         /*
          * CHK-1413 -> transaction id length lesser than 35 chars here is checked that
@@ -48,7 +47,6 @@ public abstract sealed class TransactionEvent<T> extends
                             .formatted(transactionId)
             );
         }
-        this.eventCode = eventCode;
     }
 
     TransactionEvent(
