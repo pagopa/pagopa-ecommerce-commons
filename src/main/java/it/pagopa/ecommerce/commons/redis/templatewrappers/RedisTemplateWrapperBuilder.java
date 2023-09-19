@@ -1,14 +1,14 @@
-package it.pagopa.ecommerce.commons.redis.templatewrappers.v2;
+package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
 import it.pagopa.ecommerce.commons.domain.RptId;
-import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeyDeserializer;
-import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySerializer;
-import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;
-import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdSerializer;
-import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonIdempotencyKeyDeserializer;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonIdempotencyKeySerializer;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdDeserializer;
+import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdSerializer;
+import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;

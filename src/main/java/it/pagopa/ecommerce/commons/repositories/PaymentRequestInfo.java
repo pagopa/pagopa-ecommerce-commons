@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.repositories.v2;
+package it.pagopa.ecommerce.commons.repositories;
 
 import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
 import it.pagopa.ecommerce.commons.domain.PaymentTransferInfo;

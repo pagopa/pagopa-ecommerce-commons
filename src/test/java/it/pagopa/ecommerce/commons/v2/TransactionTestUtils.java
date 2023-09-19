@@ -15,7 +15,7 @@ import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
