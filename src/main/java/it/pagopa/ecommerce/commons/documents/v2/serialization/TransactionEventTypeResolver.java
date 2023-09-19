@@ -209,8 +209,10 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                         for (int i = 0; i < numberOfOtherParams; i++) {
                             constructorArguments.add(null);
                         }
-                        TransactionEventCode transactionEventCode = constructor
-                                .newInstance(constructorArguments.toArray()).getEventCode();
+                        TransactionEventCode transactionEventCode = TransactionEventCode.valueOf(
+                                constructor
+                                        .newInstance(constructorArguments.toArray()).getEventCode()
+                        );
 
                         return Tuple.of(transactionEventClass, transactionEventCode);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

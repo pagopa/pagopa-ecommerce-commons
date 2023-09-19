@@ -26,7 +26,7 @@ import static java.time.ZonedDateTime.now;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "eventCode", visible = true)
 @JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract sealed class TransactionEvent<T> extends
-        BaseTransactionEvent<T> permits BaseTransactionClosureEvent, TransactionActivatedEvent, TransactionAuthorizationCompletedEvent, TransactionAuthorizationRequestedEvent, TransactionClosureErrorEvent, TransactionClosureRetriedEvent, TransactionExpiredEvent, TransactionRefundErrorEvent, TransactionRefundRequestedEvent, TransactionRefundRetriedEvent, TransactionRefundedEvent, TransactionUserReceiptRequestedEvent, TransactionUserCanceledEvent, TransactionUserReceiptAddErrorEvent, TransactionUserReceiptAddRetriedEvent, TransactionUserReceiptAddedEvent {
+        BaseTransactionEvent<T>permits BaseTransactionClosureEvent,TransactionActivatedEvent,TransactionAuthorizationCompletedEvent,TransactionAuthorizationRequestedEvent,TransactionClosureErrorEvent,TransactionClosureRetriedEvent,TransactionExpiredEvent,TransactionRefundErrorEvent,TransactionRefundRequestedEvent,TransactionRefundRetriedEvent,TransactionRefundedEvent,TransactionUserReceiptRequestedEvent,TransactionUserCanceledEvent,TransactionUserReceiptAddErrorEvent,TransactionUserReceiptAddRetriedEvent,TransactionUserReceiptAddedEvent {
 
     TransactionEvent(
             String transactionId,

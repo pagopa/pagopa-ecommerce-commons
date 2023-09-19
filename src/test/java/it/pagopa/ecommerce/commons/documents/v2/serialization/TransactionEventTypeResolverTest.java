@@ -76,7 +76,7 @@ class TransactionEventTypeResolverTest {
         QueueEvent<TransactionActivatedEvent> t = b.toObject(new TypeReference<>() {
         }, jsonSerializer);
 
-        assertEquals(TransactionEventCode.TRANSACTION_ACTIVATED_EVENT, t.event().getEventCode());
+        assertEquals(TransactionEventCode.TRANSACTION_ACTIVATED_EVENT.toString(), t.event().getEventCode());
     }
 
     @Test
