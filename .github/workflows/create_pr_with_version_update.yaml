@@ -28,7 +28,7 @@ jobs:
 
       - name: Get latest tag
         id: latest_tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
+        uses: WyriHaximus/github-action-get-previous-tag@385a2a0b6abf6c2efeb95adfac83d96d6f968e0c
 
       - name: Replace old version with new version (Maven)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
@@ -54,7 +54,7 @@ jobs:
           git commit -m "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
           token: ${{ secrets.PR_ACTIONS_ACCESS_TOKEN }}
           committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
