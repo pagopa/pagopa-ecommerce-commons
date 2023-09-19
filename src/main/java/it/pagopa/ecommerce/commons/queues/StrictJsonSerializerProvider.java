@@ -5,6 +5,7 @@ import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.JsonSerializerProvider;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
@@ -22,7 +23,8 @@ public class StrictJsonSerializerProvider implements JsonSerializerProvider {
             .configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, true)
             .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
             .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     /**
      * {@inheritDoc}
