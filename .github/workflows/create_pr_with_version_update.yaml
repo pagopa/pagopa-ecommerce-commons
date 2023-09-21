@@ -22,16 +22,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout pagopa/pagopa-ecommerce-commons
-        uses: actions/checkout@v3
-        with:
-          repository: pagopa/pagopa-ecommerce-commons
-          path: pagopa-ecommerce-commons
-
-      - name: Get latest tag
-        id: latest_tag
-        uses: actions-ecosystem/action-get-latest-tag@b7c32daec3395a9616f88548363a42652b22d435
-
       - name: Checkout pagopa/${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
@@ -42,7 +32,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "<pagopa-ecommerce-commons.version>\\d+\\.\\d+\\.\\d+</pagopa-ecommerce-commons.version>"
-          replace: "<pagopa-ecommerce-commons.version>${{ steps.latest_tag.outputs.tag }}</pagopa-ecommerce-commons.version>"
+          replace: "<pagopa-ecommerce-commons.version>$GITHUB_REF</pagopa-ecommerce-commons.version>"
           regex: true
           include: "pom.xml"
 
@@ -50,19 +40,19 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "val ecommerceCommonsVersion = \"\\d+\\.\\d+\\.\\d+\""
-          replace: "val ecommerceCommonsVersion = \"${{ steps.latest_tag.outputs.tag }}\""
+          replace: "val ecommerceCommonsVersion = \"$GITHUB_REF\""
           regex: true
           include: "build.gradle.kts"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
-          branch: "update-commons-${{ steps.latest_tag.outputs.tag }}"
+          branch: "update-commons-$GITHUB_REF"
           token: ${{ secrets.PR_GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
-          commit-message: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
-          title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
+          commit-message: "chore(deps): update `commons` version to $GITHUB_REF"
+          title: "chore(deps): update `commons` version to $GITHUB_REF"
           body: |
             <!--- Please always add a PR description as if nobody knows anything about the context these changes come from. -->
             <!--- Even if we are all from our internal team, we may not be on the same page. -->
@@ -72,7 +62,7 @@ jobs:
             #### List of Changes
             
             <!--- Describe your changes in detail -->
-            * update `pagopa-ecommerce-commons` version to ${{ steps.latest_tag.outputs.tag }}
+            * update `pagopa-ecommerce-commons` version to $GITHUB_REF
             
             #### Motivation and Context
             <!--- Why is this change required? What problem does it solve? -->
