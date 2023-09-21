@@ -2,30 +2,15 @@ name: Create PR on eCommerce project with version update
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
+  release:
+    types:
+      - published
 
 permissions:
   pull-requests: write
 
 jobs:
-  on_main_branch_check:
-    runs-on: ubuntu-latest
-    outputs:
-      on_main: ${{ steps.contains_tag.outputs.retval }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: rickstaa/action-contains-tag@412ce324d3c61b7db1af82bc20984601b990bc19
-        id: contains_tag
-        with:
-          reference: "main"
-          tag: "${{ github.ref }}"
-
   create_pr:
-    if: ${{ needs.on_main_branch_check.outputs.on_main == 'true' }}
     environment: prod
     strategy:
       matrix:
