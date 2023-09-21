@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: pagopa/pagopa-ecommerce-commons
+          path: pagopa-ecommerce-commons
 
       - name: Get latest tag
         id: latest_tag
@@ -35,6 +36,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: pagopa/${{ matrix.repo }}
+          path: ${{ matrix.repo }}
 
       - name: Replace old version with new version (Maven)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
