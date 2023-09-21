@@ -15,7 +15,10 @@ jobs:
       matrix:
         repo:
           - pagopa-ecommerce-transactions-service
+          - pagopa-ecommerce-transactions-scheduler-service
           - pagopa-ecommerce-event-dispatcher-service
+          - pagopa-ecommerce-payment-methods
+          - pagopa-ecommerce-helpdesk-service
 
     name: Create PR on ${{ matrix.repo }}
     runs-on: ubuntu-latest
