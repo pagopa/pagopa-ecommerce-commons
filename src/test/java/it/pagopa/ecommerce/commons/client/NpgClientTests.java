@@ -358,7 +358,8 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                MOCKED_API_KEY
+                                MOCKED_API_KEY,
+                                null
                         )
                 )
                 .expectNext(refundResponseDto)
@@ -444,7 +445,8 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                MOCKED_API_KEY
+                                MOCKED_API_KEY,
+                                null
                         )
                 )
                 .expectErrorMatches(

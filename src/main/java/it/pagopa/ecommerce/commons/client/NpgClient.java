@@ -6,6 +6,7 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
+import io.swagger.models.auth.In;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
@@ -18,7 +19,9 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.sql.Ref;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -507,6 +510,7 @@ public class NpgClient {
      *                       for the same transaction
      * @param grandTotal     the grand total to be refunded
      * @param defaultApiKey  default API key
+     * @param description    the refund operation description
      * @return An object containing the state of the transaction and the info about
      *         operation details.
      */
@@ -515,8 +519,16 @@ public class NpgClient {
                                                  @NotNull String operationId,
                                                  @NotNull String idempotenceKey,
                                                  @NotNull BigDecimal grandTotal,
-                                                 @NonNull String defaultApiKey
+                                                 @NonNull String defaultApiKey,
+                                                 String description
     ) {
+        log.info("operationId", operationId);
+        log.info("correlationId", correlationId);
+        log.info("idempotenceKey", idempotenceKey);
+        RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
+                .description(description);
+        log.info("refundRequest", refundRequestDto.toString());
+
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#refundPayment")
                         .setParent(Context.current().with(Span.current()))
@@ -527,7 +539,7 @@ public class NpgClient {
                         correlationId,
                         defaultApiKey,
                         idempotenceKey,
-                        new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
+                        refundRequestDto
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
