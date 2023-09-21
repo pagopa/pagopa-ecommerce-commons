@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
@@ -526,6 +527,13 @@ class NpgClientTests {
         return new ConfirmPaymentRequestDto()
                 .sessionId(SESSION_ID)
                 .amount(ORDER_REQUEST_PAY);
+    }
+
+    public static void main(String[] args) {
+        TransactionId id = new TransactionId(UUID.randomUUID());
+        System.out.println(id);
+        System.out.println(id.value());
+        System.out.println(id.uuid().toString());
     }
 
 }
