@@ -52,7 +52,7 @@ class NpgClientTests {
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
     private static final String OPERATION_ID = "OPERATION_ID";
-    private static final String IDEMPOTENCE_KEY = "IDEMPOTENCE_KEY";
+    private static final UUID IDEMPOTENCE_KEY = UUID.randomUUID();
     private static final String CURRENCY = "EUR";
     private static final String AMOUNT = "1000";
     @Mock
@@ -346,7 +346,7 @@ class NpgClientTests {
                         OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         ).thenReturn(Mono.just(refundResponseDto));
@@ -419,7 +419,7 @@ class NpgClientTests {
                         OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         )

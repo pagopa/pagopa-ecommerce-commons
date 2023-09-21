@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.sql.Ref;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -517,18 +518,11 @@ public class NpgClient {
     public Mono<RefundResponseDto> refundPayment(
                                                  @NotNull UUID correlationId,
                                                  @NotNull String operationId,
-                                                 @NotNull String idempotenceKey,
+                                                 @NotNull UUID idempotenceKey,
                                                  @NotNull BigDecimal grandTotal,
                                                  @NonNull String defaultApiKey,
                                                  String description
     ) {
-        log.info("operationId", operationId);
-        log.info("correlationId", correlationId);
-        log.info("idempotenceKey", idempotenceKey);
-        RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
-                .description(description);
-        log.info("refundRequest", refundRequestDto.toString());
-
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#refundPayment")
                         .setParent(Context.current().with(Span.current()))
@@ -538,8 +532,8 @@ public class NpgClient {
                         operationId,
                         correlationId,
                         defaultApiKey,
-                        idempotenceKey,
-                        refundRequestDto
+                        idempotenceKey.toString(),
+                        buildRefundRequestDto(grandTotal, description)
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
@@ -550,6 +544,17 @@ public class NpgClient {
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
                 Span::end
         );
+    }
+
+    private RefundRequestDto buildRefundRequestDto(
+                                                   BigDecimal grandTotal,
+                                                   String description
+    ) {
+        RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY);
+        if (description != null) {
+            refundRequestDto.description(description);
+        }
+        return refundRequestDto;
     }
 
     private CreateHostedOrderRequestDto buildOrderRequestDto(
