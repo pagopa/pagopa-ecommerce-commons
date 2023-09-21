@@ -519,12 +519,12 @@ public class NpgClient {
                                                  @NonNull String defaultApiKey,
                                                  String description
     ) {
-        log.info("operationId", operationId);
-        log.info("correlationId", correlationId);
-        log.info("idempotenceKey", idempotenceKey);
+        log.info("operationId {}", operationId);
+        log.info("correlationId {}", correlationId);
+        log.info("idempotenceKey {}", idempotenceKey);
         RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
                 .description(description);
-        log.info("refundRequest", refundRequestDto.toString());
+        log.info("refundRequest {}", refundRequestDto.toString());
 
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#refundPayment")
