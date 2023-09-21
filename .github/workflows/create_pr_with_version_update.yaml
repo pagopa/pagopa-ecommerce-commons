@@ -27,6 +27,10 @@ jobs:
         with:
           repository: pagopa/${{ matrix.repo }}
 
+      - name: Get latest tag
+        id: latest_tag
+        uses: actions-ecosystem/action-get-latest-tag@b7c32daec3395a9616f88548363a42652b22d435
+
       - name: Replace old version with new version (Maven)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
