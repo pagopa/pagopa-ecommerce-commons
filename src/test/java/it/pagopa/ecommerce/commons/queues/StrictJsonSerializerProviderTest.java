@@ -2,23 +2,26 @@ package it.pagopa.ecommerce.commons.queues;
 
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
+import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import io.vavr.control.Either;
+import it.pagopa.ecommerce.commons.documents.PaymentNotice;
+import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v1.*;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class StrictJsonSerializerProviderTest {
@@ -150,5 +153,212 @@ class StrictJsonSerializerProviderTest {
         );
 
         assertEquals(UnrecognizedPropertyException.class, exception.getCause().getClass());
+    }
+
+    @Test
+    void deserializedV1Correctly() {
+        String expected = """
+                {
+                  "eventCode": "TRANSACTION_ACTIVATED_EVENT",
+                  "id": "be09bed4-f0ae-4ef2-8adb-324f720fc702",
+                  "transactionId": "b753273c789140bf9938df4c50842ef3",
+                  "creationDate": "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                  "data": {
+                    "email": {
+                      "data": "1653f446-18ec-4f83-afc9-36ce7de07398"
+                    },
+                    "paymentNotices": [
+                      {
+                        "paymentToken": "paymentToken",
+                        "rptId": "77777777777111111111111111111",
+                        "description": "description",
+                        "amount": 100,
+                        "paymentContextCode": "paymentContextCode",
+                        "transferList": [
+                          {
+                            "paFiscalCode": "transferPAFiscalCode",
+                            "digitalStamp": true,
+                            "transferAmount": 0,
+                            "transferCategory": "transferCategory"
+                          }
+                        ],
+                        "allCCP": false
+                      }
+                    ],
+                    "faultCode": "",
+                    "faultCodeString": "",
+                    "clientId": "CHECKOUT",
+                    "idCart": "ecIdCart",
+                    "paymentTokenValiditySeconds": 900
+                  },
+                  "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+                }
+                """.replace(" ", "").replace("\n", "");
+
+        TransactionActivatedEvent event = new TransactionActivatedEvent(
+                "b753273c789140bf9938df4c50842ef3",
+                "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                new TransactionActivatedData(
+                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        List.of(
+                                new PaymentNotice(
+                                        PAYMENT_TOKEN,
+                                        RPT_ID,
+                                        DESCRIPTION,
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE,
+                                        List.of(
+                                                new PaymentTransferInformation(
+                                                        TRANSFER_PA_FISCAL_CODE,
+                                                        TRANSFER_DIGITAL_STAMP,
+                                                        TRANSFER_AMOUNT,
+                                                        TRANSFER_CATEGORY
+                                                )
+                                        ),
+                                        false
+                                )
+                        ),
+                        FAULT_CODE,
+                        FAULT_CODE_STRING,
+                        Transaction.ClientId.CHECKOUT,
+                        ID_CART,
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC
+                )
+        );
+        event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
+
+        String serialized = new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    void deserializedV2Correctly() {
+        String expected = """
+                {
+                  "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent",
+                  "id": "be09bed4-f0ae-4ef2-8adb-324f720fc702",
+                  "transactionId": "b753273c789140bf9938df4c50842ef3",
+                  "creationDate": "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                  "data": {
+                    "email": {
+                      "data": "1653f446-18ec-4f83-afc9-36ce7de07398"
+                    },
+                    "paymentNotices": [
+                      {
+                        "paymentToken": "paymentToken",
+                        "rptId": "77777777777111111111111111111",
+                        "description": "description",
+                        "amount": 100,
+                        "paymentContextCode": "paymentContextCode",
+                        "transferList": [
+                          {
+                            "paFiscalCode": "transferPAFiscalCode",
+                            "digitalStamp": true,
+                            "transferAmount": 0,
+                            "transferCategory": "transferCategory"
+                          }
+                        ],
+                        "allCCP": false
+                      }
+                    ],
+                    "faultCode": "",
+                    "faultCodeString": "",
+                    "clientId": "CHECKOUT",
+                    "idCart": "ecIdCart",
+                    "paymentTokenValiditySeconds": 900,
+                    "transactionGatewayActivationData": {}
+                  },
+                  "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+                }
+                """.replace(" ", "").replace("\n", "");
+
+        it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent event = new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent(
+                "b753273c789140bf9938df4c50842ef3",
+                "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData(
+                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        List.of(
+                                new PaymentNotice(
+                                        PAYMENT_TOKEN,
+                                        RPT_ID,
+                                        DESCRIPTION,
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE,
+                                        List.of(
+                                                new PaymentTransferInformation(
+                                                        TRANSFER_PA_FISCAL_CODE,
+                                                        TRANSFER_DIGITAL_STAMP,
+                                                        TRANSFER_AMOUNT,
+                                                        TRANSFER_CATEGORY
+                                                )
+                                        ),
+                                        false
+                                )
+                        ),
+                        FAULT_CODE,
+                        FAULT_CODE_STRING,
+                        it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId.CHECKOUT,
+                        ID_CART,
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                        new EmptyTransactionGatewayActivationData()
+                )
+        );
+        event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
+
+        String serialized = new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    void v1EventIsNotParsedAsV2() {
+        String expected = """
+                {
+                  "id": "be09bed4-f0ae-4ef2-8adb-324f720fc702",
+                  "transactionId": "b753273c789140bf9938df4c50842ef3",
+                  "creationDate": "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                  "data": {
+                    "statusBeforeExpiration": "AUTHORIZATION_COMPLETED"
+                  },
+                  "eventCode": "TRANSACTION_EXPIRED_EVENT"
+                }
+                """.replace(" ", "").replace("\n", "");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            jsonSerializer.deserializeFromBytes(
+                    expected.getBytes(StandardCharsets.UTF_8),
+                    TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent.class)
+            );
+        });
+
+        assertEquals(InvalidTypeIdException.class, exception.getCause().getClass());
+        assertTrue(exception.getCause().getMessage().contains("missing type id property '_class'"));
+    }
+
+    @Test
+    void v2EventIsNotParsedAsV1() {
+        String expected = """
+                {
+                  "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent",
+                  "id": "be09bed4-f0ae-4ef2-8adb-324f720fc702",
+                  "transactionId": "b753273c789140bf9938df4c50842ef3",
+                  "creationDate": "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                  "data": {
+                    "statusBeforeExpiration": "AUTHORIZATION_COMPLETED"
+                  },
+                  "eventCode": "TRANSACTION_EXPIRED_EVENT"
+                }
+                """.replace(" ", "").replace("\n", "");
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            jsonSerializer.deserializeFromBytes(
+                    expected.getBytes(StandardCharsets.UTF_8),
+                    TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v1.TransactionExpiredEvent.class)
+            );
+        });
+
+        assertEquals(UnrecognizedPropertyException.class, exception.getCause().getClass());
+        assertTrue(exception.getCause().getMessage().contains("Unrecognized field \"_class\""));
     }
 }
