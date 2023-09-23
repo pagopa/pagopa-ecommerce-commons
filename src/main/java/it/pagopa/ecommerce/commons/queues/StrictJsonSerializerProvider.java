@@ -39,7 +39,8 @@ public class StrictJsonSerializerProvider implements JsonSerializerProvider {
      *
      * @param target    target class to enrich
      * @param mixSource mix source class
-     * @return this instance see {@link ObjectMapper#addMixIn(Class, Class)}
+     * @return this instance 
+     * @see {@link ObjectMapper#addMixIn(Class, Class)}
      */
     public StrictJsonSerializerProvider addMixIn(
                                                  Class<?> target,
