@@ -10,7 +10,6 @@ import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -267,11 +266,12 @@ class StrictJsonSerializerProviderTest {
                     "clientId": "CHECKOUT",
                     "idCart": "ecIdCart",
                     "paymentTokenValiditySeconds": 900,
-                    "transactionGatewayActivationData": {}
+                    "transactionGatewayActivationData": {"_class":"it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData"}
                   },
                   "eventCode": "TRANSACTION_ACTIVATED_EVENT"
                 }
-                """.replace(" ", "").replace("\n", "");
+                """
+                .replace(" ", "").replace("\n", "");
 
         it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent event = new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent(
                 "b753273c789140bf9938df4c50842ef3",
