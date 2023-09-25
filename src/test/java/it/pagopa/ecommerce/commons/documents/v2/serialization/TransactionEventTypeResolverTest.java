@@ -5,7 +5,14 @@ import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
+import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
+import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider;
@@ -184,6 +191,295 @@ class TransactionEventTypeResolverTest {
                         .deserializeFromBytesAsync(
                                 serialized,
                                 new TypeReference<QueueEvent<TransactionClosedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueTransactionActivatedEventSerializationWithEmptyActivationData() {
+        String expectedSerializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "email": {
+                                "data": "a91a4e54-d1bc-48fb-b252-cc2893fc88e2"
+                            },
+                            "paymentNotices": [
+                                {
+                                    "paymentToken": "paymentToken",
+                                    "rptId": "77777777777111111111111111111",
+                                    "description": "description",
+                                    "amount": 100,
+                                    "paymentContextCode": "paymentContextCode",
+                                    "transferList": [
+                                        {
+                                            "paFiscalCode": "transferPAFiscalCode",
+                                            "digitalStamp": true,
+                                            "transferAmount": 0,
+                                            "transferCategory": "transferCategory"
+                                        }
+                                    ],
+                                    "allCCP": false
+                                }
+                            ],
+                            "faultCode": "",
+                            "faultCodeString": "",
+                            "clientId": "CHECKOUT",
+                            "idCart": "ecIdCart",
+                            "paymentTokenValiditySeconds": 900,
+                            "transactionGatewayActivationData": {
+                                "type": "EMPTY"
+                            }
+                        },
+                        "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionActivateEvent(new EmptyTransactionGatewayActivationData()),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().getData().setEmail(new Confidential<>("a91a4e54-d1bc-48fb-b252-cc2893fc88e2"));
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains("\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent\"")
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueTransactionActivatedEventSerializationWithNpgActivationData() {
+        String expectedSerializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "email": {
+                                "data": "a91a4e54-d1bc-48fb-b252-cc2893fc88e2"
+                            },
+                            "paymentNotices": [
+                                {
+                                    "paymentToken": "paymentToken",
+                                    "rptId": "77777777777111111111111111111",
+                                    "description": "description",
+                                    "amount": 100,
+                                    "paymentContextCode": "paymentContextCode",
+                                    "transferList": [
+                                        {
+                                            "paFiscalCode": "transferPAFiscalCode",
+                                            "digitalStamp": true,
+                                            "transferAmount": 0,
+                                            "transferCategory": "transferCategory"
+                                        }
+                                    ],
+                                    "allCCP": false
+                                }
+                            ],
+                            "faultCode": "",
+                            "faultCodeString": "",
+                            "clientId": "CHECKOUT",
+                            "idCart": "ecIdCart",
+                            "paymentTokenValiditySeconds": 900,
+                            "transactionGatewayActivationData": {
+                                "type": "NPG",
+                                "orderId": "orderId",
+                                "correlationId": "correlationId",
+                                "sessionId": "sessionId"
+                            }
+                        },
+                        "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }""".replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionActivateEvent(
+                        new NpgTransactionGatewayActivationData("orderId", "correlationId", "sessionId")
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().getData().setEmail(new Confidential<>("a91a4e54-d1bc-48fb-b252-cc2893fc88e2"));
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains("\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent\"")
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationCompletedEventSerializationWithPGSData() {
+        String expectedSerializedEvent = """
+                {
+                     "event": {
+                         "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent",
+                         "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                         "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                         "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                         "data": {
+                             "authorizationCode": "authorizationCode",
+                             "rrn": "rrn",
+                             "timestampOperation": "2023-01-01T01:02:03+01:00",
+                             "transactionGatewayAuthorizationData": {
+                                 "type": "PGS",
+                                 "errorCode": "errorCode",
+                                 "authorizationResultDto": "OK"
+                             }
+                         },
+                         "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
+                     },
+                     "tracingInfo": {
+                         "traceparent": "mock_traceparent",
+                         "tracestate": "mock_tracestate",
+                         "baggage": "mock_baggage"
+                     }
+                 }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationCompletedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationCompletedEvent(
+                        new PgsTransactionGatewayAuthorizationData("errorCode", AuthorizationResultDto.OK)
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationCompletedEventSerializationWithNPGData() {
+        String expectedSerializedEvent = """
+                {
+                       "event": {
+                           "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent",
+                           "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                           "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                           "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                           "data": {
+                               "authorizationCode": "authorizationCode",
+                               "rrn": "rrn",
+                               "timestampOperation": "2023-01-01T01:02:03+01:00",
+                               "transactionGatewayAuthorizationData": {
+                                   "type": "NPG",
+                                   "operationResult": "EXECUTED",
+                                   "operationId": "operationId",
+                                   "paymentEndToEndId": "paymentEndToEndId"
+                               }
+                           },
+                           "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
+                       },
+                       "tracingInfo": {
+                           "traceparent": "mock_traceparent",
+                           "tracestate": "mock_tracestate",
+                           "baggage": "mock_baggage"
+                       }
+                   }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationCompletedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationCompletedEvent(
+                        new NpgTransactionGatewayAuthorizationData(
+                                OperationResultDto.EXECUTED,
+                                "operationId",
+                                "paymentEndToEndId"
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
                                 }
                         )
         )

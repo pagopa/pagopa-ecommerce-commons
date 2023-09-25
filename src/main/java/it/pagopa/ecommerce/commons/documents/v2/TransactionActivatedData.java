@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.pagopa.ecommerce.commons.documents.PaymentNotice;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
@@ -31,7 +30,6 @@ public class TransactionActivatedData {
     @Nullable
     private String idCart;
     private int paymentTokenValiditySeconds;
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "_class", visible = false)
     private TransactionGatewayActivationData transactionGatewayActivationData;
 
 }

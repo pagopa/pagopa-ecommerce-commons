@@ -266,7 +266,7 @@ class StrictJsonSerializerProviderTest {
                     "clientId": "CHECKOUT",
                     "idCart": "ecIdCart",
                     "paymentTokenValiditySeconds": 900,
-                    "transactionGatewayActivationData": {"_class":"it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData"}
+                    "transactionGatewayActivationData": {"type":"EMPTY"}
                   },
                   "eventCode": "TRANSACTION_ACTIVATED_EVENT"
                 }
