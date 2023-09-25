@@ -1,40 +1,48 @@
 name: Create PR on eCommerce project with version update
 
 on:
-  workflow_dispatch:
   release:
-    types: [published]
+    types:
+      - published
 
 permissions:
   pull-requests: write
 
 jobs:
   create_pr:
-    environment: prod
     strategy:
       matrix:
         repo:
           - pagopa-ecommerce-transactions-service
+          - pagopa-ecommerce-transactions-scheduler-service
           - pagopa-ecommerce-event-dispatcher-service
+          - pagopa-ecommerce-payment-methods-service
+          - pagopa-ecommerce-helpdesk-service
 
     name: Create PR on ${{ matrix.repo }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Get latest release tag from pagopa-ecomemrce-commons
+        id: get_latest_tag
+        run: |
+          git clone https://github.com/pagopa/pagopa-ecommerce-commons
+          cd pagopa-ecommerce-commons
+          latestTag=$(git describe --tags --abbrev=0)
+          echo "Latest ecommerce-commons tag: $latestTag"
+          echo "LATEST_TAG=$latestTag" >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Checkout pagopa/${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
           repository: pagopa/${{ matrix.repo }}
 
-      - name: Get latest tag
-        id: latest_tag
-        uses: WyriHaximus/github-action-get-previous-tag@385a2a0b6abf6c2efeb95adfac83d96d6f968e0c
-
       - name: Replace old version with new version (Maven)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "<pagopa-ecommerce-commons.version>\\d+\\.\\d+\\.\\d+</pagopa-ecommerce-commons.version>"
-          replace: "<pagopa-ecommerce-commons.version>${{ steps.latest_tag.outputs.tag }}</pagopa-ecommerce-commons.version>"
+          replace: "<pagopa-ecommerce-commons.version>${{ steps.get_latest_tag.outputs.LATEST_TAG }}</pagopa-ecommerce-commons.version>"
           regex: true
           include: "pom.xml"
 
@@ -42,19 +50,19 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "val ecommerceCommonsVersion = \"\\d+\\.\\d+\\.\\d+\""
-          replace: "val ecommerceCommonsVersion = \"${{ steps.latest_tag.outputs.tag }}\""
+          replace: "val ecommerceCommonsVersion = \"${{ steps.get_latest_tag.outputs.LATEST_TAG }}\""
           regex: true
           include: "build.gradle.kts"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
-          branch: "update-commons-${{ steps.latest_tag.outputs.tag }}"
+          branch: "update-commons-${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           token: ${{ secrets.PR_GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
-          commit-message: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
-          title: "chore(deps): update `commons` version to ${{ steps.latest_tag.outputs.tag }}"
+          commit-message: "chore(deps): update `commons` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
+          title: "chore(deps): update `commons` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           body: |
             <!--- Please always add a PR description as if nobody knows anything about the context these changes come from. -->
             <!--- Even if we are all from our internal team, we may not be on the same page. -->
@@ -64,7 +72,7 @@ jobs:
             #### List of Changes
             
             <!--- Describe your changes in detail -->
-            * update `pagopa-ecommerce-commons` version to ${{ steps.latest_tag.outputs.tag }}
+            * update `pagopa-ecommerce-commons` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}
             
             #### Motivation and Context
             <!--- Why is this change required? What problem does it solve? -->
