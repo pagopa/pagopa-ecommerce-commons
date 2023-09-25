@@ -9,8 +9,8 @@ import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider;
-import it.pagopa.ecommerce.commons.queues.mixin.deserialization.TransactionEventMixIn;
-import it.pagopa.ecommerce.commons.queues.mixin.serialization.QueueEventMixInClassFieldDiscriminator;
+import it.pagopa.ecommerce.commons.queues.mixin.deserialization.v2.TransactionEventMixInClassFieldDiscriminator;
+import it.pagopa.ecommerce.commons.queues.mixin.serialization.v2.QueueEventMixInClassFieldDiscriminator;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TransactionEventTypeResolverTest {
     private final JsonSerializer jsonSerializer = new StrictJsonSerializerProvider()
             .addMixIn(QueueEvent.class, QueueEventMixInClassFieldDiscriminator.class)
-            .addMixIn(TransactionEvent.class, TransactionEventMixIn.class)
+            .addMixIn(TransactionEvent.class, TransactionEventMixInClassFieldDiscriminator.class)
             .createInstance();
 
     @Test

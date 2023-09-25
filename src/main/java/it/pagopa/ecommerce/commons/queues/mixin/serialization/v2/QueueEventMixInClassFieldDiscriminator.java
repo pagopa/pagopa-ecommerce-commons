@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.queues.mixin.serialization;
+package it.pagopa.ecommerce.commons.queues.mixin.serialization.v2;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
