@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,7 @@ public class TransactionAuthorizationCompletedData {
     private String timestampOperation;
 
     @NotNull
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "_class", visible = false)
     private TransactionGatewayAuthorizationData transactionGatewayAuthorizationData;
 
     @JsonCreator

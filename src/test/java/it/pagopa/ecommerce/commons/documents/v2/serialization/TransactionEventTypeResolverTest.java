@@ -9,19 +9,26 @@ import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider;
+import it.pagopa.ecommerce.commons.queues.mixin.deserialization.v2.TransactionEventMixInClassFieldDiscriminator;
+import it.pagopa.ecommerce.commons.queues.mixin.serialization.v2.QueueEventMixInClassFieldDiscriminator;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionEventTypeResolverTest {
-    private final JsonSerializer jsonSerializer = new StrictJsonSerializerProvider().createInstance();
+    private final JsonSerializer jsonSerializer = new StrictJsonSerializerProvider()
+            .addMixIn(QueueEvent.class, QueueEventMixInClassFieldDiscriminator.class)
+            .addMixIn(TransactionEvent.class, TransactionEventMixInClassFieldDiscriminator.class)
+            .createInstance();
 
     @Test
     void canRoundtripQueueEventSerialization() {
@@ -68,7 +75,7 @@ class TransactionEventTypeResolverTest {
     @Test
     void correctlyRoundtripsEventCode() {
         String input = """
-                {"event":{"id":"0f41f3f5-2171-4d19-90ba-6ae1cd3edfc1","transactionId":"3acfaa8ab7ce488b9a5ceb72781194f0","creationDate":"2023-07-24T14:54:47.757098+02:00[Europe/Rome]","data":{"email":{"data":"ebe32cab-b324-4cbc-b14e-e7f45783fb6b"},"paymentNotices":[{"paymentToken":"paymentToken","rptId":"77777777777111111111111111111","description":"description","amount":100,"paymentContextCode":"paymentContextCode","transferList":[{"paFiscalCode":"transferPAFiscalCode","digitalStamp":true,"transferAmount":0,"transferCategory":"transferCategory"}],"allCCP":false}],"faultCode":"","faultCodeString":"","clientId":"CHECKOUT","idCart":"ecIdCart","paymentTokenValiditySeconds":900},"eventCode":"TRANSACTION_ACTIVATED_EVENT"},"tracingInfo":{"traceparent":"mock_traceparent","tracestate":"mock_tracestate","baggage":"mock_baggage"}}
+                {"event":{"_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent","id":"0f41f3f5-2171-4d19-90ba-6ae1cd3edfc1","transactionId":"3acfaa8ab7ce488b9a5ceb72781194f0","creationDate":"2023-07-24T14:54:47.757098+02:00[Europe/Rome]","data":{"email":{"data":"ebe32cab-b324-4cbc-b14e-e7f45783fb6b"},"paymentNotices":[{"paymentToken":"paymentToken","rptId":"77777777777111111111111111111","description":"description","amount":100,"paymentContextCode":"paymentContextCode","transferList":[{"paFiscalCode":"transferPAFiscalCode","digitalStamp":true,"transferAmount":0,"transferCategory":"transferCategory"}],"allCCP":false}],"faultCode":"","faultCodeString":"","clientId":"CHECKOUT","idCart":"ecIdCart","paymentTokenValiditySeconds":900},"eventCode":"TRANSACTION_ACTIVATED_EVENT"},"tracingInfo":{"traceparent":"mock_traceparent","tracestate":"mock_tracestate","baggage":"mock_baggage"}}
                 """;
 
         BinaryData b = BinaryData.fromBytes(input.getBytes());
@@ -155,6 +162,32 @@ class TransactionEventTypeResolverTest {
 
         StepVerifier.create(roundTripWithFailure)
                 .expectNextMatches(v -> v.getLeft().event().getData().equals(originalEvent.event().getData()))
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundtripQueueEventSerializationWithBinaryDataAddingClassDiscriminatorField() {
+        QueueEvent<TransactionClosedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionClosedEvent(TransactionClosureData.Outcome.KO),
+                MOCK_TRACING_INFO
+        );
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+        assertTrue(
+                serializedString
+                        .contains("\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionClosedEvent\"")
+        );
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionClosedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
                 .verifyComplete();
     }
 }

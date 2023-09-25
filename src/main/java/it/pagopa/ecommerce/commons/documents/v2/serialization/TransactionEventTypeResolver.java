@@ -7,15 +7,13 @@ import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionEvent;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
-import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
+import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +76,9 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
 
     @Override
     public String idFromValue(Object o) {
+        if (o instanceof QueueEvent<?> queueEvent) {
+            return idFromValue(queueEvent.event());
+        }
         if (o instanceof TransactionEvent<?> event) {
             String classPath = CLASS_TO_PATH_MAP.get(event.getClass());
 
