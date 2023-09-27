@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v1;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
+import it.pagopa.ecommerce.commons.domain.*;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;

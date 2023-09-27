@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.v2.templatewrappers;
 
-import it.pagopa.ecommerce.commons.redis.templatewrappers.v2.PaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.redis.templatewrappers.PaymentRequestInfoRedisTemplateWrapper;
+import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

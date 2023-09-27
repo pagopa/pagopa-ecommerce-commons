@@ -1,17 +1,15 @@
 package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * NPG transaction authorization completed data
  */
-@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(callSuper = true)
 public final class NpgTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
 
@@ -30,4 +28,10 @@ public final class NpgTransactionGatewayAuthorizationData implements Transaction
      */
     private String paymentEndToEndId;
 
+    private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.NPG;
+
+    @Override
+    public AuthorizationDataType getType() {
+        return TYPE;
+    }
 }
