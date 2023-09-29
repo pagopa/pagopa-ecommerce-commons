@@ -22,36 +22,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransactionTest {
-
-    @Test
-    void shouldConstructTransaction() {
-        it.pagopa.ecommerce.commons.domain.v2.PaymentToken paymentToken = new it.pagopa.ecommerce.commons.domain.v2.PaymentToken(
-                TransactionTestUtils.PAYMENT_TOKEN
-        );
-        it.pagopa.ecommerce.commons.domain.v2.RptId rptId = new RptId(TransactionTestUtils.RPT_ID);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionDescription description = new TransactionDescription(
-                TransactionTestUtils.DESCRIPTION
-        );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionAmount amount = new TransactionAmount(
-                TransactionTestUtils.AMOUNT
-        );
-        TransactionStatusDto status = TransactionStatusDto.ACTIVATED;
-
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transaction = TransactionTestUtils
-                .transactionActivated(ZonedDateTime.now().toString());
-
-        assertEquals(
-                new PaymentToken(
-                        transaction.getTransactionActivatedData().getPaymentNotices().get(0).getPaymentToken()
-                ),
-                paymentToken
-        );
-        assertEquals(transaction.getPaymentNotices().get(0).rptId(), rptId);
-        assertEquals(transaction.getPaymentNotices().get(0).transactionDescription(), description);
-        assertEquals(transaction.getPaymentNotices().get(0).transactionAmount(), amount);
-        assertEquals(transaction.getStatus(), status);
-    }
-
     @Test
     void shouldIgnoreInvalidEventStream() {
         it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();

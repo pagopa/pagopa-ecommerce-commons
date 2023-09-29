@@ -1,9 +1,16 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
-import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.Email;
+import it.pagopa.ecommerce.commons.domain.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -53,7 +60,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            List<it.pagopa.ecommerce.commons.domain.v2.PaymentNotice> paymentNotices,
+            List<it.pagopa.ecommerce.commons.domain.PaymentNotice> paymentNotices,
             Confidential<Email> email,
             String faultCode,
             String faultCodeString,
@@ -75,7 +82,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         email,
                         paymentNotices.stream()
                                 .map(
-                                        n -> new it.pagopa.ecommerce.commons.documents.v2.PaymentNotice(
+                                        n -> new it.pagopa.ecommerce.commons.documents.PaymentNotice(
                                                 n.paymentToken().value(),
                                                 n.rptId().value(),
                                                 n.transactionDescription().value(),

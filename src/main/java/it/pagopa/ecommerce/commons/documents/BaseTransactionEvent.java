@@ -28,4 +28,6 @@ public abstract class BaseTransactionEvent<T> {
     private String creationDate;
 
     private T data;
+
+    private String eventCode;
 }
