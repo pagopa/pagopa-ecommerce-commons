@@ -96,14 +96,14 @@ public class TransactionTestUtils {
 
     public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
 
-    private static final String NPG_ORDER_ID = "npgOrderId";
+    public static final String NPG_ORDER_ID = "npgOrderId";
 
-    private static final String NPG_CORRELATION_ID = "npgCorrelationId";
+    public static final String NPG_CORRELATION_ID = "npgCorrelationId";
 
-    private static final String NPG_SESSION_ID = "npgSessionId";
+    public static final String NPG_SESSION_ID = "npgSessionId";
 
-    private static final String NPG_OPERATION_ID = "npgOperationId";
-    private static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
+    public static final String NPG_OPERATION_ID = "npgOperationId";
+    public static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
