@@ -7,8 +7,9 @@ import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
+import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
-import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
+import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
@@ -122,6 +123,9 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
 
     @Override
     public String idFromValue(Object o) {
+        if (o instanceof QueueEvent<?> queueEvent) {
+            return idFromValue(queueEvent.event());
+        }
         if (o instanceof TransactionEvent<?> event) {
             TransactionEventCode transactionEventCode = CLASS_TO_EVENT_CODE_MAP.get(event.getClass());
 
@@ -213,8 +217,10 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
                         for (int i = 0; i < numberOfOtherParams; i++) {
                             constructorArguments.add(null);
                         }
-                        TransactionEventCode transactionEventCode = constructor
-                                .newInstance(constructorArguments.toArray()).getEventCode();
+                        TransactionEventCode transactionEventCode = TransactionEventCode.valueOf(
+                                constructor
+                                        .newInstance(constructorArguments.toArray()).getEventCode()
+                        );
 
                         return Tuple.of(transactionEventClass, transactionEventCode);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

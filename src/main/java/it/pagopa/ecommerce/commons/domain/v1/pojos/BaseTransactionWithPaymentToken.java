@@ -2,8 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v1.pojos;
 
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedData;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.v1.*;
+import it.pagopa.ecommerce.commons.domain.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

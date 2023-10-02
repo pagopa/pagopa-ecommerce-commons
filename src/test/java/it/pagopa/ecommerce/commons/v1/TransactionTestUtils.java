@@ -1,13 +1,15 @@
 package it.pagopa.ecommerce.commons.v1;
 
+import it.pagopa.ecommerce.commons.documents.PaymentNotice;
+import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v1.Transaction;
 import it.pagopa.ecommerce.commons.documents.v1.*;
-import it.pagopa.ecommerce.commons.domain.Confidential;
+import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.v1.*;
 import it.pagopa.ecommerce.commons.domain.v1.pojos.*;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -101,7 +103,7 @@ public class TransactionTestUtils {
                 new TransactionActivatedData(
                         EMAIL,
                         List.of(
-                                new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
+                                new PaymentNotice(
                                         PAYMENT_TOKEN,
                                         RPT_ID,
                                         DESCRIPTION,
@@ -132,7 +134,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
-                        new it.pagopa.ecommerce.commons.domain.v1.PaymentNotice(
+                        new it.pagopa.ecommerce.commons.domain.PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -534,7 +536,7 @@ public class TransactionTestUtils {
         return new Transaction(
                 TRANSACTION_ID,
                 List.of(
-                        new it.pagopa.ecommerce.commons.documents.v1.PaymentNotice(
+                        new PaymentNotice(
                                 PAYMENT_TOKEN,
                                 RPT_ID,
                                 DESCRIPTION,

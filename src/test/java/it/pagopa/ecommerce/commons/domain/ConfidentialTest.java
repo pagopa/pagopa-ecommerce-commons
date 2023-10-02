@@ -3,7 +3,6 @@ package it.pagopa.ecommerce.commons.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.pagopa.ecommerce.commons.domain.v1.Email;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
@@ -14,10 +13,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)

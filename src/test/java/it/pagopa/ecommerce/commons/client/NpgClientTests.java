@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
@@ -8,6 +9,7 @@ import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
+import it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +27,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static it.pagopa.ecommerce.commons.queues.StrictJsonSerializerProvider.OBJECT_MAPPER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -66,6 +67,8 @@ class NpgClientTests {
 
     private NpgClient npgClient;
 
+    private final ObjectMapper objectMapper = new StrictJsonSerializerProvider().getObjectMapper();
+
     @BeforeEach
     public void init() {
 
@@ -76,7 +79,7 @@ class NpgClientTests {
 
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
 
-        npgClient = new NpgClient(paymentServicesApi, tracer, OBJECT_MAPPER);
+        npgClient = new NpgClient(paymentServicesApi, tracer, objectMapper);
     }
 
     @Test
@@ -131,7 +134,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
@@ -176,7 +179,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
@@ -245,7 +248,7 @@ class NpgClientTests {
                                         HttpStatus.NOT_FOUND.value(),
                                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
@@ -283,7 +286,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
@@ -385,7 +388,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
@@ -430,7 +433,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.value(),
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
-                                        OBJECT_MAPPER.writeValueAsBytes(
+                                        objectMapper.writeValueAsBytes(
                                                 npgClientErrorResponse(NpgClient.GatewayError.GW0001)
                                         ),
                                         null
