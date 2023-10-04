@@ -16,6 +16,6 @@ public final class EmptyTransactionGatewayAuthorizationRequestedData
         implements TransactionGatewayAuthorizationRequestedData {
     @Override
     public AuthorizationDataType getType() {
-        return null;
+        return AuthorizationDataType.EMPTY;
     }
 }
