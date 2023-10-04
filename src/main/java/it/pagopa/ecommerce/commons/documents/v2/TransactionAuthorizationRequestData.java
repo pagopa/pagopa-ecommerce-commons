@@ -1,12 +1,12 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationRequestedData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
+import java.net.URI;
 
 /**
  * Additional data when requesting a payment authorization
@@ -28,9 +28,10 @@ public class TransactionAuthorizationRequestData {
     private boolean isPspOnUs;
     private String authorizationRequestId;
     private PaymentGateway paymentGateway;
+    private URI logo;
+    @Nullable
+    private CardBrand brand;
     private String paymentMethodDescription;
-    @NotNull
-    private TransactionGatewayAuthorizationRequestedData transactionGatewayAuthorizationRequestedData;
 
     /**
      * Enumeration of different PaymentGateway
@@ -52,6 +53,36 @@ public class TransactionAuthorizationRequestData {
          * NPG payment gateway
          */
         NPG
+    }
+
+    /**
+     * Enumeration of different brand type
+     */
+    public enum CardBrand {
+        /**
+         * brand type VISA
+         */
+        VISA,
+        /**
+         * brand type MASTERCARD
+         */
+        MASTERCARD,
+        /**
+         * brand type UNKNOWN
+         */
+        UNKNOWN,
+        /**
+         * brand type DINERS
+         */
+        DINERS,
+        /**
+         * brand type MAESTRO
+         */
+        MAESTRO,
+        /**
+         * brand type AMEX
+         */
+        AMEX;
     }
 
     @JsonCreator
