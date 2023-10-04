@@ -439,7 +439,9 @@ class TransactionEventTypeResolverTest {
                                    "type": "NPG",
                                    "operationResult": "EXECUTED",
                                    "operationId": "operationId",
-                                   "paymentEndToEndId": "paymentEndToEndId"
+                                   "paymentEndToEndId": "paymentEndToEndId",
+                                   "paymentCircuit":"VISA",
+                                   "logo":"http://paymentMethodLogo.it"
                                }
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
@@ -456,7 +458,9 @@ class TransactionEventTypeResolverTest {
                         new NpgTransactionGatewayAuthorizationData(
                                 OperationResultDto.EXECUTED,
                                 "operationId",
-                                "paymentEndToEndId"
+                                "paymentEndToEndId",
+                                "VISA",
+                                TransactionTestUtils.LOGO_URI
                         )
                 ),
                 MOCK_TRACING_INFO

@@ -675,7 +675,9 @@ public class TransactionTestUtils {
         return new NpgTransactionGatewayAuthorizationData(
                 outcomeDto,
                 NPG_OPERATION_ID,
-                NPG_PAYMENT_END_TO_END_ID
+                NPG_PAYMENT_END_TO_END_ID,
+                "VISA",
+                LOGO_URI
         );
     }
 
