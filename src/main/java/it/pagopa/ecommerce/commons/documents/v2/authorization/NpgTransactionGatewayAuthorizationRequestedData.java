@@ -6,7 +6,7 @@ import org.springframework.lang.Nullable;
 import java.net.URI;
 
 /**
- * Empty transaction authorization requested data
+ * NPG transaction authorization requested data
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
