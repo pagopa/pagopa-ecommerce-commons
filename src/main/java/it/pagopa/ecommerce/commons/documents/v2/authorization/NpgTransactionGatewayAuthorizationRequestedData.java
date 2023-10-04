@@ -1,9 +1,9 @@
 package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.lang.Nullable;
+
+import java.net.URI;
 
 /**
  * Empty transaction authorization requested data
@@ -11,11 +11,18 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
-public final class EmptyTransactionGatewayAuthorizationRequestedData
+public final class NpgTransactionGatewayAuthorizationRequestedData
         implements TransactionGatewayAuthorizationRequestedData {
+
+    private URI logo;
+
+    @Nullable
+    private String brand;
+
     @Override
     public AuthorizationDataType getType() {
-        return AuthorizationDataType.EMPTY;
+        return AuthorizationDataType.NPG;
     }
 }

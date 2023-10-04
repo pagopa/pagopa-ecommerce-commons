@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.net.URI;
+
 /**
  * Extensible interface to handle multiple payment gateway authorization
  * requested data
@@ -17,10 +19,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes(
     {
             @JsonSubTypes.Type(value = PgsTransactionGatewayAuthorizationRequestedData.class, name = "PGS"),
-            @JsonSubTypes.Type(value = EmptyTransactionGatewayAuthorizationRequestedData.class, name = "EMPTY"),
+            @JsonSubTypes.Type(value = NpgTransactionGatewayAuthorizationRequestedData.class, name = "NPG"),
     }
 )
-public sealed interface TransactionGatewayAuthorizationRequestedData permits EmptyTransactionGatewayAuthorizationRequestedData,PgsTransactionGatewayAuthorizationRequestedData {
+public sealed interface TransactionGatewayAuthorizationRequestedData permits NpgTransactionGatewayAuthorizationRequestedData,PgsTransactionGatewayAuthorizationRequestedData {
 
     /**
      * Authorization data type discriminator field enumeration
@@ -31,9 +33,9 @@ public sealed interface TransactionGatewayAuthorizationRequestedData permits Emp
          */
         PGS,
         /**
-         * Empty data type
+         * NPG data type
          */
-        EMPTY
+        NPG
     }
 
     /**
@@ -43,4 +45,11 @@ public sealed interface TransactionGatewayAuthorizationRequestedData permits Emp
      *         instance
      */
     AuthorizationDataType getType();
+
+    /**
+     * Get brand logo
+     *
+     * @return the URI associated to the received brand logo
+     */
+    URI getLogo();
 }
