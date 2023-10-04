@@ -675,9 +675,23 @@ public class TransactionTestUtils {
         return new NpgTransactionGatewayAuthorizationData(
                 outcomeDto,
                 NPG_OPERATION_ID,
-                NPG_PAYMENT_END_TO_END_ID,
-                "VISA",
-                LOGO_URI
+                NPG_PAYMENT_END_TO_END_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData pgsTransactionGatewayAuthorizationRequestedData() {
+        return new PgsTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData npgTransactionGatewayAuthorizationRequestedData() {
+        return new NpgTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                "VISA"
         );
     }
 

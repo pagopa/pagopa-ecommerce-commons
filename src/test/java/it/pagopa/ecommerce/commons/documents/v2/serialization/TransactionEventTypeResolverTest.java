@@ -7,8 +7,8 @@ import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.EmptyTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
@@ -439,9 +439,7 @@ class TransactionEventTypeResolverTest {
                                    "type": "NPG",
                                    "operationResult": "EXECUTED",
                                    "operationId": "operationId",
-                                   "paymentEndToEndId": "paymentEndToEndId",
-                                   "paymentCircuit":"VISA",
-                                   "logo":"http://paymentMethodLogo.it"
+                                   "paymentEndToEndId": "paymentEndToEndId"
                                }
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
@@ -458,9 +456,7 @@ class TransactionEventTypeResolverTest {
                         new NpgTransactionGatewayAuthorizationData(
                                 OperationResultDto.EXECUTED,
                                 "operationId",
-                                "paymentEndToEndId",
-                                "VISA",
-                                TransactionTestUtils.LOGO_URI
+                                "paymentEndToEndId"
                         )
                 ),
                 MOCK_TRACING_INFO
@@ -563,7 +559,7 @@ class TransactionEventTypeResolverTest {
     }
 
     @Test
-    void canRoundTripQueueAuthorizationRequestedEventSerializationWithEmptyData() {
+    void canRoundTripQueueAuthorizationRequestedEventSerializationWithNPGData() {
         String expectedSerializedEvent = """
                 {
                        "event": {
@@ -585,7 +581,9 @@ class TransactionEventTypeResolverTest {
                                "paymentGateway": "VPOS",
                                "paymentMethodDescription": "paymentMethodDescription",
                                "transactionGatewayAuthorizationRequestedData": {
-                                   "type": "EMPTY"
+                                   "type": "NPG",
+                                   "logo":"http://paymentMethodLogo.it",
+                                   "brand":"VISA"
                                },
                                "pspOnUs": false
                            },
@@ -600,7 +598,10 @@ class TransactionEventTypeResolverTest {
                 """.replace("\n", "").replace(" ", "");
         QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionAuthorizationRequestedEvent(
-                        new EmptyTransactionGatewayAuthorizationRequestedData()
+                        new NpgTransactionGatewayAuthorizationRequestedData(
+                                TransactionTestUtils.LOGO_URI,
+                                "VISA"
+                        )
                 ),
                 MOCK_TRACING_INFO
         );
