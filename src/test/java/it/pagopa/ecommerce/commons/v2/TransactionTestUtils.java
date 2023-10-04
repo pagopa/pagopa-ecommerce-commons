@@ -6,9 +6,7 @@ import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.*;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
@@ -211,31 +209,42 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
-        return new TransactionAuthorizationRequestedEvent(
-                TRANSACTION_ID,
-                new TransactionAuthorizationRequestData(
-                        AMOUNT,
-                        10,
-                        PAYMENT_INSTRUMENT_ID,
-                        PSP_ID,
-                        PAYMENT_TYPE_CODE,
-                        BROKER_NAME,
-                        PSP_CHANNEL_CODE,
-                        PAYMENT_METHOD_NAME,
-                        PSP_BUSINESS_NAME,
-                        false,
-                        AUTHORIZATION_REQUEST_ID,
-                        PAYMENT_GATEWAY,
+        return transactionAuthorizationRequestedEvent(
+                PAYMENT_GATEWAY,
+                new PgsTransactionGatewayAuthorizationRequestedData(
                         LOGO_URI,
-                        TransactionAuthorizationRequestData.CardBrand.VISA,
-                        PAYMENT_METHOD_DESCRIPTION
+                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
                 )
         );
     }
 
     @Nonnull
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(
+                                                                                                TransactionGatewayAuthorizationRequestedData transactionGatewayAuthorizationRequestedData
+    ) {
+        return transactionAuthorizationRequestedEvent(
+                PAYMENT_GATEWAY,
+                transactionGatewayAuthorizationRequestedData
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(
                                                                                                 TransactionAuthorizationRequestData.PaymentGateway paymentGateway
+    ) {
+        return transactionAuthorizationRequestedEvent(
+                paymentGateway,
+                new PgsTransactionGatewayAuthorizationRequestedData(
+                        LOGO_URI,
+                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+                )
+        );
+    }
+
+    @Nonnull
+    public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent(
+                                                                                                TransactionAuthorizationRequestData.PaymentGateway paymentGateway,
+                                                                                                TransactionGatewayAuthorizationRequestedData transactionGatewayAuthorizationRequestedData
     ) {
         return new TransactionAuthorizationRequestedEvent(
                 TRANSACTION_ID,
@@ -252,9 +261,8 @@ public class TransactionTestUtils {
                         false,
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
-                        LOGO_URI,
-                        TransactionAuthorizationRequestData.CardBrand.VISA,
-                        PAYMENT_METHOD_DESCRIPTION
+                        PAYMENT_METHOD_DESCRIPTION,
+                        transactionGatewayAuthorizationRequestedData
                 )
         );
     }
