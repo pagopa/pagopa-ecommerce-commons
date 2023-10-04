@@ -679,4 +679,20 @@ public class TransactionTestUtils {
         );
     }
 
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData pgsTransactionGatewayAuthorizationRequestedData() {
+        return new PgsTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData npgTransactionGatewayAuthorizationRequestedData() {
+        return new NpgTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                "VISA"
+        );
+    }
+
 }
