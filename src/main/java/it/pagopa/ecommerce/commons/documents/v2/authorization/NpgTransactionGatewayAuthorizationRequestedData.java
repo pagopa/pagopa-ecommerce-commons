@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 import java.net.URI;
 
@@ -18,7 +17,6 @@ public final class NpgTransactionGatewayAuthorizationRequestedData
 
     private URI logo;
 
-    @Nullable
     private String brand;
 
     @Override
