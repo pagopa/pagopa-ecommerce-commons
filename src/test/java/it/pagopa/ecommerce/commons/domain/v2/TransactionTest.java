@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
@@ -149,6 +150,38 @@ class TransactionTest {
 
         StepVerifier.create(actual)
                 .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionFromAuthRequestEventWithNpgDetails() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+        NpgTransactionGatewayAuthorizationRequestedData npgAuthRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) TransactionTestUtils
+                .npgTransactionGatewayAuthorizationRequestedData();
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent(npgAuthRequestedData);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizationRequestedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization expected = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .assertNext(e -> {
+                    NpgTransactionGatewayAuthorizationRequestedData npgTransactionGatewayAuthorizationRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) ((BaseTransactionWithRequestedAuthorization) e)
+                            .getTransactionAuthorizationRequestData().getTransactionGatewayAuthorizationRequestedData();
+                    assertEquals(npgAuthRequestedData, npgTransactionGatewayAuthorizationRequestedData);
+                })
                 .verifyComplete();
     }
 
