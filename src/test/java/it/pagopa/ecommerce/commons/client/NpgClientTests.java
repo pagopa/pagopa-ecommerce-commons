@@ -53,6 +53,8 @@ class NpgClientTests {
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
     private static final String OPERATION_ID = "OPERATION_ID";
+
+    private static final String REFUND_DESCRIPTION = "REFUND_DESCRIPTION";
     private static final UUID IDEMPOTENCE_KEY = UUID.randomUUID();
     private static final String CURRENCY = "EUR";
     private static final String AMOUNT = "1000";
@@ -361,7 +363,7 @@ class NpgClientTests {
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
                                 MOCKED_API_KEY,
-                                null
+                                REFUND_DESCRIPTION
                         )
                 )
                 .expectNext(refundResponseDto)
@@ -448,7 +450,7 @@ class NpgClientTests {
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
                                 MOCKED_API_KEY,
-                                null
+                                REFUND_DESCRIPTION
                         )
                 )
                 .expectErrorMatches(

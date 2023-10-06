@@ -550,10 +550,9 @@ public class NpgClient {
                                                    BigDecimal grandTotal,
                                                    String description
     ) {
-        RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY);
-        if (description != null) {
-            refundRequestDto.description(description);
-        }
+        RefundRequestDto refundRequestDto = new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
+                .description(description);
+
         return refundRequestDto;
     }
 
