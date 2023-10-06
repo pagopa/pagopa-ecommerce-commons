@@ -76,7 +76,6 @@ class NpgClientTests {
         Mockito.when(spanBuilder.setParent(any())).thenReturn(spanBuilder);
         Mockito.when(spanBuilder.setAttribute(anyString(), anyString())).thenReturn(spanBuilder);
         Mockito.when(spanBuilder.startSpan()).thenReturn(Span.getInvalid());
-
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
 
         npgClient = new NpgClient(paymentServicesApi, tracer, objectMapper);
