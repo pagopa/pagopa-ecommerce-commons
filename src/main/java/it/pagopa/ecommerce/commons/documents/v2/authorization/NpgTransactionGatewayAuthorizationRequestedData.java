@@ -26,10 +26,13 @@ public final class NpgTransactionGatewayAuthorizationRequestedData
     @NotNull
     private String brand;
     /**
+     * NPG session id
+     */
+    private String sessionId;
+    /**
      * NPG confirm payment received sessionId
      */
-    @NotNull
-    private String authorizationSessionId;
+    private String confirmPaymentSessionId;
 
     @Override
     public AuthorizationDataType getType() {

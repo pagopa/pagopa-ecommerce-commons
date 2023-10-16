@@ -6,7 +6,6 @@ import com.azure.core.util.serializer.TypeReference;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
@@ -187,13 +186,13 @@ class TransactionEventTypeResolverTest {
         );
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionClosedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionClosedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -266,13 +265,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -315,9 +314,8 @@ class TransactionEventTypeResolverTest {
                             "paymentTokenValiditySeconds": 900,
                             "transactionGatewayActivationData": {
                                 "type": "NPG",
-                                "orderId": "orderId",
-                                "correlationId": "correlationId",
-                                "sessionId": "sessionId"
+                                "orderId": "npgOrderId",
+                                "correlationId": "npgCorrelationId"
                             }
                         },
                         "eventCode": "TRANSACTION_ACTIVATED_EVENT"
@@ -330,7 +328,7 @@ class TransactionEventTypeResolverTest {
                 }""".replace("\n", "").replace(" ", "");
         QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionActivateEvent(
-                        new NpgTransactionGatewayActivationData("orderId", "correlationId", "sessionId")
+                        TransactionTestUtils.npgTransactionGatewayActivationData()
                 ),
                 MOCK_TRACING_INFO
         );
@@ -349,13 +347,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -410,13 +408,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -476,13 +474,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -546,13 +544,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
@@ -583,7 +581,8 @@ class TransactionEventTypeResolverTest {
                                    "type": "NPG",
                                    "logo":"http://paymentMethodLogo.it",
                                    "brand":"VISA",
-                                   "authorizationSessionId":"authorizationSessionId"
+                                   "sessionId":"npgSessionId",
+                                   "confirmPaymentSessionId":"npgConfirmPaymentSessionId"
                                },
                                "pspOnUs": false
                            },
@@ -619,13 +618,13 @@ class TransactionEventTypeResolverTest {
         assertEquals(expectedSerializedEvent, serializedString);
         Hooks.onOperatorDebug();
         StepVerifier.create(
-                jsonSerializer
-                        .deserializeFromBytesAsync(
-                                serialized,
-                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
-                                }
-                        )
-        )
+                        jsonSerializer
+                                .deserializeFromBytesAsync(
+                                        serialized,
+                                        new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                        }
+                                )
+                )
                 .expectNext(originalEvent)
                 .verifyComplete();
     }

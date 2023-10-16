@@ -18,8 +18,6 @@ public final class NpgTransactionGatewayActivationData implements TransactionGat
 
     private String correlationId;
 
-    private String sessionId;
-
     @NotNull
     private static final ActivationDataType TYPE = ActivationDataType.NPG;
 
@@ -27,7 +25,7 @@ public final class NpgTransactionGatewayActivationData implements TransactionGat
      * Get discriminator field enumeration value
      *
      * @return the detail type enumeration value associated to the current detail
-     *         instance
+     * instance
      */
     public ActivationDataType getType() {
         return TYPE;
