@@ -28,6 +28,7 @@ public final class NpgTransactionGatewayAuthorizationRequestedData
     /**
      * NPG session id
      */
+    @NotNull
     private String sessionId;
     /**
      * NPG confirm payment received sessionId
