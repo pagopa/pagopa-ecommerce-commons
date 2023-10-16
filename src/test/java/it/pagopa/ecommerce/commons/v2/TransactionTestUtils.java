@@ -103,6 +103,8 @@ public class TransactionTestUtils {
     public static final String NPG_OPERATION_ID = "npgOperationId";
     public static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
 
+    private static final String NPG_AUTHORIZATION_SESSION_ID = "authorizationSessionId";
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
@@ -691,7 +693,8 @@ public class TransactionTestUtils {
     public static TransactionGatewayAuthorizationRequestedData npgTransactionGatewayAuthorizationRequestedData() {
         return new NpgTransactionGatewayAuthorizationRequestedData(
                 LOGO_URI,
-                "VISA"
+                "VISA",
+                NPG_AUTHORIZATION_SESSION_ID
         );
     }
 

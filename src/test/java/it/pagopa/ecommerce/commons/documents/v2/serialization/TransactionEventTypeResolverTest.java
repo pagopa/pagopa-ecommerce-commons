@@ -8,7 +8,6 @@ import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
@@ -583,7 +582,8 @@ class TransactionEventTypeResolverTest {
                                "transactionGatewayAuthorizationRequestedData": {
                                    "type": "NPG",
                                    "logo":"http://paymentMethodLogo.it",
-                                   "brand":"VISA"
+                                   "brand":"VISA",
+                                   "authorizationSessionId":"authorizationSessionId"
                                },
                                "pspOnUs": false
                            },
@@ -598,10 +598,7 @@ class TransactionEventTypeResolverTest {
                 """.replace("\n", "").replace(" ", "");
         QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionAuthorizationRequestedEvent(
-                        new NpgTransactionGatewayAuthorizationRequestedData(
-                                TransactionTestUtils.LOGO_URI,
-                                "VISA"
-                        )
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationRequestedData()
                 ),
                 MOCK_TRACING_INFO
         );
