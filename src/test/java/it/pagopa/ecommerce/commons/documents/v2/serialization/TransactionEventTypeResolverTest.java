@@ -6,9 +6,7 @@ import com.azure.core.util.serializer.TypeReference;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
-import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
-import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
@@ -316,9 +314,8 @@ class TransactionEventTypeResolverTest {
                             "paymentTokenValiditySeconds": 900,
                             "transactionGatewayActivationData": {
                                 "type": "NPG",
-                                "orderId": "orderId",
-                                "correlationId": "correlationId",
-                                "sessionId": "sessionId"
+                                "orderId": "npgOrderId",
+                                "correlationId": "npgCorrelationId"
                             }
                         },
                         "eventCode": "TRANSACTION_ACTIVATED_EVENT"
@@ -331,7 +328,7 @@ class TransactionEventTypeResolverTest {
                 }""".replace("\n", "").replace(" ", "");
         QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionActivateEvent(
-                        new NpgTransactionGatewayActivationData("orderId", "correlationId", "sessionId")
+                        TransactionTestUtils.npgTransactionGatewayActivationData()
                 ),
                 MOCK_TRACING_INFO
         );
@@ -583,7 +580,9 @@ class TransactionEventTypeResolverTest {
                                "transactionGatewayAuthorizationRequestedData": {
                                    "type": "NPG",
                                    "logo":"http://paymentMethodLogo.it",
-                                   "brand":"VISA"
+                                   "brand":"VISA",
+                                   "sessionId":"npgSessionId",
+                                   "confirmPaymentSessionId":"npgConfirmPaymentSessionId"
                                },
                                "pspOnUs": false
                            },
@@ -598,10 +597,7 @@ class TransactionEventTypeResolverTest {
                 """.replace("\n", "").replace(" ", "");
         QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionAuthorizationRequestedEvent(
-                        new NpgTransactionGatewayAuthorizationRequestedData(
-                                TransactionTestUtils.LOGO_URI,
-                                "VISA"
-                        )
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationRequestedData()
                 ),
                 MOCK_TRACING_INFO
         );

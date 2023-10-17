@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 /**
@@ -14,10 +15,25 @@ import java.net.URI;
 @ToString(callSuper = true)
 public final class NpgTransactionGatewayAuthorizationRequestedData
         implements TransactionGatewayAuthorizationRequestedData {
-
+    /**
+     * Logo URI associated to chosen transaction payment method
+     */
+    @NotNull
     private URI logo;
-
+    /**
+     * Npg brand value
+     */
+    @NotNull
     private String brand;
+    /**
+     * NPG session id
+     */
+    @NotNull
+    private String sessionId;
+    /**
+     * NPG confirm payment received sessionId
+     */
+    private String confirmPaymentSessionId;
 
     @Override
     public AuthorizationDataType getType() {
