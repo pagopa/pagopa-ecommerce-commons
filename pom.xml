@@ -29,6 +29,7 @@
         <spring-cloud-azure.version>4.0.0</spring-cloud-azure.version>
         <jacoco.version>0.8.8</jacoco.version>
         <spotless.version>2.27.2</spotless.version>
+        <open-telemetry.version>1.27.0</open-telemetry.version>
     </properties>
     <dependencies>
         <dependency>
@@ -144,6 +145,12 @@
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-reactor-3.1</artifactId>
+            <version>${open-telemetry.version}-alpha</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.jacoco</groupId>
@@ -177,7 +184,7 @@
             <dependency>
                 <groupId>io.opentelemetry</groupId>
                 <artifactId>opentelemetry-bom</artifactId>
-                <version>1.27.0</version>
+                <version>${open-telemetry.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

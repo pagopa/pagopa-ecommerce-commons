@@ -6,6 +6,7 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -86,9 +87,9 @@ public class TracingUtils {
      *
      * @param spanName name of the new {@link Span}
      * @param traced   function returning the {@link Mono} to be wrapped
+     * @param <T>      type parameter of {@link Mono}
      * @return a new {@link Mono} that executes the wrapped {@link Mono} inside a
      *         new child span
-     * @param <T> type parameter of {@link Mono}
      */
     public <T> Mono<T> traceMono(
                                  @NonNull String spanName,
@@ -142,9 +143,9 @@ public class TracingUtils {
      *                    to
      * @param spanName    name of the new span
      * @param operation   {@link Mono} that will be wrapped
+     * @param <T>         type parameter for the original {@link Mono}
      * @return a new {@link Mono} with a span linked to the remote span identified
      *         by {@code tracingInfo}
-     * @param <T> type parameter for the original {@link Mono}
      */
     public <T> @NonNull Mono<T> traceMonoWithRemoteSpan(
                                                         @NonNull TracingInfo tracingInfo,
@@ -213,9 +214,13 @@ public class TracingUtils {
          */
         return Mono.using(
                 () -> span,
-                s -> operation.contextWrite(
-                        reactor.util.context.Context.of(PARENT_TRACE_CONTEXT_KEY, Context.current().with(s))
-                ),
+                s -> operation
+                        .contextWrite(
+                                reactor.util.context.Context.of(PARENT_TRACE_CONTEXT_KEY, Context.current().with(s))
+                        ).contextWrite(
+                                ctx -> ContextPropagationOperator
+                                        .storeOpenTelemetryContext(ctx, Context.current().with(s))
+                        ),
                 Span::end
         );
     }
