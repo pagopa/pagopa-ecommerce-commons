@@ -18,8 +18,6 @@ public final class NpgTransactionGatewayActivationData implements TransactionGat
 
     private String correlationId;
 
-    private String sessionId;
-
     @NotNull
     private static final ActivationDataType TYPE = ActivationDataType.NPG;
 
