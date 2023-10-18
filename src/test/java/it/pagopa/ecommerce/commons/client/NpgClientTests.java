@@ -53,7 +53,9 @@ class NpgClientTests {
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
     private static final String OPERATION_ID = "OPERATION_ID";
-    private static final String IDEMPOTENCE_KEY = "IDEMPOTENCE_KEY";
+
+    private static final String REFUND_DESCRIPTION = "REFUND_DESCRIPTION";
+    private static final UUID IDEMPOTENCE_KEY = UUID.randomUUID();
     private static final String CURRENCY = "EUR";
     private static final String AMOUNT = "1000";
     @Mock
@@ -349,7 +351,7 @@ class NpgClientTests {
                         OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         ).thenReturn(Mono.just(refundResponseDto));
@@ -361,7 +363,40 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                MOCKED_API_KEY
+                                MOCKED_API_KEY,
+                                REFUND_DESCRIPTION
+                        )
+                )
+                .expectNext(refundResponseDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRefundPaymentGivenValidNpgSessionWithNullDescription() {
+        RefundResponseDto refundResponseDto = buildTestRefundResponseDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
+                        refundRequestDto
+                )
+        ).thenReturn(Mono.just(refundResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                MOCKED_API_KEY,
+                                null
                         )
                 )
                 .expectNext(refundResponseDto)
@@ -421,7 +456,7 @@ class NpgClientTests {
                         OPERATION_ID,
                         correlationUUID,
                         MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         )
@@ -447,7 +482,55 @@ class NpgClientTests {
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
                                 BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
-                                MOCKED_API_KEY
+                                MOCKED_API_KEY,
+                                REFUND_DESCRIPTION
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                )
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhileRefundPaymentWithNullDescription() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
+                        refundRequestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for confirm payment",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        objectMapper.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.refundPayment(
+                                correlationUUID,
+                                OPERATION_ID,
+                                IDEMPOTENCE_KEY,
+                                BigDecimal.valueOf(Integer.parseInt(AMOUNT)),
+                                MOCKED_API_KEY,
+                                null
                         )
                 )
                 .expectErrorMatches(
@@ -474,6 +557,13 @@ class NpgClientTests {
     }
 
     private RefundRequestDto buildRefundRequestDto() {
+        return new RefundRequestDto()
+                .amount(AMOUNT)
+                .currency(CURRENCY)
+                .description(REFUND_DESCRIPTION);
+    }
+
+    private RefundRequestDto buildRefundRequestDtoNullDescription() {
         return new RefundRequestDto()
                 .amount(AMOUNT)
                 .currency(CURRENCY);

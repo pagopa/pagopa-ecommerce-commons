@@ -678,7 +678,7 @@ paths:
       tags:
         - Payment Services
       summary: Create an order and initiates a payment through build functionality.
-      description: "This service is targeted to ecommerce platforms requiring to implement the payment pages in line with their own dedicated UI style guidelines. The service will return a list of fields expressed in JSON format, to be translated into HTML by the ecommerce platform web app. If the paymentService field is valued at CARDS the service will return a list of fields for the CARD_DATA_COLLECTION without going through the PAYMENT_METHOD_SELECTION state and if it's valued with an APM the service will return an url where the customer should be redirected."
+      description: "This service is targeted to ecommerce platforms requiring to implement the refund of a payment given the operationId"
       parameters:
         - name: operationId
           required: true
@@ -713,7 +713,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "In case of success, the service returns a list of fields to be rendered in the ecomm web app."
+          description: "In case of success, the service returns a dto containing the information about the operation"
           content:
             application/json:
               schema:

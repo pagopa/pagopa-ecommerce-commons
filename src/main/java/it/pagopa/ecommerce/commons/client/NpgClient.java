@@ -507,15 +507,17 @@ public class NpgClient {
      *                       for the same transaction
      * @param grandTotal     the grand total to be refunded
      * @param defaultApiKey  default API key
+     * @param description    the description of the refund request. Not mandatory.
      * @return An object containing the state of the transaction and the info about
      *         operation details.
      */
     public Mono<RefundResponseDto> refundPayment(
                                                  @NotNull UUID correlationId,
                                                  @NotNull String operationId,
-                                                 @NotNull String idempotenceKey,
+                                                 @NotNull UUID idempotenceKey,
                                                  @NotNull BigDecimal grandTotal,
-                                                 @NonNull String defaultApiKey
+                                                 @NonNull String defaultApiKey,
+                                                 String description
     ) {
         return Mono.using(
                 () -> tracer.spanBuilder("NpgClient#refundPayment")
@@ -526,8 +528,8 @@ public class NpgClient {
                         operationId,
                         correlationId,
                         defaultApiKey,
-                        idempotenceKey,
-                        new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
+                        idempotenceKey.toString(),
+                        buildRefundRequestDto(grandTotal, description)
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
@@ -569,6 +571,14 @@ public class NpgClient {
                                 .cancelUrl(cancelUrl.toString())
                                 .notificationUrl(notificationUrl.toString())
                 );
+    }
+
+    private RefundRequestDto buildRefundRequestDto(
+                                                   BigDecimal grandTotal,
+                                                   String description
+    ) {
+        return new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
+                .description(description);
     }
 
     private NpgResponseException exceptionToNpgResponseException(
