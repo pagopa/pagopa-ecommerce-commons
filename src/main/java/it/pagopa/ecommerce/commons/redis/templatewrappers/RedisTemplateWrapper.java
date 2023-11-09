@@ -66,6 +66,36 @@ public abstract class RedisTemplateWrapper<V> {
     }
 
     /**
+     * Save key to hold the string value if key is absent (SET with NX).
+     *
+     * @param value the entity to be saved
+     *
+     * @return returns false if it already exists, true if it does not exist.
+     */
+    public Boolean saveIfAbsent(
+                                V value
+    ) {
+        return redisTemplate.opsForValue()
+                .setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, getDefaultTTL());
+    }
+
+    /**
+     * Save key to hold the string value if key is absent (SET with NX).
+     *
+     * @param value the entity to be saved
+     * @param ttl   the TTL for the entity to be saved. This parameter will override
+     *              the default TTL value
+     *
+     * @return returns false if it already exists, true if it does not exist.
+     */
+    public Boolean saveIfAbsent(
+                                V value,
+                                Duration ttl
+    ) {
+        return redisTemplate.opsForValue().setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
+    }
+
+    /**
      * Get the default configured TTL
      *
      * @return the default configured TTL

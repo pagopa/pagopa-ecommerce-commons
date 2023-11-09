@@ -129,4 +129,56 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
                 .set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
     }
 
+    @Test
+    void shouldSaveIfAbsentEntitySuccessfully() {
+        // assertions
+        PaymentRequestInfo paymentRequestInfo = it.pagopa.ecommerce.commons.v1.TransactionTestUtils
+                .paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(
+                valueOperations.setIfAbsent(
+                        "keys:%s".formatted(it.pagopa.ecommerce.commons.v1.TransactionTestUtils.RPT_ID),
+                        paymentRequestInfo,
+                        ttl
+                )
+        ).thenReturn(true);
+
+        // test
+        paymentRequestInfoRedisTemplateWrapper.saveIfAbsent(paymentRequestInfo);
+
+        // assertions
+        Mockito.verify(valueOperations, Mockito.times(1))
+                .setIfAbsent(
+                        "keys:%s".formatted(it.pagopa.ecommerce.commons.v1.TransactionTestUtils.RPT_ID),
+                        paymentRequestInfo,
+                        ttl
+                );
+    }
+
+    @Test
+    void shouldSaveIfAbsentEntityWithCustomTTLSuccessfully() {
+        // assertions
+        Duration customTTL = Duration.ofMillis(100);
+        PaymentRequestInfo paymentRequestInfo = it.pagopa.ecommerce.commons.v1.TransactionTestUtils
+                .paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(
+                valueOperations.setIfAbsent(
+                        "keys:%s".formatted(it.pagopa.ecommerce.commons.v1.TransactionTestUtils.RPT_ID),
+                        paymentRequestInfo,
+                        customTTL
+                )
+        ).thenReturn(true);
+
+        // test
+        paymentRequestInfoRedisTemplateWrapper.saveIfAbsent(paymentRequestInfo, customTTL);
+
+        // assertions
+        Mockito.verify(valueOperations, Mockito.times(1))
+                .setIfAbsent(
+                        "keys:%s".formatted(it.pagopa.ecommerce.commons.v1.TransactionTestUtils.RPT_ID),
+                        paymentRequestInfo,
+                        customTTL
+                );
+    }
 }
