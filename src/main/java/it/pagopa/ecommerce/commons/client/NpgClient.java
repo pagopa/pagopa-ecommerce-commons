@@ -396,13 +396,15 @@ public class NpgClient {
                                      @NonNull String defaultApiKey
     ) {
         return Mono.using(
-                () -> tracer.spanBuilder("NpgClient#buildForm")
-                        .setParent(Context.current().with(Span.current()))
-                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
-                        .startSpan(),
+                () -> {
+                    paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
+                    return tracer.spanBuilder("NpgClient#buildForm")
+                            .setParent(Context.current().with(Span.current()))
+                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                            .startSpan();
+                },
                 span -> paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationId,
-                        defaultApiKey,
                         buildOrderRequestDto(
                                 merchantUrl,
                                 resultUrl,
@@ -420,7 +422,10 @@ public class NpgClient {
                         )
                 )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
-                Span::end
+                span -> {
+                    paymentServicesApi.getApiClient().setApiKey(null);
+                    span.end();
+                }
         );
     }
 
@@ -441,13 +446,15 @@ public class NpgClient {
     ) {
 
         return Mono.using(
-                () -> tracer.spanBuilder("NpgClient#getCardData")
-                        .setParent(Context.current().with(Span.current()))
-                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
-                        .startSpan(),
+                () -> {
+                    paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
+                    return tracer.spanBuilder("NpgClient#getCardData")
+                            .setParent(Context.current().with(Span.current()))
+                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                            .startSpan();
+                },
                 span -> paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationId,
-                        defaultApiKey,
                         sessionId
                 ).doOnError(
                         WebClientResponseException.class,
@@ -457,7 +464,10 @@ public class NpgClient {
                         )
                 )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
-                Span::end
+                span -> {
+                    paymentServicesApi.getApiClient().setApiKey(null);
+                    span.end();
+                }
         );
     }
 
@@ -479,13 +489,15 @@ public class NpgClient {
     ) {
 
         return Mono.using(
-                () -> tracer.spanBuilder("NpgClient#confirmPayment")
-                        .setParent(Context.current().with(Span.current()))
-                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
-                        .startSpan(),
+                () -> {
+                    paymentServicesApi.getApiClient().setApiKey(pspApiKey);
+                    return tracer.spanBuilder("NpgClient#confirmPayment")
+                            .setParent(Context.current().with(Span.current()))
+                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                            .startSpan();
+                },
                 span -> paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationId,
-                        pspApiKey,
                         new ConfirmPaymentRequestDto()
                                 .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
                 ).doOnError(
@@ -496,7 +508,10 @@ public class NpgClient {
                         )
                 )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
-                Span::end
+                span -> {
+                    paymentServicesApi.getApiClient().setApiKey(null);
+                    span.end();
+                }
         );
     }
 
@@ -522,15 +537,18 @@ public class NpgClient {
                                                  String description
     ) {
         return Mono.using(
-                () -> tracer.spanBuilder("NpgClient#refundPayment")
-                        .setParent(Context.current().with(Span.current()))
-                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
-                        .startSpan(),
+                () -> {
+                    paymentServicesApi.getApiClient().setApiKey(null);
+                    return tracer.spanBuilder("NpgClient#refundPayment")
+                            .setParent(Context.current().with(Span.current()))
+                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                            .startSpan();
+                },
                 span -> paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         operationId,
                         correlationId,
-                        defaultApiKey,
                         idempotenceKey.toString(),
+                        defaultApiKey,
                         buildRefundRequestDto(grandTotal, description)
                 ).doOnError(
                         WebClientResponseException.class,
