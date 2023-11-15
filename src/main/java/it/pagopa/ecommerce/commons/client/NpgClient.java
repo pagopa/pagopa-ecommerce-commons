@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -607,7 +608,11 @@ public class NpgClient {
                 String errorMessage = "Invalid error response from NPG with status code %s";
                 log.error(errorMessage.formatted(e.getStatusCode()));
 
-                return new NpgResponseException(errorMessage.formatted(e.getStatusCode()), ex);
+                return new NpgResponseException(
+                        errorMessage.formatted(e.getStatusCode()),
+                        Optional.of(e.getStatusCode()),
+                        ex
+                );
             }
         }
 
@@ -620,6 +625,7 @@ public class NpgClient {
         return new NpgResponseException(
                 "Error while invoke method for build order",
                 errors,
+                Optional.empty(),
                 err
         );
     }
