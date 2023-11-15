@@ -11,6 +11,7 @@ import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
@@ -587,6 +588,7 @@ public class NpgClient {
                                                                  Span span
     ) {
         List<GatewayError> errors = List.of();
+        Optional<HttpStatus> statusCode = Optional.empty();
 
         if (err instanceof WebClientResponseException e) {
             try {
@@ -604,6 +606,7 @@ public class NpgClient {
 
                 errors = responseErrors.stream()
                         .map(error -> GatewayError.valueOf(error.getCode())).toList();
+                statusCode = Optional.of(e.getStatusCode());
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";
                 log.error(errorMessage.formatted(e.getStatusCode()));
@@ -625,7 +628,7 @@ public class NpgClient {
         return new NpgResponseException(
                 "Error while invoke method for build order",
                 errors,
-                Optional.empty(),
+                statusCode,
                 err
         );
     }
