@@ -442,6 +442,7 @@ class NpgClientTests {
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
                                 && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
     }
@@ -489,6 +490,7 @@ class NpgClientTests {
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
                                 && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
     }
@@ -536,6 +538,7 @@ class NpgClientTests {
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
                                 && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
     }
