@@ -49,7 +49,7 @@ class NpgPspApiKeysConfigTest {
                 );
 
         assertTrue(pspConfiguration.isRight());
-        assertDoesNotThrow(() -> assertEquals("key-%s".formatted(pspId), pspConfiguration.get().get(pspId)));
+        assertEquals("key-%s".formatted(pspId), pspConfiguration.get().get(pspId).get());
     }
 
     @Test
@@ -101,7 +101,7 @@ class NpgPspApiKeysConfigTest {
             s.when(Span::current).thenReturn(invalidSpan);
 
             assertTrue(pspConfiguration.isRight());
-            assertThrows(NpgApiKeyMissingPspRequested.class, () -> pspConfiguration.get().get("missingPSP"));
+            assertInstanceOf(NpgApiKeyMissingPspRequested.class, pspConfiguration.get().get("missingPSP").getLeft());
         }
     }
 }

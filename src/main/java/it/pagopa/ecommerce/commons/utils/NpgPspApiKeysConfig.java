@@ -76,12 +76,10 @@ public class NpgPspApiKeysConfig {
      *
      * @param psp the PSP you want the API key for
      * @return the API key corresponding to the input PSP
-     * @throws NpgApiKeyMissingPspRequested if the requested PSP is not present in
-     *                                      the configuration
      */
-    public String get(String psp) throws NpgApiKeyMissingPspRequested {
+    public Either<NpgApiKeyMissingPspRequested, String> get(String psp) {
         if (configuration.containsKey(psp)) {
-            return configuration.get(psp);
+            return Either.right(configuration.get(psp));
         } else {
             NpgApiKeyMissingPspRequested npgApiKeyMissingPspRequested = new NpgApiKeyMissingPspRequested(
                     psp,
@@ -89,7 +87,7 @@ public class NpgPspApiKeysConfig {
             );
             Span.current().recordException(npgApiKeyMissingPspRequested);
 
-            throw npgApiKeyMissingPspRequested;
+            return Either.left(npgApiKeyMissingPspRequested);
         }
     }
 }
