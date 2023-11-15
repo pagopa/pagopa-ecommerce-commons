@@ -3,9 +3,11 @@ package it.pagopa.ecommerce.commons.utils;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
+import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequestedException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -75,7 +77,17 @@ public class NpgPspApiKeysConfig {
      * @param psp the PSP you want the API key for
      * @return the API key corresponding to the input PSP
      */
-    public String get(String psp) {
-        return configuration.get(psp);
+    public Either<NpgApiKeyMissingPspRequestedException, String> get(String psp) {
+        if (configuration.containsKey(psp)) {
+            return Either.right(configuration.get(psp));
+        } else {
+            NpgApiKeyMissingPspRequestedException npgApiKeyMissingPspRequestedException = new NpgApiKeyMissingPspRequestedException(
+                    psp,
+                    configuration.keySet()
+            );
+            Span.current().recordException(npgApiKeyMissingPspRequestedException);
+
+            return Either.left(npgApiKeyMissingPspRequestedException);
+        }
     }
 }

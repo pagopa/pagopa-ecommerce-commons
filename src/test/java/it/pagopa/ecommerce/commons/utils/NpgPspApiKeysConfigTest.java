@@ -1,19 +1,21 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
+import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequestedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class NpgPspApiKeysConfigTest {
 
@@ -37,7 +39,7 @@ class NpgPspApiKeysConfigTest {
                     "psp3"
             }
     )
-    void shouldParsePspConfigurationSuccessfully(String pspId) {
+    void shouldParsePspConfigurationSuccessfully(String pspId) throws NpgApiKeyMissingPspRequestedException {
         Either<NpgApiKeyConfigurationException, NpgPspApiKeysConfig> pspConfiguration = NpgPspApiKeysConfig
                 .parseApiKeyConfiguration(
                         pspConfigurationJson,
@@ -45,8 +47,9 @@ class NpgPspApiKeysConfigTest {
                         NpgClient.PaymentMethod.CARDS,
                         OBJECT_MAPPER
                 );
+
         assertTrue(pspConfiguration.isRight());
-        assertEquals("key-%s".formatted(pspId), pspConfiguration.get().get(pspId));
+        assertEquals("key-%s".formatted(pspId), pspConfiguration.get().get(pspId).get());
     }
 
     @Test
@@ -81,5 +84,27 @@ class NpgPspApiKeysConfigTest {
                 "Error parsing NPG PSP api keys configuration for payment method: [CARDS], cause: Misconfigured api keys. Missing keys: [psp4]",
                 pspConfiguration.getLeft().getMessage()
         );
+    }
+
+    @Test
+    void shouldThrowExceptionForRetrievingMissingPsp() {
+        Either<NpgApiKeyConfigurationException, NpgPspApiKeysConfig> pspConfiguration = NpgPspApiKeysConfig
+                .parseApiKeyConfiguration(
+                        pspConfigurationJson,
+                        pspToHandle,
+                        NpgClient.PaymentMethod.CARDS,
+                        OBJECT_MAPPER
+                );
+
+        Span invalidSpan = Span.getInvalid();
+        try (MockedStatic<Span> s = Mockito.mockStatic(Span.class)) {
+            s.when(Span::current).thenReturn(invalidSpan);
+
+            assertTrue(pspConfiguration.isRight());
+            assertInstanceOf(
+                    NpgApiKeyMissingPspRequestedException.class,
+                    pspConfiguration.get().get("missingPSP").getLeft()
+            );
+        }
     }
 }
