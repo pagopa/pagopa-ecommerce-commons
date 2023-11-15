@@ -5,7 +5,7 @@ import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
-import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequested;
+import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequestedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -39,7 +39,7 @@ class NpgPspApiKeysConfigTest {
                     "psp3"
             }
     )
-    void shouldParsePspConfigurationSuccessfully(String pspId) throws NpgApiKeyMissingPspRequested {
+    void shouldParsePspConfigurationSuccessfully(String pspId) throws NpgApiKeyMissingPspRequestedException {
         Either<NpgApiKeyConfigurationException, NpgPspApiKeysConfig> pspConfiguration = NpgPspApiKeysConfig
                 .parseApiKeyConfiguration(
                         pspConfigurationJson,
@@ -101,7 +101,10 @@ class NpgPspApiKeysConfigTest {
             s.when(Span::current).thenReturn(invalidSpan);
 
             assertTrue(pspConfiguration.isRight());
-            assertInstanceOf(NpgApiKeyMissingPspRequested.class, pspConfiguration.get().get("missingPSP").getLeft());
+            assertInstanceOf(
+                    NpgApiKeyMissingPspRequestedException.class,
+                    pspConfiguration.get().get("missingPSP").getLeft()
+            );
         }
     }
 }

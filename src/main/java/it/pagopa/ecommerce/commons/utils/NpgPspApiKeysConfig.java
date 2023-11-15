@@ -7,7 +7,7 @@ import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
-import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequested;
+import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyMissingPspRequestedException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -77,17 +77,17 @@ public class NpgPspApiKeysConfig {
      * @param psp the PSP you want the API key for
      * @return the API key corresponding to the input PSP
      */
-    public Either<NpgApiKeyMissingPspRequested, String> get(String psp) {
+    public Either<NpgApiKeyMissingPspRequestedException, String> get(String psp) {
         if (configuration.containsKey(psp)) {
             return Either.right(configuration.get(psp));
         } else {
-            NpgApiKeyMissingPspRequested npgApiKeyMissingPspRequested = new NpgApiKeyMissingPspRequested(
+            NpgApiKeyMissingPspRequestedException npgApiKeyMissingPspRequestedException = new NpgApiKeyMissingPspRequestedException(
                     psp,
                     configuration.keySet()
             );
-            Span.current().recordException(npgApiKeyMissingPspRequested);
+            Span.current().recordException(npgApiKeyMissingPspRequestedException);
 
-            return Either.left(npgApiKeyMissingPspRequested);
+            return Either.left(npgApiKeyMissingPspRequestedException);
         }
     }
 }
