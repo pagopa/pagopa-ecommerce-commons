@@ -60,7 +60,7 @@ jobs:
           branch: "update-commons-${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           token: ${{ secrets.PR_GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
-          committer: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
+          committer: pagopa-platform-github-bot <pagopa-platform-github-bot@pagopa.it>
           commit-message: "chore(deps): update `commons` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           title: "chore(deps): update `commons` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           body: |
