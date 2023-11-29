@@ -35,6 +35,7 @@ class NpgClientTests {
     private static final String ORDER_REQUEST_VERSION = "2";
     private static final String MERCHANT_URL = "localhost/merchant";
     private static final String ORDER_REQUEST_ORDER_ID = "orderId";
+    private static final String ORDER_REQUEST_CONTRACT_ID = "contractId";
     private static final String ORDER_REQUEST_PAY = "1";
     private static final String ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String ORDER_REQUEST_CUSTOMER_ID = "customerId";
@@ -88,7 +89,7 @@ class NpgClientTests {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -119,9 +120,45 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldRetrieveFieldsDtoForSubsequentPaymentUsingExplicitParameters() {
+        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldThrowExceptionWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -166,9 +203,57 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldThrowExceptionWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Test error when calling pspApiV1OrdersBuildPost",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        objectMapper.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID
+                        )
+                )
+                .expectError(NpgResponseException.class)
+                .verify();
+    }
+
+    @Test
     void shouldPropagateErrorCodesWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -206,6 +291,54 @@ class NpgClientTests {
                                 ORDER_REQUEST_CUSTOMER_ID,
                                 NpgClient.PaymentMethod.CARDS,
                                 MOCKED_API_KEY
+                        )
+                )
+                .expectError(NpgResponseException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateErrorCodesWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Test error when calling pspApiV1OrdersBuildPost",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        objectMapper.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID
                         )
                 )
                 .expectError(NpgResponseException.class)
@@ -600,7 +733,7 @@ class NpgClientTests {
                 .currency(CURRENCY);
     }
 
-    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto() {
+    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(boolean isSubsequentPayment) {
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
                 .merchantUrl(MERCHANT_URL)
@@ -620,6 +753,12 @@ class NpgClientTests {
                                 .cancelUrl(CANCEL_URL)
                                 .notificationUrl(NOTIFICATION_URL)
                                 .resultUrl(RESULT_URL)
+                                .recurrence(
+                                        isSubsequentPayment ? new RecurringSettingsDto()
+                                                .action(RecurringActionDto.SUBSEQUENT_PAYMENT)
+                                                .contractId(ORDER_REQUEST_CONTRACT_ID)
+                                                : null
+                                )
                 );
     }
 
@@ -632,6 +771,12 @@ class NpgClientTests {
                                 new FieldDto().id(TEST_1).src(SRC_1).propertyClass(PROPERTY_1).type(TYPE_1)
                         )
                 );
+    }
+
+    private FieldsDto buildTestFieldsDtoForSubsequentPayment() {
+        return new FieldsDto()
+                .sessionId(SESSION_ID)
+                .state(WorkflowStateDto.READY_FOR_PAYMENT);
     }
 
     private StateResponseDto buildTestRetrieveStateResponseDto() {
