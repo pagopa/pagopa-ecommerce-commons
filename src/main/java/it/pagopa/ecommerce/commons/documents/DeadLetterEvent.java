@@ -17,12 +17,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 public class DeadLetterEvent {
 
-    /*
-     * _id -> id univoco UUID queueName (nome della coda da cui è stato scodato
-     * l'evento) insertionDate (timestamp di scrittura evento sulla coda di dead
-     * letter) data -> (evento così come letto dalla coda di dead letter)
-     */
-
     /**
      * Event unique id
      */
