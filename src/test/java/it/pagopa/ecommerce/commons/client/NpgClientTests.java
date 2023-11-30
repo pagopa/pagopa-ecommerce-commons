@@ -89,7 +89,7 @@ class NpgClientTests {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -124,7 +124,7 @@ class NpgClientTests {
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -158,7 +158,7 @@ class NpgClientTests {
     @Test
     void shouldThrowExceptionWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -205,7 +205,7 @@ class NpgClientTests {
     @Test
     void shouldThrowExceptionWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -253,7 +253,7 @@ class NpgClientTests {
     @Test
     void shouldPropagateErrorCodesWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(false);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -300,7 +300,7 @@ class NpgClientTests {
     @Test
     void shouldPropagateErrorCodesWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(true);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
         Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
@@ -733,7 +733,7 @@ class NpgClientTests {
                 .currency(CURRENCY);
     }
 
-    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(boolean isSubsequentPayment) {
+    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
                 .merchantUrl(MERCHANT_URL)
@@ -754,7 +754,7 @@ class NpgClientTests {
                                 .notificationUrl(NOTIFICATION_URL)
                                 .resultUrl(RESULT_URL)
                                 .recurrence(
-                                        isSubsequentPayment ? new RecurringSettingsDto()
+                                        contractId != null ? new RecurringSettingsDto()
                                                 .action(RecurringActionDto.SUBSEQUENT_PAYMENT)
                                                 .contractId(ORDER_REQUEST_CONTRACT_ID)
                                                 : null

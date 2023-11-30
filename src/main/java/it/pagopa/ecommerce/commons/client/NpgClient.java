@@ -405,8 +405,7 @@ public class NpgClient {
                 customerId,
                 paymentMethod,
                 defaultApiKey,
-                null,
-                false
+                null
         );
     }
 
@@ -462,8 +461,7 @@ public class NpgClient {
                 customerId,
                 paymentMethod,
                 defaultApiKey,
-                contractId,
-                true
+                contractId
         );
     }
 
@@ -478,8 +476,7 @@ public class NpgClient {
                                              @NotNull String customerId,
                                              @NonNull PaymentMethod paymentMethod,
                                              @NonNull String defaultApiKey,
-                                             String contractId,
-                                             boolean isSubsequentPayment
+                                             String contractId
     ) {
         return Mono.using(
                 () -> {
@@ -499,8 +496,7 @@ public class NpgClient {
                                 orderId,
                                 customerId,
                                 paymentMethod,
-                                contractId,
-                                isSubsequentPayment
+                                contractId
                         )
                 ).doOnError(
                         WebClientResponseException.class,
@@ -658,8 +654,7 @@ public class NpgClient {
                                                              String orderId,
                                                              String customerId,
                                                              PaymentMethod paymentMethod,
-                                                             String contractId,
-                                                             boolean isSubsequentPayment
+                                                             String contractId
     ) {
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
@@ -681,7 +676,7 @@ public class NpgClient {
                                 .cancelUrl(cancelUrl.toString())
                                 .notificationUrl(notificationUrl.toString())
                                 .recurrence(
-                                        isSubsequentPayment ? new RecurringSettingsDto()
+                                        contractId != null ? new RecurringSettingsDto()
                                                 .action(RecurringActionDto.SUBSEQUENT_PAYMENT).contractId(contractId)
                                                 : null
                                 )
