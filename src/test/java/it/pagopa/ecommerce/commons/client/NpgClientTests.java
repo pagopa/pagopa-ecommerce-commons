@@ -756,6 +756,7 @@ class NpgClientTests {
                                 .recurrence(
                                         contractId != null ? new RecurringSettingsDto()
                                                 .action(RecurringActionDto.SUBSEQUENT_PAYMENT)
+                                                .contractType(RecurringContractTypeDto.CIT)
                                                 .contractId(ORDER_REQUEST_CONTRACT_ID)
                                                 : null
                                 )

@@ -677,7 +677,8 @@ public class NpgClient {
                                 .notificationUrl(notificationUrl.toString())
                                 .recurrence(
                                         contractId != null ? new RecurringSettingsDto()
-                                                .action(RecurringActionDto.SUBSEQUENT_PAYMENT).contractId(contractId)
+                                                .action(RecurringActionDto.SUBSEQUENT_PAYMENT)
+                                                .contractType(RecurringContractTypeDto.CIT).contractId(contractId)
                                                 : null
                                 )
                 );
