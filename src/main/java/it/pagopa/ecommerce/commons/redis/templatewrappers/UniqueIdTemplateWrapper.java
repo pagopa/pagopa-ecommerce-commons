@@ -1,4 +1,5 @@
 package it.pagopa.ecommerce.commons.redis.templatewrappers;
+
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import org.springframework.data.redis.core.RedisTemplate;
 
