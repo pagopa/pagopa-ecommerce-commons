@@ -354,12 +354,12 @@ public class NpgClient {
     }
 
     /**
-     * method to invoke the orders/build api in order to start a payment session,
-     * retrieve the sessionId and sessionToken and the fields of the form to display
-     * in the webview. This method ensures that the request dto for the orders/build
-     * api will be built in the right way (it is easy to build it manually with
-     * wrong values, e.g. <i>amount</i> or <i>currency</i> as a string can be easily
-     * confused).
+     * method to invoke the orders/build api in order to start a guest payment
+     * session, retrieve the sessionId and sessionToken and the fields of the form
+     * to display in the webview. This method ensures that the request dto for the
+     * orders/build api will be built in the right way (it is easy to build it
+     * manually with wrong values, e.g. <i>amount</i> or <i>currency</i> as a string
+     * can be easily confused).
      *
      * @param correlationId   the unique id to identify the rest api invocation
      * @param merchantUrl     the merchant url of the payment session
@@ -395,6 +395,89 @@ public class NpgClient {
                                      @NonNull PaymentMethod paymentMethod,
                                      @NonNull String defaultApiKey
     ) {
+        return executeBuildForm(
+                correlationId,
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                defaultApiKey,
+                null
+        );
+    }
+
+    /**
+     * method to invoke the orders/build api in order to start a payment session for
+     * subsequent payment, retrieve the sessionId and state. This method ensures
+     * that the request dto for the orders/build api will be built in the right way
+     * (it is easy to build it manually with wrong values, e.g. <i>amount</i> or
+     * <i>currency</i> as a string can be easily confused).
+     *
+     * @param correlationId   the unique id to identify the rest api invocation
+     * @param merchantUrl     the merchant url of the payment session
+     * @param resultUrl       the result url where the user should be redirected at
+     *                        the end of the payment session
+     * @param notificationUrl the notification url where notify the session
+     * @param cancelUrl       the url where the user should be redirected if the
+     *                        session is canceled by the user
+     * @param orderId         the orderId of the payment session
+     * @param customerId      the customerId url of the api
+     * @param paymentMethod   the payment method for which the form should be built
+     * @param defaultApiKey   default API key
+     * @param contractId      the wallet contractId
+     * @return An object containing sessionId and state
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
+    public Mono<FieldsDto> buildForm(
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey,
+                                     String contractId
+    ) {
+        return executeBuildForm(
+                correlationId,
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                defaultApiKey,
+                contractId
+        );
+    }
+
+    @SuppressWarnings("java:S107")
+    private Mono<FieldsDto> executeBuildForm(
+                                             @NotNull UUID correlationId,
+                                             @NotNull URI merchantUrl,
+                                             @NotNull URI resultUrl,
+                                             @NotNull URI notificationUrl,
+                                             @NotNull URI cancelUrl,
+                                             @NotNull String orderId,
+                                             @NotNull String customerId,
+                                             @NonNull PaymentMethod paymentMethod,
+                                             @NonNull String defaultApiKey,
+                                             String contractId
+    ) {
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
@@ -412,7 +495,8 @@ public class NpgClient {
                                 cancelUrl,
                                 orderId,
                                 customerId,
-                                paymentMethod
+                                paymentMethod,
+                                contractId
                         )
                 ).doOnError(
                         WebClientResponseException.class,
@@ -569,7 +653,8 @@ public class NpgClient {
                                                              URI cancelUrl,
                                                              String orderId,
                                                              String customerId,
-                                                             PaymentMethod paymentMethod
+                                                             PaymentMethod paymentMethod,
+                                                             String contractId
     ) {
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
@@ -590,6 +675,12 @@ public class NpgClient {
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
                                 .notificationUrl(notificationUrl.toString())
+                                .recurrence(
+                                        contractId != null ? new RecurringSettingsDto()
+                                                .action(RecurringActionDto.SUBSEQUENT_PAYMENT)
+                                                .contractType(RecurringContractTypeDto.CIT).contractId(contractId)
+                                                : null
+                                )
                 );
     }
 
