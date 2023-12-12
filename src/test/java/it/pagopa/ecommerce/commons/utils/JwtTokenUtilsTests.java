@@ -18,13 +18,14 @@ class JwtTokenUtilsTests {
 
     private static final int TOKEN_VALIDITY_TIME_SECONDS = 900;
     private final SecretKey jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(STRONG_KEY));
-    private final JwtTokenUtils jwtTokenUtils = new JwtTokenUtils(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS);
+    private final JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
 
     @Test
     void shouldGenerateValidJwtTokenWithOrderIdAndTransactionId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
-        String generatedToken = jwtTokenUtils.generateToken(transactionId, orderId, null).block();
+        String generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, orderId, null).block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
                 () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
@@ -43,7 +44,8 @@ class JwtTokenUtilsTests {
     @Test
     void shouldGenerateValidJwtTokenWithOnlyTransactionId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
-        String generatedToken = jwtTokenUtils.generateToken(transactionId, null, null).block();
+        String generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, null, null).block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
                 () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
@@ -64,7 +66,9 @@ class JwtTokenUtilsTests {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
         String paymentMethodId = UUID.randomUUID().toString();
-        String generatedToken = jwtTokenUtils.generateToken(transactionId, orderId, paymentMethodId).block();
+        String generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, orderId, paymentMethodId)
+                .block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
                 () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()

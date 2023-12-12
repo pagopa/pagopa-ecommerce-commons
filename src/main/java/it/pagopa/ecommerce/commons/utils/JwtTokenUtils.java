@@ -6,13 +6,12 @@ import io.jsonwebtoken.Jwts;
 import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.exceptions.JWTTokenGenerationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Nullable;
 import javax.crypto.SecretKey;
+import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -23,8 +22,6 @@ import java.util.UUID;
 @Component
 @Slf4j
 public class JwtTokenUtils {
-
-    private final SecretKey jwtSecretKey;
 
     /**
      * The claim transactionId
@@ -41,31 +38,21 @@ public class JwtTokenUtils {
      */
     public static final String PAYMENT_METHOD_ID_CLAIM = "paymentMethodId";
 
-    private final int tokenValidityTimeSeconds;
-
-    /**
-     * Constructor
-     *
-     * @param jwtSecretKey         the secret key used for generate jwt
-     * @param tokenValiditySeconds jwt validity time
-     */
-    public JwtTokenUtils(
-            @Autowired SecretKey jwtSecretKey,
-            @Value("${payment.token.validity}") int tokenValiditySeconds
-    ) {
-        this.jwtSecretKey = jwtSecretKey;
-        this.tokenValidityTimeSeconds = tokenValiditySeconds;
-    }
-
     /**
      * This method generates a jwt with specific claim
      *
-     * @param transactionId   the optional transactionId to set into jwt claim
-     * @param orderId         the optional orderId to set into jwt claim
-     * @param paymentMethodId the optional paymentMethodId to set into jwt claim
+     * @param jwtSecretKey             jwt secret key
+     * @param tokenValidityTimeSeconds jwt validity time
+     * @param transactionId            the optional transactionId to set into jwt
+     *                                 claim
+     * @param orderId                  the optional orderId to set into jwt claim
+     * @param paymentMethodId          the optional paymentMethodId to set into jwt
+     *                                 claim
      * @return Mono jwt with specific claim
      */
     public Mono<String> generateToken(
+                                      @NotNull SecretKey jwtSecretKey,
+                                      @NotNull int tokenValidityTimeSeconds,
                                       @Nullable TransactionId transactionId,
                                       @Nullable String orderId,
                                       @Nullable String paymentMethodId
