@@ -27,7 +27,6 @@ class JwtTokenUtilsTests {
     private final SecretKey jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(STRONG_KEY));
     private final JwtTokenUtils jwtTokenUtils = new JwtTokenUtils();
 
-
     @Test
     void shouldGenerateValidJwtTokenWithOrderIdAndTransactionId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
@@ -126,12 +125,15 @@ class JwtTokenUtilsTests {
             given(jwtBuilder.setIssuedAt(any())).willReturn(jwtBuilder);
             given(jwtBuilder.setExpiration(any())).willReturn(jwtBuilder);
             given(jwtBuilder.signWith(any())).willReturn(jwtBuilder);
-            given(jwtBuilder.claim(any(),any())).willReturn(jwtBuilder);
+            given(jwtBuilder.claim(any(), any())).willReturn(jwtBuilder);
             doThrow(new JwtException("Exception")).when(jwtBuilder).compact();
 
-            assertThrows(JWTTokenGenerationException.class, () -> jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims)
-                .block());
+            assertThrows(
+                    JWTTokenGenerationException.class,
+                    () -> jwtTokenUtils
+                            .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims)
+                            .block()
+            );
         }
     }
 }
