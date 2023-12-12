@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import javax.crypto.SecretKey;
 import javax.validation.constraints.NotNull;
-import java.util.Calendar;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -50,10 +51,9 @@ public class JwtTokenUtils {
                                       @NotNull Claims claims
     ) {
         try {
-            Calendar calendar = Calendar.getInstance();
-            Date issuedAtDate = calendar.getTime();
-            calendar.add(Calendar.SECOND, tokenValidityTimeSeconds);
-            Date expiryDate = calendar.getTime();
+            Instant now = Instant.now();
+            Date issuedAtDate = Date.from(now);
+            Date expiryDate = Date.from(now.plus(Duration.ofSeconds(tokenValidityTimeSeconds)));
 
             JwtBuilder jwtBuilder = Jwts.builder()
                     .setId(UUID.randomUUID().toString())// jti
