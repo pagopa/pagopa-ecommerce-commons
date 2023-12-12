@@ -24,8 +24,14 @@ class JwtTokenUtilsTests {
     void shouldGenerateValidJwtTokenWithOrderIdAndTransactionId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                transactionId,
+                orderId,
+                null
+        );
+
         String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, orderId, null).block();
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims).block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
                 () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
@@ -44,8 +50,13 @@ class JwtTokenUtilsTests {
     @Test
     void shouldGenerateValidJwtTokenWithOnlyTransactionId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                transactionId,
+                null,
+                null
+        );
         String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, null, null).block();
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims).block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
                 () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
@@ -66,8 +77,13 @@ class JwtTokenUtilsTests {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
         String paymentMethodId = UUID.randomUUID().toString();
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                transactionId,
+                orderId,
+                paymentMethodId
+        );
         String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, transactionId, orderId, paymentMethodId)
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims)
                 .block();
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
