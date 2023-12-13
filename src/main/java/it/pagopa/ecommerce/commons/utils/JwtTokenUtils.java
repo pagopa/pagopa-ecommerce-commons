@@ -16,7 +16,8 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * This class generate jwt token
+ * Utility class used to generate JWT tokens with custom claims.
+ * @see it.pagopa.ecommerce.commons.domain.Claims
  */
 @Component
 @Slf4j
