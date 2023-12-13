@@ -17,6 +17,7 @@ import java.util.UUID;
 
 /**
  * Utility class used to generate JWT tokens with custom claims.
+ *
  * @see it.pagopa.ecommerce.commons.domain.Claims
  */
 @Component
