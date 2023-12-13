@@ -9,7 +9,7 @@ package it.pagopa.ecommerce.commons.exceptions;
 public class JWTTokenGenerationException extends RuntimeException {
 
     /**
-     * Exception constructor for jwt generation with message and @see Throwable
+     * Constructor with fixed error message
      *
      * @see RuntimeException
      */
