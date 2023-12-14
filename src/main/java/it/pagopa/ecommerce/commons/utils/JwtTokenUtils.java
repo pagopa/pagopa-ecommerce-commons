@@ -3,11 +3,11 @@ package it.pagopa.ecommerce.commons.utils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.domain.Claims;
 import it.pagopa.ecommerce.commons.exceptions.JWTTokenGenerationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 import javax.crypto.SecretKey;
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
@@ -47,10 +47,10 @@ public class JwtTokenUtils {
      * @param claims                   value object with all claims to set into jwt
      * @return Mono jwt with specific claim
      */
-    public Mono<String> generateToken(
-                                      @NotNull SecretKey jwtSecretKey,
-                                      @NotNull int tokenValidityTimeSeconds,
-                                      @NotNull Claims claims
+    public Either<JWTTokenGenerationException, String> generateToken(
+                                                                     @NotNull SecretKey jwtSecretKey,
+                                                                     @NotNull int tokenValidityTimeSeconds,
+                                                                     @NotNull Claims claims
     ) {
         try {
             Instant now = Instant.now();
@@ -72,12 +72,10 @@ public class JwtTokenUtils {
             if (claims.paymentMethodId() != null) {
                 jwtBuilder.claim(PAYMENT_METHOD_ID_CLAIM, claims.paymentMethodId()); // claim paymentMethodId
             }
-            return Mono.just(jwtBuilder.compact());
+            return Either.right(jwtBuilder.compact());
         } catch (JwtException e) {
             log.error("Error generating JWT token", e);
-            return Mono.error(new JWTTokenGenerationException());
+            return Either.left(new JWTTokenGenerationException());
         }
-
     }
-
 }

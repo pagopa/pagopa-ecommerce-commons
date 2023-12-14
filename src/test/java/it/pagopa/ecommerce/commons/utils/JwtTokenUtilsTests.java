@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.exceptions.JWTTokenGenerationException;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,13 @@ class JwtTokenUtilsTests {
                 null
         );
 
-        String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims).block();
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+        assertTrue(generatedToken.isRight());
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
-                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
         );
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertEquals(orderId, claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
@@ -62,11 +65,13 @@ class JwtTokenUtilsTests {
                 null,
                 null
         );
-        String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims).block();
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+        assertTrue(generatedToken.isRight());
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
-                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
         );
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertNull(claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
@@ -89,12 +94,14 @@ class JwtTokenUtilsTests {
                 orderId,
                 paymentMethodId
         );
-        String generatedToken = jwtTokenUtils
-                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims)
-                .block();
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+
+        assertTrue(generatedToken.isRight());
         assertNotNull(generatedToken);
         Claims claims = assertDoesNotThrow(
-                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken).getBody()
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
         );
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertEquals(orderId, claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
@@ -128,11 +135,13 @@ class JwtTokenUtilsTests {
             given(jwtBuilder.claim(any(), any())).willReturn(jwtBuilder);
             doThrow(new JwtException("Exception")).when(jwtBuilder).compact();
 
-            assertThrows(
+            Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                    .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+            assertTrue(generatedToken.isLeft());
+
+            assertEquals(
                     JWTTokenGenerationException.class,
-                    () -> jwtTokenUtils
-                            .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims)
-                            .block()
+                    generatedToken.getLeft().getClass()
             );
         }
     }
