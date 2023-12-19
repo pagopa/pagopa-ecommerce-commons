@@ -739,26 +739,27 @@ public class NpgClient {
                                                              String contractId,
                                                              Integer totalAmount
     ) {
+        String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
+                .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
+        log.info(
+                "Creating order build request for payment service: [{}] with amount: [{}]",
+                paymentMethod.serviceName,
+                orderBuildAmount
+        );
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
                 .merchantUrl(merchantUrl.toString())
                 .order(
                         new OrderDto()
                                 .orderId(orderId)
-                                .amount(
-                                        Optional.ofNullable(totalAmount).map(Object::toString)
-                                                .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
-                                )
+                                .amount(orderBuildAmount)
                                 .currency(CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(customerId)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
-                                .amount(
-                                        Optional.ofNullable(totalAmount).map(Object::toString)
-                                                .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
-                                )
+                                .amount(orderBuildAmount)
                                 .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
