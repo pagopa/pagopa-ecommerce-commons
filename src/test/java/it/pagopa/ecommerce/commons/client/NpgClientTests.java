@@ -25,6 +25,8 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -704,6 +706,46 @@ class NpgClientTests {
                 .verify();
     }
 
+    @Test
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
+        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+        Integer transactionTotalAmount = 1000;
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
+                ORDER_REQUEST_CONTRACT_ID,
+                transactionTotalAmount
+        );
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildFormForPayment(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID,
+                                transactionTotalAmount
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
@@ -734,20 +776,27 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
+        return buildCreateHostedOrderRequestDto(contractId, null);
+    }
+
+    private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
+                                                                         String contractId,
+                                                                         Integer amount
+    ) {
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
                 .merchantUrl(MERCHANT_URL)
                 .order(
                         new OrderDto()
                                 .orderId(ORDER_REQUEST_ORDER_ID)
-                                .amount(ORDER_REQUEST_PAY)
+                                .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .currency(ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(ORDER_REQUEST_CUSTOMER_ID)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
                                 .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
-                                .amount(ORDER_REQUEST_PAY)
+                                .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .actionType(ActionTypeDto.PAY)
                                 .language(ORDER_REQUEST_LANGUAGE_ITA)
                                 .cancelUrl(CANCEL_URL)
@@ -778,6 +827,13 @@ class NpgClientTests {
         return new FieldsDto()
                 .sessionId(SESSION_ID)
                 .state(WorkflowStateDto.READY_FOR_PAYMENT);
+    }
+
+    private FieldsDto buildTestFieldsDtoForSubsequentPaymentApm() {
+        return new FieldsDto()
+                .sessionId(SESSION_ID)
+                .state(WorkflowStateDto.REDIRECTED_TO_EXTERNAL_DOMAIN)
+                .url("http://external-domain/redirectionUrl");
     }
 
     private StateResponseDto buildTestRetrieveStateResponseDto() {
