@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.utils;
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
 import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -14,6 +15,7 @@ import java.time.Duration;
  * This class generate unique identifier
  */
 @Component
+@Slf4j
 public class UniqueIdUtils {
     private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
@@ -50,6 +52,9 @@ public class UniqueIdUtils {
             if (!isSuccessfullySaved) {
                 uniqueId = generateRandomIdentifier();
             }
+        }
+        if (isSuccessfullySaved) {
+            log.info("Generated unique id: [{}]", uniqueId);
         }
         return !isSuccessfullySaved ? Mono.error(new UniqueIdGenerationException()) : Mono.just(uniqueId);
     }
