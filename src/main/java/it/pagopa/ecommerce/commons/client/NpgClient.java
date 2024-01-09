@@ -49,6 +49,8 @@ public class NpgClient {
 
     private final ObjectMapper objectMapper;
 
+    private static final String NPG_LOG_ERROR_MESSAGE = "Got bad response from npg-service [HTTP {}]";
+
     /**
      * <p>
      * Enumeration for payment methods which NPG can do payments with.
@@ -405,6 +407,7 @@ public class NpgClient {
                 customerId,
                 paymentMethod,
                 defaultApiKey,
+                null,
                 null
         );
     }
@@ -461,10 +464,78 @@ public class NpgClient {
                 customerId,
                 paymentMethod,
                 defaultApiKey,
-                contractId
+                contractId,
+                null
         );
     }
 
+    /**
+     * method to invoke the orders/build api in order to start a payment session for
+     * subsequent payment, retrieve the sessionId and state. This method ensures
+     * that the request dto for the orders/build api will be built in the right way
+     * (it is easy to build it manually with wrong values, e.g. <i>amount</i> or
+     * <i>currency</i> as a string can be easily confused).
+     *
+     * @param correlationId   the unique id to identify the rest api invocation
+     * @param merchantUrl     the merchant url of the payment session
+     * @param resultUrl       the result url where the user should be redirected at
+     *                        the end of the payment session
+     * @param notificationUrl the notification url where notify the session
+     * @param cancelUrl       the url where the user should be redirected if the
+     *                        session is canceled by the user
+     * @param orderId         the orderId of the payment session
+     * @param customerId      the customerId url of the api
+     * @param paymentMethod   the payment method for which the form should be built
+     * @param defaultApiKey   default API key
+     * @param contractId      the wallet contractId
+     * @param totalAmount     payment total amount in eurocent
+     * @return An object containing sessionId and state
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
+    public Mono<FieldsDto> buildFormForPayment(
+                                               @NotNull UUID correlationId,
+                                               @NotNull URI merchantUrl,
+                                               @NotNull URI resultUrl,
+                                               @NotNull URI notificationUrl,
+                                               @NotNull URI cancelUrl,
+                                               @NotNull String orderId,
+                                               @NotNull String customerId,
+                                               @NonNull PaymentMethod paymentMethod,
+                                               @NonNull String defaultApiKey,
+                                               String contractId,
+                                               Integer totalAmount
+    ) {
+        return executeBuildForm(
+                correlationId,
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                defaultApiKey,
+                contractId,
+                totalAmount
+        );
+    }
+
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
     @SuppressWarnings("java:S107")
     private Mono<FieldsDto> executeBuildForm(
                                              @NotNull UUID correlationId,
@@ -476,7 +547,8 @@ public class NpgClient {
                                              @NotNull String customerId,
                                              @NonNull PaymentMethod paymentMethod,
                                              @NonNull String defaultApiKey,
-                                             String contractId
+                                             String contractId,
+                                             Integer totalAmount
     ) {
         return Mono.using(
                 () -> {
@@ -496,12 +568,13 @@ public class NpgClient {
                                 orderId,
                                 customerId,
                                 paymentMethod,
-                                contractId
+                                contractId,
+                                totalAmount
                         )
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
-                                "Got bad response from npg-service [HTTP {}]",
+                                NPG_LOG_ERROR_MESSAGE,
                                 e.getStatusCode()
                         )
                 )
@@ -543,7 +616,7 @@ public class NpgClient {
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
-                                "Got bad response from npg-service [HTTP {}]",
+                                NPG_LOG_ERROR_MESSAGE,
                                 e.getStatusCode()
                         )
                 )
@@ -587,7 +660,7 @@ public class NpgClient {
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
-                                "Got bad response from npg-service [HTTP {}]",
+                                NPG_LOG_ERROR_MESSAGE,
                                 e.getStatusCode()
                         )
                 )
@@ -637,7 +710,7 @@ public class NpgClient {
                 ).doOnError(
                         WebClientResponseException.class,
                         e -> log.info(
-                                "Got bad response from npg-service [HTTP {}]",
+                                NPG_LOG_ERROR_MESSAGE,
                                 e.getStatusCode()
                         )
                 )
@@ -646,6 +719,15 @@ public class NpgClient {
         );
     }
 
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
     private CreateHostedOrderRequestDto buildOrderRequestDto(
                                                              URI merchantUrl,
                                                              URI resultUrl,
@@ -654,22 +736,30 @@ public class NpgClient {
                                                              String orderId,
                                                              String customerId,
                                                              PaymentMethod paymentMethod,
-                                                             String contractId
+                                                             String contractId,
+                                                             Integer totalAmount
     ) {
+        String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
+                .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
+        log.info(
+                "Creating order build request for payment service: [{}] with amount: [{}]",
+                paymentMethod.serviceName,
+                orderBuildAmount
+        );
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
                 .merchantUrl(merchantUrl.toString())
                 .order(
                         new OrderDto()
                                 .orderId(orderId)
-                                .amount(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
+                                .amount(orderBuildAmount)
                                 .currency(CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR)
                                 .customerId(customerId)
                 )
                 .paymentSession(
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
-                                .amount(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT)
+                                .amount(orderBuildAmount)
                                 .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
