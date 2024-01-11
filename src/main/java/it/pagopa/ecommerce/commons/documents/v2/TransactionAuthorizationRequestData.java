@@ -51,7 +51,12 @@ public class TransactionAuthorizationRequestData {
         /**
          * NPG payment gateway
          */
-        NPG
+        NPG,
+
+        /**
+         * Redirect payment gateway
+         */
+        REDIRECT
     }
 
     @JsonCreator
