@@ -17,9 +17,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     {
             @JsonSubTypes.Type(value = PgsTransactionGatewayAuthorizationData.class, name = "PGS"),
             @JsonSubTypes.Type(value = NpgTransactionGatewayAuthorizationData.class, name = "NPG"),
+            @JsonSubTypes.Type(value = RedirectTransactionGatewayAuthorizationData.class, name = "REDIRECT"),
     }
 )
-public sealed interface TransactionGatewayAuthorizationData permits NpgTransactionGatewayAuthorizationData,PgsTransactionGatewayAuthorizationData {
+public sealed interface TransactionGatewayAuthorizationData permits NpgTransactionGatewayAuthorizationData,PgsTransactionGatewayAuthorizationData,RedirectTransactionGatewayAuthorizationData {
 
     /**
      * Authorization data type discriminator field enumeration
@@ -32,7 +33,11 @@ public sealed interface TransactionGatewayAuthorizationData permits NpgTransacti
         /**
          * NPG data type
          */
-        NPG
+        NPG,
+        /**
+         * Redirect data type
+         */
+        REDIRECT
     }
 
     /**

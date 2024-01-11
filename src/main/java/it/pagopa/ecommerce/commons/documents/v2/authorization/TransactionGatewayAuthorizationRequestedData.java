@@ -20,9 +20,10 @@ import java.net.URI;
     {
             @JsonSubTypes.Type(value = PgsTransactionGatewayAuthorizationRequestedData.class, name = "PGS"),
             @JsonSubTypes.Type(value = NpgTransactionGatewayAuthorizationRequestedData.class, name = "NPG"),
+            @JsonSubTypes.Type(value = RedirectTransactionGatewayAuthorizationRequestedData.class, name = "REDIRECT"),
     }
 )
-public sealed interface TransactionGatewayAuthorizationRequestedData permits NpgTransactionGatewayAuthorizationRequestedData,PgsTransactionGatewayAuthorizationRequestedData {
+public sealed interface TransactionGatewayAuthorizationRequestedData permits NpgTransactionGatewayAuthorizationRequestedData,PgsTransactionGatewayAuthorizationRequestedData,RedirectTransactionGatewayAuthorizationRequestedData {
 
     /**
      * Authorization data type discriminator field enumeration
@@ -35,7 +36,11 @@ public sealed interface TransactionGatewayAuthorizationRequestedData permits Npg
         /**
          * NPG data type
          */
-        NPG
+        NPG,
+        /**
+         * Redirect data type
+         */
+        REDIRECT
     }
 
     /**

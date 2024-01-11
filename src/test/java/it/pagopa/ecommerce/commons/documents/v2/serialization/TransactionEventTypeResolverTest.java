@@ -8,6 +8,7 @@ import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.RedirectTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
@@ -486,6 +487,70 @@ class TransactionEventTypeResolverTest {
     }
 
     @Test
+    void canRoundTripQueueAuthorizationCompletedEventSerializationWithRedirectData() {
+        String expectedSerializedEvent = """
+                {
+                       "event": {
+                           "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent",
+                           "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                           "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                           "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                           "data": {
+                               "authorizationCode": "authorizationCode",
+                               "rrn": "rrn",
+                               "timestampOperation": "2023-01-01T01:02:03+01:00",
+                               "transactionGatewayAuthorizationData": {
+                                   "type": "REDIRECT",
+                                   "outcome": "KO",
+                                   "errorCode": "errorCode"
+                               }
+                           },
+                           "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
+                       },
+                       "tracingInfo": {
+                           "traceparent": "mock_traceparent",
+                           "tracestate": "mock_tracestate",
+                           "baggage": "mock_baggage"
+                       }
+                   }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationCompletedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationCompletedEvent(
+                        new RedirectTransactionGatewayAuthorizationData(
+                                RedirectTransactionGatewayAuthorizationData.Outcome.KO,
+                                "errorCode"
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
     void canRoundTripQueueAuthorizationRequestedEventSerializationWithPGSData() {
         String expectedSerializedEvent = """
                 {
@@ -575,7 +640,7 @@ class TransactionEventTypeResolverTest {
                                "paymentMethodName": "paymentMethodName",
                                "pspBusinessName": "pspBusinessName",
                                "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
-                               "paymentGateway": "VPOS",
+                               "paymentGateway": "NPG",
                                "paymentMethodDescription": "paymentMethodDescription",
                                "transactionGatewayAuthorizationRequestedData": {
                                    "type": "NPG",
@@ -597,7 +662,83 @@ class TransactionEventTypeResolverTest {
                 """.replace("\n", "").replace(" ", "");
         QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionAuthorizationRequestedEvent(
+                        TransactionAuthorizationRequestData.PaymentGateway.NPG,
                         TransactionTestUtils.npgTransactionGatewayAuthorizationRequestedData()
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationRequestedEventSerializationWithRedirectData() {
+        String expectedSerializedEvent = """
+                {
+                       "event": {
+                           "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent",
+                           "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                           "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                           "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                           "data": {
+                               "amount": 100,
+                               "fee": 10,
+                               "paymentInstrumentId": "paymentInstrumentId",
+                               "pspId": "pspId",
+                               "paymentTypeCode": "paymentTypeCode",
+                               "brokerName": "brokerName",
+                               "pspChannelCode": "pspChannelCode",
+                               "paymentMethodName": "paymentMethodName",
+                               "pspBusinessName": "pspBusinessName",
+                               "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
+                               "paymentGateway": "REDIRECT",
+                               "paymentMethodDescription": "paymentMethodDescription",
+                               "transactionGatewayAuthorizationRequestedData": {
+                                   "type": "REDIRECT",
+                                   "logo":"http://paymentMethodLogo.it",
+                                   "pspTransactionId":"redirectPspTransactionId",
+                                   "transactionOutcomeTimeoutMillis":60000,
+                                   "paymentMethodType":"BANK_ACCOUNT"
+                               },
+                               "pspOnUs": false
+                           },
+                           "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
+                       },
+                       "tracingInfo": {
+                           "traceparent": "mock_traceparent",
+                           "tracestate": "mock_tracestate",
+                           "baggage": "mock_baggage"
+                       }
+                   }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationRequestedEvent(
+                        TransactionAuthorizationRequestData.PaymentGateway.REDIRECT,
+                        TransactionTestUtils.redirectTransactionGatewayAuthorizationRequestedData()
                 ),
                 MOCK_TRACING_INFO
         );

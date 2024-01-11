@@ -105,6 +105,10 @@ public class TransactionTestUtils {
 
     public static final String NPG_CONFIRM_PAYMENT_SESSION_ID = "npgConfirmPaymentSessionId";
 
+    public static final String REDIRECT_PSP_TRANSACTION_ID = "redirectPspTransactionId";
+    public static final int REDIRECT_AUTHORIZATION_TIMEOUT = 60000;
+    public static final RedirectTransactionGatewayAuthorizationRequestedData.PaymentMethodType REDIRECT_AUTHORIZATION_PAYMENT_METHOD = RedirectTransactionGatewayAuthorizationRequestedData.PaymentMethodType.BANK_ACCOUNT;
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
@@ -695,6 +699,27 @@ public class TransactionTestUtils {
                 "VISA",
                 NPG_SESSION_ID,
                 NPG_CONFIRM_PAYMENT_SESSION_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData redirectTransactionGatewayAuthorizationRequestedData() {
+        return new RedirectTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                REDIRECT_PSP_TRANSACTION_ID,
+                REDIRECT_AUTHORIZATION_TIMEOUT,
+                REDIRECT_AUTHORIZATION_PAYMENT_METHOD
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData redirectTransactionGatewayAuthorizationData(
+                                                                                                  RedirectTransactionGatewayAuthorizationData.Outcome outcome,
+                                                                                                  String errorCode
+    ) {
+        return new RedirectTransactionGatewayAuthorizationData(
+                outcome,
+                errorCode
         );
     }
 
