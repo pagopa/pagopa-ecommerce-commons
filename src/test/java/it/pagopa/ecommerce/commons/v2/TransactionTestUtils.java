@@ -712,4 +712,15 @@ public class TransactionTestUtils {
         );
     }
 
+    @Nonnull
+    public static TransactionGatewayAuthorizationData redirectTransactionGatewayAuthorizationData(
+                                                                                                  RedirectTransactionGatewayAuthorizationData.Outcome outcome,
+                                                                                                  String errorCode
+    ) {
+        return new RedirectTransactionGatewayAuthorizationData(
+                outcome,
+                errorCode
+        );
+    }
+
 }
