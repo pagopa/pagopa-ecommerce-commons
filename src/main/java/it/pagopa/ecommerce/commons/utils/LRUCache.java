@@ -1,11 +1,10 @@
 package it.pagopa.ecommerce.commons.utils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Least recently used cache implementation. This cache leave in memory at most
@@ -71,11 +70,14 @@ public class LRUCache<K, V> {
      *
      * @param key   the key to associate to the element
      * @param value the value to add to the cache
+     * @throws NullPointerException for null input key or value
      */
     public void put(
                     K key,
                     V value
     ) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(value);
         // acquire write lock
         lock.writeLock().lock();
         try {
@@ -97,8 +99,10 @@ public class LRUCache<K, V> {
      *
      * @param key the key to be searched for
      * @return an optional containing the associated value to the key
+     * @throws NullPointerException for null input key
      */
     public Optional<V> get(K key) {
+        Objects.requireNonNull(key);
         // acquire write lock since each cache hit will write to cache table in order to
         // update last hit timestamp
         lock.writeLock().lock();
@@ -144,19 +148,32 @@ public class LRUCache<K, V> {
      * it from the internal cache
      */
     private void removeLeastRecentlyUsedEntry() {
-        K keyToRemove = null;
-        long oldHitTimestamp = Long.MAX_VALUE;
-        long currentHitTimestamp;
-        for (Map.Entry<K, LruCacheEntry<V>> entry : internalCache.entrySet()) {
-            currentHitTimestamp = entry.getValue().lastHitTimestamp;
-            if (oldHitTimestamp > currentHitTimestamp) {
-                oldHitTimestamp = currentHitTimestamp;
-                keyToRemove = entry.getKey();
-            }
-        }
-        if (keyToRemove != null) {
-            internalCache.remove(keyToRemove);
-        }
+        internalCache
+                .entrySet()
+                .stream()
+                .min(Comparator.comparing(entry -> entry.getValue().lastHitTimestamp))
+                .map(Map.Entry::getKey)
+                .ifPresent(internalCache::remove);
+    }
+
+    /**
+     * Remove all entries that have not been used in the last input threshold
+     * duration. i.e. calling this method with an input
+     * <code>Duration.ofMinutes(10)</code> will remove all cache entries that have
+     * not been retrieved through {@link #get(Object)} method in the last 10 minutes
+     *
+     * @param threshold the entries deletion threshold
+     */
+    public void removeEntriesOlderThan(Duration threshold) {
+        long thresholdTimestamp = System.currentTimeMillis() - threshold.toMillis();
+        internalCache
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().lastHitTimestamp < thresholdTimestamp)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet())
+                .forEach(internalCache::remove);
+
     }
 
 }
