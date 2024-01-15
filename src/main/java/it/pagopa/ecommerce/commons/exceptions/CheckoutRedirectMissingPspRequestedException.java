@@ -11,16 +11,18 @@ public class CheckoutRedirectMissingPspRequestedException extends RuntimeExcepti
     /**
      * Constructor
      *
-     * @param psp           requested PSP
-     * @param availablePsps currently configured PSPs
+     * @param psp               requested PSP
+     * @param availablePsps     currently configured PSPs
+     * @param configurationType configuration type
      */
     public CheckoutRedirectMissingPspRequestedException(
             String psp,
-            Set<String> availablePsps
+            Set<String> availablePsps,
+            CheckoutRedirectConfigurationType configurationType
     ) {
         super(
-                "Requested API key for PSP %s. Available PSPs: %s"
-                        .formatted(psp, availablePsps)
+                "Requested configuration value in %s not available for PSP %s. Available PSPs: %s"
+                        .formatted(configurationType, psp, availablePsps)
         );
     }
 }

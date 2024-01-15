@@ -59,7 +59,7 @@ public class CheckoutRedirectPspApiKeysConfigTest {
                 );
         assertTrue(pspConfiguration.isLeft());
         assertEquals(
-                "Error parsing Checkout Redirect PSP api keys configuration, cause: Invalid json configuration map",
+                "Error parsing Checkout Redirect PSP API_KEYS configuration, cause: Invalid json configuration map",
                 pspConfiguration.getLeft().getMessage()
         );
     }
@@ -76,7 +76,7 @@ public class CheckoutRedirectPspApiKeysConfigTest {
                 );
         assertTrue(pspConfiguration.isLeft());
         assertEquals(
-                "Error parsing Checkout Redirect PSP api keys configuration, cause: Misconfigured api keys. Missing keys: [psp4]",
+                "Error parsing Checkout Redirect PSP API_KEYS configuration, cause: Misconfigured api keys. Missing keys: [psp4]",
                 pspConfiguration.getLeft().getMessage()
         );
     }

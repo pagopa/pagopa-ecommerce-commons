@@ -7,6 +7,7 @@ import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.exceptions.CheckoutRedirectConfigurationException;
 import it.pagopa.ecommerce.commons.exceptions.CheckoutRedirectMissingPspRequestedException;
+import it.pagopa.ecommerce.commons.exceptions.CheckoutRedirectConfigurationType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -55,7 +56,8 @@ public class CheckoutRedirectPspApiKeysConfig {
             if (!expectedKeys.isEmpty()) {
                 return Either.left(
                         new CheckoutRedirectConfigurationException(
-                                "Misconfigured api keys. Missing keys: %s".formatted(expectedKeys)
+                                "Misconfigured api keys. Missing keys: %s".formatted(expectedKeys),
+                                CheckoutRedirectConfigurationType.API_KEYS
                         )
                 );
             }
@@ -63,7 +65,12 @@ public class CheckoutRedirectPspApiKeysConfig {
         } catch (JacksonException ignored) {
             // exception here is ignored on purpose in order to avoid secret configuration
             // logging in case of wrong configured json string object
-            return Either.left(new CheckoutRedirectConfigurationException("Invalid json configuration map"));
+            return Either.left(
+                    new CheckoutRedirectConfigurationException(
+                            "Invalid json configuration map",
+                            CheckoutRedirectConfigurationType.API_KEYS
+                    )
+            );
         }
     }
 
@@ -79,7 +86,8 @@ public class CheckoutRedirectPspApiKeysConfig {
         } else {
             CheckoutRedirectMissingPspRequestedException checkoutRedirectMissingPspRequestedException = new CheckoutRedirectMissingPspRequestedException(
                     psp,
-                    configuration.keySet()
+                    configuration.keySet(),
+                    CheckoutRedirectConfigurationType.API_KEYS
             );
             Span.current().recordException(checkoutRedirectMissingPspRequestedException);
 

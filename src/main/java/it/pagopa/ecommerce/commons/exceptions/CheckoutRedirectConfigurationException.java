@@ -9,14 +9,16 @@ public class CheckoutRedirectConfigurationException extends RuntimeException {
     /**
      * Constructor
      *
-     * @param errorCause error cause description
+     * @param errorCause        error cause description
+     * @param configurationType configuration type
      */
     public CheckoutRedirectConfigurationException(
-            String errorCause
+            String errorCause,
+            CheckoutRedirectConfigurationType configurationType
     ) {
         super(
-                "Error parsing Checkout Redirect PSP api keys configuration, cause: %s"
-                        .formatted(errorCause)
+                "Error parsing Checkout Redirect PSP %s configuration, cause: %s"
+                        .formatted(configurationType, errorCause)
         );
     }
 }
