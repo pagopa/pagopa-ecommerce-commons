@@ -9,5 +9,13 @@ public enum CheckoutRedirectConfigurationType {
     /**
      * Configuration for PSP API keys
      */
-    API_KEYS;
+    API_KEYS,
+    /**
+     * Configuration for URLs for the Checkout Redirect PSP API
+     */
+    BACKEND_URLS,
+    /**
+     * Configuration for PSPs logos
+     */
+    LOGOS
 }
