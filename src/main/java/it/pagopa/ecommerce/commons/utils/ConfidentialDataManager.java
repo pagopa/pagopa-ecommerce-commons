@@ -5,10 +5,12 @@ import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;
 import it.pagopa.generated.pdv.v1.dto.TokenResourceDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -155,7 +157,7 @@ public class ConfidentialDataManager {
     public <T extends ConfidentialData> Mono<String> decrypt(Confidential<T> data) {
         return this.personalDataVaultClient.findPiiUsingGET(data.opaqueData())
                 .map(PiiResourceDto::getPii)
-                .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
+                .onErrorMap(this::exceptionToConfidentialDataException);
     }
 
     @Nonnull
@@ -163,6 +165,26 @@ public class ConfidentialDataManager {
         return this.personalDataVaultClient.saveUsingPUT(new PiiResourceDto().pii(data))
                 .map(TokenResourceDto::getToken)
                 .map(UUID::toString)
-                .onErrorMap(WebClientResponseException.class, ConfidentialDataException::new);
+                .onErrorMap(this::exceptionToConfidentialDataException);
+    }
+
+    /**
+     * Method to save the status code in case of a WebClientResponseException when
+     * calling PDV
+     *
+     * @param throwable the exception to handle
+     * @return ConfidentialDataException
+     */
+    private ConfidentialDataException exceptionToConfidentialDataException(
+                                                                           Throwable throwable
+    ) {
+        Optional<HttpStatus> statusCode = Optional.empty();
+        if (throwable instanceof WebClientResponseException webClientResponseException) {
+            statusCode = Optional.of(webClientResponseException.getStatusCode());
+        }
+        return new ConfidentialDataException(
+                throwable,
+                statusCode
+        );
     }
 }
