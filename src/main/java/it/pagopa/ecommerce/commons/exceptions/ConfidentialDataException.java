@@ -32,4 +32,14 @@ public class ConfidentialDataException extends RuntimeException {
         super("Exception during confidential data encrypt/decrypt", throwable);
         this.statusCode = httpStatus;
     }
+
+    /**
+     * HTTP status code getter
+     *
+     * @return the HTTP status code related to the exception
+     */
+    @NotNull
+    public Optional<HttpStatus> getStatusCode() {
+        return statusCode;
+    }
 }
