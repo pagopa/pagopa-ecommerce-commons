@@ -18,11 +18,9 @@ import lombok.experimental.FieldDefaults;
  * Applicable events with resulting aggregates are:
  * <ul>
  * <li>{@link TransactionExpiredEvent} -->
- * {@link it.pagopa.ecommerce.commons.domain.v2.TransactionExpired}</li>
- * <li>{@link TransactionRefundRequestedEvent} -->
- * {@link TransactionWithRefundRequested}</li>
- * <li>{@link TransactionWithClosureRequested} -->
- * {@link it.pagopa.ecommerce.commons.domain.v2.TransactionClosed}</li>
+ * <li>{@link TransactionClosureFailedEvent} -->
+ * {@link TransactionClosureErrorEvent}</li>
+ * <li>{@link TransactionClosedEvent} -->
  * </ul>
  * Any other event than the above ones will be discarded.
  *

@@ -6,8 +6,8 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a transaction closure. This event maps to a
- * transient state for transactions.
+ * Business event corresponding to a transaction closure requested. This event
+ * maps to a transient state for transactions.
  */
 @Document(collection = "eventstore")
 @NoArgsConstructor
