@@ -67,7 +67,7 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      */
     @Override
     public Transaction applyEvent(Object event) {
-        Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState = transactionAtPreviousState();
+        Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithClosureRequested>> transactionAtPreviousState = transactionAtPreviousState();
         return transactionAtPreviousState
                 .map(either -> either.fold(
                         trxWithCancellation -> switch (event) {
@@ -76,24 +76,24 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
                                     new TransactionCancellationExpired(trxWithCancellation, e);
                             default -> this;
                         },
-                        trxWithAuthorizationCompleted ->
+                        trxWithClosureRequested ->
                         {
-                            boolean wasTransactionAuthorized = trxWithAuthorizationCompleted.wasTransactionAuthorized();
+                            boolean wasTransactionAuthorized = trxWithClosureRequested.wasTransactionAuthorized();
                             return switch (event) {
                                 case TransactionClosedEvent e -> {
                                     if (wasTransactionAuthorized) {
-                                        yield new TransactionClosed(trxWithAuthorizationCompleted, e);
+                                        yield new TransactionClosed(trxWithClosureRequested, e);
                                     } else {
                                         yield this;
                                     }
                                 }
                                 case TransactionExpiredEvent e ->
-                                        new TransactionExpired(trxWithAuthorizationCompleted, e);
+                                        new TransactionExpired(trxWithClosureRequested, e);
                                 case TransactionRefundRequestedEvent e ->
-                                        new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
+                                        new TransactionWithRefundRequested(trxWithClosureRequested, e);
                                 case TransactionClosureFailedEvent e -> {
                                     if (!wasTransactionAuthorized) {
-                                        yield new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
+                                        yield new TransactionUnauthorized(trxWithClosureRequested, e);
                                     } else {
                                         yield this;
                                     }
@@ -113,10 +113,10 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      * If the transaction is not one of  {@link BaseTransactionWithCancellationRequested} or {@link BaseTransactionWithRequestedAuthorization} then an empty
      * Optional is returned
      */
-    public Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState() {
+    public Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithClosureRequested>> transactionAtPreviousState() {
         return switch (this.getTransactionAtPreviousState()) {
             case BaseTransactionWithCancellationRequested trx -> Optional.of(Either.left(trx));
-            case BaseTransactionWithCompletedAuthorization trx -> Optional.of(Either.right(trx));
+            case BaseTransactionWithClosureRequested trx -> Optional.of(Either.right(trx));
             default -> Optional.empty();
         };
     }

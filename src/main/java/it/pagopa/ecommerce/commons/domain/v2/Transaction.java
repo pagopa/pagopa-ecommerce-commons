@@ -43,6 +43,10 @@ import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransaction;
  *              ▼                                                  │
  *     AUTHORIZATION_COMPLETED                                     │───► REFUND_REQUESTED ───► REFUND_ERROR / REFUNDED
  *              │                                                  │
+ *              │                                                  │
+ *              ▼                                                  │
+ *       CLOSURE_REQUESTED                                         │
+ *              │                                                  │
  *              ├──────────► CLOSURE_ERROR──────┐                  │
  *              ├──────────► EXPIRED ───────────┼──────────────────┚
  *              │                               │
@@ -72,7 +76,7 @@ import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransaction;
  * reconstructed transaction data
  */
 @AggregateRoot
-public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionCancellationExpired,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithCancellationRequested,TransactionWithClosureError,TransactionWithRefundError,TransactionWithRefundRequested,TransactionWithRequestedAuthorization,TransactionWithRequestedUserReceipt,TransactionWithUserReceiptError,TransactionWithUserReceiptKo,TransactionWithUserReceiptOk {
+public sealed interface Transaction permits EmptyTransaction,TransactionActivated,TransactionAuthorizationCompleted,TransactionCancellationExpired,TransactionWithClosureRequested,TransactionClosed,TransactionExpired,TransactionExpiredNotAuthorized,TransactionRefunded,TransactionUnauthorized,TransactionUserCanceled,TransactionWithCancellationRequested,TransactionWithClosureError,TransactionWithRefundError,TransactionWithRefundRequested,TransactionWithRequestedAuthorization,TransactionWithRequestedUserReceipt,TransactionWithUserReceiptError,TransactionWithUserReceiptKo,TransactionWithUserReceiptOk {
     /**
      * Applies an event to a transaction
      *

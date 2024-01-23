@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * <p>
- * POJO for a closed transaction
+ * POJO for a closure requested event
  * </p>
  *
  * @see BaseTransactionWithCompletedAuthorization
@@ -19,23 +19,20 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionClosed extends BaseTransactionWithClosureRequested {
-    TransactionClosureData transactionClosureData;
+public abstract class BaseTransactionWithClosureRequested extends BaseTransactionWithCompletedAuthorization {
 
     /**
      * Primary constructor
      *
-     * @param baseTransaction        base transaction
-     * @param transactionClosureData transaction closure data
+     * @param baseTransaction base transaction
      */
-    protected BaseTransactionClosed(
-            BaseTransactionWithClosureRequested baseTransaction,
-            TransactionClosureData transactionClosureData
+    protected BaseTransactionWithClosureRequested(
+            BaseTransactionWithCompletedAuthorization baseTransaction
     ) {
         super(
-                baseTransaction
+                baseTransaction,
+                baseTransaction.getTransactionAuthorizationCompletedData()
         );
-
-        this.transactionClosureData = transactionClosureData;
     }
+
 }
