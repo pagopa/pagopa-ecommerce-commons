@@ -19,6 +19,17 @@ createMachine(
       AUTHORIZATION_COMPLETED: {
         entry: assign({ auth_outcome: "OK" }),
         on: {
+          CLOSURE_REQUESTED: {
+            target: "CLOSURE_REQUESTED",
+          },
+          EXPIRE: {
+            target: "EXPIRED",
+          }
+        },
+      },
+      CLOSURE_REQUESTED: {
+        entry: assign({ auth_outcome: "OK" }),
+        on: {
           CLOSED: {
             target: "CLOSED",
             cond: "auth_outcome_ok"
