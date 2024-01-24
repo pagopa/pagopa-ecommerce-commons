@@ -248,6 +248,22 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     }
 
     @Test
+    void shouldTrimEventsSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = 0;
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .trimEvents(streamKey, streamSize);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
     void shouldThrowExceptionWritingEventToStreamWithInvalidStreamSize() {
         // assertions
         String streamKey = "streamKey";
