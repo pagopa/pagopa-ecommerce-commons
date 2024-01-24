@@ -1,11 +1,15 @@
 package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
+import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class is a {@link RedisTemplate} wrapper class, used to centralize
@@ -69,7 +73,6 @@ public abstract class RedisTemplateWrapper<V> {
      * Save key to hold the string value if key is absent (SET with NX).
      *
      * @param value the entity to be saved
-     *
      * @return returns false if it already exists, true if it does not exist.
      */
     public Boolean saveIfAbsent(
@@ -85,7 +88,6 @@ public abstract class RedisTemplateWrapper<V> {
      * @param value the entity to be saved
      * @param ttl   the TTL for the entity to be saved. This parameter will override
      *              the default TTL value
-     *
      * @return returns false if it already exists, true if it does not exist.
      */
     public Boolean saveIfAbsent(
@@ -139,6 +141,45 @@ public abstract class RedisTemplateWrapper<V> {
     public Duration getTTL(String key) {
         Long duration = redisTemplate.getExpire(compoundKeyWithKeyspace(key));
         return duration != null ? Duration.ofSeconds(duration) : Duration.ofSeconds(-3);
+    }
+
+    /**
+     * Write an event to the stream with the specified key
+     *
+     * @param streamKey the stream key where send the event to
+     * @param event     the event to be sent
+     * @return the {@link RecordId} associated to the written event
+     */
+    public RecordId writeEventToStream(
+                                       String streamKey,
+                                       V event
+    ) {
+        return redisTemplate
+                .opsForStream()
+                .add(
+                        ObjectRecord.create(
+                                streamKey,
+                                event
+                        )
+                );
+    }
+
+    /**
+     * Get all the keys in keyspace
+     *
+     * @return a set populated with all the keys in keyspace
+     */
+    public Set<String> keysInKeyspace() {
+        return redisTemplate.keys(keyspace.concat("*"));
+    }
+
+    /**
+     * Get all the values in keyspace
+     *
+     * @return a list populated with all the entries in keyspace
+     */
+    public List<V> getAllValuesInKeySpace() {
+        return redisTemplate.opsForValue().multiGet(keysInKeyspace());
     }
 
     /**
