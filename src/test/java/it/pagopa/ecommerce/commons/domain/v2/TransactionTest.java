@@ -5347,7 +5347,7 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
         StepVerifier.create(actual).expectNextMatches(
                 t -> transactionWithClosureRequested.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED_REQUESTED)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSURE_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -5390,7 +5390,7 @@ class TransactionTest {
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
         StepVerifier.create(actual).expectNextMatches(
                 t -> transactionWithClosureRequested.equals(t)
-                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED_REQUESTED)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSURE_REQUESTED)
         )
                 .verifyComplete();
     }
@@ -5410,7 +5410,7 @@ class TransactionTest {
                 .transactionClosureRequestedEvent();
 
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
-                .transactionExpiredEvent(TransactionStatusDto.CLOSED_REQUESTED);
+                .transactionExpiredEvent(TransactionStatusDto.CLOSURE_REQUESTED);
 
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,

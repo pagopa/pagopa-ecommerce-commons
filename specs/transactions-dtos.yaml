@@ -19,7 +19,7 @@ components:
         - ACTIVATED
         - AUTHORIZATION_REQUESTED
         - AUTHORIZATION_COMPLETED
-        - CLOSED_REQUESTED
+        - CLOSURE_REQUESTED
         - CLOSED
         - CLOSURE_ERROR
         - NOTIFIED_OK

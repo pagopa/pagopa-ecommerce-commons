@@ -76,6 +76,6 @@ public final class TransactionWithClosureRequested extends BaseTransactionWithCl
      */
     @Override
     public TransactionStatusDto getStatus() {
-        return TransactionStatusDto.CLOSED_REQUESTED;
+        return TransactionStatusDto.CLOSURE_REQUESTED;
     }
 }
