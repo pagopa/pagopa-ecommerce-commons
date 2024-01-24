@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 
@@ -223,6 +222,87 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Mockito.verify(streamOperations, Mockito.times(1))
                 .add(any(ObjectRecord.class));
+    }
+
+    @Test
+    void shouldWriteEventToStreamSuccessfullyTrimmingPreviousEvents() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = 0;
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .writeEventToStreamTrimmingEvents(streamKey, paymentRequestInfo, streamSize);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .add(any(ObjectRecord.class));
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
+    void shouldThrowExceptionWritingEventToStreamWithInvalidStreamSize() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = -1;
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> paymentRequestInfoRedisTemplateWrapper
+                        .writeEventToStreamTrimmingEvents(streamKey, paymentRequestInfo, streamSize)
+        );
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(0))
+                .add(any(ObjectRecord.class));
+        Mockito.verify(streamOperations, Mockito.times(0))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
+    void shouldCreateStreamEventGroupSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.createGroup(streamKey, groupName)).thenReturn("OK");
+        // test
+        String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .createGroup(streamKey, groupName);
+        assertEquals("OK", outcome);
+    }
+
+    @Test
+    void shouldDestroyStreamEventGroupSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.destroyGroup(streamKey, groupName)).thenReturn(Boolean.TRUE);
+        // test
+        Boolean outcome = paymentRequestInfoRedisTemplateWrapper.destroyGroup(streamKey, groupName);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .destroyGroup(streamKey, groupName);
+        assertEquals(Boolean.TRUE, outcome);
     }
 
 }

@@ -165,6 +165,77 @@ public abstract class RedisTemplateWrapper<V> {
     }
 
     /**
+     * Write an event to the stream with the specified key trimming events before
+     * writing the new events so that stream has the wanted size
+     *
+     * @param streamKey  the stream key where send the event to
+     * @param event      the event to be sent
+     * @param streamSize the wanted length of the stream
+     * @return the {@link RecordId} associated to the written event
+     */
+    public RecordId writeEventToStreamTrimmingEvents(
+                                                     String streamKey,
+                                                     V event,
+                                                     long streamSize
+    ) {
+        if (streamSize < 0) {
+            throw new IllegalArgumentException("Invalid input %s events to trim, it must be >=0".formatted(streamSize));
+        }
+        redisTemplate.opsForStream().trim(streamKey, streamSize);
+        return redisTemplate
+                .opsForStream()
+                .add(
+                        ObjectRecord.create(
+                                streamKey,
+                                event
+                        )
+                );
+    }
+
+    /**
+     * Trim events from the stream with input key to the wanted size
+     *
+     * @param streamKey  the stream key from which trim events
+     * @param streamSize the wanted stream size
+     * @return the number or removed events from the stream
+     */
+    public Long trimEvents(
+                           String streamKey,
+                           long streamSize
+    ) {
+        return redisTemplate.opsForStream().trim(streamKey, streamSize);
+    }
+
+    /**
+     * Create a consumer group positioned at the latest event offset for the stream
+     * with input id
+     *
+     * @param streamKey the stream key for which create the group
+     * @param groupName the group name
+     * @return OK if operation was successful
+     */
+    public String createGroup(
+                              String streamKey,
+                              String groupName
+    ) {
+        return redisTemplate.opsForStream().createGroup(streamKey, groupName);
+    }
+
+    /**
+     * Destroy stream consumer group for the stream with input id
+     *
+     * @param streamKey the stream for which remove the group
+     * @param groupName the group name to be destroyed
+     * @return true iff the operation is completed successfully
+     */
+    public Boolean destroyGroup(
+                                String streamKey,
+                                String groupName
+    ) {
+        return redisTemplate.opsForStream().destroyGroup(streamKey, groupName);
+    }
+
+    /**
      * Get all the keys in keyspace
      *
      * @return a set populated with all the keys in keyspace
