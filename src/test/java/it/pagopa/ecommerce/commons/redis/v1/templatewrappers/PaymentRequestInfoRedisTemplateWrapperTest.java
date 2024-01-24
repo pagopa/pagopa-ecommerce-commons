@@ -5,20 +5,30 @@ import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 
 class PaymentRequestInfoRedisTemplateWrapperTest {
 
     private final RedisTemplate<String, PaymentRequestInfo> redisTemplate = Mockito.mock(RedisTemplate.class);
 
     private final ValueOperations<String, PaymentRequestInfo> valueOperations = Mockito.mock(ValueOperations.class);
+
+    private final StreamOperations<String, String, PaymentRequestInfo> streamOperations = Mockito
+            .mock(StreamOperations.class);
 
     private final String keyspace = "keys";
 
@@ -160,6 +170,59 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Mockito.verify(valueOperations, Mockito.times(1))
                 .setIfAbsent("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
+    }
+
+    @Test
+    void shouldRetrieveAllKeysInKeyspaceSuccessfully() {
+        // assertions
+        Set<String> keys = Set.of("keys:1", "keys:2");
+        Mockito.when(redisTemplate.keys("keys*")).thenReturn(keys);
+        // test
+        Set<String> returnedKeys = paymentRequestInfoRedisTemplateWrapper.keysInKeyspace();
+
+        // assertions
+        Mockito.verify(redisTemplate, Mockito.times(1))
+                .keys("keys*");
+        assertEquals(keys, returnedKeys);
+    }
+
+    @Test
+    void shouldRetrieveAllValuesInKeyspaceSuccessfully() {
+        // assertions
+        Set<String> keys = Set.of("keys:1", "keys:2");
+        List<PaymentRequestInfo> values = keys.stream().map(
+                key -> TransactionTestUtils.paymentRequestInfo()
+        ).toList();
+        Mockito.when(redisTemplate.keys("keys*")).thenReturn(keys);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.multiGet(keys)).thenReturn(values);
+        // test
+        List<PaymentRequestInfo> returnedValues = paymentRequestInfoRedisTemplateWrapper.getAllValuesInKeySpace();
+
+        // assertions
+        Mockito.verify(redisTemplate, Mockito.times(1))
+                .keys("keys*");
+        Mockito.verify(valueOperations, Mockito.times(1)).multiGet(keys);
+        assertEquals(values, returnedValues);
+    }
+
+    @Test
+    void shouldWriteEventToStreamSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        paymentRequestInfoRedisTemplateWrapper.writeEventToStream(streamKey, paymentRequestInfo);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .add(any(ObjectRecord.class));
     }
 
 }
