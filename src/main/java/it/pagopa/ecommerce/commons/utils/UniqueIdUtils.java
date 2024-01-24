@@ -3,8 +3,6 @@ package it.pagopa.ecommerce.commons.utils;
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
 import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
@@ -13,7 +11,6 @@ import java.time.Duration;
 /**
  * This class generate unique identifier
  */
-@Component
 public class UniqueIdUtils {
     private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
@@ -28,7 +25,6 @@ public class UniqueIdUtils {
      * @param uniqueIdTemplateWrapper redis template wrapper used for save id into
      *                                cache
      */
-    @Autowired
     public UniqueIdUtils(UniqueIdTemplateWrapper uniqueIdTemplateWrapper) {
         this.uniqueIdTemplateWrapper = uniqueIdTemplateWrapper;
     }
