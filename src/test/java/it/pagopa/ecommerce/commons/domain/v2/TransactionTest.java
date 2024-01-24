@@ -5309,6 +5309,141 @@ class TransactionTest {
                 ).verifyComplete();
     }
 
+    @Test
+    void shouldHandleTransactionClosureRequestedAndIgnoreClosedEventForUnauthorizedRequest() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.DECLINED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureRequestedEvent,
+                transactionClosedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+        StepVerifier.create(actual).expectNextMatches(
+                t -> transactionWithClosureRequested.equals(t)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED_REQUESTED)
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleTransactionClosureRequestedAndIgnoreClosureFailedEventForAuthorizedRequest() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosureFailedEvent transactionClosureFailedEvent = TransactionTestUtils
+                .transactionClosureFailedEvent(TransactionClosureData.Outcome.KO);
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureRequestedEvent,
+                transactionClosureFailedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+        StepVerifier.create(actual).expectNextMatches(
+                t -> transactionWithClosureRequested.equals(t)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.CLOSED_REQUESTED)
+        )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleTransactionExpiredFromTransactionCloseRequestedEvent() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(TransactionStatusDto.CLOSED_REQUESTED);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionAuthorizationCompletedEvent,
+                transactionClosureRequestedEvent,
+                transactionExpiredEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionWithClosureRequested, transactionExpiredEvent);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+        StepVerifier.create(actual).expectNextMatches(
+                t -> expected.equals(t)
+                        && (((BaseTransaction) t).getStatus()).equals(TransactionStatusDto.EXPIRED)
+        )
+                .verifyComplete();
+    }
+
     @ParameterizedTest
     @ValueSource(
             strings = {

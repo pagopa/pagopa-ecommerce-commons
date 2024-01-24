@@ -509,6 +509,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto transactionStatusDto) {
+        return new TransactionExpiredEvent(
+                TRANSACTION_ID,
+                new TransactionExpiredData(transactionStatusDto)
+        );
+    }
+
+    @Nonnull
     public static TransactionRefundedEvent transactionRefundedEvent(BaseTransaction baseTransaction) {
         return new TransactionRefundedEvent(
                 TRANSACTION_ID,
