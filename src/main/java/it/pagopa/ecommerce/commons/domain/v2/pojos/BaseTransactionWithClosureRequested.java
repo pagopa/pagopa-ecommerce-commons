@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.domain.v2.pojos;
 
-import it.pagopa.ecommerce.commons.documents.v2.TransactionClosureData;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
