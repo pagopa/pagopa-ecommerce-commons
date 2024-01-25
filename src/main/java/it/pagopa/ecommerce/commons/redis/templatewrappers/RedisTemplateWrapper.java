@@ -208,6 +208,22 @@ public abstract class RedisTemplateWrapper<V> {
     }
 
     /**
+     * Acknowledge input record ids for group inside streamKey stream
+     *
+     * @param streamKey the stream key
+     * @param groupId   the group id for which perform acknowledgment operation
+     * @param recordIds records for which perform ack operation
+     * @return the number of stream operations performed
+     */
+    public Long acknowledgeEvents(
+                                  String streamKey,
+                                  String groupId,
+                                  String... recordIds
+    ) {
+        return redisTemplate.opsForStream().acknowledge(streamKey, groupId, recordIds);
+    }
+
+    /**
      * Create a consumer group positioned at the latest event offset for the stream
      * with input id
      *

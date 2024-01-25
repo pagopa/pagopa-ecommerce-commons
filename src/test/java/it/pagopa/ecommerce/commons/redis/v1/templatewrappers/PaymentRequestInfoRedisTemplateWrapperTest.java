@@ -339,4 +339,25 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         assertEquals(Boolean.TRUE, outcome);
     }
 
+    @Test
+    void shouldAcknowledgeEventSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupId = "group";
+        String[] ids = {
+                "id1",
+                "id2"
+        };
+        int streamSize = 0;
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.acknowledge(streamKey, groupId, ids)).thenReturn(0L);
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .acknowledgeEvents(streamKey, groupId, ids);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .acknowledge(streamKey, groupId, ids);
+    }
+
 }
