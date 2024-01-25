@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
 import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
@@ -219,6 +220,23 @@ public abstract class RedisTemplateWrapper<V> {
                               String groupName
     ) {
         return redisTemplate.opsForStream().createGroup(streamKey, groupName);
+    }
+
+    /**
+     * Create a consumer group positioned at the latest event offset for the stream
+     * with input id
+     *
+     * @param streamKey  the stream key for which create the group
+     * @param groupName  the group name
+     * @param readOffset the offset from which start the receiver group
+     * @return OK if operation was successful
+     */
+    public String createGroup(
+                              String streamKey,
+                              String groupName,
+                              ReadOffset readOffset
+    ) {
+        return redisTemplate.opsForStream().createGroup(streamKey, readOffset, groupName);
     }
 
     /**

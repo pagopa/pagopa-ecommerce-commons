@@ -6,6 +6,7 @@ import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StreamOperations;
@@ -302,6 +303,23 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Mockito.verify(streamOperations, Mockito.times(1))
                 .createGroup(streamKey, groupName);
+        assertEquals("OK", outcome);
+    }
+
+    @Test
+    void shouldCreateStreamEventGroupSuccessfullyWithCustomReadOffset() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        ReadOffset offset = ReadOffset.from("0-0");
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.createGroup(streamKey, offset, groupName)).thenReturn("OK");
+        // test
+        String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName, offset);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .createGroup(streamKey, offset, groupName);
         assertEquals("OK", outcome);
     }
 
