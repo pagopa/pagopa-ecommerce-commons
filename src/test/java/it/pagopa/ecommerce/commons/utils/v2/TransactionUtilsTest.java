@@ -25,6 +25,7 @@ class TransactionUtilsTest {
             TransactionStatusDto.ACTIVATED,
             TransactionStatusDto.AUTHORIZATION_REQUESTED,
             TransactionStatusDto.AUTHORIZATION_COMPLETED,
+            TransactionStatusDto.CLOSURE_REQUESTED,
             TransactionStatusDto.CLOSURE_ERROR,
             TransactionStatusDto.CLOSED,
             TransactionStatusDto.EXPIRED,
@@ -36,6 +37,7 @@ class TransactionUtilsTest {
     );
 
     Set<TransactionStatusDto> refaundableStatusSet = Set.of(
+            TransactionStatusDto.CLOSURE_REQUESTED,
             TransactionStatusDto.CLOSED,
             TransactionStatusDto.CLOSURE_ERROR,
             TransactionStatusDto.EXPIRED,
