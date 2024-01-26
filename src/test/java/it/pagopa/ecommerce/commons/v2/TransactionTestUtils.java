@@ -16,6 +16,7 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -289,6 +290,11 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionClosureRequestedEvent transactionClosureRequestedEvent() {
+        return new TransactionClosureRequestedEvent(TRANSACTION_ID);
+    }
+
+    @Nonnull
     public static TransactionAuthorizationCompleted transactionAuthorizationCompleted(
                                                                                       TransactionAuthorizationCompletedEvent authorizedEvent,
                                                                                       TransactionWithRequestedAuthorization transactionWithRequestedAuthorization
@@ -296,6 +302,16 @@ public class TransactionTestUtils {
         return new TransactionAuthorizationCompleted(
                 transactionWithRequestedAuthorization,
                 authorizedEvent
+        );
+    }
+
+    @Nonnull
+    public static TransactionWithClosureRequested transactionWithClosureRequested(
+                                                                                  TransactionAuthorizationCompleted transactionAuthorizationCompleted
+
+    ) {
+        return new TransactionWithClosureRequested(
+                transactionAuthorizationCompleted
         );
     }
 
@@ -327,11 +343,11 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosed transactionClosed(
-                                                      BaseTransactionWithCompletedAuthorization transactionWithCompletedAuthorization,
+                                                      BaseTransactionWithClosureRequested baseTransactionWithClosureRequested,
                                                       TransactionClosedEvent transactionClosedEvent
     ) {
         return new TransactionClosed(
-                transactionWithCompletedAuthorization,
+                baseTransactionWithClosureRequested,
                 transactionClosedEvent
         );
     }
@@ -489,6 +505,14 @@ public class TransactionTestUtils {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,
                 new TransactionExpiredData(baseTransaction.getStatus())
+        );
+    }
+
+    @Nonnull
+    public static TransactionExpiredEvent transactionExpiredEvent(TransactionStatusDto transactionStatusDto) {
+        return new TransactionExpiredEvent(
+                TRANSACTION_ID,
+                new TransactionExpiredData(transactionStatusDto)
         );
     }
 

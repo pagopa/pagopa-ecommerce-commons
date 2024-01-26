@@ -12,14 +12,26 @@ import lombok.experimental.FieldDefaults;
  * POJO for a closed transaction
  * </p>
  *
- * @see BaseTransactionWithCompletedAuthorization
+ * @see BaseTransactionWithClosureRequested
  * @see TransactionClosureData
  */
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public abstract class BaseTransactionClosed extends BaseTransactionWithCompletedAuthorization {
+/*
+ * @formatter:off
+ *
+ * Warning java:S110 - This class has x parents which is greater than 5 authorized
+ * Suppressed because the Transaction hierarchy modeled here force BaseTransactionClosed
+ * to be instantiated only starting from a TransactionClosureRequested. The hierarchy dept is strictly correlated
+ * to the depth of the graph representing the finite state machine so can be accepted that hierarchy level
+ * is deeper than the max authorized level
+ *
+ * @formatter:on
+ */
+@SuppressWarnings("java:S110")
+public abstract class BaseTransactionClosed extends BaseTransactionWithClosureRequested {
     TransactionClosureData transactionClosureData;
 
     /**
@@ -29,12 +41,11 @@ public abstract class BaseTransactionClosed extends BaseTransactionWithCompleted
      * @param transactionClosureData transaction closure data
      */
     protected BaseTransactionClosed(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransactionWithClosureRequested baseTransaction,
             TransactionClosureData transactionClosureData
     ) {
         super(
-                baseTransaction,
-                baseTransaction.getTransactionAuthorizationCompletedData()
+                baseTransaction
         );
 
         this.transactionClosureData = transactionClosureData;

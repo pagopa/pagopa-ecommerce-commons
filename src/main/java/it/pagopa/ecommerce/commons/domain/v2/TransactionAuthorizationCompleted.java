@@ -54,27 +54,9 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
 
     @Override
     public Transaction applyEvent(Object event) {
-        boolean wasTransactionAuthorized = wasTransactionAuthorized();
         return switch (event) {
-            case TransactionClosedEvent e -> {
-                if (wasTransactionAuthorized) {
-                    yield new TransactionClosed(this, e);
-                } else {
-                    yield this;
-                }
-            }
-            case TransactionClosureErrorEvent e -> new TransactionWithClosureError(
-                    this,
-                    e
-            );
+            case TransactionClosureRequestedEvent ignore -> new TransactionWithClosureRequested(this);
             case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionClosureFailedEvent e -> {
-                if (!wasTransactionAuthorized) {
-                    yield new TransactionUnauthorized(this, e);
-                } else {
-                    yield this;
-                }
-            }
             default -> this;
         };
     }

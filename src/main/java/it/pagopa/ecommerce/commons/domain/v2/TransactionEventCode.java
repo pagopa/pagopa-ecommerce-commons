@@ -19,6 +19,10 @@ public enum TransactionEventCode {
      */
     TRANSACTION_AUTHORIZATION_COMPLETED_EVENT("TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"),
     /**
+     * Transaction closure requested event
+     */
+    TRANSACTION_CLOSURE_REQUESTED_EVENT("TRANSACTION_CLOSURE_REQUESTED_EVENT"),
+    /**
      * Transaction closure OK event
      */
     TRANSACTION_CLOSED_EVENT("TRANSACTION_CLOSED_EVENT"),

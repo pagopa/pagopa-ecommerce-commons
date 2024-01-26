@@ -5,7 +5,7 @@ import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionClosed;
-import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithCompletedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithClosureRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -44,7 +44,7 @@ public final class TransactionClosed extends BaseTransactionClosed
      * @param transactionClosedEvent the transaction closed event
      */
     public TransactionClosed(
-            BaseTransactionWithCompletedAuthorization baseTransaction,
+            BaseTransactionWithClosureRequested baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
         super(baseTransaction, transactionClosedEvent.getData());
