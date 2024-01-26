@@ -26,6 +26,7 @@ public class TransactionUtils {
                 || TransactionStatusDto.AUTHORIZATION_REQUESTED == status
                 || TransactionStatusDto.AUTHORIZATION_COMPLETED == status
                 || TransactionStatusDto.CANCELLATION_REQUESTED == status
+                || TransactionStatusDto.CLOSURE_REQUESTED == status
                 || TransactionStatusDto.CLOSURE_ERROR == status
                 || TransactionStatusDto.CLOSED == status
                 || TransactionStatusDto.EXPIRED == status
@@ -42,6 +43,7 @@ public class TransactionUtils {
      */
     public Boolean isRefundableTransaction(TransactionStatusDto status) {
         return TransactionStatusDto.CLOSED == status
+                || TransactionStatusDto.CLOSURE_REQUESTED == status
                 || TransactionStatusDto.CLOSURE_ERROR == status
                 || TransactionStatusDto.EXPIRED == status
                 || TransactionStatusDto.AUTHORIZATION_COMPLETED == status
