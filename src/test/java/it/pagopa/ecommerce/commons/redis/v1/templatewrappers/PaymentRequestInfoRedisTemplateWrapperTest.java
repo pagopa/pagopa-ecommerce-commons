@@ -5,20 +5,30 @@ import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.ReadOffset;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 
 class PaymentRequestInfoRedisTemplateWrapperTest {
 
     private final RedisTemplate<String, PaymentRequestInfo> redisTemplate = Mockito.mock(RedisTemplate.class);
 
     private final ValueOperations<String, PaymentRequestInfo> valueOperations = Mockito.mock(ValueOperations.class);
+
+    private final StreamOperations<String, String, PaymentRequestInfo> streamOperations = Mockito
+            .mock(StreamOperations.class);
 
     private final String keyspace = "keys";
 
@@ -160,6 +170,194 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Mockito.verify(valueOperations, Mockito.times(1))
                 .setIfAbsent("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
+    }
+
+    @Test
+    void shouldRetrieveAllKeysInKeyspaceSuccessfully() {
+        // assertions
+        Set<String> keys = Set.of("keys:1", "keys:2");
+        Mockito.when(redisTemplate.keys("keys*")).thenReturn(keys);
+        // test
+        Set<String> returnedKeys = paymentRequestInfoRedisTemplateWrapper.keysInKeyspace();
+
+        // assertions
+        Mockito.verify(redisTemplate, Mockito.times(1))
+                .keys("keys*");
+        assertEquals(keys, returnedKeys);
+    }
+
+    @Test
+    void shouldRetrieveAllValuesInKeyspaceSuccessfully() {
+        // assertions
+        Set<String> keys = Set.of("keys:1", "keys:2");
+        List<PaymentRequestInfo> values = keys.stream().map(
+                key -> TransactionTestUtils.paymentRequestInfo()
+        ).toList();
+        Mockito.when(redisTemplate.keys("keys*")).thenReturn(keys);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(valueOperations.multiGet(keys)).thenReturn(values);
+        // test
+        List<PaymentRequestInfo> returnedValues = paymentRequestInfoRedisTemplateWrapper.getAllValuesInKeySpace();
+
+        // assertions
+        Mockito.verify(redisTemplate, Mockito.times(1))
+                .keys("keys*");
+        Mockito.verify(valueOperations, Mockito.times(1)).multiGet(keys);
+        assertEquals(values, returnedValues);
+    }
+
+    @Test
+    void shouldWriteEventToStreamSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        paymentRequestInfoRedisTemplateWrapper.writeEventToStream(streamKey, paymentRequestInfo);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .add(any(ObjectRecord.class));
+    }
+
+    @Test
+    void shouldWriteEventToStreamSuccessfullyTrimmingPreviousEvents() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = 0;
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .writeEventToStreamTrimmingEvents(streamKey, paymentRequestInfo, streamSize);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .add(any(ObjectRecord.class));
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
+    void shouldTrimEventsSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = 0;
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .trimEvents(streamKey, streamSize);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
+    void shouldThrowExceptionWritingEventToStreamWithInvalidStreamSize() {
+        // assertions
+        String streamKey = "streamKey";
+        int streamSize = -1;
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        Mockito.when(streamOperations.add(argThat(r -> {
+            ObjectRecord record = (ObjectRecord) r;
+            return record.getValue().equals(paymentRequestInfo);
+        }))).thenReturn(RecordId.of(System.currentTimeMillis(), 0));
+        // test
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> paymentRequestInfoRedisTemplateWrapper
+                        .writeEventToStreamTrimmingEvents(streamKey, paymentRequestInfo, streamSize)
+        );
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(0))
+                .add(any(ObjectRecord.class));
+        Mockito.verify(streamOperations, Mockito.times(0))
+                .trim(streamKey, streamSize);
+    }
+
+    @Test
+    void shouldCreateStreamEventGroupSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.createGroup(streamKey, groupName)).thenReturn("OK");
+        // test
+        String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .createGroup(streamKey, groupName);
+        assertEquals("OK", outcome);
+    }
+
+    @Test
+    void shouldCreateStreamEventGroupSuccessfullyWithCustomReadOffset() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        ReadOffset offset = ReadOffset.from("0-0");
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.createGroup(streamKey, offset, groupName)).thenReturn("OK");
+        // test
+        String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName, offset);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .createGroup(streamKey, offset, groupName);
+        assertEquals("OK", outcome);
+    }
+
+    @Test
+    void shouldDestroyStreamEventGroupSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupName = "groupName";
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.destroyGroup(streamKey, groupName)).thenReturn(Boolean.TRUE);
+        // test
+        Boolean outcome = paymentRequestInfoRedisTemplateWrapper.destroyGroup(streamKey, groupName);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .destroyGroup(streamKey, groupName);
+        assertEquals(Boolean.TRUE, outcome);
+    }
+
+    @Test
+    void shouldAcknowledgeEventSuccessfully() {
+        // assertions
+        String streamKey = "streamKey";
+        String groupId = "group";
+        String[] ids = {
+                "id1",
+                "id2"
+        };
+        int streamSize = 0;
+        Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
+        Mockito.when(streamOperations.acknowledge(streamKey, groupId, ids)).thenReturn(0L);
+        // test
+        paymentRequestInfoRedisTemplateWrapper
+                .acknowledgeEvents(streamKey, groupId, ids);
+
+        // assertions
+        Mockito.verify(streamOperations, Mockito.times(1))
+                .acknowledge(streamKey, groupId, ids);
     }
 
 }
