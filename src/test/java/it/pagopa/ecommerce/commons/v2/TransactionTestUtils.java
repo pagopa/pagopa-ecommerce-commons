@@ -104,6 +104,8 @@ public class TransactionTestUtils {
     public static final String NPG_OPERATION_ID = "npgOperationId";
     public static final String NPG_PAYMENT_END_TO_END_ID = "npgPaymentEndToEndId";
 
+    public static final String NPG_PAYMENT_AUTHORIZATION_CODE = "000";
+
     public static final String NPG_CONFIRM_PAYMENT_SESSION_ID = "npgConfirmPaymentSessionId";
 
     public static final String REDIRECT_PSP_TRANSACTION_ID = "redirectPspTransactionId";
@@ -704,7 +706,8 @@ public class TransactionTestUtils {
         return new NpgTransactionGatewayAuthorizationData(
                 outcomeDto,
                 NPG_OPERATION_ID,
-                NPG_PAYMENT_END_TO_END_ID
+                NPG_PAYMENT_END_TO_END_ID,
+                NPG_PAYMENT_AUTHORIZATION_CODE
         );
     }
 

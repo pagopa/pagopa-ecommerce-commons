@@ -28,6 +28,11 @@ public final class NpgTransactionGatewayAuthorizationData implements Transaction
      */
     private String paymentEndToEndId;
 
+    /**
+     * NPG authorization code
+     */
+    private String authorizationCode;
+
     private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.NPG;
 
     @Override
