@@ -16,7 +16,6 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -701,10 +700,19 @@ public class TransactionTestUtils {
     public static TransactionGatewayAuthorizationData npgTransactionGatewayAuthorizationData(
                                                                                              OperationResultDto outcomeDto
     ) {
+        return npgTransactionGatewayAuthorizationData(outcomeDto, null);
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData npgTransactionGatewayAuthorizationData(
+                                                                                             OperationResultDto outcomeDto,
+                                                                                             String errorCode
+    ) {
         return new NpgTransactionGatewayAuthorizationData(
                 outcomeDto,
                 NPG_OPERATION_ID,
-                NPG_PAYMENT_END_TO_END_ID
+                NPG_PAYMENT_END_TO_END_ID,
+                errorCode
         );
     }
 
