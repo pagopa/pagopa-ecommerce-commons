@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 /**
  * NPG transaction authorization completed data
@@ -27,6 +28,12 @@ public final class NpgTransactionGatewayAuthorizationData implements Transaction
      * NPG payment end to end id
      */
     private String paymentEndToEndId;
+
+    /**
+     * NPG authorization error code
+     */
+    @Nullable
+    private String errorCode;
 
     private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.NPG;
 

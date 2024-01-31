@@ -437,7 +437,8 @@ class TransactionEventTypeResolverTest {
                                    "type": "NPG",
                                    "operationResult": "EXECUTED",
                                    "operationId": "operationId",
-                                   "paymentEndToEndId": "paymentEndToEndId"
+                                   "paymentEndToEndId": "paymentEndToEndId",
+                                   "errorCode": "errorCode"
                                }
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
@@ -454,7 +455,8 @@ class TransactionEventTypeResolverTest {
                         new NpgTransactionGatewayAuthorizationData(
                                 OperationResultDto.EXECUTED,
                                 "operationId",
-                                "paymentEndToEndId"
+                                "paymentEndToEndId",
+                                "errorCode"
                         )
                 ),
                 MOCK_TRACING_INFO
