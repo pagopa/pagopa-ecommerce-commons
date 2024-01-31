@@ -52,6 +52,9 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private String authorizationErrorCode;
 
+    @Nullable
+    private String gatewayAuthorizationStatus;
+
     /**
      * Enumeration of transaction client initiators
      */
