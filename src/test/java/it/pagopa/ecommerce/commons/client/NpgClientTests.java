@@ -775,6 +775,50 @@ class NpgClientTests {
 
     }
 
+    @Test
+    void shouldPropagateErrorCodesWhileGetState() throws JsonProcessingException {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for get state",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        objectMapper.writeValueAsBytes(
+                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                        ),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.getState(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                SESSION_ID
+                        )
+                )
+                .expectErrorMatches(
+                        e -> e instanceof NpgResponseException npgResponseException
+                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
+                )
+                .verify();
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
