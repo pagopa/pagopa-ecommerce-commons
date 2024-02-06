@@ -130,8 +130,8 @@ public class NodeForwarderClient<T, R> {
      * @param request       the request to proxy
      * @param proxyTo       the destination URL where proxy request to
      * @param requestId     an optional request id that
-     * @param responseClass
-     * @return the parsed body body or a Mono error with causing error code
+     * @param responseClass the response class
+     * @return the parsed response body or a Mono error with causing error code
      */
     public Mono<NodeForwarderResponse<R>> proxyRequest(
                                                        T request,
