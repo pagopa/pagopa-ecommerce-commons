@@ -48,11 +48,11 @@ public class NodeForwarderClient<T, R> {
     private static final String REQUEST_ID_HEADER_VALUE = "X-Request-Id";
 
     /**
-     * Node forwared response body
+     * Node forward response body
      *
-     * @param response
-     * @param requestId
-     * @param <R>
+     * @param response  the parsed response
+     * @param requestId the received request id
+     * @param <R>       type parameter for response body POJO class type
      */
     public record NodeForwarderResponse<R> (
             R response,
