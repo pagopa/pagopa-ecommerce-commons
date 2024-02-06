@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +54,7 @@ public class NodeForwarderClient<T, R> {
      * @param requestId the received request id
      * @param <R>       type parameter for body POJO class type
      */
-    public record NodeForwarderResponse<R>(
+    public record NodeForwarderResponse<R> (
             R body,
             Optional<String> requestId
     ) {
@@ -104,10 +104,10 @@ public class NodeForwarderClient<T, R> {
      * @return the initialized api client instance
      */
     private ProxyApi initializeClient(
-            String apiKey,
-            String backendUrl,
-            int readTimeout,
-            int connectionTimeout
+                                      String apiKey,
+                                      String backendUrl,
+                                      int readTimeout,
+                                      int connectionTimeout
     ) {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
@@ -141,9 +141,9 @@ public class NodeForwarderClient<T, R> {
      * @return the parsed body body or a Mono error with causing error code
      */
     public Mono<NodeForwarderResponse<R>> proxyRequest(
-            T request,
-            URL proxyTo,
-            String requestId
+                                                       T request,
+                                                       URI proxyTo,
+                                                       String requestId
     ) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(proxyTo);

@@ -15,7 +15,6 @@ import reactor.test.StepVerifier;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,7 +65,7 @@ class NodeForwarderClientTest {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
-        URL proxyTo = URI.create("https://localhost/test/request").toURL();
+        URI proxyTo = URI.create("https://localhost/test/request");
         String expectedHostHeader = "localhost";
         int expectedPortHeader = 443;
         String expectedPathRequest = "/test/request";
@@ -97,7 +96,7 @@ class NodeForwarderClientTest {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
-        URL proxyTo = URI.create("http://localhost:123/test/request").toURL();
+        URI proxyTo = URI.create("http://localhost:123/test/request");
         String expectedHostHeader = "localhost";
         int expectedPortHeader = 123;
         String expectedPathRequest = "/test/request";
@@ -128,7 +127,7 @@ class NodeForwarderClientTest {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
-        URL proxyTo = URI.create("http://localhost:123/test/request").toURL();
+        URI proxyTo = URI.create("http://localhost:123/test/request");
         String expectedHostHeader = "localhost";
         int expectedPortHeader = 123;
         String expectedPathRequest = "/test/request";
@@ -166,7 +165,7 @@ class NodeForwarderClientTest {
                 TestResponse.class
         );
         TestRequest testRequest = new TestRequest("test");
-        URL proxyTo = URI.create("http://localhost:123/test/request").toURL();
+        URI proxyTo = URI.create("http://localhost:123/test/request");
         mockWebServer.enqueue(
                 new MockResponse()
                         .addHeader("X-Request-Id", requestId)
@@ -201,7 +200,7 @@ class NodeForwarderClientTest {
                 TestResponse.class
         );
         TestRequest testRequest = new TestRequest("test");
-        URL proxyTo = URI.create("http://localhost:123/test/request").toURL();
+        URI proxyTo = URI.create("http://localhost:123/test/request");
         mockWebServer.enqueue(
                 new MockResponse()
                         .setBody("{\"testResponseField\":\"123\"}")
