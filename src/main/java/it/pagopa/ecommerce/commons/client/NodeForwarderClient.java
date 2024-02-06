@@ -30,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 public class NodeForwarderClient<T, R> {
 
-    private final Class<R> responseClass;
-
     private final ProxyApi proxyApiClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -67,16 +65,13 @@ public class NodeForwarderClient<T, R> {
      * @param backendUrl        the node forwarder backend URL
      * @param readTimeout       the node forwarder read timeout
      * @param connectionTimeout the node forwarder connection timeout
-     * @param responseClass     the expected body POJO class
      */
     public NodeForwarderClient(
             String apiKey,
             String backendUrl,
             int readTimeout,
-            int connectionTimeout,
-            Class<R> responseClass
+            int connectionTimeout
     ) {
-        this.responseClass = Objects.requireNonNull(responseClass);
         this.proxyApiClient = initializeClient(apiKey, backendUrl, readTimeout, connectionTimeout);
 
     }
@@ -86,13 +81,10 @@ public class NodeForwarderClient<T, R> {
      * proxuApiClient instance
      *
      * @param proxyApiClient the api client instance
-     * @param responseClass  the expected body class
      */
     NodeForwarderClient(
-            ProxyApi proxyApiClient,
-            Class<R> responseClass
+            ProxyApi proxyApiClient
     ) {
-        this.responseClass = Objects.requireNonNull(responseClass);
         this.proxyApiClient = proxyApiClient;
 
     }
@@ -135,15 +127,17 @@ public class NodeForwarderClient<T, R> {
     /**
      * Proxy the input request to the proxyTo destination
      *
-     * @param request   the request to proxy
-     * @param proxyTo   the destination URL where proxy request to
-     * @param requestId an optional request id that
+     * @param request       the request to proxy
+     * @param proxyTo       the destination URL where proxy request to
+     * @param requestId     an optional request id that
+     * @param responseClass
      * @return the parsed body body or a Mono error with causing error code
      */
     public Mono<NodeForwarderResponse<R>> proxyRequest(
                                                        T request,
                                                        URI proxyTo,
-                                                       String requestId
+                                                       String requestId,
+                                                       Class<R> responseClass
     ) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(proxyTo);
@@ -167,7 +161,7 @@ public class NodeForwarderClient<T, R> {
                         requestId,
                         requestPayload
                 )
-                .onErrorMap(e -> new NodeForwarderClientException("Error communicating with Nodo forwarder", e))
+                .onErrorMap(e -> new NodeForwarderClientException("Error communicating with Node forwarder", e))
                 .flatMap(response -> {
                     try {
                         return Mono.just(

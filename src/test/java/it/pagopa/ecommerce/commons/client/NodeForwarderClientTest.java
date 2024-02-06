@@ -40,8 +40,7 @@ class NodeForwarderClientTest {
     private final ProxyApi proxyApi = Mockito.mock(ProxyApi.class);
 
     private NodeForwarderClient<TestRequest, TestResponse> nodeForwarderClient = new NodeForwarderClient<>(
-            proxyApi,
-            TestResponse.class
+            proxyApi
     );
 
     private static MockWebServer mockWebServer;
@@ -79,7 +78,7 @@ class NodeForwarderClientTest {
         );
         // test
         StepVerifier
-                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId))
+                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId, TestResponse.class))
                 .expectNext(expectedResponse)
                 .verifyComplete();
         verify(proxyApi, times(1)).forwardWithHttpInfo(
@@ -110,7 +109,7 @@ class NodeForwarderClientTest {
         );
         // test
         StepVerifier
-                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId))
+                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId, TestResponse.class))
                 .expectNext(expectedResponse)
                 .verifyComplete();
         verify(proxyApi, times(1)).forwardWithHttpInfo(
@@ -137,7 +136,7 @@ class NodeForwarderClientTest {
         );
         // test
         StepVerifier
-                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId))
+                .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId, TestResponse.class))
                 .expectErrorMatches(ex -> {
                     assertEquals("Error deserializing body", ex.getMessage());
                     assertTrue(ex.getCause() instanceof JsonProcessingException);
@@ -161,8 +160,7 @@ class NodeForwarderClientTest {
                 "apiKey",
                 "http://%s:%s".formatted(mockWebServer.getHostName(), mockWebServer.getPort()),
                 10000,
-                10000,
-                TestResponse.class
+                10000
         );
         TestRequest testRequest = new TestRequest("test");
         URI proxyTo = URI.create("http://localhost:123/test/request");
@@ -181,7 +179,8 @@ class NodeForwarderClientTest {
                 client.proxyRequest(
                         testRequest,
                         proxyTo,
-                        requestId
+                        requestId,
+                        TestResponse.class
                 )
         )
                 .expectNext(expectedResponse)
@@ -196,8 +195,7 @@ class NodeForwarderClientTest {
                 "apiKey",
                 "http://%s:%s".formatted(mockWebServer.getHostName(), mockWebServer.getPort()),
                 10000,
-                10000,
-                TestResponse.class
+                10000
         );
         TestRequest testRequest = new TestRequest("test");
         URI proxyTo = URI.create("http://localhost:123/test/request");
@@ -215,7 +213,8 @@ class NodeForwarderClientTest {
                 client.proxyRequest(
                         testRequest,
                         proxyTo,
-                        requestId
+                        requestId,
+                        TestResponse.class
                 )
         )
                 .expectNext(expectedResponse)
