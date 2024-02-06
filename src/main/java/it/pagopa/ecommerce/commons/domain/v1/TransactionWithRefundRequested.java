@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 /**
  * <p>
  * Transaction authorized for which a refund is requested (failure in Nodo
- * closePayment with response outcome KO or sendPaymentResult with outcome KO)
+ * closePayment with body outcome KO or sendPaymentResult with outcome KO)
  * </p>
  * <p>
  * Applicable events with resulting aggregates are:

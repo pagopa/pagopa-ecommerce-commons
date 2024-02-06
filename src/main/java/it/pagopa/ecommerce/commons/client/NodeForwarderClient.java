@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * Node forwarder api client implementation
  *
  * @param <T> the request to proxy POJO class type
- * @param <R> the expected response POJO class type
+ * @param <R> the expected body POJO class type
  * @see ProxyApi
  */
 
@@ -48,14 +48,14 @@ public class NodeForwarderClient<T, R> {
     private static final String REQUEST_ID_HEADER_VALUE = "X-Request-Id";
 
     /**
-     * Node forward response body
+     * Node forward response
      *
-     * @param response  the parsed response
+     * @param body      the parsed body
      * @param requestId the received request id
-     * @param <R>       type parameter for response body POJO class type
+     * @param <R>       type parameter for body POJO class type
      */
     public record NodeForwarderResponse<R> (
-            R response,
+            R body,
             Optional<String> requestId
     ) {
     }
@@ -67,7 +67,7 @@ public class NodeForwarderClient<T, R> {
      * @param backendUrl        the node forwarder backend URL
      * @param readTimeout       the node forwarder read timeout
      * @param connectionTimeout the node forwarder connection timeout
-     * @param responseClass     the expected response POJO class
+     * @param responseClass     the expected body POJO class
      */
     public NodeForwarderClient(
             String apiKey,
@@ -86,7 +86,7 @@ public class NodeForwarderClient<T, R> {
      * proxuApiClient instance
      *
      * @param proxyApiClient the api client instance
-     * @param responseClass  the expected response class
+     * @param responseClass  the expected body class
      */
     NodeForwarderClient(
             ProxyApi proxyApiClient,
@@ -138,7 +138,7 @@ public class NodeForwarderClient<T, R> {
      * @param request   the request to proxy
      * @param proxyTo   the destination URL where proxy request to
      * @param requestId an optional request id that
-     * @return the parsed response body or a Mono error with causing error code
+     * @return the parsed body body or a Mono error with causing error code
      */
     public Mono<NodeForwarderResponse<R>> proxyRequest(
                                                        T request,
@@ -174,7 +174,7 @@ public class NodeForwarderClient<T, R> {
                         )
                 );
             } catch (JsonProcessingException e) {
-                return Mono.error(new NodeForwarderClientException("Error deserializing response", e));
+                return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
             }
         });
     }

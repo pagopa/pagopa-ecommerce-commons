@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Business event corresponding to the reception of a positive authorization
- * response by a PSP (Payment Service Provider), (i.e. the payment has been
+ * body by a PSP (Payment Service Provider), (i.e. the payment has been
  * authorized successfully)
  */
 @Document(collection = "eventstore")

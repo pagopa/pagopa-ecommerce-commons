@@ -140,7 +140,7 @@ class NodeForwarderClientTest {
         StepVerifier
                 .create(nodeForwarderClient.proxyRequest(testRequest, proxyTo, requestId))
                 .expectErrorMatches(ex -> {
-                    assertEquals("Error deserializing response", ex.getMessage());
+                    assertEquals("Error deserializing body", ex.getMessage());
                     assertTrue(ex.getCause() instanceof JsonProcessingException);
                     return true;
                 })

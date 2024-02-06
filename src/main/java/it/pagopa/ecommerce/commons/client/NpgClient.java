@@ -49,7 +49,7 @@ public class NpgClient {
 
     private final ObjectMapper objectMapper;
 
-    private static final String NPG_LOG_ERROR_MESSAGE = "Got bad response from npg-service [HTTP {}]";
+    private static final String NPG_LOG_ERROR_MESSAGE = "Got bad body from npg-service [HTTP {}]";
 
     /**
      * <p>
@@ -343,7 +343,7 @@ public class NpgClient {
      * @param paymentServicesApi the api
      * @param tracer             the OpenTelemetry {@link Tracer} used to add
      *                           monitoring info to this client
-     * @param objectMapper       object mapper used to decode error response bodies
+     * @param objectMapper       object mapper used to decode error body bodies
      */
     public NpgClient(
             @NotNull PaymentServicesApi paymentServicesApi,
@@ -807,7 +807,7 @@ public class NpgClient {
                         .map(error -> GatewayError.valueOf(error.getCode())).toList();
                 statusCode = Optional.of(e.getStatusCode());
             } catch (IOException ex) {
-                String errorMessage = "Invalid error response from NPG with status code %s";
+                String errorMessage = "Invalid error body from NPG with status code %s";
                 log.error(errorMessage.formatted(e.getStatusCode()));
 
                 return new NpgResponseException(
