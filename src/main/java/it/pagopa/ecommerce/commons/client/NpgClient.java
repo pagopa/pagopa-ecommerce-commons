@@ -722,27 +722,27 @@ public class NpgClient {
     /**
      * method to request the authorization state using a sessionId passed as input.
      *
-     * @param correlationId  the unique id to identify the rest api invocation
+     * @param correlationId the unique id to identify the rest api invocation
      * @param sessionId     the session id used for retrieve a card data
-     * @param defaultApiKey  default API key
+     * @param defaultApiKey default API key
      * @return An object containing the state of the transaction and the info about
      *         operation details.
      */
 
     private Mono<StateResponseDto> getState(
-            @NotNull UUID correlationId,
-            @NonNull String defaultApiKey,
-            @NotNull String sessionId
+                                            @NotNull UUID correlationId,
+                                            @NonNull String defaultApiKey,
+                                            @NotNull String sessionId
     ) {
         return Mono.using(
                 () -> {
-                    paymentServicesApi.getApiClient().setApiKey(null);
+                    paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
                     return tracer.spanBuilder("NpgClient#refundPayment")
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
                 },
-                span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, defaultApiKey, sessionId)
+                span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId)
                         .doOnError(
                                 WebClientResponseException.class,
                                 e -> log.info(
