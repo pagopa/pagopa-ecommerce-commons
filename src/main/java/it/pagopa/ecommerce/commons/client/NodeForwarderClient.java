@@ -30,12 +30,9 @@ import java.util.concurrent.TimeUnit;
 
 public class NodeForwarderClient<T, R> {
 
-    private final String apiKey;
-    private final String backendUrl;
-    private final int readTimeout;
-    private final int connectionTimeout;
-
     private final Class<R> responseClass;
+
+    private final ProxyApi proxyApiClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new Jdk8Module())
@@ -44,8 +41,6 @@ public class NodeForwarderClient<T, R> {
             .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
-    private final ProxyApi proxyApiClient;
 
     /**
      * Header that contains unique request id
@@ -81,12 +76,24 @@ public class NodeForwarderClient<T, R> {
             int connectionTimeout,
             Class<R> responseClass
     ) {
-        this.apiKey = Objects.requireNonNull(apiKey);
-        this.backendUrl = Objects.requireNonNull(backendUrl);
-        this.readTimeout = readTimeout;
-        this.connectionTimeout = connectionTimeout;
         this.responseClass = Objects.requireNonNull(responseClass);
-        this.proxyApiClient = initializeClient();
+        this.proxyApiClient = initializeClient(apiKey, backendUrl, readTimeout, connectionTimeout);
+
+    }
+
+    /**
+     * Build a new NodeForwarderClient instance with the using the input
+     * proxuApiClient instance
+     *
+     * @param proxyApiClient the api client instance
+     * @param responseClass  the expected response class
+     */
+    NodeForwarderClient(
+            ProxyApi proxyApiClient,
+            Class<R> responseClass
+    ) {
+        this.responseClass = Objects.requireNonNull(responseClass);
+        this.proxyApiClient = proxyApiClient;
 
     }
 
@@ -96,7 +103,12 @@ public class NodeForwarderClient<T, R> {
      *
      * @return the initialized api client instance
      */
-    private ProxyApi initializeClient() {
+    private ProxyApi initializeClient(
+                                      String apiKey,
+                                      String backendUrl,
+                                      int readTimeout,
+                                      int connectionTimeout
+    ) {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
                 .doOnConnected(
@@ -142,7 +154,10 @@ public class NodeForwarderClient<T, R> {
             return Mono.error(new NodeForwarderClientException("Error serializing request", e));
         }
         String hostName = proxyTo.getHost();
-        int port = getPortOrDefault(proxyTo);
+        int port = proxyTo.getPort();
+        if (port == -1) {
+            port = 443;
+        }
         String path = proxyTo.getPath();
         return proxyApiClient.forwardWithHttpInfo(
                 hostName,
@@ -162,19 +177,6 @@ public class NodeForwarderClient<T, R> {
                 return Mono.error(new NodeForwarderClientException("Error deserializing response", e));
             }
         });
-    }
-
-    private int getPortOrDefault(URL uri) {
-        int port = uri.getPort();
-        if (port == -1) {
-            //port is not defined into URI, assuming default port based on protocol
-            port = switch (uri.getProtocol()) {
-                case "http" -> 80;
-                case "https",
-                        default -> 443;
-            };
-        }
-        return port;
     }
 
 }
