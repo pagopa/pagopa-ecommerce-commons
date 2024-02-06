@@ -729,10 +729,10 @@ public class NpgClient {
      *         operation details.
      */
 
-    private Mono<StateResponseDto> getState(
-                                            @NotNull UUID correlationId,
-                                            @NonNull String defaultApiKey,
-                                            @NotNull String sessionId
+    public Mono<StateResponseDto> getState(
+                                           @NotNull UUID correlationId,
+                                           @NonNull String defaultApiKey,
+                                           @NotNull String sessionId
     ) {
         return Mono.using(
                 () -> {

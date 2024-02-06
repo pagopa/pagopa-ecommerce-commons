@@ -746,6 +746,35 @@ class NpgClientTests {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldGetStateOfPayment() {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        StateResponseDto stateResponseDto = new StateResponseDto().state(WorkflowStateDto.PAYMENT_COMPLETE);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        ).thenReturn(Mono.just(stateResponseDto));
+
+        StepVerifier
+                .create(
+                        npgClient.getState(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                SESSION_ID
+                        )
+                )
+                .expectNext(stateResponseDto)
+                .verifyComplete();
+
+    }
+
     private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
         return new ClientErrorDto()
                 .errors(
