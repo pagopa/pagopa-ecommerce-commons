@@ -54,7 +54,7 @@ public class NodeForwarderClient<T, R> {
      * @param requestId the received request id
      * @param <R>       type parameter for body POJO class type
      */
-    public record NodeForwarderResponse<R> (
+    public record NodeForwarderResponse<R>(
             R body,
             Optional<String> requestId
     ) {
@@ -104,10 +104,10 @@ public class NodeForwarderClient<T, R> {
      * @return the initialized api client instance
      */
     private ProxyApi initializeClient(
-                                      String apiKey,
-                                      String backendUrl,
-                                      int readTimeout,
-                                      int connectionTimeout
+            String apiKey,
+            String backendUrl,
+            int readTimeout,
+            int connectionTimeout
     ) {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
@@ -141,9 +141,9 @@ public class NodeForwarderClient<T, R> {
      * @return the parsed body body or a Mono error with causing error code
      */
     public Mono<NodeForwarderResponse<R>> proxyRequest(
-                                                       T request,
-                                                       URL proxyTo,
-                                                       String requestId
+            T request,
+            URL proxyTo,
+            String requestId
     ) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(proxyTo);
@@ -159,24 +159,27 @@ public class NodeForwarderClient<T, R> {
             port = 443;
         }
         String path = proxyTo.getPath();
-        return proxyApiClient.forwardWithHttpInfo(
-                hostName,
-                port,
-                path,
-                requestId,
-                requestPayload
-        ).flatMap(response -> {
-            try {
-                return Mono.just(
-                        new NodeForwarderResponse<>(
-                                objectMapper.readValue(response.getBody(), responseClass),
-                                Optional.ofNullable(response.getHeaders().getFirst(REQUEST_ID_HEADER_VALUE))
-                        )
-                );
-            } catch (JsonProcessingException e) {
-                return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
-            }
-        });
+        return proxyApiClient
+                .forwardWithHttpInfo(
+                        hostName,
+                        port,
+                        path,
+                        requestId,
+                        requestPayload
+                )
+                .onErrorMap(e -> new NodeForwarderClientException("Error communicating with Nodo forwarder", e))
+                .flatMap(response -> {
+                    try {
+                        return Mono.just(
+                                new NodeForwarderResponse<>(
+                                        objectMapper.readValue(response.getBody(), responseClass),
+                                        Optional.ofNullable(response.getHeaders().getFirst(REQUEST_ID_HEADER_VALUE))
+                                )
+                        );
+                    } catch (JsonProcessingException e) {
+                        return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
+                    }
+                });
     }
 
 }
