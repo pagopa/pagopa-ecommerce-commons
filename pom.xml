@@ -180,6 +180,19 @@
             <version>1.17.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>4.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.11.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
     <dependencyManagement>
@@ -400,6 +413,30 @@
                             <modelPackage>it.pagopa.ecommerce.commons.generated.npg.v1.dto</modelPackage>
                             <apiPackage>it.pagopa.ecommerce.commons.generated.npg.v1.api</apiPackage>
                             <modelNameSuffix>Dto</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>node-forwarder-api-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                https://raw.githubusercontent.com/pagopa/pagopa-infra/main/src/core/api/node_forwarder_api/v1/_openapi.json.tpl
+                            </inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <configOptions>
+                                <swaggerAnnotations>false</swaggerAnnotations>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                            <modelPackage>it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.dto</modelPackage>
+                            <apiPackage>it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api</apiPackage>
+                            <modelNameSuffix>dto</modelNameSuffix>
                         </configuration>
                     </execution>
                 </executions>
