@@ -766,8 +766,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getState(
                                 correlationUUID,
-                                MOCKED_API_KEY,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectNext(stateResponseDto)
@@ -807,8 +807,8 @@ class NpgClientTests {
                 .create(
                         npgClient.getState(
                                 correlationUUID,
-                                MOCKED_API_KEY,
-                                SESSION_ID
+                                SESSION_ID,
+                                MOCKED_API_KEY
                         )
                 )
                 .expectErrorMatches(

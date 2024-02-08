@@ -724,19 +724,19 @@ public class NpgClient {
      *
      * @param correlationId the unique id to identify the rest api invocation
      * @param sessionId     the session id used for retrieve a card data
-     * @param defaultApiKey default API key
+     * @param pspApiKey     the specific psp API key
      * @return An object containing the state of the transaction and the info about
      *         operation details.
      */
 
     public Mono<StateResponseDto> getState(
                                            @NotNull UUID correlationId,
-                                           @NonNull String defaultApiKey,
-                                           @NotNull String sessionId
+                                           @NotNull String sessionId,
+                                           @NonNull String pspApiKey
     ) {
         return Mono.using(
                 () -> {
-                    paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
+                    paymentServicesApi.getApiClient().setApiKey(pspApiKey);
                     return tracer.spanBuilder("NpgClient#refundPayment")
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
