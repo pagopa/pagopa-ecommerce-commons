@@ -737,7 +737,7 @@ public class NpgClient {
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(pspApiKey);
-                    return tracer.spanBuilder("NpgClient#refundPayment")
+                    return tracer.spanBuilder("NpgClient#getState")
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
