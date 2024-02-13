@@ -51,8 +51,8 @@ public class QueueAsyncClient {
      * @param event             event
      * @param visibilityTimeout visibility timeout
      * @param timeToLive        TTL
+     * @param <T>               type of event
      * @return wrapped client response
-     * @param <T> type of event
      */
     public <T extends BaseTransactionEvent<?>> Mono<Response<SendMessageResult>> sendMessageWithResponse(
                                                                                                          QueueEvent<T> event,
