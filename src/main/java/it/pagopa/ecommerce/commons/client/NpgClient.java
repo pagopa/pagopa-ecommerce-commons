@@ -719,6 +719,42 @@ public class NpgClient {
         );
     }
 
+    /**
+     * method to request the authorization state using a sessionId passed as input.
+     *
+     * @param correlationId the unique id to identify the rest api invocation
+     * @param sessionId     the session id used for retrieve a card data
+     * @param pspApiKey     the specific psp API key
+     * @return An object containing the state of the transaction and the info about
+     *         operation details.
+     */
+
+    public Mono<StateResponseDto> getState(
+                                           @NotNull UUID correlationId,
+                                           @NotNull String sessionId,
+                                           @NonNull String pspApiKey
+    ) {
+        return Mono.using(
+                () -> {
+                    paymentServicesApi.getApiClient().setApiKey(pspApiKey);
+                    return tracer.spanBuilder("NpgClient#getState")
+                            .setParent(Context.current().with(Span.current()))
+                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                            .startSpan();
+                },
+                span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId)
+                        .doOnError(
+                                WebClientResponseException.class,
+                                e -> log.info(
+                                        NPG_LOG_ERROR_MESSAGE,
+                                        e.getStatusCode()
+                                )
+                        )
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                Span::end
+        );
+    }
+
     /*
      * @formatter:off
      *
