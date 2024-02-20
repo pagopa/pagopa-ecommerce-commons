@@ -14,6 +14,11 @@ public enum TransactionEventCode {
      * Payment authorization request event
      */
     TRANSACTION_AUTHORIZATION_REQUESTED_EVENT("TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"),
+
+    /**
+     * Payment authorization request retried event
+     */
+    TRANSACTION_AUTHORIZATION_REQUESTED_RETRIED_EVENT("TRANSACTION_AUTHORIZATION_REQUESTED_RETRIED_EVENT"),
     /**
      * Payment authorization process completed event.
      */
