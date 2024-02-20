@@ -500,6 +500,16 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionAuthorizationRequestedRetriedEvent transactionAuthorizationRequestedRetriedEvent(
+                                                                                                              int retryCount
+    ) {
+        return new TransactionAuthorizationRequestedRetriedEvent(
+                TRANSACTION_ID,
+                new TransactionRetriedData(retryCount)
+        );
+    }
+
+    @Nonnull
     public static TransactionExpiredEvent transactionExpiredEvent(BaseTransaction baseTransaction) {
         return new TransactionExpiredEvent(
                 TRANSACTION_ID,

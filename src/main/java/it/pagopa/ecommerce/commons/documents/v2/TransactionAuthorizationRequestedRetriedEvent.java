@@ -7,8 +7,8 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Business event corresponding to a retry of transaction authorization requested. This event
- * maps to a transient state for transactions.
+ * Business event corresponding to a retry of transaction authorization
+ * requested. This event maps to a transient state for transactions.
  */
 @Document(collection = "eventstore")
 @Generated
@@ -26,6 +26,10 @@ public final class TransactionAuthorizationRequestedRetriedEvent extends Transac
             String transactionId,
             TransactionRetriedData transactionRetriedData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_AUTHORIZATION_REQUESTED_RETRIED_EVENT, transactionRetriedData);
+        super(
+                transactionId,
+                TransactionEventCode.TRANSACTION_AUTHORIZATION_REQUESTED_RETRIED_EVENT,
+                transactionRetriedData
+        );
     }
 }
