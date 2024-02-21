@@ -24,11 +24,14 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -179,7 +182,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -226,7 +229,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -274,7 +277,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -321,7 +324,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -396,7 +399,7 @@ class NpgClientTests {
                                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -436,7 +439,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -453,7 +456,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                 )
                 .verify();
     }
@@ -580,7 +583,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -598,7 +601,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -629,7 +632,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -649,7 +652,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -680,7 +683,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -700,7 +703,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -796,7 +799,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -813,19 +816,105 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
     }
 
-    private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
+    @Test
+    void shouldPropagateErrorForUnparsableErrorResponse() {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new WebClientResponseException(
+                                        "Error while invoke method for get state",
+                                        HttpStatus.BAD_REQUEST.value(),
+                                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                        null,
+                                        "error".getBytes(StandardCharsets.UTF_8),
+                                        null
+                                )
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.getState(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> {
+                            NpgResponseException npgResponseException = (NpgResponseException) e;
+                            assertTrue(npgResponseException.getErrors().isEmpty());
+                            assertEquals(HttpStatus.BAD_REQUEST, npgResponseException.getStatusCode().get());
+                            return true;
+
+                        }
+
+                )
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateErrorForGenericExceptionThrownFromClient() {
+        UUID correlationUUID = UUID.randomUUID();
+
+        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
+        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID
+                )
+        )
+                .thenReturn(
+                        Mono.error(
+                                new NullPointerException("Error while invoke method for get state")
+                        )
+                );
+
+        StepVerifier
+                .create(
+                        npgClient.getState(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
+                )
+                .expectErrorMatches(
+                        e -> {
+                            NpgResponseException npgResponseException = (NpgResponseException) e;
+                            assertTrue(npgResponseException.getErrors().isEmpty());
+                            assertTrue(npgResponseException.getStatusCode().isEmpty());
+                            return true;
+                        }
+
+                )
+                .verify();
+    }
+
+    private static ClientErrorDto npgClientErrorResponse(String gatewayError) {
         return new ClientErrorDto()
                 .errors(
                         List.of(
                                 new ErrorsInnerDto()
-                                        .code(gatewayError.name())
-                                        .description(gatewayError.description)
+                                        .code(gatewayError)
+                                        .description("Error %s".formatted(gatewayError))
                         )
                 );
     }
