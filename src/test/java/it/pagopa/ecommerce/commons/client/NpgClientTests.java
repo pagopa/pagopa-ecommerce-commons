@@ -179,7 +179,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -226,7 +226,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -274,7 +274,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -321,7 +321,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -396,7 +396,7 @@ class NpgClientTests {
                                         HttpStatus.NOT_FOUND.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -436,7 +436,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -453,7 +453,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                 )
                 .verify();
     }
@@ -580,7 +580,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -598,7 +598,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -629,7 +629,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -649,7 +649,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -680,7 +680,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -700,7 +700,7 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
@@ -796,7 +796,7 @@ class NpgClientTests {
                                         HttpStatus.BAD_REQUEST.getReasonPhrase(),
                                         null,
                                         objectMapper.writeValueAsBytes(
-                                                npgClientErrorResponse(NpgClient.GatewayError.GW0001)
+                                                npgClientErrorResponse("GW0001")
                                         ),
                                         null
                                 )
@@ -813,19 +813,19 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> e instanceof NpgResponseException npgResponseException
-                                && npgResponseException.getErrors().equals(List.of(NpgClient.GatewayError.GW0001))
+                                && npgResponseException.getErrors().equals(List.of("GW0001"))
                                 && npgResponseException.getStatusCode().get().equals(HttpStatus.BAD_REQUEST)
                 )
                 .verify();
     }
 
-    private static ClientErrorDto npgClientErrorResponse(NpgClient.GatewayError gatewayError) {
+    private static ClientErrorDto npgClientErrorResponse(String gatewayError) {
         return new ClientErrorDto()
                 .errors(
                         List.of(
                                 new ErrorsInnerDto()
-                                        .code(gatewayError.name())
-                                        .description(gatewayError.description)
+                                        .code(gatewayError)
+                                        .description("Error %s".formatted(gatewayError))
                         )
                 );
     }
