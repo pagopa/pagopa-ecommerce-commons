@@ -688,13 +688,9 @@ public class NpgClient {
 
                 errors = Optional
                         .ofNullable(responseErrors)
-                        .map(
-                                errorDetails -> errorDetails
-                                        .stream()
-                                        .map(ErrorsInnerDto::getCode)
-                                        .toList()
-                        )
-                        .orElse(List.of());
+                        .orElse(List.of())
+                        .stream()
+                        .map(ErrorsInnerDto::getCode).toList();
                 statusCode = Optional.of(e.getStatusCode());
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";

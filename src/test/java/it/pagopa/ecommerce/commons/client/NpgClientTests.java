@@ -30,7 +30,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -857,14 +858,11 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> {
-                            if (e instanceof NpgResponseException npgResponseException) {
-                                assertTrue(npgResponseException.getErrors().isEmpty());
-                                assertEquals(HttpStatus.BAD_REQUEST, npgResponseException.getStatusCode().get());
-                                return true;
-                            } else {
-                                fail("Unexpected exception received %s".formatted(e));
-                                return false;
-                            }
+                            NpgResponseException npgResponseException = (NpgResponseException) e;
+                            assertTrue(npgResponseException.getErrors().isEmpty());
+                            assertEquals(HttpStatus.BAD_REQUEST, npgResponseException.getStatusCode().get());
+                            return true;
+
                         }
 
                 )
@@ -900,14 +898,10 @@ class NpgClientTests {
                 )
                 .expectErrorMatches(
                         e -> {
-                            if (e instanceof NpgResponseException npgResponseException) {
-                                assertTrue(npgResponseException.getErrors().isEmpty());
-                                assertTrue(npgResponseException.getStatusCode().isEmpty());
-                                return true;
-                            } else {
-                                fail("Unexpected exception received %s".formatted(e));
-                                return false;
-                            }
+                            NpgResponseException npgResponseException = (NpgResponseException) e;
+                            assertTrue(npgResponseException.getErrors().isEmpty());
+                            assertTrue(npgResponseException.getStatusCode().isEmpty());
+                            return true;
                         }
 
                 )
