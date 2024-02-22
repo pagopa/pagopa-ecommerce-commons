@@ -4,6 +4,7 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import org.slf4j.Logger;
@@ -118,8 +119,14 @@ public class TracingUtils {
 
                     logger.debug("Raw tracing info: {}", rawTracingInfo);
 
+                    String traceparent = Optional.ofNullable(rawTracingInfo.get(TRACEPARENT))
+                            .orElseGet(() -> {
+                                logger.warn("Couldn't get tracing info, falling back to invalid traceparent");
+                                return "00-00000000000000000000000000000000-0000000000000000-00";
+                            });
+
                     TracingInfo tracingInfo = new TracingInfo(
-                            rawTracingInfo.get(TRACEPARENT),
+                            traceparent,
                             Optional.ofNullable(rawTracingInfo.get(TRACESTATE)),
                             Optional.ofNullable(rawTracingInfo.get(BAGGAGE))
                     );
@@ -142,9 +149,9 @@ public class TracingUtils {
      *                    to
      * @param spanName    name of the new span
      * @param operation   {@link Mono} that will be wrapped
+     * @param <T>         type parameter for the original {@link Mono}
      * @return a new {@link Mono} with a span linked to the remote span identified
      *         by {@code tracingInfo}
-     * @param <T> type parameter for the original {@link Mono}
      */
     public <T> @NonNull Mono<T> traceMonoWithRemoteSpan(
                                                         @NonNull TracingInfo tracingInfo,
