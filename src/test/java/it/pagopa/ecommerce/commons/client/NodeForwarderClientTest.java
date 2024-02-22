@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import it.pagopa.ecommerce.commons.exceptions.NodeForwarderClientException;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -153,7 +154,7 @@ class NodeForwarderClientTest {
     }
 
     @Test
-    void shouldBuildApiClientSuccessfully() throws MalformedURLException {
+    void shouldBuildApiClientSuccessfully() {
         // assertions
         String requestId = UUID.randomUUID().toString();
         NodeForwarderClient<TestRequest, TestResponse> client = new NodeForwarderClient<>(
@@ -219,6 +220,36 @@ class NodeForwarderClientTest {
         )
                 .expectNext(expectedResponse)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleErrorResponseFromForwarder() {
+        // assertions
+        String requestId = UUID.randomUUID().toString();
+        NodeForwarderClient<TestRequest, TestResponse> client = new NodeForwarderClient<>(
+                "apiKey",
+                "http://%s:%s".formatted(mockWebServer.getHostName(), mockWebServer.getPort()),
+                10000,
+                10000
+        );
+        TestRequest testRequest = new TestRequest("test");
+        URI proxyTo = URI.create("http://localhost:123/test/request");
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setBody("error")
+                        .setResponseCode(400)
+        );
+        // test
+        StepVerifier.create(
+                client.proxyRequest(
+                        testRequest,
+                        proxyTo,
+                        requestId,
+                        TestResponse.class
+                )
+        )
+                .expectError(NodeForwarderClientException.class)
+                .verify();
     }
 
 }

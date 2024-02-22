@@ -10,8 +10,10 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import it.pagopa.ecommerce.commons.exceptions.NodeForwarderClientException;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -27,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @param <R> the expected body POJO class type
  * @see ProxyApi
  */
-
+@Slf4j
 public class NodeForwarderClient<T, R> {
 
     private final ProxyApi proxyApiClient;
@@ -153,6 +155,13 @@ public class NodeForwarderClient<T, R> {
             port = 443;
         }
         String path = proxyTo.getPath();
+        log.info(
+                "Sending request to node forwarder. hostName: [{}], port: [{}], path: [{}], requestId: [{}]",
+                hostName,
+                port,
+                path,
+                requestId
+        );
         return proxyApiClient
                 .forwardWithHttpInfo(
                         hostName,
@@ -172,6 +181,16 @@ public class NodeForwarderClient<T, R> {
                         );
                     } catch (JsonProcessingException e) {
                         return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
+                    }
+                })
+                .doOnError(e -> {
+                    log.error("Error communicating with Node forwarder", e);
+                    if (e.getCause()instanceof WebClientResponseException cause) {
+                        log.error(
+                                "Error response code: [{}], body: [{}]",
+                                cause.getStatusCode(),
+                                cause.getResponseBodyAsString()
+                        );
                     }
                 });
     }
