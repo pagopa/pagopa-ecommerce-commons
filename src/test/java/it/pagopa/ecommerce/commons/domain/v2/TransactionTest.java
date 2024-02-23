@@ -5528,7 +5528,13 @@ class TransactionTest {
         TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent2 = TransactionTestUtils
                 .transactionAuthorizationRequestedRetriedEvent(2);
         Flux<Object> events = Flux
-                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent, authorizationRequestedRetriedEvent1, authorizationRequestedRetriedEvent2);
+                .just(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizationRequestedRetriedEvent,
+                        authorizationRequestedRetriedEvent1,
+                        authorizationRequestedRetriedEvent2
+                );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -5557,9 +5563,13 @@ class TransactionTest {
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
 
-
         Flux<Object> events = Flux
-                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent, transactionAuthorizationCompletedEvent);
+                .just(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizationRequestedRetriedEvent,
+                        transactionAuthorizationCompletedEvent
+                );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
