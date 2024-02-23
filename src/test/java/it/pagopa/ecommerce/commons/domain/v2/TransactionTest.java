@@ -5488,4 +5488,95 @@ class TransactionTest {
 
     }
 
+    @Test
+    void shouldConstructTransactionFromAuthRequestRetriedEventStream() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedRetriedEvent(0);
+
+        Flux<Object> events = Flux
+                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent);
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization expected = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionFromMoreAuthRequestRetriedEventStream() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedRetriedEvent(0);
+        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent1 = TransactionTestUtils
+                .transactionAuthorizationRequestedRetriedEvent(1);
+        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent2 = TransactionTestUtils
+                .transactionAuthorizationRequestedRetriedEvent(2);
+        Flux<Object> events = Flux
+                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent, authorizationRequestedRetriedEvent1, authorizationRequestedRetriedEvent2);
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization expected = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionFromAuthorizationEventStreamWithAuthReqeustedRetriedEvent() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedRetriedEvent(0);
+        TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+
+
+        Flux<Object> events = Flux
+                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent, transactionAuthorizationCompletedEvent);
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted expected = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        transactionAuthorizationCompletedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
 }
