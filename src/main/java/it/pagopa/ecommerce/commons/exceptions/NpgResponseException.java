@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.exceptions;
 
-import it.pagopa.ecommerce.commons.client.NpgClient;
 import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,7 @@ public class NpgResponseException extends RuntimeException {
     /**
      * List of errors returned by NPG
      */
-    private final List<NpgClient.GatewayError> errors;
+    private final List<String> errors;
 
     /**
      * HTTP status code related to the error
@@ -35,7 +34,7 @@ public class NpgResponseException extends RuntimeException {
      */
     public NpgResponseException(
             @NotNull String message,
-            @NotNull List<NpgClient.GatewayError> errors,
+            @NotNull List<String> errors,
             @NotNull Optional<HttpStatus> statusCode,
             @NotNull Throwable t
     ) {
@@ -66,7 +65,7 @@ public class NpgResponseException extends RuntimeException {
      * @return error codes returned by NPG
      */
     @NotNull
-    public List<NpgClient.GatewayError> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 

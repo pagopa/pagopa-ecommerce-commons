@@ -37,7 +37,8 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
     private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
 
-    private static final String NPG_ERROR_CODES_ATTRIBUTE_NAME = "npg.error_codes";
+    private static final AttributeKey<java.util.List<java.lang.String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
+            .stringArrayKey("npg.error_codes");
     private static final String EUR_CURRENCY = "EUR";
 
     /**
@@ -146,194 +147,36 @@ public class NpgClient {
     }
 
     /**
-     * Enumeration for possible errors produced by NPG
+     * Enumeration of NPG gateway operations and associated span names
      */
-    public enum GatewayError {
+    private enum GatewayOperation {
         /**
-         * Merchant url may contain syntax errors
-         **/
-        GW0001("Merchant url may contain syntax errors"),
-        /**
-         * The configuration of this field is invalid or not found
-         **/
-        GW0002("The configuration of this field is invalid or not found"),
-        /**
-         * The language configuration of this field is invalid or not found
-         **/
-        GW0003("The language configuration of this field is invalid or not found"),
-        /**
-         * Payment session with given Session-Id is not found
-         **/
-        GW0004("Payment session with given Session-Id is not found"),
-        /**
-         * Invalid jwt claims
-         **/
-        GW0005("Invalid jwt claims"),
-        /**
-         * The requested value has not been found
-         **/
-        GW0006("The requested value has not been found"),
-        /**
-         * Order not found
-         **/
-        GW0007("Order not found"),
-        /**
-         * This operation is not allowed
-         **/
-        GW0008("This operation is not allowed"),
-        /**
-         * This operation is not allowed in the current state
-         **/
-        GW0009("This operation is not allowed in the current state"),
-        /**
-         * The reached payment state is not valid
-         **/
-        GW0010("The reached payment state is not valid"),
-        /**
-         * Invalid payment method
-         **/
-        GW0011("Invalid payment method"),
-        /**
-         * The provided field is not a valid TEXT type
-         **/
-        GW0012("The provided field is not a valid TEXT type"),
-        /**
-         * Configuration of input TEXT fields is not completed
-         **/
-        GW0013("Configuration of input TEXT fields is not completed"),
-        /**
-         * The provided configuration is not a valid ACTION
-         **/
-        GW0014("The provided configuration is not a valid ACTION"),
-        /**
-         * Payment set up failed. Card information may be wrong
-         **/
-        GW0015("Payment set up failed. Card information may be wrong"),
-        /**
-         * Payment set up failed due to internal errors
-         **/
-        GW0016("Payment set up failed due to internal errors"),
-        /**
-         * An operation of the same type already exist
-         **/
-        GW0017("An operation of the same type already exist"),
-        /**
-         * The provided order id cannot be null
-         **/
-        GW0018("The provided order id cannot be null"),
-        /**
-         * Order amount can not be null or less than zero
-         **/
-        GW0019("Order amount can not be null or less than zero"),
-        /**
-         * Installment amounts can not be null or less than zero
-         **/
-        GW0020("Installment amounts can not be null or less than zero"),
-        /**
-         * Amounts can not be literals
-         **/
-        GW0021("Amounts can not be literals"),
-        /**
-         * Language format is not valid
-         **/
-        GW0022("Language format is not valid"),
-        /**
-         * Customer id can not be empty
-         **/
-        GW0023("Customer id can not be empty"),
-        /**
-         * Order with the same id already exists
-         **/
-        GW0024("Order with the same id already exists"),
-        /**
-         * Merchant not enabled for this apm
-         **/
-        GW0025("Merchant not enabled for this apm"),
-        /**
-         * The terminal provided doesn't exist
-         **/
-        GW0026("The terminal provided doesn't exist"),
-        /**
-         * Internal Rest communication error during payment
-         **/
-        GW0027("Internal Rest communication error during payment"),
-        /**
-         * Order recurring information not found
-         **/
-        GW0028("Order recurring information not found"),
-        /**
-         * Order recurring information cannot be retrieved
-         **/
-        GW0029("Order recurring information cannot be retrieved"),
-        /**
-         * Invalid GDI URL
-         **/
-        GW0030("Invalid GDI URL"),
-        /**
-         * Authorization Bearer is invalid or null
-         **/
-        GW0031("Authorization Bearer is invalid or null"),
-        /**
-         * Payment validation failed due to internal errors
-         **/
-        GW0032("Payment validation failed due to internal errors"),
-        /**
-         * No operation related to the order has been found
-         **/
-        GW0033("No operation related to the order has been found"),
-        /**
-         * Payment failed due to internal errors
-         **/
-        GW0034("Payment failed due to internal errors"),
-        /**
-         * We encounter an internal error
-         **/
-        GW0035("We encounter an internal error"),
-        /**
-         * This api can't be called while paying with an APM
-         **/
-        GW0036("This api can't be called while paying with an APM"),
-        /**
-         * Required all the card's values before calling this api
-         **/
-        GW0037("Required all the card's values before calling this api"),
-        /**
-         * Service temporarily unavailable
-         **/
-        GW0038("Service temporarily unavailable"),
-        /**
-         * Invalid Apm
-         **/
-        GW0039("Invalid Apm"),
-        /**
-         * Invalid field
-         **/
-        GW0040("Invalid field"),
-        /**
-         * Hosted log not found
-         **/
-        GW0041("Hosted log not found"),
-        /**
-         * Transaction not found
-         **/
-        GW0042("Transaction not found"),
-        /**
-         * The order doesn't meet the requirements for the payment service
-         **/
-        GW0043("The order doesn't meet the requirements for the payment service"),
-        /**
-         * The terminal doesn't belong to the same multi acquiring group as the original
-         * terminal caller
-         **/
-        GW0044("The terminal doesn't belong to the same multi acquiring group as the original terminal caller");
-
-        /**
-         * Error description
+         * Build form operation: operation that initiate payment phase retrieving card
+         * data input fields or to start an APM payment
          */
-        public final String description;
+        BUILD_FORM("NpgClient#buildForm"),
+        /**
+         * Get card data operation: used for cards payments to retrieve masked user
+         * inserted card information such as card bin and so on
+         */
+        GET_CARD_DATA("NpgClient#getCardData"),
+        /**
+         * Confirm payment operation: used for cards payment
+         */
+        CONFIRM_PAYMENT("NpgClient#confirmPayment"),
+        /**
+         * Refund operation
+         */
+        REFUND_PAYMENT("NpgClient#refundPayment"),
+        /**
+         * Get payment state operation
+         */
+        GET_STATE("NpgClient#getState");
 
-        GatewayError(String description) {
-            this.description = description;
+        final String spanName;
+
+        GatewayOperation(String spanName) {
+            this.spanName = spanName;
         }
     }
 
@@ -550,10 +393,11 @@ public class NpgClient {
                                              String contractId,
                                              Integer totalAmount
     ) {
+        GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
-                    return tracer.spanBuilder("NpgClient#buildForm")
+                    return tracer.spanBuilder(gatewayOperation.spanName)
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
@@ -578,7 +422,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 span -> {
                     paymentServicesApi.getApiClient().setApiKey(null);
                     span.end();
@@ -601,11 +445,11 @@ public class NpgClient {
                                                  @NonNull String defaultApiKey
 
     ) {
-
+        GatewayOperation gatewayOperation = GatewayOperation.GET_CARD_DATA;
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(defaultApiKey);
-                    return tracer.spanBuilder("NpgClient#getCardData")
+                    return tracer.spanBuilder(gatewayOperation.spanName)
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
@@ -620,7 +464,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 span -> {
                     paymentServicesApi.getApiClient().setApiKey(null);
                     span.end();
@@ -644,11 +488,11 @@ public class NpgClient {
                                                  @NotNull BigDecimal grandTotal,
                                                  @NonNull String pspApiKey
     ) {
-
+        GatewayOperation gatewayOperation = GatewayOperation.CONFIRM_PAYMENT;
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(pspApiKey);
-                    return tracer.spanBuilder("NpgClient#confirmPayment")
+                    return tracer.spanBuilder(gatewayOperation.spanName)
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
@@ -664,7 +508,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 span -> {
                     paymentServicesApi.getApiClient().setApiKey(null);
                     span.end();
@@ -693,10 +537,11 @@ public class NpgClient {
                                                  @NonNull String defaultApiKey,
                                                  String description
     ) {
+        GatewayOperation gatewayOperation = GatewayOperation.REFUND_PAYMENT;
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(null);
-                    return tracer.spanBuilder("NpgClient#refundPayment")
+                    return tracer.spanBuilder(gatewayOperation.spanName)
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
@@ -714,7 +559,7 @@ public class NpgClient {
                                 e.getStatusCode()
                         )
                 )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -734,10 +579,11 @@ public class NpgClient {
                                            @NotNull String sessionId,
                                            @NonNull String pspApiKey
     ) {
+        GatewayOperation gatewayOperation = GatewayOperation.GET_STATE;
         return Mono.using(
                 () -> {
                     paymentServicesApi.getApiClient().setApiKey(pspApiKey);
-                    return tracer.spanBuilder("NpgClient#getState")
+                    return tracer.spanBuilder(gatewayOperation.spanName)
                             .setParent(Context.current().with(Span.current()))
                             .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                             .startSpan();
@@ -750,7 +596,7 @@ public class NpgClient {
                                         e.getStatusCode()
                                 )
                         )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span)),
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -820,9 +666,10 @@ public class NpgClient {
 
     private NpgResponseException exceptionToNpgResponseException(
                                                                  Throwable err,
-                                                                 Span span
+                                                                 Span span,
+                                                                 GatewayOperation gatewayOperation
     ) {
-        List<GatewayError> errors = List.of();
+        List<String> errors = List.of();
         Optional<HttpStatus> statusCode = Optional.empty();
 
         if (err instanceof WebClientResponseException e) {
@@ -839,8 +686,11 @@ public class NpgClient {
                     default -> List.of();
                 };
 
-                errors = responseErrors.stream()
-                        .map(error -> GatewayError.valueOf(error.getCode())).toList();
+                errors = Optional
+                        .ofNullable(responseErrors)
+                        .orElse(List.of())
+                        .stream()
+                        .map(ErrorsInnerDto::getCode).toList();
                 statusCode = Optional.of(e.getStatusCode());
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";
@@ -855,13 +705,13 @@ public class NpgClient {
         }
 
         span.setAttribute(
-                AttributeKey.stringArrayKey(NPG_ERROR_CODES_ATTRIBUTE_NAME),
-                errors.stream().map(GatewayError::name).toList()
+                NPG_ERROR_CODES_ATTRIBUTE_NAME,
+                errors
         );
         span.setStatus(StatusCode.ERROR);
 
         return new NpgResponseException(
-                "Error while invoke method for build order",
+                "Error while invoke method for %s".formatted(gatewayOperation.spanName),
                 errors,
                 statusCode,
                 err
