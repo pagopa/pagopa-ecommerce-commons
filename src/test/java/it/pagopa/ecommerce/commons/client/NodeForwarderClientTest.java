@@ -3,8 +3,10 @@ package it.pagopa.ecommerce.commons.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import it.pagopa.ecommerce.commons.exceptions.NodeForwarderClientException;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
+import okhttp3.Headers;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,7 +62,7 @@ class NodeForwarderClientTest {
     }
 
     @Test
-    void shouldProxyRequestSuccessfullyRetrievingDefaultPortForHttpsUrl() throws Exception {
+    void shouldProxyRequestSuccessfullyRetrievingDefaultPortForHttpsUrl() {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
@@ -92,7 +93,7 @@ class NodeForwarderClientTest {
     }
 
     @Test
-    void shouldProxyRequestSuccessfullyUsingCustomPort() throws Exception {
+    void shouldProxyRequestSuccessfullyUsingCustomPort() {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
@@ -123,7 +124,7 @@ class NodeForwarderClientTest {
     }
 
     @Test
-    void shouldHandleErrorDeserializingResponse() throws Exception {
+    void shouldHandleErrorDeserializingResponse() {
         // pre-requisites
         String requestId = UUID.randomUUID().toString();
         TestRequest testRequest = new TestRequest("test");
@@ -154,11 +155,12 @@ class NodeForwarderClientTest {
     }
 
     @Test
-    void shouldBuildApiClientSuccessfully() {
+    void shouldSendRequestToForwarderWithAllRequiredHeaders() throws Exception {
         // assertions
         String requestId = UUID.randomUUID().toString();
+        String apiKey = "apiKey";
         NodeForwarderClient<TestRequest, TestResponse> client = new NodeForwarderClient<>(
-                "apiKey",
+                apiKey,
                 "http://%s:%s".formatted(mockWebServer.getHostName(), mockWebServer.getPort()),
                 10000,
                 10000
@@ -186,10 +188,19 @@ class NodeForwarderClientTest {
         )
                 .expectNext(expectedResponse)
                 .verifyComplete();
+        // assertions
+        RecordedRequest recordedRequest = mockWebServer.takeRequest();
+        Headers requestHeaders = recordedRequest.getHeaders();
+        assertEquals(requestId, requestHeaders.get("x-request-id"));
+        assertEquals("localhost", requestHeaders.get("x-host-url"));
+        assertEquals("123", requestHeaders.get("x-host-port"));
+        assertEquals("/test/request", requestHeaders.get("x-host-path"));
+        assertEquals(apiKey, requestHeaders.get("Ocp-Apim-Subscription-Key"));
+
     }
 
     @Test
-    void shouldHandleMissingXRequestIdResponseHeader() throws MalformedURLException {
+    void shouldHandleMissingXRequestIdResponseHeader() {
         // assertions
         String requestId = UUID.randomUUID().toString();
         NodeForwarderClient<TestRequest, TestResponse> client = new NodeForwarderClient<>(
