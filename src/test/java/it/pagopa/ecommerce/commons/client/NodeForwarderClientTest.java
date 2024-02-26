@@ -7,8 +7,8 @@ import okhttp3.Headers;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
@@ -47,16 +47,16 @@ class NodeForwarderClientTest {
 
     private static MockWebServer mockWebServer;
 
-    @BeforeAll
-    public static void beforeAll() throws IOException {
+    @BeforeEach
+    public void beforeAll() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start(8080);
         System.out.printf("Mock web server listening on %s:%s%n", mockWebServer.getHostName(), mockWebServer.getPort());
 
     }
 
-    @AfterAll
-    public static void afterAll() throws IOException {
+    @AfterEach
+    public void afterAll() throws IOException {
         mockWebServer.shutdown();
         System.out.println("Mock web server stopped");
     }
