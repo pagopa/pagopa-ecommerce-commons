@@ -43,6 +43,11 @@ public class NodeForwarderClient<T, R> {
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     /**
+     * Node forwarder api key header
+     */
+    private static final String API_KEY_REQUEST_HEADER_KEY = "Ocp-Apim-Subscription-Key";
+
+    /**
      * Header that contains unique request id
      */
     private static final String REQUEST_ID_HEADER_VALUE = "X-Request-Id";
@@ -117,7 +122,9 @@ public class NodeForwarderClient<T, R> {
         WebClient webClient = ApiClient.buildWebClientBuilder()
                 .clientConnector(
                         new ReactorClientHttpConnector(httpClient)
-                ).baseUrl(backendUrl).build();
+                ).baseUrl(backendUrl)
+                .defaultHeader(API_KEY_REQUEST_HEADER_KEY, apiKey)
+                .build();
 
         ApiClient apiClient = new ApiClient(
                 webClient
