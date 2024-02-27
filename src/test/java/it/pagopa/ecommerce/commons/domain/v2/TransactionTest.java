@@ -5495,11 +5495,11 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedRetriedEvent(0);
+        TransactionAuthorizationOutcomeWaitingEvent authorizationOutcomeWaitingEvent = TransactionTestUtils
+                .transactionAuthorizationOutcomeWaitingEvent(0);
 
         Flux<Object> events = Flux
-                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationRequestedRetriedEvent);
+                .just(transactionActivatedEvent, authorizationRequestedEvent, authorizationOutcomeWaitingEvent);
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
@@ -5521,19 +5521,19 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedRetriedEvent(0);
-        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent1 = TransactionTestUtils
-                .transactionAuthorizationRequestedRetriedEvent(1);
-        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent2 = TransactionTestUtils
-                .transactionAuthorizationRequestedRetriedEvent(2);
+        TransactionAuthorizationOutcomeWaitingEvent authorizationOutcomeWaitingEvent = TransactionTestUtils
+                .transactionAuthorizationOutcomeWaitingEvent(0);
+        TransactionAuthorizationOutcomeWaitingEvent authorizationOutcomeWaitingEvent1 = TransactionTestUtils
+                .transactionAuthorizationOutcomeWaitingEvent(1);
+        TransactionAuthorizationOutcomeWaitingEvent authorizationOutcomeWaitingEvent2 = TransactionTestUtils
+                .transactionAuthorizationOutcomeWaitingEvent(2);
         Flux<Object> events = Flux
                 .just(
                         transactionActivatedEvent,
                         authorizationRequestedEvent,
-                        authorizationRequestedRetriedEvent,
-                        authorizationRequestedRetriedEvent1,
-                        authorizationRequestedRetriedEvent2
+                        authorizationOutcomeWaitingEvent,
+                        authorizationOutcomeWaitingEvent1,
+                        authorizationOutcomeWaitingEvent2
                 );
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
@@ -5556,8 +5556,8 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        TransactionAuthorizationRequestedRetriedEvent authorizationRequestedRetriedEvent = TransactionTestUtils
-                .transactionAuthorizationRequestedRetriedEvent(0);
+        TransactionAuthorizationOutcomeWaitingEvent authorizationOutcomeWaitingEvent = TransactionTestUtils
+                .transactionAuthorizationOutcomeWaitingEvent(0);
         TransactionAuthorizationCompletedEvent transactionAuthorizationCompletedEvent = TransactionTestUtils
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
@@ -5567,7 +5567,7 @@ class TransactionTest {
                 .just(
                         transactionActivatedEvent,
                         authorizationRequestedEvent,
-                        authorizationRequestedRetriedEvent,
+                        authorizationOutcomeWaitingEvent,
                         transactionAuthorizationCompletedEvent
                 );
 

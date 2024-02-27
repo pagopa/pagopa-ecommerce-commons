@@ -14,21 +14,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionAuthorizationRequestedRetriedEvent extends TransactionEvent<TransactionRetriedData> {
+public final class TransactionAuthorizationOutcomeWaitingEvent extends TransactionEvent<TransactionRetriedData> {
 
     /**
-     * Convenience constructor which sets the creation date to now
+     * Convenience constructor for transaction authorization outcome waiting event
+     * with eventCode, transactionId and retriedData
      *
      * @param transactionId          transaction unique id
      * @param transactionRetriedData retry count data
      */
-    public TransactionAuthorizationRequestedRetriedEvent(
+    public TransactionAuthorizationOutcomeWaitingEvent(
             String transactionId,
             TransactionRetriedData transactionRetriedData
     ) {
         super(
                 transactionId,
-                TransactionEventCode.TRANSACTION_AUTHORIZATION_REQUESTED_RETRIED_EVENT,
+                TransactionEventCode.TRANSACTION_AUTHORIZATION_OUTCOME_WAITING_EVENT,
                 transactionRetriedData
         );
     }

@@ -500,10 +500,10 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionAuthorizationRequestedRetriedEvent transactionAuthorizationRequestedRetriedEvent(
-                                                                                                              int retryCount
+    public static TransactionAuthorizationOutcomeWaitingEvent transactionAuthorizationOutcomeWaitingEvent(
+                                                                                                          int retryCount
     ) {
-        return new TransactionAuthorizationRequestedRetriedEvent(
+        return new TransactionAuthorizationOutcomeWaitingEvent(
                 TRANSACTION_ID,
                 new TransactionRetriedData(retryCount)
         );
