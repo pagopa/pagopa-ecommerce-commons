@@ -2,6 +2,8 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent;
+import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionExpired;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithRequestedAuthorization;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -44,13 +46,22 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundRequestedEvent e) {
-            return new TransactionWithRefundRequested(
+        return switch (event) {
+            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(
                     this.getTransactionAtPreviousState(),
                     e
             );
-        }
-        return this;
+
+            case TransactionUserReceiptRequestedEvent e -> {
+                if (getTransactionAtPreviousState() instanceof BaseTransactionClosed baseTransactionClosed) {
+                    yield new TransactionWithRequestedUserReceipt(baseTransactionClosed, e);
+                } else {
+                    yield this;
+                }
+            }
+
+            default -> this;
+        };
     }
 
     /**
