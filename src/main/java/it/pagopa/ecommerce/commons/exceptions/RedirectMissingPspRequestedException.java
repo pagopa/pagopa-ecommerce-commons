@@ -3,8 +3,8 @@ package it.pagopa.ecommerce.commons.exceptions;
 import java.util.Set;
 
 /**
- * Exception thrown when requesting an API key from NPG configuration for a
- * nonexisting PSP
+ * Exception thrown when requesting a missing configuration for Redirect payment
+ * flow for a certain psp id
  */
 public class RedirectMissingPspRequestedException extends RuntimeException {
 
