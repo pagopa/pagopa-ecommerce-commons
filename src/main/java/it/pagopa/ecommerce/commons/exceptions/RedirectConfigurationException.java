@@ -4,7 +4,7 @@ package it.pagopa.ecommerce.commons.exceptions;
  * Exception thrown when NPG per PSP api key configuration cannot be
  * successfully parsed
  */
-public class CheckoutRedirectConfigurationException extends RuntimeException {
+public class RedirectConfigurationException extends RuntimeException {
 
     /**
      * Constructor
@@ -12,12 +12,12 @@ public class CheckoutRedirectConfigurationException extends RuntimeException {
      * @param errorCause        error cause description
      * @param configurationType configuration type
      */
-    public CheckoutRedirectConfigurationException(
+    public RedirectConfigurationException(
             String errorCause,
-            CheckoutRedirectConfigurationType configurationType
+            RedirectConfigurationType configurationType
     ) {
         super(
-                "Error parsing Checkout Redirect PSP %s configuration, cause: %s"
+                "Error parsing Redirect PSP %s configuration, cause: %s"
                         .formatted(configurationType, errorCause)
         );
     }
