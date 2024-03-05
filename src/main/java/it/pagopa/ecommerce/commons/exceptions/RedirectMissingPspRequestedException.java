@@ -3,10 +3,10 @@ package it.pagopa.ecommerce.commons.exceptions;
 import java.util.Set;
 
 /**
- * Exception thrown when requesting an API key from NPG configuration for a
- * nonexisting PSP
+ * Exception thrown when requesting a missing configuration for Redirect payment
+ * flow for a certain psp id
  */
-public class CheckoutRedirectMissingPspRequestedException extends RuntimeException {
+public class RedirectMissingPspRequestedException extends RuntimeException {
 
     /**
      * Constructor
@@ -15,10 +15,10 @@ public class CheckoutRedirectMissingPspRequestedException extends RuntimeExcepti
      * @param availablePsps     currently configured PSPs
      * @param configurationType configuration type
      */
-    public CheckoutRedirectMissingPspRequestedException(
+    public RedirectMissingPspRequestedException(
             String psp,
             Set<String> availablePsps,
-            CheckoutRedirectConfigurationType configurationType
+            RedirectConfigurationType configurationType
     ) {
         super(
                 "Requested configuration value in %s not available for PSP %s. Available PSPs: %s"
