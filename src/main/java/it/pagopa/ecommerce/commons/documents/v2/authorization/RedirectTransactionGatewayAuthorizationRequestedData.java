@@ -22,12 +22,6 @@ public final class RedirectTransactionGatewayAuthorizationRequestedData
     private URI logo;
 
     /**
-     * Unique id of the transaction PSP side
-     */
-    @NotNull
-    private String pspTransactionId;
-
-    /**
      * The timeout (in milliseconds), communicated by the PSP during redirection api
      * call, that the eCommerce b.e. has to wait for transaction outcome to be
      * received (max timeout)
