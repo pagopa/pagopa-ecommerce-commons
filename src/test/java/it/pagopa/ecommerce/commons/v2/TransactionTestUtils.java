@@ -106,7 +106,6 @@ public class TransactionTestUtils {
     public static final String NPG_CONFIRM_PAYMENT_SESSION_ID = "npgConfirmPaymentSessionId";
 
     public static final int REDIRECT_AUTHORIZATION_TIMEOUT = 60000;
-    public static final RedirectTransactionGatewayAuthorizationRequestedData.PaymentMethodType REDIRECT_AUTHORIZATION_PAYMENT_METHOD = RedirectTransactionGatewayAuthorizationRequestedData.PaymentMethodType.BANK_ACCOUNT;
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -747,8 +746,7 @@ public class TransactionTestUtils {
     public static TransactionGatewayAuthorizationRequestedData redirectTransactionGatewayAuthorizationRequestedData() {
         return new RedirectTransactionGatewayAuthorizationRequestedData(
                 LOGO_URI,
-                REDIRECT_AUTHORIZATION_TIMEOUT,
-                REDIRECT_AUTHORIZATION_PAYMENT_METHOD
+                REDIRECT_AUTHORIZATION_TIMEOUT
         );
     }
 

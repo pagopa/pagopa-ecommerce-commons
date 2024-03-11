@@ -27,20 +27,6 @@ public final class RedirectTransactionGatewayAuthorizationRequestedData
      * received (max timeout)
      */
     private int transactionOutcomeTimeoutMillis;
-    /**
-     * The payment method type value
-     */
-    private PaymentMethodType paymentMethodType;
-
-    /**
-     * Enumeration of all redirect supported payment method type
-     */
-    public enum PaymentMethodType {
-        /**
-         * Bank account payment
-         */
-        BANK_ACCOUNT
-    }
 
     @Override
     public AuthorizationDataType getType() {

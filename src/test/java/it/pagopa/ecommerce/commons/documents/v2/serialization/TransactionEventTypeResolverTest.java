@@ -722,8 +722,7 @@ class TransactionEventTypeResolverTest {
                                "transactionGatewayAuthorizationRequestedData": {
                                    "type": "REDIRECT",
                                    "logo":"http://paymentMethodLogo.it",
-                                   "transactionOutcomeTimeoutMillis":60000,
-                                   "paymentMethodType":"BANK_ACCOUNT"
+                                   "transactionOutcomeTimeoutMillis":60000
                                },
                                "pspOnUs": false
                            },
