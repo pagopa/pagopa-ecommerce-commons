@@ -24,6 +24,10 @@ createMachine(
           },
           EXPIRE: {
             target: "EXPIRED",
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
           }
         },
       },
@@ -43,6 +47,10 @@ createMachine(
           },
           EXPIRE: {
             target: "EXPIRED",
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
           }
         },
       },
@@ -61,6 +69,10 @@ createMachine(
             target: "EXPIRED",
           },
           REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED",
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
             target: "REFUND_REQUESTED",
           }
         },
@@ -127,12 +139,16 @@ createMachine(
           EXPIRE: {
             target: "EXPIRED",
           },
-          ADD_USER_RECEIPT_ERROR:{
+          ADD_USER_RECEIPT_ERROR: {
             target: "NOTIFICATION_ERROR"
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
           }
         },
       },
-       NOTIFICATION_ERROR: {
+      NOTIFICATION_ERROR: {
         on: {
           USER_RECEIPT_ADDED: [{
             target: "NOTIFIED_OK",
@@ -148,8 +164,12 @@ createMachine(
             target: "REFUND_REQUESTED",
             cond: "sendpaymentresult_response_ko"
           },
-          ADD_USER_RECEIPT_RETRY:{
+          ADD_USER_RECEIPT_RETRY: {
             target: "NOTIFICATION_ERROR"
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
           }
         },
       },
@@ -158,12 +178,16 @@ createMachine(
       },
       NOTIFIED_KO: {
         on: {
-            REFUND_REQUESTED: {
-                target: "REFUND_REQUESTED"
-            },
-            EXPIRE: {
-                target: "EXPIRED"
-            }
+          REFUND_REQUESTED: {
+            target: "REFUND_REQUESTED"
+          },
+          EXPIRE: {
+            target: "EXPIRED"
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
+          }
         }
       },
       CANCELED: {
@@ -192,6 +216,10 @@ createMachine(
           },
           REFUND_ERROR: {
             target: "REFUND_ERROR"
+          },
+          COMPENSATION_REFUND: {
+            actions: ['refund_compensation'],
+            target: "REFUND_REQUESTED",
           }
         },
       },
@@ -204,21 +232,35 @@ createMachine(
       REFUND_REQUESTED: {
         on: {
           REFUND: {
-            target: "REFUNDED"
+            target: "REFUNDED",
+            cond: "refund_not_triggered_by_compensation",
           },
+          REFUNDED_FORCED: {
+            target: "REFUNDED_FORCED",
+            cond: "refund_triggered_by_compensation",
+          },
+
           REFUND_ERROR: {
-            target: "REFUND_ERROR"
+            target: "REFUND_ERROR",
           }
         }
       },
       REFUND_ERROR: {
         on: {
           REFUND: {
-            target: "REFUNDED"
+            target: "REFUNDED",
+            cond: "refund_not_triggered_by_compensation",
           },
-          REFUND_RETRIED: {}
+          REFUND_RETRIED: {},
+          REFUNDED_FORCED: {
+            target: "REFUNDED_FORCED",
+            cond: "refund_triggered_by_compensation",
+          },
         }
-      }
+      },
+      REFUNDED_FORCED: {
+        type: "final",
+      },
     },
     context: {
       auth_requested: false,
@@ -247,6 +289,13 @@ createMachine(
       sendpaymentresult_response_ko: (context, event) =>
         context.sendpaymentresult_response == "KO",
       was_canceled: (context, event) => context.was_canceled,
+      refund_triggered_by_compensation: (context, event) => context.refund_compensation,
+      refund_not_triggered_by_compensation: (context, event) => !context.refund_compensation,
     },
+    actions: {
+      refund_compensation: (context, event) => {
+        context.refund_compensation = true;
+      }
+    }
   }
 );
