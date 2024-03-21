@@ -505,8 +505,8 @@ class NpgClientTests {
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         OPERATION_ID,
                         correlationUUID,
-                        IDEMPOTENCE_KEY.toString(),
                         MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         ).thenReturn(Mono.just(refundResponseDto));
@@ -540,8 +540,8 @@ class NpgClientTests {
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         OPERATION_ID,
                         correlationUUID,
-                        IDEMPOTENCE_KEY.toString(),
                         MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         ).thenReturn(Mono.just(refundResponseDto));
@@ -619,8 +619,8 @@ class NpgClientTests {
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         OPERATION_ID,
                         correlationUUID,
-                        IDEMPOTENCE_KEY.toString(),
                         MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         )
@@ -670,8 +670,8 @@ class NpgClientTests {
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         OPERATION_ID,
                         correlationUUID,
-                        IDEMPOTENCE_KEY.toString(),
                         MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
                         refundRequestDto
                 )
         )
