@@ -549,8 +549,8 @@ public class NpgClient {
                 span -> paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         operationId,
                         correlationId,
-                        idempotenceKey.toString(),
                         defaultApiKey,
+                        idempotenceKey.toString(),
                         buildRefundRequestDto(grandTotal, description)
                 ).doOnError(
                         WebClientResponseException.class,
