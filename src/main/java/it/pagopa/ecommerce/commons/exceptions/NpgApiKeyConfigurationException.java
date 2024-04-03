@@ -24,4 +24,15 @@ public class NpgApiKeyConfigurationException extends RuntimeException {
                         .formatted(paymentMethod, errorCause)
         );
     }
+
+    /**
+     * Constructor
+     *
+     * @param errorCause error cause description
+     */
+    public NpgApiKeyConfigurationException(
+            String errorCause
+    ) {
+        super(errorCause);
+    }
 }
