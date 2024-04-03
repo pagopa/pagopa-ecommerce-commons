@@ -5,16 +5,86 @@ import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**
- * This class handles all NPG api keys such as default one and per methods psp
+ * This class handles all NPG api keys such as default one and per methods psp.
+ * Use {@link NpgApiKeyHandlerBuilder} class to initialize a new class instance
  * api keys
  */
 public class NpgApiKeyHandler {
+
+    /**
+     * NpgApiKeyHandler builder class
+     */
+    public static class NpgApiKeyHandlerBuilder {
+        private String defaultApiKey;
+        private final Map<NpgClient.PaymentMethod, NpgPspApiKeysConfig> methodsApiKeyMapping = new EnumMap<>(
+                NpgClient.PaymentMethod.class
+        );
+
+        public NpgApiKeyHandlerBuilder setDefaultApiKey(String defaultApiKey) {
+            this.defaultApiKey = defaultApiKey;
+            return this;
+        }
+
+        /**
+         * Add specific {@link NpgPspApiKeysConfig} configuration for input payment
+         * method
+         *
+         * @param paymentMethod       the payment method for which register npg api keys
+         *                            configuration
+         * @param npgPspApiKeysConfig the npg api keys config
+         */
+        public NpgApiKeyHandlerBuilder addMethodPspMapping(
+                                                           NpgClient.PaymentMethod paymentMethod,
+                                                           NpgPspApiKeysConfig npgPspApiKeysConfig
+        ) {
+            if (this.methodsApiKeyMapping.containsKey(paymentMethod)) {
+                throw new NpgApiKeyConfigurationException(
+                        "Api key mapping already registered for payment method: [%s]".formatted(paymentMethod)
+                );
+            }
+            this.methodsApiKeyMapping.put(paymentMethod, npgPspApiKeysConfig);
+            return this;
+        }
+
+        /**
+         * Add specific {@link NpgPspApiKeysConfig} configuration for input payment
+         * method. This method is the same as
+         * {@link #addMethodPspMapping(NpgClient.PaymentMethod, NpgPspApiKeysConfig)}
+         * one but parse psp api keys configuration with the given input information
+         *
+         * @param paymentMethod the payment methods to be added to mapping
+         * @param pspKeys       the required psp keys
+         * @param pspToHandle   the psp expected to be handled
+         * @param objectMapper  the object mapper instance to be used to parse api keys
+         *                      configuration
+         */
+        public NpgApiKeyHandlerBuilder addMethodPspMapping(
+                                                           NpgClient.PaymentMethod paymentMethod,
+                                                           String pspKeys,
+                                                           Set<String> pspToHandle,
+                                                           ObjectMapper objectMapper
+        ) {
+            addMethodPspMapping(
+                    paymentMethod,
+                    NpgPspApiKeysConfig.parseApiKeyConfiguration(pspKeys, pspToHandle, paymentMethod, objectMapper)
+                            .fold(
+                                    exception -> {
+                                        throw exception;
+                                    },
+                                    Function.identity()
+                            )
+            );
+            return this;
+        }
+
+        public NpgApiKeyHandler build() {
+            return new NpgApiKeyHandler(defaultApiKey, methodsApiKeyMapping);
+        }
+    }
 
     private final String defaultApiKey;
 
@@ -23,60 +93,22 @@ public class NpgApiKeyHandler {
     /**
      * Constructor
      *
-     * @param defaultApiKey - NPG default api key
+     * @param defaultApiKey        NPG default api key
+     * @param methodsApiKeyMapping the payment method psp api key mapping
      */
-    public NpgApiKeyHandler(String defaultApiKey) {
-        this.defaultApiKey = defaultApiKey;
-        this.methodsApiKeyMapping = new EnumMap<>(NpgClient.PaymentMethod.class);
-    }
-
-    /**
-     * Add specific {@link NpgPspApiKeysConfig} configuration for input payment
-     * method
-     *
-     * @param paymentMethod       the payment method for which register npg api keys
-     *                            configuration
-     * @param npgPspApiKeysConfig the npg api keys config
-     */
-    public void addMethodPspMapping(
-                                    NpgClient.PaymentMethod paymentMethod,
-                                    NpgPspApiKeysConfig npgPspApiKeysConfig
+    NpgApiKeyHandler(
+            String defaultApiKey,
+            Map<NpgClient.PaymentMethod, NpgPspApiKeysConfig> methodsApiKeyMapping
     ) {
-        if (this.methodsApiKeyMapping.containsKey(paymentMethod)) {
+        Objects.requireNonNull(defaultApiKey);
+        Objects.requireNonNull(methodsApiKeyMapping);
+        if (methodsApiKeyMapping.isEmpty()) {
             throw new NpgApiKeyConfigurationException(
-                    "Api key mapping already registered for payment method: [%s]".formatted(paymentMethod)
+                    "Invalid configuration detected! Payment methods api key mapping cannot be empty"
             );
         }
-        this.methodsApiKeyMapping.put(paymentMethod, npgPspApiKeysConfig);
-    }
-
-    /**
-     * Add specific {@link NpgPspApiKeysConfig} configuration for input payment
-     * method. This method is the same as
-     * {@link #addMethodPspMapping(NpgClient.PaymentMethod, NpgPspApiKeysConfig)}
-     * one but parse psp api keys configuration with the given input information
-     *
-     * @param paymentMethod the payment methods to be added to mapping
-     * @param pspKeys       the required psp keys
-     * @param pspToHandle   the psp expected to be handled
-     * @param objectMapper  the object mapper instance to be used to parse api keys
-     *                      configuration
-     */
-    public void addMethodPspMapping(
-                                    NpgClient.PaymentMethod paymentMethod,
-                                    String pspKeys,
-                                    Set<String> pspToHandle,
-                                    ObjectMapper objectMapper
-    ) {
-        addMethodPspMapping(
-                paymentMethod,
-                NpgPspApiKeysConfig.parseApiKeyConfiguration(pspKeys, pspToHandle, paymentMethod, objectMapper).fold(
-                        exception -> {
-                            throw exception;
-                        },
-                        Function.identity()
-                )
-        );
+        this.defaultApiKey = defaultApiKey;
+        this.methodsApiKeyMapping = Collections.unmodifiableMap(methodsApiKeyMapping);
     }
 
     /**

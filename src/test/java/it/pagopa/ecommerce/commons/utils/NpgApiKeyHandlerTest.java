@@ -6,7 +6,6 @@ import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.exceptions.NpgApiKeyConfigurationException;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,23 +17,20 @@ class NpgApiKeyHandlerTest {
     private static final String DEFAULT_API_KEY = "default-api-key";
 
     private static final String PSP_ID = "pspId1";
-    private static final NpgApiKeyHandler npgApiKeyHandler;
-
-    static {
-        npgApiKeyHandler = new NpgApiKeyHandler(DEFAULT_API_KEY);
-        npgApiKeyHandler.addMethodPspMapping(
-                NpgClient.PaymentMethod.PAYPAL,
-                new NpgPspApiKeysConfig(
-                        Map.of(PSP_ID, "pspId1-paypal-api-key")
-                )
-        );
-        npgApiKeyHandler.addMethodPspMapping(
-                NpgClient.PaymentMethod.CARDS,
-                new NpgPspApiKeysConfig(
-                        Map.of(PSP_ID, "pspId1-cards-api-key")
-                )
-        );
-    }
+    private final NpgApiKeyHandler npgApiKeyHandler = new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+            .setDefaultApiKey(DEFAULT_API_KEY)
+            .addMethodPspMapping(
+                    NpgClient.PaymentMethod.PAYPAL,
+                    new NpgPspApiKeysConfig(
+                            Map.of(PSP_ID, "pspId1-paypal-api-key")
+                    )
+            ).addMethodPspMapping(
+                    NpgClient.PaymentMethod.CARDS,
+                    new NpgPspApiKeysConfig(
+                            Map.of(PSP_ID, "pspId1-cards-api-key")
+                    )
+            )
+            .build();
 
     @Test
     void shouldRetrieveApiKeySuccessfully() {
@@ -55,8 +51,20 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> npgApiKeyHandler
-                        .addMethodPspMapping(NpgClient.PaymentMethod.PAYPAL, new NpgPspApiKeysConfig(new HashMap<>()))
+                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                        .setDefaultApiKey(DEFAULT_API_KEY)
+                        .addMethodPspMapping(
+                                NpgClient.PaymentMethod.PAYPAL,
+                                new NpgPspApiKeysConfig(
+                                        Map.of(PSP_ID, "pspId1-paypal-api-key")
+                                )
+                        ).addMethodPspMapping(
+                                NpgClient.PaymentMethod.PAYPAL,
+                                new NpgPspApiKeysConfig(
+                                        Map.of(PSP_ID, "pspId1-paypal-api-key")
+                                )
+                        )
+                        .build()
         );
         assertEquals("Api key mapping already registered for payment method: [PAYPAL]", exception.getMessage());
 
@@ -65,16 +73,19 @@ class NpgApiKeyHandlerTest {
     @Test
     void shouldAddPaymentMethodMappingParsingConfiguration() {
         // test
-        npgApiKeyHandler.addMethodPspMapping(
-                NpgClient.PaymentMethod.BANCOMATPAY,
-                """
-                        {
-                            "%s": "pspId1-bancomatpay-api-key"
-                        }
-                        """.formatted(PSP_ID),
-                Set.of(PSP_ID),
-                new ObjectMapper()
-        );
+        NpgApiKeyHandler npgApiKeyHandler = new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                .setDefaultApiKey(DEFAULT_API_KEY)
+                .addMethodPspMapping(
+                        NpgClient.PaymentMethod.BANCOMATPAY,
+                        """
+                                {
+                                    "%s": "pspId1-bancomatpay-api-key"
+                                }
+                                """.formatted(PSP_ID),
+                        Set.of(PSP_ID),
+                        new ObjectMapper()
+                )
+                .build();
         Either<NpgApiKeyConfigurationException, String> apiKey = npgApiKeyHandler
                 .getApiKeyForPaymentMethod(NpgClient.PaymentMethod.BANCOMATPAY, PSP_ID);
         // assertions
@@ -86,21 +97,24 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> npgApiKeyHandler.addMethodPspMapping(
-                        NpgClient.PaymentMethod.MYBANK,
-                        """
-                                {
+                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                        .setDefaultApiKey(DEFAULT_API_KEY)
+                        .addMethodPspMapping(
+                                NpgClient.PaymentMethod.BANCOMATPAY,
+                                """
+                                        {
 
-                                }
-                                """,
-                        Set.of(PSP_ID),
-                        new ObjectMapper()
-                )
+                                        }
+                                        """,
+                                Set.of(PSP_ID),
+                                new ObjectMapper()
+                        )
+                        .build()
         );
 
         // assertions
         assertEquals(
-                "Error parsing NPG PSP api keys configuration for payment method: [MYBANK], cause: Misconfigured api keys. Missing keys: [pspId1]",
+                "Error parsing NPG PSP api keys configuration for payment method: [BANCOMATPAY], cause: Misconfigured api keys. Missing keys: [pspId1]",
                 exception.getMessage()
         );
     }
