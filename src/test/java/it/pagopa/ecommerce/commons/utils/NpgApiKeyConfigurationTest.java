@@ -17,7 +17,7 @@ class NpgApiKeyConfigurationTest {
     private static final String DEFAULT_API_KEY = "default-api-key";
 
     private static final String PSP_ID = "pspId1";
-    private final NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+    private final NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.Builder()
             .setDefaultApiKey(DEFAULT_API_KEY)
             .withMethodPspMapping(
                     NpgClient.PaymentMethod.PAYPAL,
@@ -51,7 +51,7 @@ class NpgApiKeyConfigurationTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+                () -> new NpgApiKeyConfiguration.Builder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
                         .withMethodPspMapping(
                                 NpgClient.PaymentMethod.PAYPAL,
@@ -73,7 +73,7 @@ class NpgApiKeyConfigurationTest {
     @Test
     void shouldAddPaymentMethodMappingParsingConfiguration() {
         // test
-        NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+        NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.Builder()
                 .setDefaultApiKey(DEFAULT_API_KEY)
                 .withMethodPspMapping(
                         NpgClient.PaymentMethod.BANCOMATPAY,
@@ -97,7 +97,7 @@ class NpgApiKeyConfigurationTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+                () -> new NpgApiKeyConfiguration.Builder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
                         .withMethodPspMapping(
                                 NpgClient.PaymentMethod.BANCOMATPAY,
@@ -137,7 +137,7 @@ class NpgApiKeyConfigurationTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+                () -> new NpgApiKeyConfiguration.Builder()
                         .withMethodPspMapping(
                                 NpgClient.PaymentMethod.PAYPAL,
                                 new NpgPspApiKeysConfig(
@@ -160,7 +160,7 @@ class NpgApiKeyConfigurationTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+                () -> new NpgApiKeyConfiguration.Builder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
                         .build()
         );

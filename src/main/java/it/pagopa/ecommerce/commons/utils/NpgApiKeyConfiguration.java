@@ -10,15 +10,14 @@ import java.util.function.Function;
 
 /**
  * This class handles all NPG api keys such as default one and per methods psp.
- * Use {@link NpgApiKeyConfigurationBuilder} class to initialize a new class
- * instance api keys
+ * Use {@link Builder} class to initialize a new class instance api keys
  */
 public class NpgApiKeyConfiguration {
 
     /**
      * NpgApiKeyConfiguration builder class
      */
-    public static class NpgApiKeyConfigurationBuilder {
+    public static class Builder {
         private String defaultApiKey;
         private final Map<NpgClient.PaymentMethod, NpgPspApiKeysConfig> methodsApiKeyMapping = new EnumMap<>(
                 NpgClient.PaymentMethod.class
@@ -30,7 +29,7 @@ public class NpgApiKeyConfiguration {
          * @param defaultApiKey the default api key to be set
          * @return this builder instance
          */
-        public NpgApiKeyConfigurationBuilder setDefaultApiKey(String defaultApiKey) {
+        public Builder setDefaultApiKey(String defaultApiKey) {
             this.defaultApiKey = defaultApiKey;
             return this;
         }
@@ -45,9 +44,9 @@ public class NpgApiKeyConfiguration {
          * @return this builder instance
          * @throws NpgApiKeyConfigurationException if `paymentMethod` was already mapped
          */
-        public NpgApiKeyConfigurationBuilder withMethodPspMapping(
-                                                                  NpgClient.PaymentMethod paymentMethod,
-                                                                  NpgPspApiKeysConfig npgPspApiKeysConfig
+        public Builder withMethodPspMapping(
+                                            NpgClient.PaymentMethod paymentMethod,
+                                            NpgPspApiKeysConfig npgPspApiKeysConfig
         ) {
             if (this.methodsApiKeyMapping.containsKey(paymentMethod)) {
                 throw new NpgApiKeyConfigurationException(
@@ -77,11 +76,11 @@ public class NpgApiKeyConfiguration {
          * @throws NpgApiKeyConfigurationException in case of error parsing psp api keys
          *                                         configuration
          */
-        public NpgApiKeyConfigurationBuilder withMethodPspMapping(
-                                                                  NpgClient.PaymentMethod paymentMethod,
-                                                                  String jsonSecretConfiguration,
-                                                                  Set<String> pspToHandle,
-                                                                  ObjectMapper objectMapper
+        public Builder withMethodPspMapping(
+                                            NpgClient.PaymentMethod paymentMethod,
+                                            String jsonSecretConfiguration,
+                                            Set<String> pspToHandle,
+                                            ObjectMapper objectMapper
         ) {
             withMethodPspMapping(
                     paymentMethod,
