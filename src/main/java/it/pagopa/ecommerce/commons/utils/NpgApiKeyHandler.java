@@ -24,6 +24,12 @@ public class NpgApiKeyHandler {
                 NpgClient.PaymentMethod.class
         );
 
+        /**
+         * Set the default NPG api key
+         *
+         * @param defaultApiKey the default api key to be set
+         * @return this builder instance
+         */
         public NpgApiKeyHandlerBuilder setDefaultApiKey(String defaultApiKey) {
             this.defaultApiKey = defaultApiKey;
             return this;
@@ -36,6 +42,7 @@ public class NpgApiKeyHandler {
          * @param paymentMethod       the payment method for which register npg api keys
          *                            configuration
          * @param npgPspApiKeysConfig the npg api keys config
+         * @return this builder instance
          */
         public NpgApiKeyHandlerBuilder addMethodPspMapping(
                                                            NpgClient.PaymentMethod paymentMethod,
@@ -61,6 +68,7 @@ public class NpgApiKeyHandler {
          * @param pspToHandle   the psp expected to be handled
          * @param objectMapper  the object mapper instance to be used to parse api keys
          *                      configuration
+         * @return this builder instance
          */
         public NpgApiKeyHandlerBuilder addMethodPspMapping(
                                                            NpgClient.PaymentMethod paymentMethod,
@@ -81,6 +89,13 @@ public class NpgApiKeyHandler {
             return this;
         }
 
+        /**
+         * Build {@link NpgApiKeyHandler} handler instance with the given api keys
+         * configurations
+         *
+         * @return a new {@link NpgApiKeyHandler} instance or throw an error if
+         *         configuration are not correct
+         */
         public NpgApiKeyHandler build() {
             return new NpgApiKeyHandler(defaultApiKey, methodsApiKeyMapping);
         }
@@ -100,11 +115,14 @@ public class NpgApiKeyHandler {
             String defaultApiKey,
             Map<NpgClient.PaymentMethod, NpgPspApiKeysConfig> methodsApiKeyMapping
     ) {
-        Objects.requireNonNull(defaultApiKey);
-        Objects.requireNonNull(methodsApiKeyMapping);
-        if (methodsApiKeyMapping.isEmpty()) {
+        if (Objects.isNull(defaultApiKey)) {
             throw new NpgApiKeyConfigurationException(
-                    "Invalid configuration detected! Payment methods api key mapping cannot be empty"
+                    "Invalid configuration detected! Default api key mapping cannot be null"
+            );
+        }
+        if (Objects.isNull(methodsApiKeyMapping) || methodsApiKeyMapping.isEmpty()) {
+            throw new NpgApiKeyConfigurationException(
+                    "Invalid configuration detected! Payment methods api key mapping cannot be null or empty"
             );
         }
         this.defaultApiKey = defaultApiKey;

@@ -132,4 +132,43 @@ class NpgApiKeyHandlerTest {
         );
     }
 
+    @Test
+    void shouldThrowExceptionForMissingDefaultApiKey() {
+        // test
+        NpgApiKeyConfigurationException exception = assertThrows(
+                NpgApiKeyConfigurationException.class,
+                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                        .addMethodPspMapping(
+                                NpgClient.PaymentMethod.PAYPAL,
+                                new NpgPspApiKeysConfig(
+                                        Map.of(PSP_ID, "pspId1-paypal-api-key")
+                                )
+                        ).addMethodPspMapping(
+                                NpgClient.PaymentMethod.CARDS,
+                                new NpgPspApiKeysConfig(
+                                        Map.of(PSP_ID, "pspId1-cards-api-key")
+                                )
+                        )
+                        .build()
+        );
+        // assertions
+        assertEquals("Invalid configuration detected! Default api key mapping cannot be null", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionForMissingMethodsKeys() {
+        // test
+        NpgApiKeyConfigurationException exception = assertThrows(
+                NpgApiKeyConfigurationException.class,
+                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                        .setDefaultApiKey(DEFAULT_API_KEY)
+                        .build()
+        );
+        // assertions
+        assertEquals(
+                "Invalid configuration detected! Payment methods api key mapping cannot be null or empty",
+                exception.getMessage()
+        );
+    }
+
 }
