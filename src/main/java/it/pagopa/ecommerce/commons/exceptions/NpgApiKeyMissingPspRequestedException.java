@@ -6,7 +6,7 @@ import java.util.Set;
  * Exception thrown when requesting an API key from NPG configuration for a
  * nonexisting PSP
  */
-public class NpgApiKeyMissingPspRequestedException extends RuntimeException {
+public class NpgApiKeyMissingPspRequestedException extends NpgApiKeyConfigurationException {
 
     /**
      * Constructor
@@ -19,8 +19,9 @@ public class NpgApiKeyMissingPspRequestedException extends RuntimeException {
             Set<String> availablePsps
     ) {
         super(
-                "Requested API key for PSP %s. Available PSPs: %s"
+                "Requested API key for PSP: [%s]. Available PSPs: %s"
                         .formatted(psp, availablePsps)
         );
     }
+
 }
