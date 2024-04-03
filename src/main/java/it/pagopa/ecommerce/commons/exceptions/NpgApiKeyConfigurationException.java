@@ -11,28 +11,28 @@ public class NpgApiKeyConfigurationException extends RuntimeException {
     /**
      * Constructor
      *
-     * @param errorCause    error cause description
+     * @param message       error message
      * @param paymentMethod the payment method for which configuration parsing
      *                      failed
      */
     public NpgApiKeyConfigurationException(
-            String errorCause,
+            String message,
             NpgClient.PaymentMethod paymentMethod
     ) {
         super(
                 "Error parsing NPG PSP api keys configuration for payment method: [%s], cause: %s"
-                        .formatted(paymentMethod, errorCause)
+                        .formatted(paymentMethod, message)
         );
     }
 
     /**
      * Constructor
      *
-     * @param errorCause error cause description
+     * @param message error message
      */
     public NpgApiKeyConfigurationException(
-            String errorCause
+            String message
     ) {
-        super(errorCause);
+        super(message);
     }
 }

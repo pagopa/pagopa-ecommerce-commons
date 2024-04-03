@@ -12,19 +12,19 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class NpgApiKeyHandlerTest {
+class NpgApiKeyConfigurationTest {
 
     private static final String DEFAULT_API_KEY = "default-api-key";
 
     private static final String PSP_ID = "pspId1";
-    private final NpgApiKeyHandler npgApiKeyHandler = new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+    private final NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
             .setDefaultApiKey(DEFAULT_API_KEY)
-            .addMethodPspMapping(
+            .withMethodPspMapping(
                     NpgClient.PaymentMethod.PAYPAL,
                     new NpgPspApiKeysConfig(
                             Map.of(PSP_ID, "pspId1-paypal-api-key")
                     )
-            ).addMethodPspMapping(
+            ).withMethodPspMapping(
                     NpgClient.PaymentMethod.CARDS,
                     new NpgPspApiKeysConfig(
                             Map.of(PSP_ID, "pspId1-cards-api-key")
@@ -35,10 +35,10 @@ class NpgApiKeyHandlerTest {
     @Test
     void shouldRetrieveApiKeySuccessfully() {
         // test
-        String defaultApiKey = npgApiKeyHandler.getDefaultApiKey();
-        Either<NpgApiKeyConfigurationException, String> paypalApiKey = npgApiKeyHandler
+        String defaultApiKey = npgApiKeyConfiguration.getDefaultApiKey();
+        Either<NpgApiKeyConfigurationException, String> paypalApiKey = npgApiKeyConfiguration
                 .getApiKeyForPaymentMethod(NpgClient.PaymentMethod.PAYPAL, PSP_ID);
-        Either<NpgApiKeyConfigurationException, String> cardsApiKey = npgApiKeyHandler
+        Either<NpgApiKeyConfigurationException, String> cardsApiKey = npgApiKeyConfiguration
                 .getApiKeyForPaymentMethod(NpgClient.PaymentMethod.CARDS, PSP_ID);
         // assertions
         assertEquals(DEFAULT_API_KEY, defaultApiKey);
@@ -51,14 +51,14 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
-                        .addMethodPspMapping(
+                        .withMethodPspMapping(
                                 NpgClient.PaymentMethod.PAYPAL,
                                 new NpgPspApiKeysConfig(
                                         Map.of(PSP_ID, "pspId1-paypal-api-key")
                                 )
-                        ).addMethodPspMapping(
+                        ).withMethodPspMapping(
                                 NpgClient.PaymentMethod.PAYPAL,
                                 new NpgPspApiKeysConfig(
                                         Map.of(PSP_ID, "pspId1-paypal-api-key")
@@ -73,9 +73,9 @@ class NpgApiKeyHandlerTest {
     @Test
     void shouldAddPaymentMethodMappingParsingConfiguration() {
         // test
-        NpgApiKeyHandler npgApiKeyHandler = new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+        NpgApiKeyConfiguration npgApiKeyConfiguration = new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
                 .setDefaultApiKey(DEFAULT_API_KEY)
-                .addMethodPspMapping(
+                .withMethodPspMapping(
                         NpgClient.PaymentMethod.BANCOMATPAY,
                         """
                                 {
@@ -86,7 +86,7 @@ class NpgApiKeyHandlerTest {
                         new ObjectMapper()
                 )
                 .build();
-        Either<NpgApiKeyConfigurationException, String> apiKey = npgApiKeyHandler
+        Either<NpgApiKeyConfigurationException, String> apiKey = npgApiKeyConfiguration
                 .getApiKeyForPaymentMethod(NpgClient.PaymentMethod.BANCOMATPAY, PSP_ID);
         // assertions
         assertEquals("pspId1-bancomatpay-api-key", apiKey.get());
@@ -97,9 +97,9 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
-                        .addMethodPspMapping(
+                        .withMethodPspMapping(
                                 NpgClient.PaymentMethod.BANCOMATPAY,
                                 """
                                         {
@@ -123,7 +123,7 @@ class NpgApiKeyHandlerTest {
     void shouldReturnEitherLeftForMissingApiKey() {
         // test
         String pspId = "missingPspId";
-        Either<NpgApiKeyConfigurationException, String> paypalApiKey = npgApiKeyHandler
+        Either<NpgApiKeyConfigurationException, String> paypalApiKey = npgApiKeyConfiguration
                 .getApiKeyForPaymentMethod(NpgClient.PaymentMethod.PAYPAL, pspId);
         // assertions
         assertEquals(
@@ -137,13 +137,13 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
-                        .addMethodPspMapping(
+                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
+                        .withMethodPspMapping(
                                 NpgClient.PaymentMethod.PAYPAL,
                                 new NpgPspApiKeysConfig(
                                         Map.of(PSP_ID, "pspId1-paypal-api-key")
                                 )
-                        ).addMethodPspMapping(
+                        ).withMethodPspMapping(
                                 NpgClient.PaymentMethod.CARDS,
                                 new NpgPspApiKeysConfig(
                                         Map.of(PSP_ID, "pspId1-cards-api-key")
@@ -160,7 +160,7 @@ class NpgApiKeyHandlerTest {
         // test
         NpgApiKeyConfigurationException exception = assertThrows(
                 NpgApiKeyConfigurationException.class,
-                () -> new NpgApiKeyHandler.NpgApiKeyHandlerBuilder()
+                () -> new NpgApiKeyConfiguration.NpgApiKeyConfigurationBuilder()
                         .setDefaultApiKey(DEFAULT_API_KEY)
                         .build()
         );
