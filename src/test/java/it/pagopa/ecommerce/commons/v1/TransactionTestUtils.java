@@ -43,7 +43,7 @@ public class TransactionTestUtils {
     public static final String FAULT_CODE_STRING = "";
     public static final String PAYMENT_INSTRUMENT_ID = "paymentInstrumentId";
     public static final String PSP_ID = "pspId";
-    public static final String PAYMENT_TYPE_CODE = "paymentTypeCode";
+    public static final String PAYMENT_TYPE_CODE = "CP";
     public static final String PAYMENT_CONTEXT_CODE = "paymentContextCode";
     public static final String BROKER_NAME = "brokerName";
     public static final String PSP_CHANNEL_CODE = "pspChannelCode";
