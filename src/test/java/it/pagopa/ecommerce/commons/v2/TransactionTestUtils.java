@@ -69,7 +69,9 @@ public class TransactionTestUtils {
     public static final String LANGUAGE = "it-IT";
     public static final URI LOGO_URI;
 
-    private static final boolean IS_ALL_CCP_FALSE = false;
+    public static final boolean IS_ALL_CCP_FALSE = false;
+
+    public static final String USER_ID = UUID.randomUUID().toString();
 
     static {
         try {
@@ -124,6 +126,15 @@ public class TransactionTestUtils {
                                                                      String creationDate,
                                                                      TransactionGatewayActivationData transactionActivatedData
     ) {
+        return transactionActivateEvent(creationDate, transactionActivatedData, USER_ID);
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData,
+                                                                     String userId
+    ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 creationDate,
@@ -152,7 +163,8 @@ public class TransactionTestUtils {
                         Transaction.ClientId.CHECKOUT,
                         ID_CART,
                         PAYMENT_TOKEN_VALIDITY_TIME_SEC,
-                        transactionActivatedData
+                        transactionActivatedData,
+                        userId
                 )
         );
     }
@@ -196,7 +208,8 @@ public class TransactionTestUtils {
                 Transaction.ClientId.CHECKOUT,
                 ID_CART,
                 PAYMENT_TOKEN_VALIDITY_TIME_SEC,
-                transactionActivatedData
+                transactionActivatedData,
+                USER_ID
         );
     }
 
@@ -609,7 +622,8 @@ public class TransactionTestUtils {
                 Transaction.ClientId.CHECKOUT,
                 creationDateTime.toString(),
                 ID_CART,
-                RRN
+                RRN,
+                USER_ID
         );
     }
 

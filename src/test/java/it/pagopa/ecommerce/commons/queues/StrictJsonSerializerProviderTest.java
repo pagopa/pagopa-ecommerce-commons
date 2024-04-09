@@ -266,7 +266,8 @@ class StrictJsonSerializerProviderTest {
                     "clientId": "CHECKOUT",
                     "idCart": "ecIdCart",
                     "paymentTokenValiditySeconds": 900,
-                    "transactionGatewayActivationData": {"type":"EMPTY"}
+                    "transactionGatewayActivationData": {"type":"EMPTY"},
+                    "userId": "34a07bc2-4dad-4a9a-a941-86d232829c94"
                   },
                   "eventCode": "TRANSACTION_ACTIVATED_EVENT"
                 }
@@ -301,7 +302,8 @@ class StrictJsonSerializerProviderTest {
                         it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId.CHECKOUT,
                         ID_CART,
                         PAYMENT_TOKEN_VALIDITY_TIME_SEC,
-                        new EmptyTransactionGatewayActivationData()
+                        new EmptyTransactionGatewayActivationData(),
+                        "34a07bc2-4dad-4a9a-a941-86d232829c94"
                 )
         );
         event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");

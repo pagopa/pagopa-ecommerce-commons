@@ -55,6 +55,9 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private String gatewayAuthorizationStatus;
 
+    @Nullable
+    private String userId;
+
     /**
      * Enumeration of transaction client initiators
      */
@@ -100,6 +103,7 @@ public class Transaction extends BaseTransactionView {
      * @param creationDate   transaction creation date
      * @param idCart         the ec cart id
      * @param rrn            the rrn information
+     * @param userId         the user unique id
      */
     /*
      * @formatter:off
@@ -125,7 +129,8 @@ public class Transaction extends BaseTransactionView {
             ClientId clientId,
             String creationDate,
             @Nullable String idCart,
-            @Nullable String rrn
+            @Nullable String rrn,
+            @Nullable String userId
     ) {
         super(transactionId);
         this.email = email;
@@ -136,6 +141,7 @@ public class Transaction extends BaseTransactionView {
         this.creationDate = creationDate;
         this.idCart = idCart;
         this.rrn = rrn;
+        this.userId = userId;
     }
 
     /**
@@ -154,7 +160,8 @@ public class Transaction extends BaseTransactionView {
                 transaction.getTransactionActivatedData().getClientId(),
                 transaction.getCreationDate().toString(),
                 transaction.getTransactionActivatedData().getIdCart(),
-                null
+                null,
+                transaction.getTransactionActivatedData().getUserId()
         );
     }
 

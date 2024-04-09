@@ -57,6 +57,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param paymentTokenValidityTimeSec      the payment token validity time in
      *                                         seconds
      * @param transactionGatewayActivationData transaction activation data
+     * @param userId                           the user unique id
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -68,7 +69,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ClientId clientId,
             String idCart,
             int paymentTokenValidityTimeSec,
-            TransactionGatewayActivationData transactionGatewayActivationData
+            TransactionGatewayActivationData transactionGatewayActivationData,
+            String userId
     ) {
         super(
 
@@ -105,7 +107,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                         clientId,
                         idCart,
                         paymentTokenValidityTimeSec,
-                        transactionGatewayActivationData
+                        transactionGatewayActivationData,
+                        userId
                 )
         );
     }
@@ -126,6 +129,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      * @param paymentTokenValidityTimeSec      the payment token validity time in
      *                                         seconds
      * @param transactionGatewayActivationData transaction activation data
+     * @param userId                           the user unique id
      */
     public TransactionActivated(
             TransactionId transactionId,
@@ -136,8 +140,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             ClientId clientId,
             String idCart,
             int paymentTokenValidityTimeSec,
-
-            TransactionGatewayActivationData transactionGatewayActivationData
+            TransactionGatewayActivationData transactionGatewayActivationData,
+            String userId
     ) {
         this(
                 transactionId,
@@ -149,7 +153,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                 clientId,
                 idCart,
                 paymentTokenValidityTimeSec,
-                transactionGatewayActivationData
+                transactionGatewayActivationData,
+                userId
         );
     }
 

@@ -21,10 +21,15 @@ import it.pagopa.ecommerce.commons.queues.mixin.serialization.v2.QueueEventMixIn
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.nio.charset.StandardCharsets;
 
 import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -198,8 +203,11 @@ class TransactionEventTypeResolverTest {
                 .verifyComplete();
     }
 
-    @Test
-    void canRoundTripQueueTransactionActivatedEventSerializationWithEmptyActivationData() {
+    @ParameterizedTest
+    @ValueSource(strings = "a91a4e54-d1bc-48fb-3221-cc2893fc88e2")
+    @NullSource
+    void canRoundTripQueueTransactionActivatedEventSerializationWithEmptyActivationData(String userId) {
+        String expectedUserId = userId == null ? "null" : "\"" + userId + "\"";
         String expectedSerializedEvent = """
                 {
                     "event": {
@@ -236,7 +244,8 @@ class TransactionEventTypeResolverTest {
                             "paymentTokenValiditySeconds": 900,
                             "transactionGatewayActivationData": {
                                 "type": "EMPTY"
-                            }
+                            },
+                            "userId": %s
                         },
                         "eventCode": "TRANSACTION_ACTIVATED_EVENT"
                     },
@@ -246,7 +255,8 @@ class TransactionEventTypeResolverTest {
                         "baggage": "mock_baggage"
                     }
                 }
-                """.replace("\n", "").replace(" ", "");
+                """.formatted(expectedUserId)
+                .replace("\n", "").replace(" ", "");
         QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionActivateEvent(new EmptyTransactionGatewayActivationData()),
                 MOCK_TRACING_INFO
@@ -255,6 +265,7 @@ class TransactionEventTypeResolverTest {
         originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
         originalEvent.event().getData().setEmail(new Confidential<>("a91a4e54-d1bc-48fb-b252-cc2893fc88e2"));
         originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setUserId(userId);
         byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
         String serializedString = new String(serialized);
         System.out.println("Serialized object: " + serializedString);
@@ -277,8 +288,11 @@ class TransactionEventTypeResolverTest {
                 .verifyComplete();
     }
 
-    @Test
-    void canRoundTripQueueTransactionActivatedEventSerializationWithNpgActivationData() {
+    @ParameterizedTest
+    @ValueSource(strings = "a91a4e54-d1bc-48fb-3221-cc2893fc88e2")
+    @NullSource
+    void canRoundTripQueueTransactionActivatedEventSerializationWithNpgActivationData(String userId) {
+        String expectedUserId = userId == null ? "null" : "\"" + userId + "\"";
         String expectedSerializedEvent = """
                 {
                     "event": {
@@ -317,7 +331,8 @@ class TransactionEventTypeResolverTest {
                                 "type": "NPG",
                                 "orderId": "npgOrderId",
                                 "correlationId": "npgCorrelationId"
-                            }
+                            },
+                            "userId": %s
                         },
                         "eventCode": "TRANSACTION_ACTIVATED_EVENT"
                     },
@@ -326,7 +341,7 @@ class TransactionEventTypeResolverTest {
                         "tracestate": "mock_tracestate",
                         "baggage": "mock_baggage"
                     }
-                }""".replace("\n", "").replace(" ", "");
+                }""".formatted(expectedUserId).replace("\n", "").replace(" ", "");
         QueueEvent<TransactionActivatedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionActivateEvent(
                         TransactionTestUtils.npgTransactionGatewayActivationData()
@@ -337,6 +352,7 @@ class TransactionEventTypeResolverTest {
         originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
         originalEvent.event().getData().setEmail(new Confidential<>("a91a4e54-d1bc-48fb-b252-cc2893fc88e2"));
         originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setUserId(userId);
         byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
         String serializedString = new String(serialized);
         System.out.println("Serialized object: " + serializedString);
@@ -767,6 +783,77 @@ class TransactionEventTypeResolverTest {
                         )
         )
                 .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeTransactionActivatedEventWithUserIdFieldNotSet() {
+        String serializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "email": {
+                                "data": "a91a4e54-d1bc-48fb-b252-cc2893fc88e2"
+                            },
+                            "paymentNotices": [
+                                {
+                                    "paymentToken": "paymentToken",
+                                    "rptId": "77777777777111111111111111111",
+                                    "description": "description",
+                                    "amount": 100,
+                                    "paymentContextCode": "paymentContextCode",
+                                    "transferList": [
+                                        {
+                                            "paFiscalCode": "transferPAFiscalCode",
+                                            "digitalStamp": true,
+                                            "transferAmount": 0,
+                                            "transferCategory": "transferCategory"
+                                        }
+                                    ],
+                                    "allCCP": false
+                                }
+                            ],
+                            "faultCode": "",
+                            "faultCodeString": "",
+                            "clientId": "CHECKOUT",
+                            "idCart": "ecIdCart",
+                            "paymentTokenValiditySeconds": 900,
+                            "transactionGatewayActivationData": {
+                                "type": "EMPTY"
+                            }
+                        },
+                        "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """;
+        QueueEvent<TransactionActivatedEvent> expectedEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionActivateEvent(new EmptyTransactionGatewayActivationData()),
+                MOCK_TRACING_INFO
+        );
+        expectedEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        expectedEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        expectedEvent.event().getData().setEmail(new Confidential<>("a91a4e54-d1bc-48fb-b252-cc2893fc88e2"));
+        expectedEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        expectedEvent.event().getData().setUserId(null);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionActivatedEvent>>() {
+                                }
+                        )
+        )
+                .assertNext(deserializedEvent -> assertEquals(deserializedEvent, expectedEvent))
                 .verifyComplete();
     }
 }
