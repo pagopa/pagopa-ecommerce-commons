@@ -51,7 +51,8 @@ public final class EmptyTransaction implements Transaction {
                 event.getData().getClientId(),
                 event.getData().getIdCart(),
                 event.getData().getPaymentTokenValiditySeconds(),
-                event.getData().getTransactionGatewayActivationData()
+                event.getData().getTransactionGatewayActivationData(),
+                event.getData().getUserId()
         );
     }
 

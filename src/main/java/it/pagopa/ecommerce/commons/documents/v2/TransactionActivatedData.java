@@ -31,5 +31,7 @@ public class TransactionActivatedData {
     private String idCart;
     private int paymentTokenValiditySeconds;
     private TransactionGatewayActivationData transactionGatewayActivationData;
+    @Nullable
+    private String userId;
 
 }
