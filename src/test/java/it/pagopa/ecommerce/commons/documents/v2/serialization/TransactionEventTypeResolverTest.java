@@ -454,7 +454,8 @@ class TransactionEventTypeResolverTest {
                                    "operationResult": "EXECUTED",
                                    "operationId": "operationId",
                                    "paymentEndToEndId": "paymentEndToEndId",
-                                   "errorCode": "errorCode"
+                                   "errorCode": "errorCode",
+                                   "validationServiceId": "validationServiceId"
                                }
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
@@ -472,7 +473,8 @@ class TransactionEventTypeResolverTest {
                                 OperationResultDto.EXECUTED,
                                 "operationId",
                                 "paymentEndToEndId",
-                                "errorCode"
+                                "errorCode",
+                                "validationServiceId"
                         )
                 ),
                 MOCK_TRACING_INFO
@@ -854,6 +856,64 @@ class TransactionEventTypeResolverTest {
                         )
         )
                 .assertNext(deserializedEvent -> assertEquals(deserializedEvent, expectedEvent))
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeAuthorizationCompletedEventSerializationWithNPGDataAndValidationServiceIdFieldNotSet() {
+        String serializedEvent = """
+                {
+                       "event": {
+                           "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationCompletedEvent",
+                           "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                           "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                           "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                           "data": {
+                               "authorizationCode": "authorizationCode",
+                               "rrn": "rrn",
+                               "timestampOperation": "2023-01-01T01:02:03+01:00",
+                               "transactionGatewayAuthorizationData": {
+                                   "type": "NPG",
+                                   "operationResult": "EXECUTED",
+                                   "operationId": "operationId",
+                                   "paymentEndToEndId": "paymentEndToEndId",
+                                   "errorCode": "errorCode"
+                               }
+                           },
+                           "eventCode": "TRANSACTION_AUTHORIZATION_COMPLETED_EVENT"
+                       },
+                       "tracingInfo": {
+                           "traceparent": "mock_traceparent",
+                           "tracestate": "mock_tracestate",
+                           "baggage": "mock_baggage"
+                       }
+                   }
+                """;
+        QueueEvent<TransactionAuthorizationCompletedEvent> expectedEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationCompletedEvent(
+                        new NpgTransactionGatewayAuthorizationData(
+                                OperationResultDto.EXECUTED,
+                                "operationId",
+                                "paymentEndToEndId",
+                                "errorCode",
+                                null
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        expectedEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        expectedEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        expectedEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionAuthorizationCompletedEvent>>() {
+                                }
+                        )
+        )
+                .assertNext(event -> assertEquals(expectedEvent, event))
                 .verifyComplete();
     }
 }

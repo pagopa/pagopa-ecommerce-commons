@@ -35,6 +35,12 @@ public final class NpgTransactionGatewayAuthorizationData implements Transaction
     @Nullable
     private String errorCode;
 
+    /**
+     * NPG additionalData.validationServiceId optional field
+     */
+    @Nullable
+    private String validationServiceId;
+
     private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.NPG;
 
     @Override

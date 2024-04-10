@@ -73,6 +73,8 @@ public class TransactionTestUtils {
 
     public static final String USER_ID = UUID.randomUUID().toString();
 
+    public static final String NPG_VALIDATION_SERVICE_ID = "validationServiceId";
+
     static {
         try {
             LOGO_URI = new URI("http://paymentMethodLogo.it");
@@ -730,11 +732,21 @@ public class TransactionTestUtils {
                                                                                              OperationResultDto outcomeDto,
                                                                                              String errorCode
     ) {
+        return npgTransactionGatewayAuthorizationData(outcomeDto, errorCode, NPG_VALIDATION_SERVICE_ID);
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData npgTransactionGatewayAuthorizationData(
+                                                                                             OperationResultDto outcomeDto,
+                                                                                             String errorCode,
+                                                                                             String validationServiceId
+    ) {
         return new NpgTransactionGatewayAuthorizationData(
                 outcomeDto,
                 NPG_OPERATION_ID,
                 NPG_PAYMENT_END_TO_END_ID,
-                errorCode
+                errorCode,
+                validationServiceId
         );
     }
 
