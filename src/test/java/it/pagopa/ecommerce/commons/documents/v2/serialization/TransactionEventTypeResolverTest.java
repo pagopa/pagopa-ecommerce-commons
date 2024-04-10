@@ -860,7 +860,7 @@ class TransactionEventTypeResolverTest {
     }
 
     @Test
-    void canDeserializeAuthorizationCompletedEventSerializationWithNPGDataAndValidationServiceIdFieldNotSet() {
+    void canDeserializeAuthorizationCompletedEventWithNPGDataAndValidationServiceIdFieldNotSet() {
         String serializedEvent = """
                 {
                        "event": {
