@@ -39,6 +39,9 @@ public class WalletInfo {
         }
     )
     public interface WalletDetails {
+        /**
+         * Wallet type enumeration
+         */
         enum WalletType {
             /**
              * Cards wallet
@@ -58,6 +61,9 @@ public class WalletInfo {
         WalletType getType();
     }
 
+    /**
+     * Card wallet details
+     */
     @Data
     @EqualsAndHashCode(callSuper = false)
     @NoArgsConstructor
@@ -73,6 +79,9 @@ public class WalletInfo {
         private String lastFourDigits;
     }
 
+    /**
+     * Paypal wallet details
+     */
     @Data
     @EqualsAndHashCode(callSuper = false)
     @NoArgsConstructor
