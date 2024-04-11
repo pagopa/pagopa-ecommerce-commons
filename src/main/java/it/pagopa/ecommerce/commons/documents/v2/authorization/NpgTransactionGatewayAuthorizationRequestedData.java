@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 
@@ -34,6 +35,12 @@ public final class NpgTransactionGatewayAuthorizationRequestedData
      * NPG confirm payment received sessionId
      */
     private String confirmPaymentSessionId;
+
+    /**
+     * Details about the wallet used to perform authorization
+     */
+    @Nullable
+    private WalletInfo walletInfo;
 
     @Override
     public AuthorizationDataType getType() {

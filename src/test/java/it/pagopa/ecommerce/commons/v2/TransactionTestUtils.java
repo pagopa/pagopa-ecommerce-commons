@@ -111,6 +111,12 @@ public class TransactionTestUtils {
 
     public static final int REDIRECT_AUTHORIZATION_TIMEOUT = 60000;
 
+    public static final String NPG_WALLET_CARD_BIN = "12345678";
+    public static final String NPG_WALLET_CARD_LAST_FOUR_DIGITS = "1234";
+    public static final String NPG_WALLET_PAYPAL_MASKED_EMAIL = "test**********@test********.it";
+
+    public static final String NPG_WALLET_ID = UUID.randomUUID().toString();
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
@@ -764,7 +770,42 @@ public class TransactionTestUtils {
                 LOGO_URI,
                 "VISA",
                 NPG_SESSION_ID,
-                NPG_CONFIRM_PAYMENT_SESSION_ID
+                NPG_CONFIRM_PAYMENT_SESSION_ID,
+                null
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData npgTransactionGatewayAuthorizationRequestedData(
+                                                                                                               WalletInfo walletInfo
+    ) {
+        return new NpgTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                "VISA",
+                NPG_SESSION_ID,
+                NPG_CONFIRM_PAYMENT_SESSION_ID,
+                walletInfo
+        );
+    }
+
+    @Nonnull
+    public static WalletInfo cardsWalletInfo() {
+        return new WalletInfo(
+                NPG_WALLET_ID,
+                new WalletInfo.CardWalletDetails(
+                        NPG_WALLET_CARD_BIN,
+                        NPG_WALLET_CARD_LAST_FOUR_DIGITS
+                )
+        );
+    }
+
+    @Nonnull
+    public static WalletInfo paypalWalletInfo() {
+        return new WalletInfo(
+                NPG_WALLET_ID,
+                new WalletInfo.PaypalWalletDetails(
+                        NPG_WALLET_PAYPAL_MASKED_EMAIL
+                )
         );
     }
 
