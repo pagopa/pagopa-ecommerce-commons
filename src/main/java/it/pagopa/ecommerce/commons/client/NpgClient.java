@@ -35,7 +35,8 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
-    private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
+    private static final AttributeKey<String> NPG_CORRELATION_ID_ATTRIBUTE_NAME = AttributeKey
+            .stringKey("npg.correlation_id");
 
     private static final AttributeKey<List<String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
             .stringArrayKey("npg.error_codes");
