@@ -37,7 +37,7 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
     private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
 
-    private static final AttributeKey<java.util.List<String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
+    private static final AttributeKey<List<String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
             .stringArrayKey("npg.error_codes");
 
     private static final AttributeKey<Long> NPG_HTTP_ERROR_CODE = AttributeKey
