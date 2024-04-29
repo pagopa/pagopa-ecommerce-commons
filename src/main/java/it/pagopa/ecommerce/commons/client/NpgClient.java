@@ -35,10 +35,14 @@ public class NpgClient {
     private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
     private static final String CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA = "ITA";
-    private static final String NPG_CORRELATION_ID_ATTRIBUTE_NAME = "npg.correlation_id";
+    private static final AttributeKey<String> NPG_CORRELATION_ID_ATTRIBUTE_NAME = AttributeKey
+            .stringKey("npg.correlation_id");
 
-    private static final AttributeKey<java.util.List<java.lang.String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
+    private static final AttributeKey<List<String>> NPG_ERROR_CODES_ATTRIBUTE_NAME = AttributeKey
             .stringArrayKey("npg.error_codes");
+
+    private static final AttributeKey<Long> NPG_HTTP_ERROR_CODE = AttributeKey
+            .longKey("npg.http_error_code");
     private static final String EUR_CURRENCY = "EUR";
 
     /**
@@ -707,6 +711,10 @@ public class NpgClient {
         span.setAttribute(
                 NPG_ERROR_CODES_ATTRIBUTE_NAME,
                 errors
+        );
+        span.setAttribute(
+                NPG_HTTP_ERROR_CODE,
+                statusCode.map(HttpStatus::value).orElse(0)
         );
         span.setStatus(StatusCode.ERROR);
 

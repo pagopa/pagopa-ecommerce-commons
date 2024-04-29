@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
@@ -81,7 +82,7 @@ class NpgClientTests {
 
         SpanBuilder spanBuilder = Mockito.mock(SpanBuilder.class);
         Mockito.when(spanBuilder.setParent(any())).thenReturn(spanBuilder);
-        Mockito.when(spanBuilder.setAttribute(anyString(), anyString())).thenReturn(spanBuilder);
+        Mockito.when(spanBuilder.setAttribute(any(AttributeKey.class), anyString())).thenReturn(spanBuilder);
         Mockito.when(spanBuilder.startSpan()).thenReturn(Span.getInvalid());
 
         Mockito.when(tracer.spanBuilder(anyString())).thenReturn(spanBuilder);
