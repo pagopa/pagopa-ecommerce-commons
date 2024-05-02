@@ -67,7 +67,10 @@ public class TransactionTestUtils {
 
     private static final boolean IS_ALL_CCP_FALSE = false;
 
-    public static final String COMPANY_NAME = "companyName";
+    /*
+     * Company name field will be populated only for v2 events
+     */
+    public static final String COMPANY_NAME = null;
 
     static {
         try {

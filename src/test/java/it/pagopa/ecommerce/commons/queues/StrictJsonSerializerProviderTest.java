@@ -298,7 +298,7 @@ class StrictJsonSerializerProviderTest {
                                                 )
                                         ),
                                         false,
-                                        COMPANY_NAME
+                                        it.pagopa.ecommerce.commons.v2.TransactionTestUtils.COMPANY_NAME
                                 )
                         ),
                         FAULT_CODE,
