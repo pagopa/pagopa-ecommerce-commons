@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * <p>
@@ -20,6 +21,8 @@ public class StrictJsonSerializerProvider implements JsonSerializerProvider {
      */
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, true)
             .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
             .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
