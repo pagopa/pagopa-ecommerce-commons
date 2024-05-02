@@ -117,6 +117,8 @@ public class TransactionTestUtils {
 
     public static final String NPG_WALLET_ID = UUID.randomUUID().toString();
 
+    public static final String COMPANY_NAME = "companyName";
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
@@ -163,7 +165,8 @@ public class TransactionTestUtils {
                                                         TRANSFER_CATEGORY
                                                 )
                                         ),
-                                        IS_ALL_CCP_FALSE
+                                        IS_ALL_CCP_FALSE,
+                                        COMPANY_NAME
                                 )
                         ),
                         FAULT_CODE,
@@ -206,7 +209,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_CATEGORY
                                         )
                                 ),
-                                IS_ALL_CCP_FALSE
+                                IS_ALL_CCP_FALSE,
+                                new CompanyName(COMPANY_NAME)
                         )
                 ),
                 EMAIL,
@@ -406,9 +410,7 @@ public class TransactionTestUtils {
         return new TransactionUserReceiptData(
                 outcome,
                 LANGUAGE,
-                PAYMENT_DATE,
-                RECEIVING_OFFICE_NAME,
-                PAYMENT_DESCRIPTION
+                PAYMENT_DATE
         );
     }
 
@@ -621,7 +623,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_CATEGORY
                                         )
                                 ),
-                                IS_ALL_CCP_FALSE
+                                IS_ALL_CCP_FALSE,
+                                COMPANY_NAME
                         )
                 ),
                 null,

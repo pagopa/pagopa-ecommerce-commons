@@ -24,4 +24,5 @@ public class PaymentNotice {
     private String paymentContextCode;
     private List<PaymentTransferInformation> transferList;
     private boolean isAllCCP;
+    private String companyName;
 }
