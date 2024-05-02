@@ -7,6 +7,7 @@ import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationRequestedData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.RedirectTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
@@ -667,7 +668,8 @@ class TransactionEventTypeResolverTest {
                                    "logo":"http://paymentMethodLogo.it",
                                    "brand":"VISA",
                                    "sessionId":"npgSessionId",
-                                   "confirmPaymentSessionId":"npgConfirmPaymentSessionId"
+                                   "confirmPaymentSessionId":"npgConfirmPaymentSessionId",
+                                   "walletInfo": null
                                },
                                "pspOnUs": false
                            },
@@ -860,7 +862,7 @@ class TransactionEventTypeResolverTest {
     }
 
     @Test
-    void canDeserializeAuthorizationCompletedEventWithNPGDataAndValidationServiceIdFieldNotSet() {
+    void canDeserializeAuthorizationCompletedEventWithNPGDataAndNullableFieldsNotSet() {
         String serializedEvent = """
                 {
                        "event": {
@@ -914,6 +916,181 @@ class TransactionEventTypeResolverTest {
                         )
         )
                 .assertNext(event -> assertEquals(expectedEvent, event))
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationRequestedEventSerializationWithNPGDataWithCardWalletInfo() {
+        String expectedSerializedEvent = """
+                {
+                        "event": {
+                            "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent",
+                            "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                            "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                            "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                            "data": {
+                                "amount": 100,
+                                "fee": 10,
+                                "paymentInstrumentId": "paymentInstrumentId",
+                                "pspId": "pspId",
+                                "paymentTypeCode": "CP",
+                                "brokerName": "brokerName",
+                                "pspChannelCode": "pspChannelCode",
+                                "paymentMethodName": "CARDS",
+                                "pspBusinessName": "pspBusinessName",
+                                "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
+                                "paymentGateway": "NPG",
+                                "paymentMethodDescription": "paymentMethodDescription",
+                                "transactionGatewayAuthorizationRequestedData": {
+                                    "type": "NPG",
+                                    "logo": "http://paymentMethodLogo.it",
+                                    "brand": "VISA",
+                                    "sessionId": "npgSessionId",
+                                    "confirmPaymentSessionId": "npgConfirmPaymentSessionId",
+                                    "walletInfo": {
+                                        "walletId": "17601410-5f1d-4189-b8d1-92637952ee5f",
+                                        "walletDetails": {
+                                            "type": "CARDS",
+                                            "bin": "12345678",
+                                            "lastFourDigits": "1234"
+                                        }
+                                    }
+                                },
+                                "pspOnUs": false
+                            },
+                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
+                        },
+                        "tracingInfo": {
+                            "traceparent": "mock_traceparent",
+                            "tracestate": "mock_tracestate",
+                            "baggage": "mock_baggage"
+                        }
+                    }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationRequestedEvent(
+                        TransactionAuthorizationRequestData.PaymentGateway.NPG,
+                        TransactionTestUtils
+                                .npgTransactionGatewayAuthorizationRequestedData(TransactionTestUtils.cardsWalletInfo())
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        NpgTransactionGatewayAuthorizationRequestedData authRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) originalEvent
+                .event().getData().getTransactionGatewayAuthorizationRequestedData();
+        authRequestedData.getWalletInfo().setWalletId("17601410-5f1d-4189-b8d1-92637952ee5f");
+
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationRequestedEventSerializationWithNPGDataWithPaypalWalletInfo() {
+        String expectedSerializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "amount": 100,
+                            "fee": 10,
+                            "paymentInstrumentId": "paymentInstrumentId",
+                            "pspId": "pspId",
+                            "paymentTypeCode": "CP",
+                            "brokerName": "brokerName",
+                            "pspChannelCode": "pspChannelCode",
+                            "paymentMethodName": "CARDS",
+                            "pspBusinessName": "pspBusinessName",
+                            "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
+                            "paymentGateway": "NPG",
+                            "paymentMethodDescription": "paymentMethodDescription",
+                            "transactionGatewayAuthorizationRequestedData": {
+                                "type": "NPG",
+                                "logo": "http://paymentMethodLogo.it",
+                                "brand": "VISA",
+                                "sessionId": "npgSessionId",
+                                "confirmPaymentSessionId": "npgConfirmPaymentSessionId",
+                                "walletInfo": {
+                                    "walletId": "17601410-5f1d-4189-b8d1-92637952ee5f",
+                                    "walletDetails": {
+                                        "type": "PAYPAL",
+                                        "maskedEmail": "test**********@test********.it"
+                                    }
+                                }
+                            },
+                            "pspOnUs": false
+                        },
+                        "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationRequestedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationRequestedEvent(
+                        TransactionAuthorizationRequestData.PaymentGateway.NPG,
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationRequestedData(
+                                TransactionTestUtils.paypalWalletInfo()
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        NpgTransactionGatewayAuthorizationRequestedData authRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) originalEvent
+                .event().getData().getTransactionGatewayAuthorizationRequestedData();
+        authRequestedData.getWalletInfo().setWalletId("17601410-5f1d-4189-b8d1-92637952ee5f");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
                 .verifyComplete();
     }
 }
