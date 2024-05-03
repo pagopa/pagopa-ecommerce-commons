@@ -12,7 +12,7 @@ public record BIN(String value) {
     /**
      * BIN format used to check for valid values
      */
-    public static final String BIN_FORMAT = "\\d{4}\\d?\\d?";
+    public static final String BIN_FORMAT = "\\d{4,8}";
 
     /**
      * Primary constructor

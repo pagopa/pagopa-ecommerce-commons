@@ -15,7 +15,9 @@ public class BINTest {
         return Stream.of(
                 Arguments.of("1234"),
                 Arguments.of("12345"),
-                Arguments.of("123456")
+                Arguments.of("123456"),
+                Arguments.of("1234567"),
+                Arguments.of("12345678")
         );
     }
 
@@ -28,7 +30,7 @@ public class BINTest {
     static Stream<Arguments> invalidArguments() {
         return Stream.of(
                 Arguments.of("123"),
-                Arguments.of("1234567"),
+                Arguments.of("123456789"),
                 Arguments.of("1234a")
         );
     }
