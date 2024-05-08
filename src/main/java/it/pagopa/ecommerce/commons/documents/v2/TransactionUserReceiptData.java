@@ -34,15 +34,6 @@ public class TransactionUserReceiptData {
      */
     @NotNull
     private String paymentDate;
-    /**
-     * Send payment result receiving office name
-     */
-    private String receivingOfficeName;
-    /**
-     * Send payment result payment description
-     */
-    @NotNull
-    private String paymentDescription;
 
     /**
      * Enumeration of Nodo sendPaymentResult outcome

@@ -235,6 +235,7 @@ class TransactionEventTypeResolverTest {
                                             "transferCategory": "transferCategory"
                                         }
                                     ],
+                                    "companyName": "companyName",
                                     "allCCP": false
                                 }
                             ],
@@ -320,6 +321,7 @@ class TransactionEventTypeResolverTest {
                                             "transferCategory": "transferCategory"
                                         }
                                     ],
+                                    "companyName": "companyName",
                                     "allCCP": false
                                 }
                             ],
@@ -818,6 +820,7 @@ class TransactionEventTypeResolverTest {
                                             "transferCategory": "transferCategory"
                                         }
                                     ],
+                                    "companyName": "companyName",
                                     "allCCP": false
                                 }
                             ],

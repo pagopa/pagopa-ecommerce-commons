@@ -9,10 +9,18 @@ import java.util.List;
  * A value object holding a notice code params.
  * </p>
  *
- * @param paymentToken           notice payment
- * @param transactionDescription notice description
- * @param transactionAmount      notice amount
- * @param rptId                  notice code rptId
+ * @param paymentToken           payment token used to perform Node activate
+ * @param rptId                  payment notice RPT id
+ * @param transactionAmount      payment notice amount
+ * @param transactionDescription payment notice description, as received by Node
+ *                               in activate response
+ * @param paymentContextCode     payment context code
+ * @param transferList           transfer list as received by Node in activate
+ *                               response
+ * @param isAllCCP               boolean flag indicating if all transfers are
+ *                               associated to postal IBAN's
+ * @param companyName            payment notice company name as received by Node
+ *                               in activate response
  */
 @ValueObject
 public record PaymentNotice(
@@ -24,6 +32,8 @@ public record PaymentNotice(
 
         List<PaymentTransferInfo> transferList,
 
-        boolean isAllCCP
+        boolean isAllCCP,
+
+        CompanyName companyName
 ) {
 }

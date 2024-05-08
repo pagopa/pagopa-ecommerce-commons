@@ -67,6 +67,11 @@ public class TransactionTestUtils {
 
     private static final boolean IS_ALL_CCP_FALSE = false;
 
+    /*
+     * Company name field will be populated only for v2 events
+     */
+    public static final String COMPANY_NAME = null;
+
     static {
         try {
             LOGO_URI = new URI("http://paymentMethodLogo.it");
@@ -117,7 +122,8 @@ public class TransactionTestUtils {
                                                         TRANSFER_CATEGORY
                                                 )
                                         ),
-                                        IS_ALL_CCP_FALSE
+                                        IS_ALL_CCP_FALSE,
+                                        COMPANY_NAME
                                 )
                         ),
                         FAULT_CODE,
@@ -148,7 +154,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_CATEGORY
                                         )
                                 ),
-                                IS_ALL_CCP_FALSE
+                                IS_ALL_CCP_FALSE,
+                                new CompanyName(COMPANY_NAME)
                         )
                 ),
                 EMAIL,
@@ -550,7 +557,8 @@ public class TransactionTestUtils {
                                                 TRANSFER_CATEGORY
                                         )
                                 ),
-                                IS_ALL_CCP_FALSE
+                                IS_ALL_CCP_FALSE,
+                                COMPANY_NAME
                         )
                 ),
                 null,
