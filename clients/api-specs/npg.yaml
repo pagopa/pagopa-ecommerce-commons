@@ -739,8 +739,6 @@ paths:
     get:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: [ ]
       summary: Searches for an order and returns its details.
       description: It provides order details including all operations associated with given orderId.
       parameters:
@@ -752,6 +750,11 @@ paths:
             format: uuid
         - name: orderId
           in: path
+          required: true
+          schema:
+            type: string
+        - name: X-API-KEY
+          in: header
           required: true
           schema:
             type: string

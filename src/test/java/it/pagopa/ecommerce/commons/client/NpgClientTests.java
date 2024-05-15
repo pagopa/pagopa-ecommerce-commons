@@ -783,9 +783,6 @@ class NpgClientTests {
     void shouldGetStateOfOrder() {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
-
         final var response = new OrderResponseDto()
                 .orderStatus(
                         new OrderStatusDto()
@@ -810,7 +807,8 @@ class NpgClientTests {
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersOrderIdGet(
                         correlationUUID,
-                        ORDER_REQUEST_ORDER_ID
+                        ORDER_REQUEST_ORDER_ID,
+                        MOCKED_API_KEY
                 )
         ).thenReturn(Mono.just(response));
 

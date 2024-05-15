@@ -626,14 +626,11 @@ public class NpgClient {
     ) {
         final var gatewayOperation = GatewayOperation.GET_ORDER;
         return Mono.using(
-                () -> {
-                    paymentServicesApi.getApiClient().setApiKey(pspApiKey);
-                    return tracer.spanBuilder(gatewayOperation.spanName)
-                            .setParent(Context.current().with(Span.current()))
-                            .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
-                            .startSpan();
-                },
-                span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId)
+                () -> tracer.spanBuilder(gatewayOperation.spanName)
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId, pspApiKey)
                         .doOnError(
                                 WebClientResponseException.class,
                                 e -> log.info(
