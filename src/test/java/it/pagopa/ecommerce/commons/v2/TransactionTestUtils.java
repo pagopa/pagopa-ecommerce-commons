@@ -7,6 +7,8 @@ import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatew
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.*;
+import it.pagopa.ecommerce.commons.documents.v2.refund.EmptyGatewayRefundData;
+import it.pagopa.ecommerce.commons.documents.v2.refund.GatewayRefundData;
 import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
@@ -491,9 +493,17 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(int retryCount) {
+        return transactionRefundRetriedEvent(retryCount, null);
+    }
+
+    @Nonnull
+    public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(
+                                                                              int retryCount,
+                                                                              TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
+    ) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRetriedData(retryCount)
+                new TransactionRefundRetriedData(transactionGatewayAuthorizationData, retryCount)
         );
     }
 
@@ -548,9 +558,17 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefundedEvent transactionRefundedEvent(BaseTransaction baseTransaction) {
+        return transactionRefundedEvent(baseTransaction, new EmptyGatewayRefundData());
+    }
+
+    @Nonnull
+    public static TransactionRefundedEvent transactionRefundedEvent(
+                                                                    BaseTransaction baseTransaction,
+                                                                    GatewayRefundData gatewayRefundData
+    ) {
         return new TransactionRefundedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundedData(baseTransaction.getStatus())
+                new TransactionRefundedData(gatewayRefundData, baseTransaction.getStatus())
         );
     }
 
@@ -558,17 +576,30 @@ public class TransactionTestUtils {
     public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
                                                                                   BaseTransaction baseTransaction
     ) {
+        return transactionRefundRequestedEvent(baseTransaction, null);
+    }
+
+    @Nonnull
+    public static TransactionRefundRequestedEvent transactionRefundRequestedEvent(
+                                                                                  BaseTransaction baseTransaction,
+                                                                                  TransactionGatewayAuthorizationData gatewayAuthorizationData
+    ) {
         return new TransactionRefundRequestedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundedData(baseTransaction.getStatus())
+                new TransactionRefundRequestedData(gatewayAuthorizationData, baseTransaction.getStatus())
         );
     }
 
     @Nonnull
     public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
+        return transactionRefundErrorEvent();
+    }
+
+    @Nonnull
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent() {
         return new TransactionRefundErrorEvent(
                 TRANSACTION_ID,
-                new TransactionRefundedData(baseTransaction.getStatus())
+                new TransactionRefundErrorData()
         );
     }
 

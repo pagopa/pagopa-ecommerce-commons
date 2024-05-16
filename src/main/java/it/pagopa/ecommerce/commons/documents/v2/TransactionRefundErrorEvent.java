@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionRefundErrorEvent extends TransactionEvent<TransactionRefundedData> {
+public final class TransactionRefundErrorEvent extends TransactionEvent<TransactionRefundErrorData> {
     /**
      * Convenience constructor which sets the creation date to now
      *
@@ -20,7 +20,7 @@ public final class TransactionRefundErrorEvent extends TransactionEvent<Transact
      */
     public TransactionRefundErrorEvent(
             String transactionId,
-            TransactionRefundedData data
+            TransactionRefundErrorData data
     ) {
         super(transactionId, TransactionEventCode.TRANSACTION_REFUND_ERROR_EVENT, data);
     }
