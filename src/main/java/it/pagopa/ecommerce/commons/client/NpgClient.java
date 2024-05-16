@@ -501,7 +501,7 @@ public class NpgClient {
                         )
                 )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
-                span -> span.end()
+                Span::end
         );
     }
 
