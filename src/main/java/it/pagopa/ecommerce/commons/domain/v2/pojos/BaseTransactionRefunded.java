@@ -39,7 +39,8 @@ public abstract class BaseTransactionRefunded extends BaseTransactionWithRefundR
             TransactionRefundedData transactionRefundedData
     ) {
         super(
-                baseTransaction
+                baseTransaction,
+                baseTransaction.getRefundRequestedAuthorizationGatewayData()
         );
         this.transactionRefundedData = transactionRefundedData;
     }

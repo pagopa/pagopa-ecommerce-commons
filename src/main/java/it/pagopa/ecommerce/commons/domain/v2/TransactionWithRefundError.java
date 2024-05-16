@@ -46,7 +46,7 @@ public final class TransactionWithRefundError extends BaseTransactionWithRefundR
             BaseTransactionWithRefundRequested baseTransaction,
             TransactionRefundErrorEvent transactionRefundErrorEvent
     ) {
-        super(baseTransaction);
+        super(baseTransaction, baseTransaction.getRefundRequestedAuthorizationGatewayData());
         this.transactionRefundErrorEvent = transactionRefundErrorEvent;
     }
 

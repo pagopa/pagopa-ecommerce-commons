@@ -49,7 +49,7 @@ public final class TransactionWithRefundRequested extends BaseTransactionWithRef
             BaseTransactionWithRequestedAuthorization baseTransaction,
             TransactionRefundRequestedEvent transactionRefundRequestedEvent
     ) {
-        super(baseTransaction);
+        super(baseTransaction, transactionRefundRequestedEvent.getData().getGatewayAuthData());
         this.transactionRefundRequestedEvent = transactionRefundRequestedEvent;
     }
 
