@@ -780,6 +780,52 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldGetStateOfOrder() {
+        UUID correlationUUID = UUID.randomUUID();
+
+        final var response = new OrderResponseDto()
+                .orderStatus(
+                        new OrderStatusDto()
+                                .authorizedAmount("123")
+                                .capturedAmount("123")
+                                .lastOperationType(OperationTypeDto.REFUND)
+                                .lastOperationTime("2022-09-01T01:20:00.001Z")
+                )
+                .addOperationsItem(
+                        new OperationDto()
+                                .orderId("order-id")
+                                .operationId("operation-id")
+                                .operationAmount("123")
+                                .operationAmount("123")
+                                .paymentMethod(PaymentMethodDto.CARD)
+                                .channel(ChannelTypeDto.ECOMMERCE)
+                                .operationType(OperationTypeDto.REFUND)
+                                .operationResult(OperationResultDto.EXECUTED)
+                )
+                .links(List.of());
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersOrderIdGet(
+                        correlationUUID,
+                        ORDER_REQUEST_ORDER_ID,
+                        MOCKED_API_KEY
+                )
+        ).thenReturn(Mono.just(response));
+
+        StepVerifier
+                .create(
+                        npgClient.getOrder(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_ORDER_ID
+                        )
+                )
+                .expectNext(response)
+                .verifyComplete();
+
+    }
+
+    @Test
     void shouldPropagateErrorCodesWhileGetState() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
 

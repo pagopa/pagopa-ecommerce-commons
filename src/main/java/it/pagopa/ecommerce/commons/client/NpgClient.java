@@ -175,7 +175,12 @@ public class NpgClient {
         /**
          * Get payment state operation
          */
-        GET_STATE("NpgClient#getState");
+        GET_STATE("NpgClient#getState"),
+
+        /*
+         * Get order state
+         */
+        GET_ORDER("NpgClient#getOrder");
 
         final String spanName;
 
@@ -593,6 +598,39 @@ public class NpgClient {
                             .startSpan();
                 },
                 span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId)
+                        .doOnError(
+                                WebClientResponseException.class,
+                                e -> log.info(
+                                        NPG_LOG_ERROR_MESSAGE,
+                                        e.getStatusCode()
+                                )
+                        )
+                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                Span::end
+        );
+    }
+
+    /**
+     * Method to get order details and all related operations
+     *
+     * @param correlationId the unique id to identify the rest api invocation
+     * @param pspApiKey     the specific psp API key
+     * @param orderId       the orderId of the payment
+     * @return An object containing the state of the order and all operations
+     *         related to.
+     */
+    public Mono<OrderResponseDto> getOrder(
+                                           UUID correlationId,
+                                           String pspApiKey,
+                                           String orderId
+    ) {
+        final var gatewayOperation = GatewayOperation.GET_ORDER;
+        return Mono.using(
+                () -> tracer.spanBuilder(gatewayOperation.spanName)
+                        .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
+                        .startSpan(),
+                span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId, pspApiKey)
                         .doOnError(
                                 WebClientResponseException.class,
                                 e -> log.info(
