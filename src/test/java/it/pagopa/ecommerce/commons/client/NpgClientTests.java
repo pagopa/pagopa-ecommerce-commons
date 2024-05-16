@@ -97,8 +97,6 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
@@ -132,8 +130,6 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
@@ -165,8 +161,6 @@ class NpgClientTests {
     void shouldThrowExceptionWhenBuildFormThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -212,8 +206,6 @@ class NpgClientTests {
     void shouldThrowExceptionWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -261,8 +253,6 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
@@ -307,8 +297,6 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhenBuildFormSubsequentPaymentThrows() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -357,13 +345,11 @@ class NpgClientTests {
         CardDataResponseDto expectedResponse = new CardDataResponseDto().bin(BIN).circuit(CIRCUIT).expiringDate("0426")
                 .lastFourDigits("1234");
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         ).thenReturn(Mono.just(expectedResponse));
 
@@ -383,13 +369,11 @@ class NpgClientTests {
     void shouldThrowExceptionWhileRetrieveCardData() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         )
                 .thenReturn(
@@ -423,13 +407,11 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhileRetrieveCardData() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         )
                 .thenReturn(
@@ -469,8 +451,6 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationUUID,
@@ -498,8 +478,6 @@ class NpgClientTests {
 
         UUID correlationUUID = UUID.randomUUID();
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -533,8 +511,6 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
                         OPERATION_ID,
@@ -564,8 +540,6 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhileConfirmPayment() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
@@ -610,8 +584,6 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhileRefundPayment() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -660,8 +632,6 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhileRefundPaymentWithNullDescription() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
-
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -716,8 +686,6 @@ class NpgClientTests {
                 transactionTotalAmount
         );
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
@@ -750,15 +718,13 @@ class NpgClientTests {
     void shouldGetStateOfPayment() {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         StateResponseDto stateResponseDto = new StateResponseDto().state(WorkflowStateDto.PAYMENT_COMPLETE);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         ).thenReturn(Mono.just(stateResponseDto));
 
@@ -779,13 +745,11 @@ class NpgClientTests {
     void shouldPropagateErrorCodesWhileGetState() throws JsonProcessingException {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         )
                 .thenReturn(
@@ -823,13 +787,11 @@ class NpgClientTests {
     void shouldPropagateErrorForUnparsableErrorResponse() {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         )
                 .thenReturn(
@@ -870,13 +832,11 @@ class NpgClientTests {
     void shouldPropagateErrorForGenericExceptionThrownFromClient() {
         UUID correlationUUID = UUID.randomUUID();
 
-        Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
-                        MOCKED_API_KEY,
-                        SESSION_ID
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
         )
                 .thenReturn(
