@@ -8,15 +8,12 @@ servers:
   - url: "https://{gateway_prod}/api/v1"
     description: PROD
 security:
-  - ApiKeyAuth: []
   - OAuth2: []
 paths:
   /psp/api/v1/orders/build:
     post:
       tags:
         - Payment Services
-      security:
-        - ApiKeyAuth: []
       summary: Create an order and initiates a payment through build functionality.
       description: "This service is targeted to ecommerce platforms requiring to implement
         the payment pages in line with their own dedicated UI style guidelines. The
@@ -35,6 +32,11 @@ paths:
           description: "Mandatory field to be valued with a UUID to be renewed at
             every call. The purpose of the field is to allow referring to a specific
             call for any integration or maintenance activity."
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -104,6 +106,11 @@ paths:
           description: Mandatory field to be valued with a UUID to be renewed at every
             call. The purpose of the field is to allow referring to a specific call
             for any integration or maintenance activity.
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -238,6 +245,11 @@ paths:
           description: Mandatory field to be valued with a UUID to be renewed at every
             call. The purpose of the field is to allow referring to a specific call
             for any integration or maintenance activity.
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -385,6 +397,11 @@ paths:
           description: Mandatory field to be valued with a UUID to be renewed at every
             call. The purpose of the field is to allow referring to a specific call
             for any integration or maintenance activity.
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -497,6 +514,11 @@ paths:
           schema:
             type: string
           description: the value of the payment session identifier
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: The service returns the state of the payment flow and all the
@@ -648,6 +670,11 @@ paths:
           schema:
             type: string
           description: the value of the payment session identifier
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: In case of success, the service returns the data collected
@@ -771,6 +798,11 @@ paths:
           schema:
             type: string
           example: "Text01"
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -831,6 +863,11 @@ paths:
             type: string
             format: uuid
         - name: session
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-API-KEY
           in: header
           required: true
           schema:
@@ -926,6 +963,11 @@ paths:
           schema:
             type: string
           example: "pay"
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: |
@@ -994,6 +1036,11 @@ paths:
             type: string
             example: eng
           description: The language of the browser expressed in ISO639-3 format.
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Operation successful
@@ -1039,6 +1086,11 @@ paths:
           required: false
           schema:
             type: number
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Operation successful
@@ -1102,6 +1154,11 @@ paths:
           required: false
           schema:
             type: number
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Operation successful
@@ -1146,6 +1203,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: In case of success, the service returns the merchant's result
@@ -2059,10 +2121,6 @@ components:
           example: "2022-09-01T01:20:00.001Z"
           description: Datetime of the operation
   securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      name: X-API-KEY
-      in: header
     OAuth2:
       type: http
       scheme: bearer

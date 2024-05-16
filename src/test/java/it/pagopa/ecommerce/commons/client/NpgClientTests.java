@@ -98,11 +98,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         ).thenReturn(Mono.just(fieldsDto));
@@ -133,11 +133,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         ).thenReturn(Mono.just(fieldsDto));
@@ -167,11 +167,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -214,11 +214,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -262,11 +262,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -309,11 +309,11 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         )
@@ -358,11 +358,11 @@ class NpgClientTests {
                 .lastFourDigits("1234");
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         ).thenReturn(Mono.just(expectedResponse));
@@ -384,11 +384,11 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -424,11 +424,11 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildCardDataGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -470,11 +470,11 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         confirmPaymentRequestDto
                 )
         ).thenReturn(Mono.just(stateResponseDto));
@@ -500,7 +500,6 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -535,7 +534,6 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -568,11 +566,11 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         confirmPaymentRequestDto
                 )
         )
@@ -614,7 +612,6 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -665,7 +662,6 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -721,11 +717,11 @@ class NpgClientTests {
         );
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         requestDto
                 )
         ).thenReturn(Mono.just(fieldsDto));
@@ -755,13 +751,13 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         StateResponseDto stateResponseDto = new StateResponseDto().state(WorkflowStateDto.PAYMENT_COMPLETE);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         ).thenReturn(Mono.just(stateResponseDto));
@@ -784,11 +780,11 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -828,11 +824,11 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
@@ -875,11 +871,11 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(paymentServicesApi.getApiClient()).thenReturn(apiClient);
-        Mockito.doNothing().when(apiClient).setApiKey(nullable(String.class));
 
         Mockito.when(
                 paymentServicesApi.pspApiV1BuildStateGet(
                         correlationUUID,
+                        MOCKED_API_KEY,
                         SESSION_ID
                 )
         )
