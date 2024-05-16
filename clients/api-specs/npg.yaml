@@ -2131,7 +2131,10 @@ components:
           example: 2019-02-11
         link:
           type: string
-          example: https://{gateway_hosted_page}paidByOperationId
+          example: https://{gateway_hosted_page}
+        paidByOperationId:
+          type: string
+          example: "3470744"
     OrderResponse:
       type: object
       properties:
