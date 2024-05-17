@@ -24,7 +24,12 @@ import javax.annotation.Nullable;
 public final class TransactionRefundRequestedData extends BaseTransactionRefundedData {
 
     /**
-     * Gateway authorization data, as retrieved during refund operation
+     * Gateway authorization data, as retrieved during refund operation. It can be
+     * null if no authorization have been completed for the current transaction (ex
+     * refund started for a transaction in
+     * {@link it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto#AUTHORIZATION_REQUESTED}
+     * status and no gateway api exists to retrieve authorization outcome
+     * asynchronously (such as NPG GET orders))
      */
     @Nullable
     private TransactionGatewayAuthorizationData gatewayAuthData;
