@@ -1,7 +1,9 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundErrorEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRetriedEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithRefundRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
@@ -50,12 +52,30 @@ public final class TransactionWithRefundError extends BaseTransactionWithRefundR
         this.transactionRefundErrorEvent = transactionRefundErrorEvent;
     }
 
+    /**
+     * Convenience constructor used to add gateway data on refund retry event
+     *
+     * @param transactionWithRefundError          the transaction with refund error
+     *                                            instance from which clone data
+     * @param transactionGatewayAuthorizationData transaction gateway authorization
+     *                                            data
+     */
+    public TransactionWithRefundError(
+            TransactionWithRefundError transactionWithRefundError,
+            TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
+    ) {
+        super(transactionWithRefundError.getTransactionAtPreviousState(), transactionGatewayAuthorizationData);
+        this.transactionRefundErrorEvent = transactionWithRefundError.transactionRefundErrorEvent;
+    }
+
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundedEvent e) {
-            return new TransactionRefunded(this, e);
-        }
-        return this;
+        return switch (event) {
+            case TransactionRefundedEvent e -> new TransactionRefunded(this, e);
+            case TransactionRefundRetriedEvent e ->
+                    new TransactionWithRefundError(this, e.getData().getTransactionGatewayAuthorizationData());
+            default -> this;
+        };
     }
 
     @Override

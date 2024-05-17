@@ -5899,4 +5899,60 @@ class TransactionTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnAuthorizationGatewayDataRetrievingFromRefundRetryEvent() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
+                .transactionExpiredEvent(transactionWithRequestedAuthorization);
+        TransactionGatewayAuthorizationData gatewayAuthorizationData = TransactionTestUtils
+                .npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED);
+        TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
+                .transactionRefundRequestedEvent(transactionWithRequestedAuthorization, null);
+        TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils.transactionRefundErrorEvent();
+        TransactionRefundRetriedEvent transactionRefundRetriedEvent = TransactionTestUtils
+                .transactionRefundRetriedEvent(1, gatewayAuthorizationData);
+
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                transactionExpiredEvent,
+                transactionRefundRequestedEvent,
+                transactionRefundErrorEvent,
+                transactionRefundRetriedEvent
+        );
+
+        TransactionWithRefundRequested transactionWithRefundRequested = TransactionTestUtils
+                .transactionWithRefundRequested(transactionWithRequestedAuthorization, transactionRefundRequestedEvent);
+        TransactionWithRefundError transactionWithRefundError = TransactionTestUtils
+                .transactionWithRefundError(transactionWithRefundRequested, transactionRefundErrorEvent);
+        TransactionWithRefundError expected = TransactionTestUtils
+                .transactionWithRefundError(transactionWithRefundError, gatewayAuthorizationData);
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual).assertNext(
+                t -> {
+                    assertEquals(expected, t);
+                    assertEquals(TransactionStatusDto.REFUND_ERROR, ((BaseTransaction) t).getStatus());
+                    assertTrue(
+                            ((BaseTransactionWithRefundRequested) t).getTransactionAuthorizationGatewayData()
+                                    .isPresent()
+                    );
+                    assertEquals(
+                            gatewayAuthorizationData,
+                            ((BaseTransactionWithRefundRequested) t).getTransactionAuthorizationGatewayData().get()
+                    );
+                }
+
+        )
+                .verifyComplete();
+    }
+
 }
