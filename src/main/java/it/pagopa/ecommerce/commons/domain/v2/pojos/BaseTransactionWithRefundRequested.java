@@ -32,7 +32,18 @@ public abstract class BaseTransactionWithRefundRequested extends BaseTransaction
      *
      * @param baseTransaction                         base transaction
      * @param refundRequestedAuthorizationGatewayData refund requested optional
-     *                                                authorization gateway data
+     *                                                authorization gateway data -
+     *                                                it can be null if no
+     *                                                authorization have been
+     *                                                completed for the current
+     *                                                transaction (ex refund started
+     *                                                for a transaction in
+     *                                                {@link it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto#AUTHORIZATION_REQUESTED}
+     *                                                status and no gateway api
+     *                                                exists to retrieve
+     *                                                authorization outcome
+     *                                                asynchronously (such as NPG
+     *                                                GET orders)
      */
     protected BaseTransactionWithRefundRequested(
             BaseTransactionWithRequestedAuthorization baseTransaction,
