@@ -31,7 +31,8 @@ public abstract class BaseTransactionWithRefundRequested extends BaseTransaction
      * Primary constructor
      *
      * @param baseTransaction                         base transaction
-     * @param refundRequestedAuthorizationGatewayData
+     * @param refundRequestedAuthorizationGatewayData refund requested optional
+     *                                                authorization gateway data
      */
     protected BaseTransactionWithRefundRequested(
             BaseTransactionWithRequestedAuthorization baseTransaction,
