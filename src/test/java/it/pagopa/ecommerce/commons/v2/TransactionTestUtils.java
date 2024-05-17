@@ -481,6 +481,14 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionWithRefundError transactionWithRefundError(
+                                                                        TransactionWithRefundError baseTransaction,
+                                                                        TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
+    ) {
+        return new TransactionWithRefundError(baseTransaction, transactionGatewayAuthorizationData);
+    }
+
+    @Nonnull
     public static TransactionWithRefundRequested transactionWithRefundRequested(
                                                                                 BaseTransactionWithRequestedAuthorization baseTransaction,
                                                                                 TransactionRefundRequestedEvent transactionRefundRequestedEvent
