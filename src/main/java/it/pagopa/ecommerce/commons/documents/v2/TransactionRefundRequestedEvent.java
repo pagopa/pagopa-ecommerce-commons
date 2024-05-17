@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventstore")
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionRefundRequestedEvent extends TransactionEvent<TransactionRefundedData> {
+public final class TransactionRefundRequestedEvent extends TransactionEvent<TransactionRefundRequestedData> {
     /**
      * Convenience constructor which sets the creation date to now
      *
@@ -21,7 +21,7 @@ public final class TransactionRefundRequestedEvent extends TransactionEvent<Tran
      */
     public TransactionRefundRequestedEvent(
             String transactionId,
-            TransactionRefundedData data
+            TransactionRefundRequestedData data
     ) {
         super(transactionId, TransactionEventCode.TRANSACTION_REFUND_REQUESTED_EVENT, data);
     }
