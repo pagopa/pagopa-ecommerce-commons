@@ -193,7 +193,7 @@ public class TracingUtils {
         return tracer
                 .spanBuilder(spanName)
                 .setSpanKind(SpanKind.CONSUMER)
-                .setNoParent()
+                .setParent(Context.current().with(Span.current()))
                 .addLink(Span.fromContext(extractedContext).getSpanContext())
                 .startSpan();
     }
