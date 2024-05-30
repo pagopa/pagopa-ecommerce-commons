@@ -6,6 +6,7 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -214,9 +215,16 @@ public class TracingUtils {
          */
         return Mono.using(
                 () -> span,
-                s -> operation.contextWrite(
-                        reactor.util.context.Context.of(PARENT_TRACE_CONTEXT_KEY, Context.current().with(s))
-                ),
+                s -> {
+
+                    Context newContext = Context.current().with(s);
+                    Mono<T> operationWithContext = operation.contextWrite(
+                            reactor.util.context.Context.of(PARENT_TRACE_CONTEXT_KEY, newContext)
+                    );
+
+                    return ContextPropagationOperator
+                            .runWithContext(operationWithContext, newContext);
+                },
                 Span::end
         );
     }
