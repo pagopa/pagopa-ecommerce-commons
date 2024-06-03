@@ -35,6 +35,7 @@ class JwtTokenUtilsTests {
         it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
                 transactionId,
                 orderId,
+                null,
                 null
         );
 
@@ -48,6 +49,8 @@ class JwtTokenUtilsTests {
         );
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertEquals(orderId, claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.PAYMENT_METHOD_ID_CLAIM, String.class));
         assertNotNull(claims.getId());
         assertNotNull(claims.getIssuedAt());
         assertNotNull(claims.getExpiration());
@@ -63,6 +66,7 @@ class JwtTokenUtilsTests {
         it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
                 transactionId,
                 null,
+                null,
                 null
         );
         Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
@@ -75,6 +79,7 @@ class JwtTokenUtilsTests {
         );
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertNull(claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
         assertNotNull(claims.getId());
         assertNotNull(claims.getIssuedAt());
         assertNotNull(claims.getExpiration());
@@ -85,14 +90,15 @@ class JwtTokenUtilsTests {
     }
 
     @Test
-    void shouldGenerateValidJwtTokenWithAllClaims() {
+    void shouldGenerateValidJwtTokenWithWithOrderIdAndTransactionIdAndPaymentMethodId() {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
         String paymentMethodId = UUID.randomUUID().toString();
         it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
                 transactionId,
                 orderId,
-                paymentMethodId
+                paymentMethodId,
+                null
         );
         Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
                 .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
@@ -106,6 +112,100 @@ class JwtTokenUtilsTests {
         assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
         assertEquals(orderId, claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
         assertEquals(paymentMethodId, claims.get(JwtTokenUtils.PAYMENT_METHOD_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
+        assertNotNull(claims.getId());
+        assertNotNull(claims.getIssuedAt());
+        assertNotNull(claims.getExpiration());
+        assertEquals(
+                Duration.ofSeconds(TOKEN_VALIDITY_TIME_SECONDS).toMillis(),
+                claims.getExpiration().getTime() - claims.getIssuedAt().getTime()
+        );
+    }
+
+    @Test
+    void shouldGenerateValidJwtTokenWithOnlyUserId() {
+        String userId = UUID.randomUUID().toString();
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                null,
+                null,
+                null,
+                userId
+        );
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+        assertTrue(generatedToken.isRight());
+        assertNotNull(generatedToken);
+        Claims claims = assertDoesNotThrow(
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
+        );
+        assertEquals(userId, claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
+        assertNotNull(claims.getId());
+        assertNotNull(claims.getIssuedAt());
+        assertNotNull(claims.getExpiration());
+        assertEquals(
+                Duration.ofSeconds(TOKEN_VALIDITY_TIME_SECONDS).toMillis(),
+                claims.getExpiration().getTime() - claims.getIssuedAt().getTime()
+        );
+    }
+
+    @Test
+    void shouldGenerateValidJwtTokenWithTransactionIdAndUserId() {
+        TransactionId transactionId = new TransactionId(UUID.randomUUID());
+        String userId = UUID.randomUUID().toString();
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                transactionId,
+                null,
+                null,
+                userId
+        );
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+        assertTrue(generatedToken.isRight());
+        assertNotNull(generatedToken);
+        Claims claims = assertDoesNotThrow(
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
+        );
+        assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
+        assertEquals(userId, claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
+        assertNull(claims.get(JwtTokenUtils.PAYMENT_METHOD_ID_CLAIM, String.class));
+        assertNotNull(claims.getId());
+        assertNotNull(claims.getIssuedAt());
+        assertNotNull(claims.getExpiration());
+        assertEquals(
+                Duration.ofSeconds(TOKEN_VALIDITY_TIME_SECONDS).toMillis(),
+                claims.getExpiration().getTime() - claims.getIssuedAt().getTime()
+        );
+    }
+
+    @Test
+    void shouldGenerateValidJwtTokenWithWithAllClaims() {
+        TransactionId transactionId = new TransactionId(UUID.randomUUID());
+        String orderId = UUID.randomUUID().toString();
+        String paymentMethodId = UUID.randomUUID().toString();
+        String userId = UUID.randomUUID().toString();
+        it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
+                transactionId,
+                orderId,
+                paymentMethodId,
+                userId
+        );
+        Either<JWTTokenGenerationException, String> generatedToken = jwtTokenUtils
+                .generateToken(jwtSecretKey, TOKEN_VALIDITY_TIME_SECONDS, jwtClaims);
+
+        assertTrue(generatedToken.isRight());
+        assertNotNull(generatedToken);
+        Claims claims = assertDoesNotThrow(
+                () -> Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(generatedToken.get())
+                        .getBody()
+        );
+        assertEquals(transactionId.value(), claims.get(JwtTokenUtils.TRANSACTION_ID_CLAIM, String.class));
+        assertEquals(orderId, claims.get(JwtTokenUtils.ORDER_ID_CLAIM, String.class));
+        assertEquals(paymentMethodId, claims.get(JwtTokenUtils.PAYMENT_METHOD_ID_CLAIM, String.class));
+        assertEquals(userId, claims.get(JwtTokenUtils.USER_ID_CLAIM, String.class));
         assertNotNull(claims.getId());
         assertNotNull(claims.getIssuedAt());
         assertNotNull(claims.getExpiration());
@@ -120,10 +220,12 @@ class JwtTokenUtilsTests {
         TransactionId transactionId = new TransactionId(UUID.randomUUID());
         String orderId = UUID.randomUUID().toString();
         String paymentMethodId = UUID.randomUUID().toString();
+        String userId = UUID.randomUUID().toString();
         it.pagopa.ecommerce.commons.domain.Claims jwtClaims = new it.pagopa.ecommerce.commons.domain.Claims(
                 transactionId,
                 orderId,
-                paymentMethodId
+                paymentMethodId,
+                userId
         );
         try (MockedStatic<Jwts> mockedJwts = Mockito.mockStatic(Jwts.class)) {
             JwtBuilder jwtBuilder = Mockito.mock(JwtBuilder.class);

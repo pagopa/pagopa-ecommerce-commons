@@ -38,6 +38,10 @@ public class JwtTokenUtils {
      * The claim payment methodId
      */
     public static final String PAYMENT_METHOD_ID_CLAIM = "paymentMethodId";
+    /**
+     * The claim userId
+     */
+    public static final String USER_ID_CLAIM = "userId";
 
     /**
      * This method generates a jwt with specific claim
@@ -71,6 +75,9 @@ public class JwtTokenUtils {
             }
             if (claims.paymentMethodId() != null) {
                 jwtBuilder.claim(PAYMENT_METHOD_ID_CLAIM, claims.paymentMethodId()); // claim paymentMethodId
+            }
+            if (claims.userId() != null) {
+                jwtBuilder.claim(USER_ID_CLAIM, claims.userId().toString()); // claim paymentMethodId
             }
             return Either.right(jwtBuilder.compact());
         } catch (JwtException e) {
