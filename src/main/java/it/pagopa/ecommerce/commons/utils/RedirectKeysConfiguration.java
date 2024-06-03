@@ -10,11 +10,22 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * This class manages the PSP redirect URL map.
+ */
 @Getter
 public class RedirectKeysConfiguration {
 
     private final Map<String, URI> redirectBeApiCallUriMap;
 
+    /**
+     * Constructor
+     *
+     * @param pspUrlMapping       - configuration parameter that contains PSP to URI
+     *                            mapping
+     * @param paymentTypeCodeList - set of all redirect payment type codes to be
+     *                            handled flow
+     */
     public RedirectKeysConfiguration(
             Map<String, String> pspUrlMapping,
             Set<String> paymentTypeCodeList
@@ -42,6 +53,16 @@ public class RedirectKeysConfiguration {
         this.redirectBeApiCallUriMap = Collections.unmodifiableMap(redirectUriMap);
     }
 
+    /**
+     * Returns a PSP redirect URL given a key by searching among the configured
+     * URLs.
+     *
+     * @param touchpoint      - the touchpoint used to initiate the transaction
+     * @param pspId           - the psp id chosen for the current
+     * @param paymentTypeCode - redirect payment type code
+     * @return Either valued with a PSP redirect URI, if valid, or exception for
+     *         invalid key param or bad configuration
+     */
     public Either<RedirectConfigurationException, URI> getRedirectUrlForPsp(
                                                                             String touchpoint,
                                                                             String pspId,

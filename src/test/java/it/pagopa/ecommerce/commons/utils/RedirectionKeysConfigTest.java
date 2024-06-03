@@ -130,4 +130,21 @@ public class RedirectionKeysConfigTest {
                 result.getLeft().getMessage()
         );
     }
+
+    @Test
+    void shouldThrowExceptionBuildingBackendUriMapForMissingKey() {
+        Map<String, String> redirectUrlMapping = Map
+                .of("CHECKOUT-psp1-RBPR", "http://localhost:8096/redirections1/CHECKOUT");
+        Set<String> codeTypeList = Set.of("key1");
+
+        RedirectConfigurationException e = assertThrows(
+                RedirectConfigurationException.class,
+                () -> new RedirectKeysConfiguration(redirectUrlMapping, codeTypeList)
+        );
+        assertEquals(
+                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Misconfigured redirect.pspUrlMapping, the following redirect payment type code b.e. URIs are not configured: [key1]",
+                e.getMessage()
+        );
+
+    }
 }
