@@ -77,7 +77,7 @@ public class JwtTokenUtils {
                 jwtBuilder.claim(PAYMENT_METHOD_ID_CLAIM, claims.paymentMethodId()); // claim paymentMethodId
             }
             if (claims.userId() != null) {
-                jwtBuilder.claim(USER_ID_CLAIM, claims.userId().toString()); // claim paymentMethodId
+                jwtBuilder.claim(USER_ID_CLAIM, claims.userId().toString()); // claim userId
             }
             return Either.right(jwtBuilder.compact());
         } catch (JwtException e) {

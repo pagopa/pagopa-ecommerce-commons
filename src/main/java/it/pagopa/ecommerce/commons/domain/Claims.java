@@ -21,6 +21,6 @@ public record Claims(
         @Nullable TransactionId transactionId,
         @Nullable String orderId,
         @Nullable String paymentMethodId,
-        @Nullable String userId
+        @Nullable UUID userId
 ) {
 }
