@@ -120,7 +120,11 @@ public class NpgClient {
         /**
          * PIS (3DS2 Payment Initiation Service)
          */
-        PIS("PIS");
+        PIS("PIS"),
+        /**
+         * Satispay
+         */
+        SATISPAY("SATISPAY");
 
         /**
          * API value for `serviceName`
