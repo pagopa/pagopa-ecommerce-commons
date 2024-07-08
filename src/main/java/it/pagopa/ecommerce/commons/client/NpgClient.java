@@ -43,6 +43,9 @@ public class NpgClient {
 
     private static final AttributeKey<Long> NPG_HTTP_ERROR_CODE = AttributeKey
             .longKey("npg.http_error_code");
+
+    private static final AttributeKey<String> NPG_PAYMENT_METHOD_ATTRIBUTE_NAME = AttributeKey
+            .stringKey("npg.payment_method");
     private static final String EUR_CURRENCY = "EUR";
 
     /**
@@ -410,6 +413,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, paymentMethod.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -457,6 +461,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, PaymentMethod.CARDS.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildCardDataGet(
@@ -495,6 +500,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, PaymentMethod.CARDS.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
@@ -528,6 +534,7 @@ public class NpgClient {
      *         operation details.
      */
     public Mono<RefundResponseDto> refundPayment(
+                                                 @NotNull PaymentMethod paymentMethod,
                                                  @NotNull UUID correlationId,
                                                  @NotNull String operationId,
                                                  @NotNull UUID idempotenceKey,
@@ -539,6 +546,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, paymentMethod.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
@@ -570,6 +578,7 @@ public class NpgClient {
      */
 
     public Mono<StateResponseDto> getState(
+                                           @NotNull PaymentMethod paymentMethod,
                                            @NotNull UUID correlationId,
                                            @NotNull String sessionId,
                                            @NonNull String pspApiKey
@@ -578,6 +587,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, paymentMethod.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId, pspApiKey)
@@ -603,6 +613,7 @@ public class NpgClient {
      *         related to.
      */
     public Mono<OrderResponseDto> getOrder(
+                                           @NotNull PaymentMethod paymentMethod,
                                            UUID correlationId,
                                            String pspApiKey,
                                            String orderId
@@ -611,6 +622,7 @@ public class NpgClient {
         return Mono.using(
                 () -> tracer.spanBuilder(gatewayOperation.spanName)
                         .setParent(Context.current().with(Span.current()))
+                        .setAttribute(NPG_PAYMENT_METHOD_ATTRIBUTE_NAME, paymentMethod.serviceName)
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId, pspApiKey)

@@ -58,6 +58,7 @@ class NpgClientTests {
     private static final String TYPE_1 = "type1";
     private static final String BIN = "123456";
     private static final String CIRCUIT = "VISA";
+    private static final NpgClient.PaymentMethod PAYMENT_METHOD = NpgClient.PaymentMethod.CARDS;
     private static final String OPERATION_ID = "OPERATION_ID";
 
     private static final String REFUND_DESCRIPTION = "REFUND_DESCRIPTION";
@@ -492,6 +493,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.refundPayment(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
@@ -524,6 +526,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.refundPayment(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
@@ -612,6 +615,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.refundPayment(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
@@ -660,6 +664,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.refundPayment(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 OPERATION_ID,
                                 IDEMPOTENCE_KEY,
@@ -731,6 +736,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.getState(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 SESSION_ID,
                                 MOCKED_API_KEY
@@ -777,6 +783,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.getOrder(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 MOCKED_API_KEY,
                                 ORDER_REQUEST_ORDER_ID
@@ -816,6 +823,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.getState(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 SESSION_ID,
                                 MOCKED_API_KEY
@@ -856,6 +864,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.getState(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 SESSION_ID,
                                 MOCKED_API_KEY
@@ -894,6 +903,7 @@ class NpgClientTests {
         StepVerifier
                 .create(
                         npgClient.getState(
+                                PAYMENT_METHOD,
                                 correlationUUID,
                                 SESSION_ID,
                                 MOCKED_API_KEY
