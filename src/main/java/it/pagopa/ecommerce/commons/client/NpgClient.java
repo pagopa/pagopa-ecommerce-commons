@@ -523,6 +523,8 @@ public class NpgClient {
     /**
      * method to request the payment refund using a sessionId passed as input.
      *
+     * @param paymentMethod  the payment method for which this refund is being
+     *                       issued
      * @param correlationId  the unique id to identify the rest api invocation
      * @param operationId    the unique id used to identify a payment operation
      * @param idempotenceKey the idempotenceKey used to identify a refund reqeust
@@ -570,6 +572,8 @@ public class NpgClient {
     /**
      * method to request the authorization state using a sessionId passed as input.
      *
+     * @param paymentMethod the payment method for which <code>getState</code> is
+     *                      being called
      * @param correlationId the unique id to identify the rest api invocation
      * @param sessionId     the session id used for retrieve a card data
      * @param pspApiKey     the specific psp API key
@@ -606,6 +610,8 @@ public class NpgClient {
     /**
      * Method to get order details and all related operations
      *
+     * @param paymentMethod the payment method for which <code>getOrder</code> is
+     *                      executed
      * @param correlationId the unique id to identify the rest api invocation
      * @param pspApiKey     the specific psp API key
      * @param orderId       the orderId of the payment
@@ -614,9 +620,9 @@ public class NpgClient {
      */
     public Mono<OrderResponseDto> getOrder(
                                            @NotNull PaymentMethod paymentMethod,
-                                           UUID correlationId,
-                                           String pspApiKey,
-                                           String orderId
+                                           @NotNull UUID correlationId,
+                                           @NotNull String pspApiKey,
+                                           @NotNull String orderId
     ) {
         final var gatewayOperation = GatewayOperation.GET_ORDER;
         return Mono.using(
