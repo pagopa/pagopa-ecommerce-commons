@@ -122,9 +122,9 @@ public class NpgClient {
          */
         PIS("PIS"),
         /**
-         * Satispay
+         * Satispay direct
          */
-        SATISPAY("SATISPAY");
+        SATISPAY_DIRECT("SATISPAY_DIRECT");
 
         /**
          * API value for `serviceName`
