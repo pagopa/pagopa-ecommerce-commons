@@ -124,7 +124,7 @@ public class NpgClient {
         /**
          * Satispay direct
          */
-        SATISPAY_DIRECT("SATISPAY_DIRECT");
+        SATISPAY("SATISPAY_DIRECT");
 
         /**
          * API value for `serviceName`
