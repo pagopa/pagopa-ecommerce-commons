@@ -63,7 +63,7 @@ public class UpdateTransactionStatusTracerUtils {
             .stringKey("updateTransactionStatus.clientId");
 
     /**
-     * Span attribute used to trace transaction payment method type code
+     * Span attribute used to trace whether a wallet was used for authorizing the transaction
      */
     static final AttributeKey<Boolean> UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY = AttributeKey
             .booleanKey("updateTransactionStatus.walletPayment");
