@@ -57,7 +57,7 @@ public class UpdateTransactionStatusTracerUtils {
             .stringKey("updateTransactionStatus.paymentMethodTypeCode");
 
     /**
-     * Span attribute used to trace transaction payment method type code
+     * Span attribute used to trace the id of the client that initiated the transaction
      */
     static final AttributeKey<String> UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY = AttributeKey
             .stringKey("updateTransactionStatus.clientId");
