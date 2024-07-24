@@ -56,37 +56,37 @@ class UpdateTransactionStatusTracerUtilsTest {
         verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
         Attributes attributes = attributesCaptor.getValue();
         assertEquals(
-                statusUpdateInfo.outcome().toString(),
+                statusUpdateInfo.getOutcome().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.type().toString(),
+                statusUpdateInfo.getType().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.trigger().toString(),
+                statusUpdateInfo.getTrigger().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.clientId().toString(),
+                statusUpdateInfo.getClientId().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.pspId().get(),
+                statusUpdateInfo.getPspId().get(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.paymentMethodTypeCode(),
+                statusUpdateInfo.getPaymentMethodTypeCode().get(),
                 attributes.get(
                         UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
                 )
         );
 
         assertEquals(
-                statusUpdateInfo.isWalletPayment(),
+                statusUpdateInfo.isWalletPayment().get(),
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
         );
@@ -111,11 +111,11 @@ class UpdateTransactionStatusTracerUtilsTest {
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.ClosePaymentNodoStatusUpdate(
                 outcome,
-                Optional.of("pspId"),
-                Optional.of("CP"),
+                "pspId",
+                "CP",
                 Transaction.ClientId.CHECKOUT,
-                Optional.of(true),
-                Optional.empty()
+                true,
+                new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult("OK", Optional.empty())
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -128,108 +128,37 @@ class UpdateTransactionStatusTracerUtilsTest {
         verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
         Attributes attributes = attributesCaptor.getValue();
         assertEquals(
-                statusUpdateInfo.outcome().toString(),
+                statusUpdateInfo.getOutcome().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.type().toString(),
+                statusUpdateInfo.getType().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.trigger().toString(),
+                statusUpdateInfo.getTrigger().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.clientId().toString(),
+                statusUpdateInfo.getClientId().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.pspId().get(),
+                statusUpdateInfo.getPspId().get(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.paymentMethodTypeCode(),
+                statusUpdateInfo.getPaymentMethodTypeCode().get(),
                 attributes.get(
                         UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
                 )
         );
 
         assertEquals(
-                statusUpdateInfo.isWalletPayment(),
-                attributes
-                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
-        );
-        assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
-                attributes.get(
-                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_ERROR_CODE_ATTRIBUTE_KEY
-                )
-        );
-        assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
-                attributes
-                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
-        );
-
-    }
-
-    @ParameterizedTest
-    @EnumSource(UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.class)
-    void shouldTraceTransactionUpdateStatusSuccessfullyForNodoClosePaymentDetailsWithEmptyOptionalInformations(
-                                                                                                               UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
-    ) {
-        UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.ClosePaymentNodoStatusUpdate(
-                outcome,
-                Optional.empty(),
-                Optional.empty(),
-                Transaction.ClientId.CHECKOUT,
-                Optional.empty(),
-                Optional.empty()
-        );
-        // pre-conditions
-        doNothing().when(openTelemetryUtils).addSpanWithAttributes(
-                eq(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_SPAN_NAME),
-                attributesCaptor.capture()
-        );
-        // test
-        updateTransactionStatusTracerUtils.traceStatusUpdateOperation(statusUpdateInfo);
-        // assertions
-        verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
-        Attributes attributes = attributesCaptor.getValue();
-        assertEquals(
-                statusUpdateInfo.outcome().toString(),
-                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
-        );
-        assertEquals(
-                statusUpdateInfo.type().toString(),
-                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
-        );
-        assertEquals(
-                statusUpdateInfo.trigger().toString(),
-                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
-        );
-
-        assertEquals(
-                statusUpdateInfo.clientId().toString(),
-                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
-        );
-
-        assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
-                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
-        );
-
-        assertEquals(
-                statusUpdateInfo.paymentMethodTypeCode(),
-                attributes.get(
-                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
-                )
-        );
-
-        assertNull(
+                statusUpdateInfo.isWalletPayment().get(),
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
         );
@@ -289,36 +218,36 @@ class UpdateTransactionStatusTracerUtilsTest {
         verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
         Attributes attributes = attributesCaptor.getValue();
         assertEquals(
-                statusUpdateInfo.outcome().toString(),
+                statusUpdateInfo.getOutcome().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.type().toString(),
+                statusUpdateInfo.getType().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.trigger().toString(),
+                statusUpdateInfo.getTrigger().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.clientId().toString(),
+                statusUpdateInfo.getClientId().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.pspId().get(),
+                statusUpdateInfo.getPspId().get(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
         );
 
         assertEquals(
-                statusUpdateInfo.paymentMethodTypeCode(),
+                statusUpdateInfo.getPaymentMethodTypeCode().get(),
                 attributes.get(
                         UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
                 )
         );
 
         assertEquals(
-                statusUpdateInfo.isWalletPayment(),
+                statusUpdateInfo.isWalletPayment().get(),
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
         );
@@ -371,15 +300,15 @@ class UpdateTransactionStatusTracerUtilsTest {
         verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
         Attributes attributes = attributesCaptor.getValue();
         assertEquals(
-                statusUpdateInfo.outcome().toString(),
+                statusUpdateInfo.getOutcome().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.type().toString(),
+                statusUpdateInfo.getType().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.trigger().toString(),
+                statusUpdateInfo.getTrigger().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
         );
 

@@ -201,48 +201,45 @@ public class UpdateTransactionStatusTracerUtils {
                 .builder()
                 .put(
                         UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY,
-                        statusUpdateInfo.type().toString()
+                        statusUpdateInfo.getType().toString()
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY,
-                        statusUpdateInfo.outcome().toString()
+                        statusUpdateInfo.getOutcome().toString()
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY,
-                        statusUpdateInfo.trigger().toString()
+                        statusUpdateInfo.getTrigger().toString()
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY,
-                        statusUpdateInfo.pspId().orElse(FIELD_NOT_AVAILABLE)
+                        statusUpdateInfo.getPspId().orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY,
-                        statusUpdateInfo.gatewayOutcomeResult().map(GatewayOutcomeResult::gatewayOperationOutcome)
+                        statusUpdateInfo.getGatewayOutcomeResult().map(GatewayOutcomeResult::gatewayOperationOutcome)
                                 .orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_GATEWAY_ERROR_CODE_ATTRIBUTE_KEY,
-                        statusUpdateInfo.gatewayOutcomeResult().flatMap(GatewayOutcomeResult::errorCode)
+                        statusUpdateInfo.getGatewayOutcomeResult().flatMap(GatewayOutcomeResult::errorCode)
                                 .orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY,
-                        statusUpdateInfo.paymentMethodTypeCode()
+                        statusUpdateInfo.getPaymentMethodTypeCode().orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY,
-                        statusUpdateInfo.clientId().toString()
-                )
-                .put(
-                        UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
-                        statusUpdateInfo.isWalletPayment()
+                        statusUpdateInfo.getClientId().toString()
                 );
-        if (statusUpdateInfo.isWalletPayment() != null) {
-            spanAttributes.put(
-                    UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
-                    statusUpdateInfo.isWalletPayment()
-            );
-        }
+
+        statusUpdateInfo.isWalletPayment().map(
+                isWalletPayment -> spanAttributes.put(
+                        UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
+                        isWalletPayment
+                )
+        );
 
         openTelemetryUtils.addSpanWithAttributes(UPDATE_TRANSACTION_STATUS_SPAN_NAME, spanAttributes.build());
     }
@@ -256,7 +253,7 @@ public class UpdateTransactionStatusTracerUtils {
      *                              transaction
      * @param clientId              client identifier that have initiated the
      *                              transaction
-     * @param isWalletPayment       boolean value indicating if the transaction have
+     * @param walletPayment         boolean value indicating if the transaction have
      *                              been performed with an onboarded method or not
      *                              (wallet)
      * @param gatewayOutcomeResult  gateway outcome result
@@ -266,7 +263,7 @@ public class UpdateTransactionStatusTracerUtils {
             Optional<String> pspId,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
-            Boolean isWalletPayment,
+            Boolean walletPayment,
             Optional<GatewayOutcomeResult> gatewayOutcomeResult
     )
             implements
@@ -280,7 +277,7 @@ public class UpdateTransactionStatusTracerUtils {
          *                              transaction
          * @param clientId              client identifier that have initiated the
          *                              transaction
-         * @param isWalletPayment       boolean value indicating if the transaction have
+         * @param walletPayment         boolean value indicating if the transaction have
          *                              been performed with an onboarded method or not
          *                              (wallet)
          * @param gatewayOutcomeResult  gateway operation result
@@ -290,18 +287,48 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(pspId);
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
-            Objects.requireNonNull(isWalletPayment);
+            Objects.requireNonNull(walletPayment);
             Objects.requireNonNull(gatewayOutcomeResult);
         }
 
         @Override
-        public UpdateTransactionStatusType type() {
+        public UpdateTransactionStatusType getType() {
             return UpdateTransactionStatusType.SEND_PAYMENT_RESULT_OUTCOME;
         }
 
         @Override
-        public UpdateTransactionTrigger trigger() {
+        public UpdateTransactionTrigger getTrigger() {
             return UpdateTransactionTrigger.NODO;
+        }
+
+        @Override
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return outcome;
+        }
+
+        @Override
+        public Optional<String> getPspId() {
+            return pspId;
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
+            return gatewayOutcomeResult;
+        }
+
+        @Override
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.of(clientId);
+        }
+
+        @Override
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.of(paymentMethodTypeCode);
+        }
+
+        @Override
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.of(walletPayment);
         }
 
     }
@@ -322,11 +349,11 @@ public class UpdateTransactionStatusTracerUtils {
      */
     public record ClosePaymentNodoStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
-            Optional<String> pspId,
-            Optional<String> paymentTypeCode,
+            String pspId,
+            String paymentTypeCode,
             Transaction.ClientId clientId,
-            Optional<Boolean> walletPayment,
-            Optional<GatewayOutcomeResult> gatewayOutcomeResult
+            Boolean walletPayment,
+            GatewayOutcomeResult gatewayOutcomeResult
     )
             implements
             StatusUpdateInfo {
@@ -353,23 +380,43 @@ public class UpdateTransactionStatusTracerUtils {
         }
 
         @Override
-        public UpdateTransactionStatusType type() {
+        public UpdateTransactionStatusType getType() {
             return UpdateTransactionStatusType.CLOSE_PAYMENT_OUTCOME;
         }
 
         @Override
-        public UpdateTransactionTrigger trigger() {
+        public UpdateTransactionTrigger getTrigger() {
             return UpdateTransactionTrigger.NODO;
         }
 
         @Override
-        public String paymentMethodTypeCode() {
-            return this.paymentTypeCode.orElse(FIELD_NOT_AVAILABLE);
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return outcome;
         }
 
         @Override
-        public Boolean isWalletPayment() {
-            return this.walletPayment.orElse(null);
+        public Optional<String> getPspId() {
+            return Optional.of(pspId);
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.of(this.paymentTypeCode);
+        }
+
+        @Override
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.of(this.walletPayment);
         }
     }
 
@@ -434,6 +481,7 @@ public class UpdateTransactionStatusTracerUtils {
         /**
          * Primary constructor
          *
+         * @param trigger the gateway trigger that initiate the request
          * @param outcome authorization status outcome
          * @param context contextual information about the authorization status update
          */
@@ -450,38 +498,55 @@ public class UpdateTransactionStatusTracerUtils {
                         "Invalid trigger for PaymentGatewayStatusUpdate: %s".formatted(trigger)
                 );
             }
+
             Objects.requireNonNull(outcome);
+            if (outcome == UpdateTransactionStatusOutcome.INVALID_REQUEST) {
+                throw new IllegalArgumentException(
+                        "Invalid outcome for `PaymentGatewayStatusUpdate`: `INVALID_REQUEST`"
+                );
+            }
+
             Objects.requireNonNull(context);
         }
 
         @Override
-        public UpdateTransactionStatusType type() {
+        public UpdateTransactionStatusType getType() {
             return UpdateTransactionStatusType.AUTHORIZATION_OUTCOME;
         }
 
         @Override
-        public Optional<String> pspId() {
+        public UpdateTransactionTrigger getTrigger() {
+            return trigger;
+        }
+
+        @Override
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return outcome;
+        }
+
+        @Override
+        public Optional<String> getPspId() {
             return context.pspId;
         }
 
         @Override
-        public Optional<GatewayOutcomeResult> gatewayOutcomeResult() {
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
             return context.gatewayOutcomeResult;
         }
 
         @Override
-        public String paymentMethodTypeCode() {
-            return context.paymentMethodTypeCode;
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.of(context.paymentMethodTypeCode);
         }
 
         @Override
-        public Boolean isWalletPayment() {
-            return context.isWalletPayment;
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.of(context.isWalletPayment);
         }
 
         @Override
-        public Transaction.ClientId clientId() {
-            return context.clientId;
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.of(context.clientId);
         }
     }
 
@@ -493,47 +558,47 @@ public class UpdateTransactionStatusTracerUtils {
          * @return the update transaction status type
          * @see UpdateTransactionStatusType
          */
-        UpdateTransactionStatusType type();
+        UpdateTransactionStatusType getType();
 
         /**
          * @return the update transaction trigger
          * @see UpdateTransactionTrigger
          */
-        UpdateTransactionTrigger trigger();
+        UpdateTransactionTrigger getTrigger();
 
         /**
          * @return the update transaction outcome
          * @see UpdateTransactionStatusOutcome
          */
-        UpdateTransactionStatusOutcome outcome();
+        UpdateTransactionStatusOutcome getOutcome();
 
         /**
          * The id of the psp chosen by the user
          *
          * @return the id of the PSP
          */
-        Optional<String> pspId();
+        Optional<String> getPspId();
 
         /**
          * The gateway outcome information
          *
          * @return the gateway outcome information
          */
-        Optional<GatewayOutcomeResult> gatewayOutcomeResult();
+        Optional<GatewayOutcomeResult> getGatewayOutcomeResult();
 
         /**
          * The client id the transaction comes from
          *
          * @return the client identifier
          */
-        Transaction.ClientId clientId();
+        Optional<Transaction.ClientId> getClientId();
 
         /**
          * The payment method type code of the authorization request
          *
          * @return the payment method type code
          */
-        String paymentMethodTypeCode();
+        Optional<String> getPaymentMethodTypeCode();
 
         /**
          * Boolean value indicating if the operation have been performed with a wallet
@@ -541,7 +606,7 @@ public class UpdateTransactionStatusTracerUtils {
          *
          * @return true iff the operation is performed with an onboarded method
          */
-        Boolean isWalletPayment();
+        Optional<Boolean> isWalletPayment();
     }
 
     /**
@@ -554,5 +619,58 @@ public class UpdateTransactionStatusTracerUtils {
             String gatewayOperationOutcome,
             Optional<String> errorCode
     ) {
+    }
+
+    /**
+     * Status update representing an invalid external request
+     *
+     * @param type    the status update of this invalid request
+     * @param trigger the component that triggered this invalid update
+     */
+    public record InvalidRequestTransactionUpdate(
+            @NotNull UpdateTransactionStatusType type,
+            @NotNull UpdateTransactionTrigger trigger
+    )
+            implements
+            StatusUpdateInfo {
+        @Override
+        public UpdateTransactionStatusType getType() {
+            return type;
+        }
+
+        @Override
+        public UpdateTransactionTrigger getTrigger() {
+            return trigger;
+        }
+
+        @Override
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return UpdateTransactionStatusOutcome.INVALID_REQUEST;
+        }
+
+        @Override
+        public Optional<String> getPspId() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.empty();
+        }
     }
 }
