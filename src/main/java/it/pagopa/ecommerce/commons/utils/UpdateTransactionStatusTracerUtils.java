@@ -217,14 +217,13 @@ public class UpdateTransactionStatusTracerUtils {
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY,
-                        statusUpdateInfo.gatewayAuthorizationOutcomeResult()
-                                .map(GatewayAuthorizationOutcomeResult::gatewayAuthorizationStatus)
+                        statusUpdateInfo.gatewayOutcomeResult().map(GatewayOutcomeResult::gatewayOperationOutcome)
                                 .orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_GATEWAY_ERROR_CODE_ATTRIBUTE_KEY,
-                        statusUpdateInfo.gatewayAuthorizationOutcomeResult()
-                                .flatMap(GatewayAuthorizationOutcomeResult::errorCode).orElse(FIELD_NOT_AVAILABLE)
+                        statusUpdateInfo.gatewayOutcomeResult().flatMap(GatewayOutcomeResult::errorCode)
+                                .orElse(FIELD_NOT_AVAILABLE)
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY,
@@ -261,13 +260,15 @@ public class UpdateTransactionStatusTracerUtils {
      * @param isWalletPayment       boolean value indicating if the transaction have
      *                              been performed with an onboarded method or not
      *                              (wallet)
+     * @param gatewayOutcomeResult  gateway outcome result
      */
     public record SendPaymentResultNodoStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
             Optional<String> pspId,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
-            Boolean isWalletPayment
+            Boolean isWalletPayment,
+            Optional<GatewayOutcomeResult> gatewayOutcomeResult
     )
             implements
             StatusUpdateInfo {
@@ -283,6 +284,7 @@ public class UpdateTransactionStatusTracerUtils {
          * @param isWalletPayment       boolean value indicating if the transaction have
          *                              been performed with an onboarded method or not
          *                              (wallet)
+         * @param gatewayOutcomeResult  gateway operation result
          */
         public SendPaymentResultNodoStatusUpdate {
             Objects.requireNonNull(outcome);
@@ -290,6 +292,7 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
             Objects.requireNonNull(isWalletPayment);
+            Objects.requireNonNull(gatewayOutcomeResult);
         }
 
         @Override
@@ -302,43 +305,44 @@ public class UpdateTransactionStatusTracerUtils {
             return UpdateTransactionTrigger.NODO;
         }
 
-        @Override
-        public Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult() {
-            return Optional.empty();
-        }
-
     }
 
     /**
      * Transaction status update record for Nodo sendPaymentResult operation
      *
-     * @param outcome         the transaction update outcome
-     * @param pspId           psp identifier for the current transaction
-     * @param paymentTypeCode payment type code used in the current transaction
-     *                        (absent for user canceled transaction)
-     * @param clientId        client identifier that have initiated the transaction
-     * @param walletPayment   boolean value indicating if the transaction have been
-     *                        performed with an onboarded method (wallet) or not
-     *                        (absent for user canceled transaction)
+     * @param outcome              the transaction update outcome
+     * @param pspId                psp identifier for the current transaction
+     * @param paymentTypeCode      payment type code used in the current transaction
+     *                             (absent for user canceled transaction)
+     * @param clientId             client identifier that have initiated the
+     *                             transaction
+     * @param walletPayment        boolean value indicating if the transaction have
+     *                             been performed with an onboarded method (wallet)
+     *                             or not (absent for user canceled transaction)
+     * @param gatewayOutcomeResult gateway outcome result
      */
     public record ClosePaymentNodoStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
             Optional<String> pspId,
             Optional<String> paymentTypeCode,
             Transaction.ClientId clientId,
-            Optional<Boolean> walletPayment
+            Optional<Boolean> walletPayment,
+            Optional<GatewayOutcomeResult> gatewayOutcomeResult
     )
             implements
             StatusUpdateInfo {
         /**
          * Perform check against required fields
          *
-         * @param outcome         the transaction update outcome
-         * @param pspId           psp identifier for the current transaction
-         * @param paymentTypeCode payment type code used in the current transaction
-         * @param clientId        client identifier that have initiated the transaction
-         * @param walletPayment   boolean value indicating if the transaction have been
-         *                        performed with an onboarded method or not (wallet)
+         * @param outcome              the transaction update outcome
+         * @param pspId                psp identifier for the current transaction
+         * @param paymentTypeCode      payment type code used in the current transaction
+         * @param clientId             client identifier that have initiated the
+         *                             transaction
+         * @param walletPayment        boolean value indicating if the transaction have
+         *                             been performed with an onboarded method or not
+         *                             (wallet)
+         * @param gatewayOutcomeResult gateway operation result
          */
         public ClosePaymentNodoStatusUpdate {
             Objects.requireNonNull(outcome);
@@ -346,6 +350,7 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(paymentTypeCode);
             Objects.requireNonNull(clientId);
             Objects.requireNonNull(walletPayment);
+            Objects.requireNonNull(gatewayOutcomeResult);
         }
 
         @Override
@@ -356,11 +361,6 @@ public class UpdateTransactionStatusTracerUtils {
         @Override
         public UpdateTransactionTrigger trigger() {
             return UpdateTransactionTrigger.NODO;
-        }
-
-        @Override
-        public Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult() {
-            return Optional.empty();
         }
 
         @Override
@@ -379,21 +379,17 @@ public class UpdateTransactionStatusTracerUtils {
      * Transaction status update record for payment transaction gateway update
      * trigger
      *
-     * @param outcome                           the transaction update status
-     *                                          outcome
-     * @param trigger                           the gateway trigger that initiate
-     *                                          the request
-     * @param pspId                             the psp id chosen for the current
-     *                                          transaction
-     * @param gatewayAuthorizationOutcomeResult the gateway authorization outcome
-     *                                          result
-     * @param paymentMethodTypeCode             payment type code used in the
-     *                                          current transaction
-     * @param clientId                          client identifier that have
-     *                                          initiated the transaction
-     * @param isWalletPayment                   boolean value indicating if the
-     *                                          transaction have been performed with
-     *                                          an onboarded method or not (wallet)
+     * @param outcome               the transaction update status outcome
+     * @param trigger               the gateway trigger that initiate the request
+     * @param pspId                 the psp id chosen for the current transaction
+     * @param gatewayOutcomeResult  the gateway authorization outcome result
+     * @param paymentMethodTypeCode payment type code used in the current
+     *                              transaction
+     * @param clientId              client identifier that have initiated the
+     *                              transaction
+     * @param isWalletPayment       boolean value indicating if the transaction have
+     *                              been performed with an onboarded method or not
+     *                              (wallet)
      */
     public record PaymentGatewayStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
@@ -401,7 +397,7 @@ public class UpdateTransactionStatusTracerUtils {
 
             Optional<String> pspId,
 
-            Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult,
+            Optional<GatewayOutcomeResult> gatewayOutcomeResult,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
             Boolean isWalletPayment
@@ -412,27 +408,23 @@ public class UpdateTransactionStatusTracerUtils {
         /**
          * Perform checks against required fields
          *
-         * @param outcome                           the transaction update status
-         *                                          outcome
-         * @param trigger                           the gateway trigger that initiate
-         *                                          the request
-         * @param pspId                             the psp id chosen for the current
-         *                                          transaction
-         * @param gatewayAuthorizationOutcomeResult the gateway authorization outcome
-         *                                          result
-         * @param paymentMethodTypeCode             payment type code used in the
-         *                                          current transaction
-         * @param clientId                          client identifier that have
-         *                                          initiated the transaction
-         * @param isWalletPayment                   boolean value indicating if the
-         *                                          transaction have been performed with
-         *                                          an onboarded method or not (wallet)
+         * @param outcome               the transaction update status outcome
+         * @param trigger               the gateway trigger that initiate the request
+         * @param pspId                 the psp id chosen for the current transaction
+         * @param gatewayOutcomeResult  the gateway authorization outcome result
+         * @param paymentMethodTypeCode payment type code used in the current
+         *                              transaction
+         * @param clientId              client identifier that have initiated the
+         *                              transaction
+         * @param isWalletPayment       boolean value indicating if the transaction have
+         *                              been performed with an onboarded method or not
+         *                              (wallet)
          */
         public PaymentGatewayStatusUpdate {
             Objects.requireNonNull(outcome);
             Objects.requireNonNull(trigger);
             Objects.requireNonNull(pspId);
-            Objects.requireNonNull(gatewayAuthorizationOutcomeResult);
+            Objects.requireNonNull(gatewayOutcomeResult);
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
             Objects.requireNonNull(isWalletPayment);
@@ -486,11 +478,11 @@ public class UpdateTransactionStatusTracerUtils {
         Optional<String> pspId();
 
         /**
-         * The gateway authorization outcome
+         * The gateway outcome information
          *
-         * @return the authorization outcome information
+         * @return the gateway outcome information
          */
-        Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult();
+        Optional<GatewayOutcomeResult> gatewayOutcomeResult();
 
         /**
          * The client id the transaction comes from
@@ -518,11 +510,11 @@ public class UpdateTransactionStatusTracerUtils {
     /**
      * The gateway authorization outcome result
      *
-     * @param gatewayAuthorizationStatus the received gateway authorization outcome
-     * @param errorCode                  the optional authorization error code
+     * @param gatewayOperationOutcome the received gateway operation outcome
+     * @param errorCode               the optional authorization error code
      */
-    public record GatewayAuthorizationOutcomeResult(
-            String gatewayAuthorizationStatus,
+    public record GatewayOutcomeResult(
+            String gatewayOperationOutcome,
             Optional<String> errorCode
     ) {
     }

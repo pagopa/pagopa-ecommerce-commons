@@ -42,7 +42,8 @@ class UpdateTransactionStatusTracerUtilsTest {
                 Optional.of("pspId"),
                 "CP",
                 Transaction.ClientId.CHECKOUT,
-                false
+                false,
+                Optional.empty()
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -113,7 +114,8 @@ class UpdateTransactionStatusTracerUtilsTest {
                 Optional.of("pspId"),
                 Optional.of("CP"),
                 Transaction.ClientId.CHECKOUT,
-                Optional.of(true)
+                Optional.of(true),
+                Optional.empty()
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -184,6 +186,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 Optional.empty(),
                 Optional.empty(),
                 Transaction.ClientId.CHECKOUT,
+                Optional.empty(),
                 Optional.empty()
         );
         // pre-conditions
