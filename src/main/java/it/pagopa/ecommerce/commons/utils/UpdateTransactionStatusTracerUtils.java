@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.utils;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 
@@ -196,7 +197,7 @@ public class UpdateTransactionStatusTracerUtils {
      * @param statusUpdateInfo transaction status update information
      */
     public void traceStatusUpdateOperation(StatusUpdateInfo statusUpdateInfo) {
-        Attributes spanAttributes = Attributes
+        AttributesBuilder spanAttributes = Attributes
                 .builder()
                 .put(
                         UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY,
@@ -237,14 +238,19 @@ public class UpdateTransactionStatusTracerUtils {
                 .put(
                         UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
                         statusUpdateInfo.isWalletPayment()
-                )
-                .build();
+                );
+        if (statusUpdateInfo.isWalletPayment() != null) {
+            spanAttributes.put(
+                    UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
+                    statusUpdateInfo.isWalletPayment()
+            );
+        }
 
-        openTelemetryUtils.addSpanWithAttributes(UPDATE_TRANSACTION_STATUS_SPAN_NAME, spanAttributes);
+        openTelemetryUtils.addSpanWithAttributes(UPDATE_TRANSACTION_STATUS_SPAN_NAME, spanAttributes.build());
     }
 
     /**
-     * Transaction status update record for Nodo update trigger
+     * Transaction status update record for Nodo sendPaymentResult operation
      *
      * @param outcome               the transaction update outcome
      * @param pspId                 psp identifier for the current transaction
@@ -256,12 +262,12 @@ public class UpdateTransactionStatusTracerUtils {
      *                              been performed with an onboarded method or not
      *                              (wallet)
      */
-    public record NodoStatusUpdate(
+    public record SendPaymentResultNodoStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
             Optional<String> pspId,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
-            boolean isWalletPayment
+            Boolean isWalletPayment
     )
             implements
             StatusUpdateInfo {
@@ -278,11 +284,12 @@ public class UpdateTransactionStatusTracerUtils {
          *                              been performed with an onboarded method or not
          *                              (wallet)
          */
-        public NodoStatusUpdate {
+        public SendPaymentResultNodoStatusUpdate {
             Objects.requireNonNull(outcome);
             Objects.requireNonNull(pspId);
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
+            Objects.requireNonNull(isWalletPayment);
         }
 
         @Override
@@ -298,6 +305,72 @@ public class UpdateTransactionStatusTracerUtils {
         @Override
         public Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult() {
             return Optional.empty();
+        }
+
+    }
+
+    /**
+     * Transaction status update record for Nodo sendPaymentResult operation
+     *
+     * @param outcome         the transaction update outcome
+     * @param pspId           psp identifier for the current transaction
+     * @param paymentTypeCode payment type code used in the current transaction
+     *                        (absent for user canceled transaction)
+     * @param clientId        client identifier that have initiated the transaction
+     * @param walletPayment   boolean value indicating if the transaction have been
+     *                        performed with an onboarded method (wallet) or not
+     *                        (absent for user canceled transaction)
+     */
+    public record ClosePaymentNodoStatusUpdate(
+            UpdateTransactionStatusOutcome outcome,
+            Optional<String> pspId,
+            Optional<String> paymentTypeCode,
+            Transaction.ClientId clientId,
+            Optional<Boolean> walletPayment
+    )
+            implements
+            StatusUpdateInfo {
+        /**
+         * Perform check against required fields
+         *
+         * @param outcome         the transaction update outcome
+         * @param pspId           psp identifier for the current transaction
+         * @param paymentTypeCode payment type code used in the current transaction
+         * @param clientId        client identifier that have initiated the transaction
+         * @param walletPayment   boolean value indicating if the transaction have been
+         *                        performed with an onboarded method or not (wallet)
+         */
+        public ClosePaymentNodoStatusUpdate {
+            Objects.requireNonNull(outcome);
+            Objects.requireNonNull(pspId);
+            Objects.requireNonNull(paymentTypeCode);
+            Objects.requireNonNull(clientId);
+            Objects.requireNonNull(walletPayment);
+        }
+
+        @Override
+        public UpdateTransactionStatusType type() {
+            return UpdateTransactionStatusType.CLOSE_PAYMENT_OUTCOME;
+        }
+
+        @Override
+        public UpdateTransactionTrigger trigger() {
+            return UpdateTransactionTrigger.NODO;
+        }
+
+        @Override
+        public Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult() {
+            return Optional.empty();
+        }
+
+        @Override
+        public String paymentMethodTypeCode() {
+            return this.paymentTypeCode.orElse(FIELD_NOT_AVAILABLE);
+        }
+
+        @Override
+        public Boolean isWalletPayment() {
+            return this.walletPayment.orElse(null);
         }
 
     }
@@ -331,7 +404,7 @@ public class UpdateTransactionStatusTracerUtils {
             Optional<GatewayAuthorizationOutcomeResult> gatewayAuthorizationOutcomeResult,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
-            boolean isWalletPayment
+            Boolean isWalletPayment
     )
             implements
             StatusUpdateInfo {
@@ -362,6 +435,7 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(gatewayAuthorizationOutcomeResult);
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
+            Objects.requireNonNull(isWalletPayment);
             if (!Set.of(
                     UpdateTransactionTrigger.NPG,
                     UpdateTransactionTrigger.PGS_XPAY,
@@ -438,7 +512,7 @@ public class UpdateTransactionStatusTracerUtils {
          *
          * @return true iff the operation is performed with an onboarded method
          */
-        boolean isWalletPayment();
+        Boolean isWalletPayment();
     }
 
     /**
