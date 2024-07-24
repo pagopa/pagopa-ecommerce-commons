@@ -434,8 +434,8 @@ public class UpdateTransactionStatusTracerUtils {
      *                              (wallet)
      */
     public record PaymentGatewayStatusUpdateContext(
-            @NotNull Optional<String> pspId,
-            @NotNull Optional<GatewayOutcomeResult> gatewayOutcomeResult,
+            @NotNull String pspId,
+            @NotNull GatewayOutcomeResult gatewayOutcomeResult,
             @NotNull String paymentMethodTypeCode,
             @NotNull Transaction.ClientId clientId,
             @NotNull Boolean isWalletPayment
@@ -526,12 +526,12 @@ public class UpdateTransactionStatusTracerUtils {
 
         @Override
         public Optional<String> getPspId() {
-            return context.pspId;
+            return Optional.of(context.pspId);
         }
 
         @Override
         public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
-            return context.gatewayOutcomeResult;
+            return Optional.of(context.gatewayOutcomeResult);
         }
 
         @Override

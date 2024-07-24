@@ -200,8 +200,8 @@ class UpdateTransactionStatusTracerUtilsTest {
                 trigger,
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                 new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                        Optional.of("pspId"),
-                        Optional.empty(),
+                        "pspId",
+                        new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult("OK", Optional.empty()),
                         "CP",
                         Transaction.ClientId.CHECKOUT,
                         true
@@ -258,32 +258,23 @@ class UpdateTransactionStatusTracerUtilsTest {
                 )
         );
         assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                statusUpdateInfo.getGatewayOutcomeResult().get().gatewayOperationOutcome(),
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
         );
 
     }
 
-    private static Stream<Arguments> tracePspIdMethodSource() {
-        return Stream.of(
-                Arguments.of("pspId", "pspId"),
-                Arguments.of(null, "N/A")
-        );
-    }
+    @Test
+    void shouldTracePspId() {
+        String pspId = "pspId";
 
-    @ParameterizedTest
-    @MethodSource("tracePspIdMethodSource")
-    void shouldTracePspId(
-                          String pspId,
-                          String expectedSpanPspAttribute
-    ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                 UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT,
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                 new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                        Optional.ofNullable(pspId),
-                        Optional.empty(),
+                        pspId,
+                        new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult("OK", Optional.empty()),
                         "CP",
                         Transaction.ClientId.CHECKOUT,
                         false
@@ -313,7 +304,7 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
 
         assertEquals(
-                expectedSpanPspAttribute,
+                pspId,
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
         );
 
@@ -339,8 +330,8 @@ class UpdateTransactionStatusTracerUtilsTest {
                         UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
                         UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                         new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                                Optional.empty(),
-                                Optional.empty(),
+                                "pspId",
+                                new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult("OK", Optional.empty()),
                                 "CP",
                                 Transaction.ClientId.CHECKOUT,
                                 false
