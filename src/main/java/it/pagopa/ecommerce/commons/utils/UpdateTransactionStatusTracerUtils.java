@@ -233,8 +233,7 @@ public class UpdateTransactionStatusTracerUtils {
                         UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY,
                         statusUpdateInfo.getClientId().toString()
                 );
-
-        statusUpdateInfo.isWalletPayment().map(
+        statusUpdateInfo.isWalletPayment().ifPresent(
                 isWalletPayment -> spanAttributes.put(
                         UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
                         isWalletPayment
