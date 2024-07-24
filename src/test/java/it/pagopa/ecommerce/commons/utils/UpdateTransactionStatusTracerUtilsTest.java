@@ -269,12 +269,14 @@ class UpdateTransactionStatusTracerUtilsTest {
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
-                trigger,
-                Optional.of("pspId"),
-                Optional.empty(),
-                "CP",
-                Transaction.ClientId.CHECKOUT,
-                true
+                new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
+                        trigger,
+                        Optional.of("pspId"),
+                        Optional.empty(),
+                        "CP",
+                        Transaction.ClientId.CHECKOUT,
+                        true
+                )
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -349,12 +351,14 @@ class UpdateTransactionStatusTracerUtilsTest {
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
-                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT,
-                Optional.ofNullable(pspId),
-                Optional.empty(),
-                "CP",
-                Transaction.ClientId.CHECKOUT,
-                false
+                new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT,
+                        Optional.ofNullable(pspId),
+                        Optional.empty(),
+                        "CP",
+                        Transaction.ClientId.CHECKOUT,
+                        false
+                )
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -392,12 +396,8 @@ class UpdateTransactionStatusTracerUtilsTest {
                 NullPointerException.class,
                 () -> new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                         null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        false
+
+                        null
                 )
         );
     }
@@ -408,12 +408,14 @@ class UpdateTransactionStatusTracerUtilsTest {
                 IllegalArgumentException.class,
                 () -> new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                         UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
-                        Optional.empty(),
-                        Optional.empty(),
-                        "CP",
-                        Transaction.ClientId.CHECKOUT,
-                        false
+                        new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
+                                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
+                                Optional.empty(),
+                                Optional.empty(),
+                                "CP",
+                                Transaction.ClientId.CHECKOUT,
+                                false
+                        )
                 )
         );
         assertEquals("Invalid trigger for PaymentGatewayStatusUpdate: NODO", exception.getMessage());

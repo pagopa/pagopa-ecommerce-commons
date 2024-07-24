@@ -6,6 +6,7 @@ import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -17,7 +18,6 @@ import java.util.Set;
  * typologies enumeration {@link UpdateTransactionTrigger} enumeration, instead,
  * contains external actors that trigger the transaction status update
  */
-
 public class UpdateTransactionStatusTracerUtils {
 
     private final OpenTelemetryUtils openTelemetryUtils;
@@ -233,7 +233,6 @@ public class UpdateTransactionStatusTracerUtils {
                         UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY,
                         statusUpdateInfo.clientId().toString()
                 )
-
                 .put(
                         UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY,
                         statusUpdateInfo.isWalletPayment()
@@ -372,14 +371,11 @@ public class UpdateTransactionStatusTracerUtils {
         public Boolean isWalletPayment() {
             return this.walletPayment.orElse(null);
         }
-
     }
 
     /**
-     * Transaction status update record for payment transaction gateway update
-     * trigger
+     * Contextual data for a transaction authorization status update
      *
-     * @param outcome               the transaction update status outcome
      * @param trigger               the gateway trigger that initiate the request
      * @param pspId                 the psp id chosen for the current transaction
      * @param gatewayOutcomeResult  the gateway authorization outcome result
@@ -391,24 +387,17 @@ public class UpdateTransactionStatusTracerUtils {
      *                              been performed with an onboarded method or not
      *                              (wallet)
      */
-    public record PaymentGatewayStatusUpdate(
-            UpdateTransactionStatusOutcome outcome,
-            UpdateTransactionTrigger trigger,
-
-            Optional<String> pspId,
-
-            Optional<GatewayOutcomeResult> gatewayOutcomeResult,
-            String paymentMethodTypeCode,
-            Transaction.ClientId clientId,
-            Boolean isWalletPayment
-    )
-            implements
-            StatusUpdateInfo {
-
+    public record PaymentGatewayStatusUpdateContext(
+            @NotNull UpdateTransactionTrigger trigger,
+            @NotNull Optional<String> pspId,
+            @NotNull Optional<GatewayOutcomeResult> gatewayOutcomeResult,
+            @NotNull String paymentMethodTypeCode,
+            @NotNull Transaction.ClientId clientId,
+            @NotNull Boolean isWalletPayment
+    ) {
         /**
          * Perform checks against required fields
          *
-         * @param outcome               the transaction update status outcome
          * @param trigger               the gateway trigger that initiate the request
          * @param pspId                 the psp id chosen for the current transaction
          * @param gatewayOutcomeResult  the gateway authorization outcome result
@@ -420,8 +409,7 @@ public class UpdateTransactionStatusTracerUtils {
          *                              been performed with an onboarded method or not
          *                              (wallet)
          */
-        public PaymentGatewayStatusUpdate {
-            Objects.requireNonNull(outcome);
+        public PaymentGatewayStatusUpdateContext {
             Objects.requireNonNull(trigger);
             Objects.requireNonNull(pspId);
             Objects.requireNonNull(gatewayOutcomeResult);
@@ -440,12 +428,67 @@ public class UpdateTransactionStatusTracerUtils {
                 );
             }
         }
+    }
+
+    /**
+     * Transaction status update record for payment transaction gateway update
+     * trigger
+     *
+     * @param outcome - the transaction update status outcome
+     * @param context - the transaction update status context
+     */
+    public record PaymentGatewayStatusUpdate(
+            @NotNull UpdateTransactionStatusOutcome outcome,
+            @NotNull PaymentGatewayStatusUpdateContext context
+    )
+            implements
+            StatusUpdateInfo {
+
+        /**
+         * Primary constructor
+         *
+         * @param outcome authorization status outcome
+         * @param context contextual information about the authorization status update
+         */
+        public PaymentGatewayStatusUpdate {
+            Objects.requireNonNull(outcome);
+            Objects.requireNonNull(context);
+        }
 
         @Override
         public UpdateTransactionStatusType type() {
             return UpdateTransactionStatusType.AUTHORIZATION_OUTCOME;
         }
 
+        @Override
+        public UpdateTransactionTrigger trigger() {
+            return context.trigger;
+        }
+
+        @Override
+        public Optional<String> pspId() {
+            return context.pspId;
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> gatewayOutcomeResult() {
+            return context.gatewayOutcomeResult;
+        }
+
+        @Override
+        public String paymentMethodTypeCode() {
+            return context.paymentMethodTypeCode;
+        }
+
+        @Override
+        public Boolean isWalletPayment() {
+            return context.isWalletPayment;
+        }
+
+        @Override
+        public Transaction.ClientId clientId() {
+            return context.clientId;
+        }
     }
 
     /**
@@ -518,5 +561,4 @@ public class UpdateTransactionStatusTracerUtils {
             Optional<String> errorCode
     ) {
     }
-
 }
