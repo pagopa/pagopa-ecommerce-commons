@@ -16,7 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -39,11 +40,14 @@ class UpdateTransactionStatusTracerUtilsTest {
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.SendPaymentResultNodoStatusUpdate(
                 outcome,
-                Optional.of("pspId"),
+                "pspId",
                 "CP",
                 Transaction.ClientId.CHECKOUT,
                 false,
-                Optional.empty()
+                new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult(
+                        "OK",
+                        Optional.empty()
+                )
         );
         // pre-conditions
         doNothing().when(openTelemetryUtils).addSpanWithAttributes(
@@ -97,7 +101,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 )
         );
         assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                "OK",
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
         );
@@ -169,7 +173,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 )
         );
         assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                "OK",
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
         );

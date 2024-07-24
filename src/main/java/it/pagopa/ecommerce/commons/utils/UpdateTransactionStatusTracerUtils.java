@@ -259,11 +259,11 @@ public class UpdateTransactionStatusTracerUtils {
      */
     public record SendPaymentResultNodoStatusUpdate(
             UpdateTransactionStatusOutcome outcome,
-            Optional<String> pspId,
+            String pspId,
             String paymentMethodTypeCode,
             Transaction.ClientId clientId,
             Boolean walletPayment,
-            Optional<GatewayOutcomeResult> gatewayOutcomeResult
+            GatewayOutcomeResult gatewayOutcomeResult
     )
             implements
             StatusUpdateInfo {
@@ -307,12 +307,12 @@ public class UpdateTransactionStatusTracerUtils {
 
         @Override
         public Optional<String> getPspId() {
-            return pspId;
+            return Optional.of(pspId);
         }
 
         @Override
         public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
-            return gatewayOutcomeResult;
+            return Optional.of(gatewayOutcomeResult);
         }
 
         @Override
@@ -333,7 +333,7 @@ public class UpdateTransactionStatusTracerUtils {
     }
 
     /**
-     * Transaction status update record for Nodo sendPaymentResult operation
+     * Transaction status update record for Nodo close payment operation
      *
      * @param outcome              the transaction update outcome
      * @param pspId                psp identifier for the current transaction
@@ -400,12 +400,12 @@ public class UpdateTransactionStatusTracerUtils {
 
         @Override
         public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
-            return Optional.empty();
+            return Optional.of(gatewayOutcomeResult);
         }
 
         @Override
         public Optional<Transaction.ClientId> getClientId() {
-            return Optional.empty();
+            return Optional.of(clientId);
         }
 
         @Override
@@ -416,6 +416,77 @@ public class UpdateTransactionStatusTracerUtils {
         @Override
         public Optional<Boolean> isWalletPayment() {
             return Optional.of(this.walletPayment);
+        }
+    }
+
+    /**
+     * Transaction status update record for Nodo close payment operation
+     *
+     * @param outcome              the transaction update outcome (absent for user
+     *                             canceled transaction)
+     * @param clientId             client identifier that have initiated the
+     *                             transaction
+     * @param gatewayOutcomeResult gateway outcome result
+     */
+    public record UserCancelClosePaymentNodoStatusUpdate(
+            UpdateTransactionStatusOutcome outcome,
+            Transaction.ClientId clientId,
+            GatewayOutcomeResult gatewayOutcomeResult
+    )
+            implements
+            StatusUpdateInfo {
+        /**
+         * Perform check against required fields
+         *
+         * @param outcome              the transaction update outcome
+         * @param clientId             client identifier that have initiated the
+         *                             transaction
+         * @param gatewayOutcomeResult gateway operation result
+         */
+        public UserCancelClosePaymentNodoStatusUpdate {
+            Objects.requireNonNull(outcome);
+            Objects.requireNonNull(clientId);
+            Objects.requireNonNull(gatewayOutcomeResult);
+        }
+
+        @Override
+        public UpdateTransactionStatusType getType() {
+            return UpdateTransactionStatusType.CLOSE_PAYMENT_OUTCOME;
+        }
+
+        @Override
+        public UpdateTransactionTrigger getTrigger() {
+            return UpdateTransactionTrigger.NODO;
+        }
+
+        @Override
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return outcome;
+        }
+
+        @Override
+        public Optional<String> getPspId() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
+            return Optional.of(gatewayOutcomeResult);
+        }
+
+        @Override
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.of(clientId);
+        }
+
+        @Override
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.empty();
         }
     }
 
