@@ -87,6 +87,11 @@ public class UpdateTransactionStatusTracerUtils {
      * external entities
      */
     public enum UpdateTransactionStatusType {
+
+        /**
+         * Transaction status update triggered by requested authorization
+         */
+        AUTHORIZATION_REQUESTED,
         /**
          * Transaction status update operation triggered by payment gateway by receiving
          * authorization outcome
