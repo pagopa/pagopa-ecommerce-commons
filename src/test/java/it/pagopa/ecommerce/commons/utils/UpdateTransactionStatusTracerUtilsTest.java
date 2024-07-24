@@ -268,9 +268,9 @@ class UpdateTransactionStatusTracerUtilsTest {
                                                                                 UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger trigger
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
+                trigger,
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                 new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                        trigger,
                         Optional.of("pspId"),
                         Optional.empty(),
                         "CP",
@@ -350,9 +350,9 @@ class UpdateTransactionStatusTracerUtilsTest {
                           String expectedSpanPspAttribute
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
+                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT,
                 UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                 new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT,
                         Optional.ofNullable(pspId),
                         Optional.empty(),
                         "CP",
@@ -396,7 +396,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 NullPointerException.class,
                 () -> new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                         null,
-
+                        null,
                         null
                 )
         );
@@ -407,9 +407,9 @@ class UpdateTransactionStatusTracerUtilsTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
                         UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
                         new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdateContext(
-                                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
                                 Optional.empty(),
                                 Optional.empty(),
                                 "CP",

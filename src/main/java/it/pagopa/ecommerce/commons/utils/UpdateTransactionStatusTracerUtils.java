@@ -376,7 +376,6 @@ public class UpdateTransactionStatusTracerUtils {
     /**
      * Contextual data for a transaction authorization status update
      *
-     * @param trigger               the gateway trigger that initiate the request
      * @param pspId                 the psp id chosen for the current transaction
      * @param gatewayOutcomeResult  the gateway authorization outcome result
      * @param paymentMethodTypeCode payment type code used in the current
@@ -388,7 +387,6 @@ public class UpdateTransactionStatusTracerUtils {
      *                              (wallet)
      */
     public record PaymentGatewayStatusUpdateContext(
-            @NotNull UpdateTransactionTrigger trigger,
             @NotNull Optional<String> pspId,
             @NotNull Optional<GatewayOutcomeResult> gatewayOutcomeResult,
             @NotNull String paymentMethodTypeCode,
@@ -398,7 +396,6 @@ public class UpdateTransactionStatusTracerUtils {
         /**
          * Perform checks against required fields
          *
-         * @param trigger               the gateway trigger that initiate the request
          * @param pspId                 the psp id chosen for the current transaction
          * @param gatewayOutcomeResult  the gateway authorization outcome result
          * @param paymentMethodTypeCode payment type code used in the current
@@ -410,23 +407,11 @@ public class UpdateTransactionStatusTracerUtils {
          *                              (wallet)
          */
         public PaymentGatewayStatusUpdateContext {
-            Objects.requireNonNull(trigger);
             Objects.requireNonNull(pspId);
             Objects.requireNonNull(gatewayOutcomeResult);
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
             Objects.requireNonNull(isWalletPayment);
-            if (!Set.of(
-                    UpdateTransactionTrigger.NPG,
-                    UpdateTransactionTrigger.PGS_XPAY,
-                    UpdateTransactionTrigger.PGS_VPOS,
-                    UpdateTransactionTrigger.REDIRECT,
-                    UpdateTransactionTrigger.UNKNOWN
-            ).contains(trigger)) {
-                throw new IllegalArgumentException(
-                        "Invalid trigger for PaymentGatewayStatusUpdate: %s".formatted(trigger)
-                );
-            }
         }
     }
 
@@ -434,10 +419,12 @@ public class UpdateTransactionStatusTracerUtils {
      * Transaction status update record for payment transaction gateway update
      * trigger
      *
+     * @param trigger - the gateway trigger that initiate the request
      * @param outcome - the transaction update status outcome
      * @param context - the transaction update status context
      */
     public record PaymentGatewayStatusUpdate(
+            @NotNull UpdateTransactionTrigger trigger,
             @NotNull UpdateTransactionStatusOutcome outcome,
             @NotNull PaymentGatewayStatusUpdateContext context
     )
@@ -451,6 +438,18 @@ public class UpdateTransactionStatusTracerUtils {
          * @param context contextual information about the authorization status update
          */
         public PaymentGatewayStatusUpdate {
+            Objects.requireNonNull(trigger);
+            if (!Set.of(
+                    UpdateTransactionTrigger.NPG,
+                    UpdateTransactionTrigger.PGS_XPAY,
+                    UpdateTransactionTrigger.PGS_VPOS,
+                    UpdateTransactionTrigger.REDIRECT,
+                    UpdateTransactionTrigger.UNKNOWN
+            ).contains(trigger)) {
+                throw new IllegalArgumentException(
+                        "Invalid trigger for PaymentGatewayStatusUpdate: %s".formatted(trigger)
+                );
+            }
             Objects.requireNonNull(outcome);
             Objects.requireNonNull(context);
         }
@@ -458,11 +457,6 @@ public class UpdateTransactionStatusTracerUtils {
         @Override
         public UpdateTransactionStatusType type() {
             return UpdateTransactionStatusType.AUTHORIZATION_OUTCOME;
-        }
-
-        @Override
-        public UpdateTransactionTrigger trigger() {
-            return context.trigger;
         }
 
         @Override
