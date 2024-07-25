@@ -692,17 +692,34 @@ public class UpdateTransactionStatusTracerUtils {
     }
 
     /**
-     * Status update representing an invalid external request
+     * Status update representing an error during the status update
      *
      * @param type    the status update of this invalid request
      * @param trigger the component that triggered this invalid update
+     * @param outcome the outcome of the status update
      */
-    public record InvalidRequestTransactionUpdate(
+    public record ErrorStatusTransactionUpdate(
             @NotNull UpdateTransactionStatusType type,
-            @NotNull UpdateTransactionTrigger trigger
+            @NotNull UpdateTransactionTrigger trigger,
+            @NotNull UpdateTransactionStatusOutcome outcome
     )
             implements
             StatusUpdateInfo {
+
+        public ErrorStatusTransactionUpdate {
+            Objects.requireNonNull(type);
+            Objects.requireNonNull(trigger);
+            if (!Set.of(
+                    UpdateTransactionStatusOutcome.WRONG_TRANSACTION_STATUS,
+                    UpdateTransactionStatusOutcome.TRANSACTION_NOT_FOUND,
+                    UpdateTransactionStatusOutcome.PROCESSING_ERROR,
+                    UpdateTransactionStatusOutcome.INVALID_REQUEST
+            ).contains(outcome)) {
+                throw new IllegalArgumentException(
+                        "Invalid outcome for UpdateTransactionStatusOutcome: %s".formatted(outcome)
+                );
+            }
+        }
         @Override
         public UpdateTransactionStatusType getType() {
             return type;
@@ -715,7 +732,7 @@ public class UpdateTransactionStatusTracerUtils {
 
         @Override
         public UpdateTransactionStatusOutcome getOutcome() {
-            return UpdateTransactionStatusOutcome.INVALID_REQUEST;
+            return outcome;
         }
 
         @Override
