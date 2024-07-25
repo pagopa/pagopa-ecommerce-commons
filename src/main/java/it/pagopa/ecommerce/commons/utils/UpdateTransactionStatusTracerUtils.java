@@ -231,7 +231,7 @@ public class UpdateTransactionStatusTracerUtils {
                 )
                 .put(
                         UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY,
-                        statusUpdateInfo.getClientId().toString()
+                        statusUpdateInfo.getClientId().map(Enum::toString).orElse(FIELD_NOT_AVAILABLE)
                 );
         statusUpdateInfo.isWalletPayment().ifPresent(
                 isWalletPayment -> spanAttributes.put(
