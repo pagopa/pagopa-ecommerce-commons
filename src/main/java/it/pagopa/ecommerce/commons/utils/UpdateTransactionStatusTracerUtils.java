@@ -720,6 +720,7 @@ public class UpdateTransactionStatusTracerUtils {
                 );
             }
         }
+
         @Override
         public UpdateTransactionStatusType getType() {
             return type;
