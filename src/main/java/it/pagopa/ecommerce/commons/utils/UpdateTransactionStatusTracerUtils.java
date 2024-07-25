@@ -706,6 +706,13 @@ public class UpdateTransactionStatusTracerUtils {
             implements
             StatusUpdateInfo {
 
+        /**
+         * Primary constructor
+         *
+         * @param type    the status update of this invalid request
+         * @param trigger the component that triggered this invalid update
+         * @param outcome the outcome of the status update
+         */
         public ErrorStatusTransactionUpdate {
             Objects.requireNonNull(type);
             Objects.requireNonNull(trigger);
