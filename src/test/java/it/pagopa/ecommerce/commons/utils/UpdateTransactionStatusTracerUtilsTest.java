@@ -35,7 +35,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @EnumSource(UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.class)
     void shouldTraceTransactionUpdateStatusSuccessfullyForNodoSendPaymentResultDetails(
-            UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
+                                                                                       UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.SendPaymentResultNodoStatusUpdate(
                 outcome,
@@ -110,7 +110,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @EnumSource(UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.class)
     void shouldTraceTransactionUpdateStatusSuccessfullyForNodoClosePaymentDetails(
-            UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
+                                                                                  UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.ClosePaymentNodoStatusUpdate(
                 outcome,
@@ -197,7 +197,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @MethodSource("tracePaymentGatewayDetailsTestMethodSource")
     void shouldTraceTransactionUpdateStatusSuccessfullyForPaymentGatewayDetails(
-            UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger trigger
+                                                                                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger trigger
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                 trigger,
@@ -494,6 +494,5 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
         assertEquals("Invalid trigger for AuthorizationRequestedStatusUpdate: NODO", exception.getMessage());
     }
-
 
 }
