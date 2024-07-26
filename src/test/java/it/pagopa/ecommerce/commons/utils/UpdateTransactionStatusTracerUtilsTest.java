@@ -353,7 +353,11 @@ class UpdateTransactionStatusTracerUtilsTest {
                 "pspId",
                 "CP",
                 Transaction.ClientId.CHECKOUT,
-                true
+                true,
+                new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult(
+                        "OK",
+                        Optional.empty()
+                )
 
         );
         // pre-conditions
@@ -407,7 +411,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 )
         );
         assertEquals(
-                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                "OK",
                 attributes
                         .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
         );
@@ -489,7 +493,11 @@ class UpdateTransactionStatusTracerUtilsTest {
                         "pspId",
                         "CP",
                         Transaction.ClientId.CHECKOUT,
-                        true
+                        true,
+                        new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult(
+                                "OK",
+                                Optional.empty()
+                        )
 
                 )
         );

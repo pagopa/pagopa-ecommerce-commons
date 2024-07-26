@@ -640,14 +640,16 @@ public class UpdateTransactionStatusTracerUtils {
     /**
      * Authorization requested status update info
      *
-     * @param trigger       authorization request trigger
-     * @param outcome       the transaction update outcome
-     * @param pspId         psp identifier for the current transaction (absent for
-     *                      user canceled transaction)
-     * @param clientId      client identifier that have initiated the transaction
-     * @param walletPayment boolean value indicating if the transaction have been
-     *                      performed with an onboarded method (wallet) or not
-     *                      (absent for user canceled transaction)
+     * @param trigger              authorization request trigger
+     * @param outcome              the transaction update outcome
+     * @param pspId                psp identifier for the current transaction
+     *                             (absent for user canceled transaction)
+     * @param clientId             client identifier that have initiated the
+     *                             transaction
+     * @param walletPayment        boolean value indicating if the transaction have
+     *                             been performed with an onboarded method (wallet)
+     *                             or not (absent for user canceled transaction)
+     * @param gatewayOutcomeResult authorization result
      */
     public record AuthorizationRequestedStatusUpdate(
             @NotNull UpdateTransactionTrigger trigger,
@@ -655,7 +657,9 @@ public class UpdateTransactionStatusTracerUtils {
             @NotNull String pspId,
             @NotNull String paymentMethodTypeCode,
             @NotNull Transaction.ClientId clientId,
-            @NotNull Boolean walletPayment
+            @NotNull Boolean walletPayment,
+
+            @NotNull GatewayOutcomeResult gatewayOutcomeResult
     )
             implements
             StatusUpdateInfo {
@@ -681,6 +685,7 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(paymentMethodTypeCode);
             Objects.requireNonNull(clientId);
             Objects.requireNonNull(walletPayment);
+            Objects.requireNonNull(gatewayOutcomeResult);
             if (!Set.of(
                     UpdateTransactionTrigger.NPG,
                     UpdateTransactionTrigger.PGS_XPAY,
@@ -715,7 +720,7 @@ public class UpdateTransactionStatusTracerUtils {
 
         @Override
         public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
-            return Optional.empty();
+            return Optional.of(gatewayOutcomeResult);
         }
 
         @Override
