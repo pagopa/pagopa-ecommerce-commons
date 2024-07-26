@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -36,7 +35,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @EnumSource(UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.class)
     void shouldTraceTransactionUpdateStatusSuccessfullyForNodoSendPaymentResultDetails(
-                                                                                       UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
+            UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.SendPaymentResultNodoStatusUpdate(
                 outcome,
@@ -111,7 +110,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @EnumSource(UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.class)
     void shouldTraceTransactionUpdateStatusSuccessfullyForNodoClosePaymentDetails(
-                                                                                  UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
+            UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome outcome
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.ClosePaymentNodoStatusUpdate(
                 outcome,
@@ -198,7 +197,7 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @MethodSource("tracePaymentGatewayDetailsTestMethodSource")
     void shouldTraceTransactionUpdateStatusSuccessfullyForPaymentGatewayDetails(
-                                                                                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger trigger
+            UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger trigger
     ) {
         UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.PaymentGatewayStatusUpdate(
                 trigger,
@@ -344,5 +343,157 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
         assertEquals("Invalid trigger for PaymentGatewayStatusUpdate: NODO", exception.getMessage());
     }
+
+    @Test
+    void shouldTraceAuthorizationRequestedUpdateStatus() {
+        UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.AuthorizationRequestedStatusUpdate(
+                UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NPG,
+                UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
+                "pspId",
+                "CP",
+                Transaction.ClientId.CHECKOUT,
+                true
+
+        );
+        // pre-conditions
+        doNothing().when(openTelemetryUtils).addSpanWithAttributes(
+                eq(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_SPAN_NAME),
+                attributesCaptor.capture()
+        );
+        // test
+        updateTransactionStatusTracerUtils.traceStatusUpdateOperation(statusUpdateInfo);
+        // assertions
+        verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
+        Attributes attributes = attributesCaptor.getValue();
+        assertEquals(
+                statusUpdateInfo.getOutcome().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getType().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getTrigger().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getClientId().get().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
+        );
+
+        assertEquals(
+                statusUpdateInfo.getPspId().get(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
+        );
+
+        assertEquals(
+                statusUpdateInfo.getPaymentMethodTypeCode().get(),
+                attributes.get(
+                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
+                )
+        );
+
+        assertEquals(
+                statusUpdateInfo.isWalletPayment().get(),
+                attributes
+                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                attributes.get(
+                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_ERROR_CODE_ATTRIBUTE_KEY
+                )
+        );
+        assertEquals(
+                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                attributes
+                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
+        );
+    }
+
+    @Test
+    void shouldTraceUserCanceledNodeClosePaymentUpdateStatus() {
+        UpdateTransactionStatusTracerUtils.StatusUpdateInfo statusUpdateInfo = new UpdateTransactionStatusTracerUtils.UserCancelClosePaymentNodoStatusUpdate(
+                UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
+                Transaction.ClientId.CHECKOUT,
+                new UpdateTransactionStatusTracerUtils.GatewayOutcomeResult(
+                        "KO",
+                        Optional.of("error")
+                )
+        );
+        // pre-conditions
+        doNothing().when(openTelemetryUtils).addSpanWithAttributes(
+                eq(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_SPAN_NAME),
+                attributesCaptor.capture()
+        );
+        // test
+        updateTransactionStatusTracerUtils.traceStatusUpdateOperation(statusUpdateInfo);
+        // assertions
+        verify(openTelemetryUtils, times(1)).addSpanWithAttributes(any(), any());
+        Attributes attributes = attributesCaptor.getValue();
+        assertEquals(
+                statusUpdateInfo.getOutcome().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_OUTCOME_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getType().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TYPE_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getTrigger().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                statusUpdateInfo.getClientId().get().toString(),
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
+        );
+
+        assertEquals(
+                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PSP_ID_ATTRIBUTE_KEY)
+        );
+
+        assertEquals(
+                UpdateTransactionStatusTracerUtils.FIELD_NOT_AVAILABLE,
+                attributes.get(
+                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_PAYMENT_METHOD_TYPE_CODE_ATTRIBUTE_KEY
+                )
+        );
+
+        assertNull(
+                attributes
+                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_WALLET_PAYMENT_ATTRIBUTE_KEY)
+        );
+        assertEquals(
+                "error",
+                attributes.get(
+                        UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_ERROR_CODE_ATTRIBUTE_KEY
+                )
+        );
+        assertEquals(
+                "KO",
+                attributes
+                        .get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_GATEWAY_OUTCOME_ATTRIBUTE_KEY)
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionBuildingAuthorizationRequestedStatusUpdateWithInvalidTrigger() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> new UpdateTransactionStatusTracerUtils.AuthorizationRequestedStatusUpdate(
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NODO,
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionStatusOutcome.OK,
+                        "pspId",
+                        "CP",
+                        Transaction.ClientId.CHECKOUT,
+                        true
+
+                )
+        );
+        assertEquals("Invalid trigger for AuthorizationRequestedStatusUpdate: NODO", exception.getMessage());
+    }
+
 
 }
