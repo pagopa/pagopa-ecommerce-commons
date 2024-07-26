@@ -5,6 +5,7 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestData;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -142,7 +143,23 @@ public class UpdateTransactionStatusTracerUtils {
         /**
          * Used when cannot derive transaction status update trigger
          */
-        UNKNOWN
+        UNKNOWN;
+
+        /**
+         * Return the associated {@link UpdateTransactionTrigger} to the input
+         * {@link TransactionAuthorizationRequestData.PaymentGateway} enum value
+         *
+         * @param paymentGateway the payment gateway to convert to
+         * @return the associated {@link UpdateTransactionTrigger}
+         */
+        public static UpdateTransactionTrigger from(TransactionAuthorizationRequestData.PaymentGateway paymentGateway) {
+            return switch (paymentGateway) {
+                case VPOS -> PGS_VPOS;
+                case XPAY -> PGS_XPAY;
+                case NPG -> NPG;
+                case REDIRECT -> REDIRECT;
+            };
+        }
     }
 
     /**

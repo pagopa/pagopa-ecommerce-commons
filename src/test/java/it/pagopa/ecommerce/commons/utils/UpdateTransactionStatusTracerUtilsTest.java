@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.utils;
 
 import io.opentelemetry.api.common.Attributes;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -493,6 +494,36 @@ class UpdateTransactionStatusTracerUtilsTest {
                 )
         );
         assertEquals("Invalid trigger for AuthorizationRequestedStatusUpdate: NODO", exception.getMessage());
+    }
+
+    public static Stream<Arguments> paymentGatewayToTriggerMethodSource() {
+        return Stream.of(
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.NPG,
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NPG
+                ),
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.VPOS,
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_VPOS
+                ),
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.XPAY,
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_XPAY
+                ),
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.REDIRECT,
+                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.REDIRECT
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("paymentGatewayToTriggerMethodSource")
+    void shouldConvertPaymentGatewayToTriggerSuccessfully(
+                                                          TransactionAuthorizationRequestData.PaymentGateway paymentGateway,
+                                                          UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger expectedTrigger
+    ) {
+        assertEquals(expectedTrigger, UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.from(paymentGateway));
     }
 
 }
