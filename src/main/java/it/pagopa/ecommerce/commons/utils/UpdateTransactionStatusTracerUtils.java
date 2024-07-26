@@ -677,6 +677,7 @@ public class UpdateTransactionStatusTracerUtils {
          * @param walletPayment         boolean value indicating if the transaction have
          *                              been performed with an onboarded method (wallet)
          *                              or not (absent for user canceled transaction)
+         * @param gatewayOutcomeResult  authorization result
          */
         public AuthorizationRequestedStatusUpdate {
             Objects.requireNonNull(trigger);
