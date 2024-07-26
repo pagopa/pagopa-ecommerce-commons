@@ -621,6 +621,103 @@ public class UpdateTransactionStatusTracerUtils {
     }
 
     /**
+     * Authorization requested status update info
+     *
+     * @param trigger       authorization request trigger
+     * @param outcome       the transaction update outcome
+     * @param pspId         psp identifier for the current transaction (absent for
+     *                      user canceled transaction)
+     * @param clientId      client identifier that have initiated the transaction
+     * @param walletPayment boolean value indicating if the transaction have been
+     *                      performed with an onboarded method (wallet) or not
+     *                      (absent for user canceled transaction)
+     */
+    public record AuthorizationRequestedStatusUpdate(
+            @NotNull UpdateTransactionTrigger trigger,
+            @NotNull UpdateTransactionStatusOutcome outcome,
+            @NotNull String pspId,
+            @NotNull String paymentMethodTypeCode,
+            @NotNull Transaction.ClientId clientId,
+            @NotNull Boolean walletPayment
+    )
+            implements
+            StatusUpdateInfo {
+        /**
+         * Default constructor implementation that checks for required attributes to be
+         * present
+         *
+         * @param trigger               authorization request trigger
+         * @param outcome               the transaction update outcome
+         * @param pspId                 psp identifier for the current transaction
+         *                              (absent for user canceled transaction)
+         * @param clientId              client identifier that have initiated the
+         *                              transaction
+         * @param paymentMethodTypeCode payment type code for the current transaction
+         * @param walletPayment         boolean value indicating if the transaction have
+         *                              been performed with an onboarded method (wallet)
+         *                              or not (absent for user canceled transaction)
+         */
+        public AuthorizationRequestedStatusUpdate {
+            Objects.requireNonNull(trigger);
+            Objects.requireNonNull(outcome);
+            Objects.requireNonNull(pspId);
+            Objects.requireNonNull(paymentMethodTypeCode);
+            Objects.requireNonNull(clientId);
+            Objects.requireNonNull(walletPayment);
+            if (!Set.of(
+                    UpdateTransactionTrigger.NPG,
+                    UpdateTransactionTrigger.PGS_XPAY,
+                    UpdateTransactionTrigger.PGS_VPOS,
+                    UpdateTransactionTrigger.REDIRECT
+            ).contains(trigger)) {
+                throw new IllegalArgumentException(
+                        "Invalid trigger for AuthorizationRequestedStatusUpdate: %s".formatted(trigger)
+                );
+            }
+        }
+
+        @Override
+        public UpdateTransactionStatusType getType() {
+            return UpdateTransactionStatusType.AUTHORIZATION_REQUESTED;
+        }
+
+        @Override
+        public UpdateTransactionTrigger getTrigger() {
+            return this.trigger;
+        }
+
+        @Override
+        public UpdateTransactionStatusOutcome getOutcome() {
+            return this.outcome;
+        }
+
+        @Override
+        public Optional<String> getPspId() {
+            return Optional.of(this.pspId);
+        }
+
+        @Override
+        public Optional<GatewayOutcomeResult> getGatewayOutcomeResult() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Transaction.ClientId> getClientId() {
+            return Optional.of(this.clientId);
+        }
+
+        @Override
+        public Optional<String> getPaymentMethodTypeCode() {
+            return Optional.of(this.paymentMethodTypeCode);
+        }
+
+        @Override
+        public Optional<Boolean> isWalletPayment() {
+            return Optional.of(this.walletPayment);
+        }
+    }
+
+    /**
      * Common interface for all status update information
      */
     public interface StatusUpdateInfo {

@@ -73,7 +73,7 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
 
         assertEquals(
-                statusUpdateInfo.getClientId().toString(),
+                statusUpdateInfo.getClientId().get().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
@@ -145,7 +145,7 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
 
         assertEquals(
-                statusUpdateInfo.getClientId().toString(),
+                statusUpdateInfo.getClientId().get().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
@@ -234,7 +234,7 @@ class UpdateTransactionStatusTracerUtilsTest {
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_TRIGGER_ATTRIBUTE_KEY)
         );
         assertEquals(
-                statusUpdateInfo.getClientId().toString(),
+                statusUpdateInfo.getClientId().get().toString(),
                 attributes.get(UpdateTransactionStatusTracerUtils.UPDATE_TRANSACTION_STATUS_CLIENT_ID_ATTRIBUTE_KEY)
         );
 
