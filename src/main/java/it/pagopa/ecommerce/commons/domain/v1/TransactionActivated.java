@@ -93,7 +93,8 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
                                                                 )
                                                         ).toList(),
                                                 n.isAllCCP(),
-                                                n.companyName().value()
+                                                n.companyName().value(),
+                                                n.referenceCreditorId()
                                         )
                                 ).toList(),
                         faultCode,

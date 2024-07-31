@@ -72,6 +72,8 @@ public class TransactionTestUtils {
      */
     public static final String COMPANY_NAME = null;
 
+    public static final String CREDITOR_REFERENCE_ID = null;
+
     static {
         try {
             LOGO_URI = new URI("http://paymentMethodLogo.it");
@@ -123,7 +125,8 @@ public class TransactionTestUtils {
                                                 )
                                         ),
                                         IS_ALL_CCP_FALSE,
-                                        COMPANY_NAME
+                                        COMPANY_NAME,
+                                        CREDITOR_REFERENCE_ID
                                 )
                         ),
                         FAULT_CODE,
@@ -155,7 +158,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                new CompanyName(COMPANY_NAME)
+                                new CompanyName(COMPANY_NAME),
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 EMAIL,
@@ -558,7 +562,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                COMPANY_NAME
+                                COMPANY_NAME,
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 null,

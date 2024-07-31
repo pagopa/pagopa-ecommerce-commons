@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public class PaymentNotice {
     private List<PaymentTransferInformation> transferList;
     private boolean isAllCCP;
     private String companyName;
+    @Nullable
+    private String referenceCreditorId;
 }

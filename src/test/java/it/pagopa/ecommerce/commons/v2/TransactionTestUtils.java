@@ -120,6 +120,7 @@ public class TransactionTestUtils {
     public static final String NPG_WALLET_ID = UUID.randomUUID().toString();
 
     public static final String COMPANY_NAME = "companyName";
+    public static final String CREDITOR_REFERENCE_ID = null;
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -168,7 +169,8 @@ public class TransactionTestUtils {
                                                 )
                                         ),
                                         IS_ALL_CCP_FALSE,
-                                        COMPANY_NAME
+                                        COMPANY_NAME,
+                                        CREDITOR_REFERENCE_ID
                                 )
                         ),
                         FAULT_CODE,
@@ -212,7 +214,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                new CompanyName(COMPANY_NAME)
+                                new CompanyName(COMPANY_NAME),
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 EMAIL,
@@ -663,7 +666,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                COMPANY_NAME
+                                COMPANY_NAME,
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 null,

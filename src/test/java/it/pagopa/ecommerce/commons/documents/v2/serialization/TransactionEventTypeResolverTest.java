@@ -239,6 +239,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
+                                    "referenceCreditorId": null,
                                     "allCCP": false
                                 }
                             ],
@@ -325,6 +326,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
+                                    "referenceCreditorId": null,
                                     "allCCP": false
                                 }
                             ],
