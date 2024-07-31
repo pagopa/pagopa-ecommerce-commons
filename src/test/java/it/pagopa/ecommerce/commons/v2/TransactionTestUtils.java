@@ -120,7 +120,7 @@ public class TransactionTestUtils {
     public static final String NPG_WALLET_ID = UUID.randomUUID().toString();
 
     public static final String COMPANY_NAME = "companyName";
-    public static final String CREDITOR_REFERENCE_ID = null;
+    public static final String CREDITOR_REFERENCE_ID = "222222222222";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -147,6 +147,16 @@ public class TransactionTestUtils {
                                                                      String creationDate,
                                                                      TransactionGatewayActivationData transactionActivatedData,
                                                                      String userId
+    ) {
+        return transactionActivateEvent(creationDate, transactionActivatedData, userId, Transaction.ClientId.CHECKOUT);
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData,
+                                                                     String userId,
+                                                                     Transaction.ClientId clientId
     ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
@@ -175,7 +185,7 @@ public class TransactionTestUtils {
                         ),
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.ClientId.CHECKOUT,
+                        clientId,
                         ID_CART,
                         PAYMENT_TOKEN_VALIDITY_TIME_SEC,
                         transactionActivatedData,
