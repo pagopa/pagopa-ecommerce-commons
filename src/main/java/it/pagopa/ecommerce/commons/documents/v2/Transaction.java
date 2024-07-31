@@ -72,6 +72,10 @@ public class Transaction extends BaseTransactionView {
          */
         CHECKOUT_CART,
         /**
+         * Transaction originated by E.C. through WISP dismantling
+         */
+        WISP,
+        /**
          * Transaction originated by IO app
          */
         IO;
