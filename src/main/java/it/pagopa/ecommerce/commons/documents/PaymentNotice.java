@@ -27,5 +27,5 @@ public class PaymentNotice {
     private boolean isAllCCP;
     private String companyName;
     @Nullable
-    private String referenceCreditorId;
+    private String creditorReferenceId;
 }

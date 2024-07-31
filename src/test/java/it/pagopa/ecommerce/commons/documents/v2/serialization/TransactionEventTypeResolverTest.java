@@ -4,6 +4,8 @@ import com.azure.core.util.BinaryData;
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
 import io.vavr.control.Either;
+import it.pagopa.ecommerce.commons.documents.PaymentNotice;
+import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
@@ -28,14 +30,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ClassPathResource;
+import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
+import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -239,7 +247,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
-                                    "referenceCreditorId": null,
+                                    "creditorReferenceId": null,
                                     "allCCP": false
                                 }
                             ],
@@ -326,7 +334,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
-                                    "referenceCreditorId": null,
+                                    "creditorReferenceId": null,
                                     "allCCP": false
                                 }
                             ],
@@ -1622,4 +1630,105 @@ class TransactionEventTypeResolverTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldDeserializeEventWithoutCreditorReferenceId() throws IOException {
+        String expected = FileUtils.readFileToString(
+                new ClassPathResource("events/activation-no-creditor-reference-id.json").getFile(),
+                StandardCharsets.UTF_8
+        );
+        it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent event = new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent(
+                "b753273c789140bf9938df4c50842ef3",
+                "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData(
+                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        List.of(
+                                new PaymentNotice(
+                                        PAYMENT_TOKEN,
+                                        RPT_ID,
+                                        DESCRIPTION,
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE,
+                                        List.of(
+                                                new PaymentTransferInformation(
+                                                        TRANSFER_PA_FISCAL_CODE,
+                                                        TRANSFER_DIGITAL_STAMP,
+                                                        TRANSFER_AMOUNT,
+                                                        TRANSFER_CATEGORY
+                                                )
+                                        ),
+                                        false,
+                                        it.pagopa.ecommerce.commons.v2.TransactionTestUtils.COMPANY_NAME,
+                                        null
+                                )
+                        ),
+                        FAULT_CODE,
+                        FAULT_CODE_STRING,
+                        it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId.CHECKOUT,
+                        ID_CART,
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                        new EmptyTransactionGatewayActivationData(),
+                        "34a07bc2-4dad-4a9a-a941-86d232829c94"
+                )
+        );
+        event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
+
+        System.out.println(new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8));
+        final var deserializedEvent = jsonSerializer.deserializeFromBytes(
+                expected.getBytes(StandardCharsets.UTF_8),
+                TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent.class)
+        );
+
+        assertEquals(event, deserializedEvent);
+    }
+
+    @Test
+    void shouldDeserializeEventWitCreditorReferenceId() throws IOException {
+        String expected = FileUtils.readFileToString(
+                new ClassPathResource("events/activation-with-creditor-reference-id.json").getFile(),
+                StandardCharsets.UTF_8
+        );
+        it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent event = new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent(
+                "b753273c789140bf9938df4c50842ef3",
+                "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+                new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData(
+                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        List.of(
+                                new PaymentNotice(
+                                        PAYMENT_TOKEN,
+                                        RPT_ID,
+                                        DESCRIPTION,
+                                        AMOUNT,
+                                        PAYMENT_CONTEXT_CODE,
+                                        List.of(
+                                                new PaymentTransferInformation(
+                                                        TRANSFER_PA_FISCAL_CODE,
+                                                        TRANSFER_DIGITAL_STAMP,
+                                                        TRANSFER_AMOUNT,
+                                                        TRANSFER_CATEGORY
+                                                )
+                                        ),
+                                        false,
+                                        it.pagopa.ecommerce.commons.v2.TransactionTestUtils.COMPANY_NAME,
+                                        "02011915520500107"
+                                )
+                        ),
+                        FAULT_CODE,
+                        FAULT_CODE_STRING,
+                        it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId.CHECKOUT,
+                        ID_CART,
+                        PAYMENT_TOKEN_VALIDITY_TIME_SEC,
+                        new EmptyTransactionGatewayActivationData(),
+                        "34a07bc2-4dad-4a9a-a941-86d232829c94"
+                )
+        );
+        event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
+
+        System.out.println(new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8));
+        final var deserializedEvent = jsonSerializer.deserializeFromBytes(
+                expected.getBytes(StandardCharsets.UTF_8),
+                TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent.class)
+        );
+
+        assertEquals(event, deserializedEvent);
+    }
 }

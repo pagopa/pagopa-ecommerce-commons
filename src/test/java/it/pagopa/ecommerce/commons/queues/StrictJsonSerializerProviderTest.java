@@ -182,7 +182,7 @@ class StrictJsonSerializerProviderTest {
                           }
                         ],
                         "companyName": null,
-                        "referenceCreditorId": null,
+                        "creditorReferenceId": null,
                         "allCCP": false
                       }
                     ],
@@ -263,7 +263,7 @@ class StrictJsonSerializerProviderTest {
                           }
                         ],
                         "companyName": "companyName",
-                        "referenceCreditorId": null,
+                        "creditorReferenceId": null,
                         "allCCP": false
                       }
                     ],

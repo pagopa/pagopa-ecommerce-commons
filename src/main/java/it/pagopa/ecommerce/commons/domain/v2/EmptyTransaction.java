@@ -43,7 +43,7 @@ public final class EmptyTransaction implements Transaction {
                                                 ).toList(),
                                         n.isAllCCP(),
                                         new CompanyName(n.getCompanyName()),
-                                        n.getReferenceCreditorId()
+                                        n.getCreditorReferenceId()
                                 )
                         ).collect(Collectors.toList()),
                 event.getData().getEmail(),

@@ -36,6 +36,6 @@ public record PaymentNotice(
         boolean isAllCCP,
 
         CompanyName companyName,
-        @Nullable String referenceCreditorId
+        @Nullable String creditorReferenceId
 ) {
 }
