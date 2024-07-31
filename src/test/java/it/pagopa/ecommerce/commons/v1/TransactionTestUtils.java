@@ -613,7 +613,8 @@ public class TransactionTestUtils {
                                 TRANSFER_CATEGORY
                         )
                 ),
-                false
+                false,
+                CREDITOR_REFERENCE_ID
         );
     }
 

@@ -247,7 +247,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
-                                    "creditorReferenceId": null,
+                                    "creditorReferenceId": "222222222222",
                                     "allCCP": false
                                 }
                             ],
@@ -334,7 +334,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
-                                    "creditorReferenceId": null,
+                                    "creditorReferenceId": "222222222222",
                                     "allCCP": false
                                 }
                             ],
@@ -834,6 +834,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     ],
                                     "companyName": "companyName",
+                                    "creditorReferenceId": "222222222222",
                                     "allCCP": false
                                 }
                             ],
