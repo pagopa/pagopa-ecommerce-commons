@@ -68,7 +68,11 @@ public class Transaction extends BaseTransactionView {
         /**
          * Transaction originated by IO app
          */
-        IO;
+        IO,
+        /**
+         * Transaction originated by E.C. through cart by WISP discontinuation
+         */
+        CHECKOUT_CART_WISP;
 
         private static final Map<String, ClientId> lookupMap = Collections.unmodifiableMap(
                 Arrays.stream(ClientId.values()).collect(Collectors.toMap(ClientId::toString, Function.identity()))
