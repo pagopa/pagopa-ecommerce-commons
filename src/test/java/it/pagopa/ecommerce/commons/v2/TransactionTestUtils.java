@@ -158,6 +158,23 @@ public class TransactionTestUtils {
                                                                      String userId,
                                                                      Transaction.ClientId clientId
     ) {
+        return transactionActivateEvent(
+                creationDate,
+                transactionActivatedData,
+                userId,
+                clientId,
+                CREDITOR_REFERENCE_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData,
+                                                                     String userId,
+                                                                     Transaction.ClientId clientId,
+                                                                     String creditorReferenceId
+    ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 creationDate,
@@ -180,7 +197,7 @@ public class TransactionTestUtils {
                                         ),
                                         IS_ALL_CCP_FALSE,
                                         COMPANY_NAME,
-                                        CREDITOR_REFERENCE_ID
+                                        creditorReferenceId
                                 )
                         ),
                         FAULT_CODE,
