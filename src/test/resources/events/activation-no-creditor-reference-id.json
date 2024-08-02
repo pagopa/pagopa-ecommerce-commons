@@ -1,0 +1,38 @@
+{
+  "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent",
+  "id": "be09bed4-f0ae-4ef2-8adb-324f720fc702",
+  "transactionId": "b753273c789140bf9938df4c50842ef3",
+  "creationDate": "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
+  "data": {
+    "email": {
+      "data": "1653f446-18ec-4f83-afc9-36ce7de07398"
+    },
+    "paymentNotices": [
+      {
+        "paymentToken": "paymentToken",
+        "rptId": "77777777777111111111111111111",
+        "description": "description",
+        "amount": 100,
+        "paymentContextCode": "paymentContextCode",
+        "transferList": [
+          {
+            "paFiscalCode": "transferPAFiscalCode",
+            "digitalStamp": true,
+            "transferAmount": 0,
+            "transferCategory": "transferCategory"
+          }
+        ],
+        "companyName": "companyName",
+        "allCCP": false
+      }
+    ],
+    "faultCode": "",
+    "faultCodeString": "",
+    "clientId": "CHECKOUT",
+    "idCart": "ecIdCart",
+    "paymentTokenValiditySeconds": 900,
+    "transactionGatewayActivationData": {"type":"EMPTY"},
+    "userId": "34a07bc2-4dad-4a9a-a941-86d232829c94"
+  },
+  "eventCode": "TRANSACTION_ACTIVATED_EVENT"
+}

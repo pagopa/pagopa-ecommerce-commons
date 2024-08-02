@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain;
 
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public record PaymentNotice(
 
         boolean isAllCCP,
 
-        CompanyName companyName
+        CompanyName companyName,
+        @Nullable String creditorReferenceId
 ) {
 }

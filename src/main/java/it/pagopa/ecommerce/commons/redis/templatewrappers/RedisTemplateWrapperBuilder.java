@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
  * Helper class that can be used to properly configure RedisTemplate wrapper
  * adding custom serializers
@@ -74,6 +76,7 @@ public class RedisTemplateWrapperBuilder {
         rptSerializationModule.addSerializer(IdempotencyKey.class, new JacksonIdempotencyKeySerializer());
         rptSerializationModule.addDeserializer(IdempotencyKey.class, new JacksonIdempotencyKeyDeserializer());
         objectMapper.registerModule(rptSerializationModule);
+        objectMapper.setSerializationInclusion(NON_NULL);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
         return jackson2JsonRedisSerializer;
     }
