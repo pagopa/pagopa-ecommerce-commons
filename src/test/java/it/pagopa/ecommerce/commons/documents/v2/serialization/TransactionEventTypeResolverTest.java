@@ -1673,7 +1673,6 @@ class TransactionEventTypeResolverTest {
         );
         event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
 
-        System.out.println(new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8));
         final var deserializedEvent = jsonSerializer.deserializeFromBytes(
                 expected.getBytes(StandardCharsets.UTF_8),
                 TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent.class)
@@ -1724,7 +1723,6 @@ class TransactionEventTypeResolverTest {
         );
         event.setId("be09bed4-f0ae-4ef2-8adb-324f720fc702");
 
-        System.out.println(new String(jsonSerializer.serializeToBytes(event), StandardCharsets.UTF_8));
         final var deserializedEvent = jsonSerializer.deserializeFromBytes(
                 expected.getBytes(StandardCharsets.UTF_8),
                 TypeReference.createInstance(it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent.class)
