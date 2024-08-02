@@ -40,7 +40,8 @@ public record PaymentRequestInfo(
         @Nullable String activationDate,
         @Nullable IdempotencyKey idempotencyKey,
         @Nullable List<PaymentTransferInfo> transferList,
-        @Nullable Boolean isAllCCP
+        @Nullable Boolean isAllCCP,
+        @Nullable String creditorReferenceId
 ) {
     /**
      * Construct a {@link PaymentRequestInfo} from its components
