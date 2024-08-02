@@ -72,13 +72,13 @@ public class Transaction extends BaseTransactionView {
          */
         CHECKOUT_CART,
         /**
+         * Transaction originated by E.C. through WISP dismantling
+         */
+        WISP_REDIRECT,
+        /**
          * Transaction originated by IO app
          */
-        IO,
-        /**
-         * Transaction originated by E.C. through cart by WISP discontinuation
-         */
-        WISP_REDIRECT;
+        IO;
 
         private static final Map<String, ClientId> lookupMap = Collections.unmodifiableMap(
                 Arrays.stream(ClientId.values()).collect(Collectors.toMap(ClientId::toString, Function.identity()))
