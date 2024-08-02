@@ -16,6 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,9 @@ class StrictJsonSerializerProviderTest {
     }
 
     record SimpleWithObject(String quux) {
+    }
+
+    record SimpleWithDate(LocalDateTime date) {
     }
 
     @Test
@@ -152,6 +158,48 @@ class StrictJsonSerializerProviderTest {
         );
 
         assertEquals(UnrecognizedPropertyException.class, exception.getCause().getClass());
+    }
+
+    @Test
+    void roundTripObjectWithDate() {
+        SimpleWithDate value = new SimpleWithDate(LocalDateTime.now());
+
+        byte[] serialized = jsonSerializer.serializeToBytes(value);
+
+        assertEquals(
+                value,
+                jsonSerializer.deserializeFromBytes(serialized, TypeReference.createInstance(SimpleWithDate.class))
+        );
+    }
+
+    @Test
+    void serializesInstantsAsISO8601() {
+        Instant value = Instant.parse("2024-05-02T17:24:06+02:00");
+
+        String serialized = new String(jsonSerializer.serializeToBytes(value));
+        String expected = "\"2024-05-02T15:24:06Z\"";
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    void serializesOffsetDatesAsISO8601() {
+        OffsetDateTime value = OffsetDateTime.parse("2024-05-02T17:24:06+02:00");
+
+        String serialized = new String(jsonSerializer.serializeToBytes(value));
+        String expected = "\"2024-05-02T17:24:06+02:00\"";
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    void serializesLocalDatesAsISO8601() {
+        LocalDateTime value = LocalDateTime.parse("2024-05-02T17:24:06");
+
+        String serialized = new String(jsonSerializer.serializeToBytes(value));
+        String expected = "\"2024-05-02T17:24:06\"";
+
+        assertEquals(expected, serialized);
     }
 
     @Test
