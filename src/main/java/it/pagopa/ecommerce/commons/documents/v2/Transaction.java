@@ -74,7 +74,7 @@ public class Transaction extends BaseTransactionView {
         /**
          * Transaction originated by E.C. through WISP dismantling
          */
-        WISP,
+        WISP_REDIRECT,
         /**
          * Transaction originated by IO app
          */
