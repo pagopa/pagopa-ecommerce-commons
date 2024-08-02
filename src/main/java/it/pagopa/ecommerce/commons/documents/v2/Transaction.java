@@ -92,6 +92,24 @@ public class Transaction extends BaseTransactionView {
         public static ClientId fromString(String enumValue) {
             return lookupMap.get(enumValue);
         }
+
+        /**
+         * Computes the effective client. This corresponds to the actual client in all
+         * cases except for {@link Transaction.ClientId#WISP_REDIRECT}, which gets
+         * remapped to {@link Transaction.ClientId#CHECKOUT_CART}. <br>
+         * <br>
+         * The effective client is used for backward compatibility with other systems of
+         * the pagoPA platform which do not want to differentiate these two clients,
+         * such as Nodo and GEC/AFM
+         *
+         * @return the computed effective client
+         */
+        public ClientId getEffectiveClient() {
+            return switch (this) {
+                case WISP_REDIRECT -> ClientId.CHECKOUT_CART;
+                default -> this;
+            };
+        }
     }
 
     /**
