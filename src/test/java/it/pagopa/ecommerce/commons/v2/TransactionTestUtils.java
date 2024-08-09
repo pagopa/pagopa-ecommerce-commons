@@ -242,9 +242,12 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
         return transactionAuthorizationRequestedEvent(
                 PAYMENT_GATEWAY,
-                new PgsTransactionGatewayAuthorizationRequestedData(
+                new NpgTransactionGatewayAuthorizationRequestedData(
                         LOGO_URI,
-                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+                        "VISA",
+                        "sessionId",
+                        "confirmPaymentSessionId",
+                        null
                 )
         );
     }
