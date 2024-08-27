@@ -124,15 +124,6 @@ public class UpdateTransactionStatusTracerUtils {
          * Transaction status update triggered by NPG (authorization outcome)
          */
         NPG,
-        /**
-         * Transaction status update triggered by PGS (VPOS)
-         */
-        PGS_VPOS,
-
-        /**
-         * Transaction status update triggered by PGS (XPAY)
-         */
-        PGS_XPAY,
 
         /**
          * Transaction status update triggered by PSP (through redirect payment flow
@@ -154,8 +145,6 @@ public class UpdateTransactionStatusTracerUtils {
          */
         public static UpdateTransactionTrigger from(TransactionAuthorizationRequestData.PaymentGateway paymentGateway) {
             return switch (paymentGateway) {
-                case VPOS -> PGS_VPOS;
-                case XPAY -> PGS_XPAY;
                 case NPG -> NPG;
                 case REDIRECT -> REDIRECT;
             };
@@ -576,8 +565,6 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(trigger);
             if (!Set.of(
                     UpdateTransactionTrigger.NPG,
-                    UpdateTransactionTrigger.PGS_XPAY,
-                    UpdateTransactionTrigger.PGS_VPOS,
                     UpdateTransactionTrigger.REDIRECT,
                     UpdateTransactionTrigger.UNKNOWN
             ).contains(trigger)) {
@@ -689,8 +676,6 @@ public class UpdateTransactionStatusTracerUtils {
             Objects.requireNonNull(gatewayOutcomeResult);
             if (!Set.of(
                     UpdateTransactionTrigger.NPG,
-                    UpdateTransactionTrigger.PGS_XPAY,
-                    UpdateTransactionTrigger.PGS_VPOS,
                     UpdateTransactionTrigger.REDIRECT
             ).contains(trigger)) {
                 throw new IllegalArgumentException(

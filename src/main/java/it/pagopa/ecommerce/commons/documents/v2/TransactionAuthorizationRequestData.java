@@ -36,14 +36,6 @@ public class TransactionAuthorizationRequestData {
      * Enumeration of different PaymentGateway
      */
     public enum PaymentGateway {
-        /**
-         * VPOS payment gateway
-         */
-        VPOS,
-        /**
-         * XPAY payment gateway
-         */
-        XPAY,
 
         /**
          * NPG payment gateway

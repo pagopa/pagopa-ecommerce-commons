@@ -61,7 +61,7 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
-    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.VPOS;
+    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.NPG;
     public static final String TRANSACTION_ID = UUID.randomUUID().toString().replace("-", "");
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
@@ -268,9 +268,12 @@ public class TransactionTestUtils {
     ) {
         return transactionAuthorizationRequestedEvent(
                 paymentGateway,
-                new PgsTransactionGatewayAuthorizationRequestedData(
+                new NpgTransactionGatewayAuthorizationRequestedData(
                         LOGO_URI,
-                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+                        "VISA",
+                        "sessionId",
+                        null,
+                        null
                 )
         );
     }
@@ -742,28 +745,6 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
-                                                                                             AuthorizationResultDto authorizationOutcome
-    ) {
-        return new PgsTransactionGatewayAuthorizationData(
-                null,
-                authorizationOutcome
-        );
-    }
-
-    @Nonnull
-    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
-                                                                                             AuthorizationResultDto authorizationOutcome,
-                                                                                             String errorCode
-    ) {
-        return new PgsTransactionGatewayAuthorizationData(
-                errorCode,
-                authorizationOutcome
-        );
-
-    }
-
-    @Nonnull
     public static TransactionGatewayActivationData npgTransactionGatewayActivationData() {
         return new NpgTransactionGatewayActivationData(
                 NPG_ORDER_ID,
@@ -798,14 +779,6 @@ public class TransactionTestUtils {
                 NPG_PAYMENT_END_TO_END_ID,
                 errorCode,
                 validationServiceId
-        );
-    }
-
-    @Nonnull
-    public static TransactionGatewayAuthorizationRequestedData pgsTransactionGatewayAuthorizationRequestedData() {
-        return new PgsTransactionGatewayAuthorizationRequestedData(
-                LOGO_URI,
-                PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
         );
     }
 

@@ -183,12 +183,6 @@ class UpdateTransactionStatusTracerUtilsTest {
     private static Stream<Arguments> tracePaymentGatewayDetailsTestMethodSource() {
         return Stream.of(
                 Arguments.of(
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_XPAY
-                ),
-                Arguments.of(
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_VPOS
-                ),
-                Arguments.of(
                         UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NPG
                 ),
                 Arguments.of(UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.UNKNOWN)
@@ -509,14 +503,6 @@ class UpdateTransactionStatusTracerUtilsTest {
                 Arguments.of(
                         TransactionAuthorizationRequestData.PaymentGateway.NPG,
                         UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.NPG
-                ),
-                Arguments.of(
-                        TransactionAuthorizationRequestData.PaymentGateway.VPOS,
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_VPOS
-                ),
-                Arguments.of(
-                        TransactionAuthorizationRequestData.PaymentGateway.XPAY,
-                        UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.PGS_XPAY
                 ),
                 Arguments.of(
                         TransactionAuthorizationRequestData.PaymentGateway.REDIRECT,
