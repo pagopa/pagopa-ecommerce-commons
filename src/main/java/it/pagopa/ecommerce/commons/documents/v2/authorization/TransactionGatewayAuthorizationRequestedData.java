@@ -29,10 +29,6 @@ public sealed interface TransactionGatewayAuthorizationRequestedData permits Npg
      */
     enum AuthorizationDataType {
         /**
-         * PGS data type
-         */
-        PGS,
-        /**
          * NPG data type
          */
         NPG,
