@@ -67,7 +67,8 @@ public abstract class BaseTransactionWithPaymentToken extends BaseTransaction {
                                                         )
                                                 ).toList(),
                                         noticeCode.isAllCCP(),
-                                        new CompanyName(noticeCode.getCompanyName())
+                                        new CompanyName(noticeCode.getCompanyName()),
+                                        noticeCode.getCreditorReferenceId()
                                 )
                         ).toList(),
                 baseTransaction.getEmail(),
