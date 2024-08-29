@@ -777,6 +777,28 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome
+    ) {
+        return new PgsTransactionGatewayAuthorizationData(
+                null,
+                authorizationOutcome
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationData pgsTransactionGatewayAuthorizationData(
+                                                                                             AuthorizationResultDto authorizationOutcome,
+                                                                                             String errorCode
+    ) {
+        return new PgsTransactionGatewayAuthorizationData(
+                errorCode,
+                authorizationOutcome
+        );
+
+    }
+
+    @Nonnull
     public static TransactionGatewayActivationData npgTransactionGatewayActivationData() {
         return new NpgTransactionGatewayActivationData(
                 NPG_ORDER_ID,
@@ -811,6 +833,14 @@ public class TransactionTestUtils {
                 NPG_PAYMENT_END_TO_END_ID,
                 errorCode,
                 validationServiceId
+        );
+    }
+
+    @Nonnull
+    public static TransactionGatewayAuthorizationRequestedData pgsTransactionGatewayAuthorizationRequestedData() {
+        return new PgsTransactionGatewayAuthorizationRequestedData(
+                LOGO_URI,
+                PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
         );
     }
 
