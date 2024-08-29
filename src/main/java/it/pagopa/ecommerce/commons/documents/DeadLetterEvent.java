@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
+import it.pagopa.ecommerce.commons.documents.v2.info.TransactionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,8 @@ public class DeadLetterEvent {
      * Dead letter unhandled read data
      */
     private String data;
+    /**
+     * Transaction info data
+     */
+    private TransactionInfo transactionInfo;
 }
