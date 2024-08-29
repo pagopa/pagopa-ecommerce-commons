@@ -18,16 +18,21 @@ import java.net.URI;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = false)
 @JsonSubTypes(
     {
+            @JsonSubTypes.Type(value = PgsTransactionGatewayAuthorizationRequestedData.class, name = "PGS"),
             @JsonSubTypes.Type(value = NpgTransactionGatewayAuthorizationRequestedData.class, name = "NPG"),
             @JsonSubTypes.Type(value = RedirectTransactionGatewayAuthorizationRequestedData.class, name = "REDIRECT"),
     }
 )
-public sealed interface TransactionGatewayAuthorizationRequestedData permits NpgTransactionGatewayAuthorizationRequestedData,RedirectTransactionGatewayAuthorizationRequestedData {
+public sealed interface TransactionGatewayAuthorizationRequestedData permits NpgTransactionGatewayAuthorizationRequestedData,PgsTransactionGatewayAuthorizationRequestedData,RedirectTransactionGatewayAuthorizationRequestedData {
 
     /**
      * Authorization data type discriminator field enumeration
      */
     enum AuthorizationDataType {
+        /**
+         * PGS data type
+         */
+        PGS,
         /**
          * NPG data type
          */

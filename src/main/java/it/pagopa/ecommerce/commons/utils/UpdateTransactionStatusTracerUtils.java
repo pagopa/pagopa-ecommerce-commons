@@ -145,6 +145,7 @@ public class UpdateTransactionStatusTracerUtils {
          */
         public static UpdateTransactionTrigger from(TransactionAuthorizationRequestData.PaymentGateway paymentGateway) {
             return switch (paymentGateway) {
+                case VPOS, XPAY -> throw new RuntimeException("Pgs gateways aren't available anymore");
                 case NPG -> NPG;
                 case REDIRECT -> REDIRECT;
             };

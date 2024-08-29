@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.domain.v2.pojos;
 
 import it.pagopa.ecommerce.commons.documents.v2.authorization.NpgTransactionGatewayAuthorizationData;
+import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.RedirectTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
@@ -57,6 +58,8 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
         TransactionGatewayAuthorizationData transactionGatewayAuthorizationData = this.getTransactionAuthorizationCompletedData().getTransactionGatewayAuthorizationData();
         return
                 switch (transactionGatewayAuthorizationData) {
+                    case PgsTransactionGatewayAuthorizationData p ->
+                            p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
                     case NpgTransactionGatewayAuthorizationData n ->
                             n.getOperationResult().equals(OperationResultDto.EXECUTED);
                     case RedirectTransactionGatewayAuthorizationData r ->
