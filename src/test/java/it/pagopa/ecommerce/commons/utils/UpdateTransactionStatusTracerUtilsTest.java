@@ -534,9 +534,12 @@ class UpdateTransactionStatusTracerUtilsTest {
     @ParameterizedTest
     @MethodSource("paymentGatewayToThrowRuntimeExceptionMethodSource")
     void shouldThrowRuntimeExceptionWhenPaymentGatewayTriggerIsPGSgateways(
-            TransactionAuthorizationRequestData.PaymentGateway paymentGateway
+                                                                           TransactionAuthorizationRequestData.PaymentGateway paymentGateway
     ) {
-        assertThrows(RuntimeException.class, () -> UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.from(paymentGateway));
+        assertThrows(
+                RuntimeException.class,
+                () -> UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.from(paymentGateway)
+        );
     }
 
 }
