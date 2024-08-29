@@ -511,6 +511,17 @@ class UpdateTransactionStatusTracerUtilsTest {
         );
     }
 
+    public static Stream<Arguments> paymentGatewayToThrowRuntimeExceptionMethodSource() {
+        return Stream.of(
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.XPAY
+                ),
+                Arguments.of(
+                        TransactionAuthorizationRequestData.PaymentGateway.VPOS
+                )
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("paymentGatewayToTriggerMethodSource")
     void shouldConvertPaymentGatewayToTriggerSuccessfully(
@@ -518,6 +529,14 @@ class UpdateTransactionStatusTracerUtilsTest {
                                                           UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger expectedTrigger
     ) {
         assertEquals(expectedTrigger, UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.from(paymentGateway));
+    }
+
+    @ParameterizedTest
+    @MethodSource("paymentGatewayToThrowRuntimeExceptionMethodSource")
+    void shouldThrowRuntimeExceptionWhenPaymentGatewayTriggerIsPGSgateways(
+            TransactionAuthorizationRequestData.PaymentGateway paymentGateway
+    ) {
+        assertThrows(RuntimeException.class, () -> UpdateTransactionStatusTracerUtils.UpdateTransactionTrigger.from(paymentGateway));
     }
 
 }
