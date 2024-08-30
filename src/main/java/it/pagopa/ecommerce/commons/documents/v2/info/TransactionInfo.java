@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Transaction info for dead-letter data
@@ -29,7 +30,7 @@ public class TransactionInfo {
     @NotNull
     private Gateway gateway;
 
-    private String paymentToken;
+    private List<String> paymentToken;
 
     private String pspId;
 
