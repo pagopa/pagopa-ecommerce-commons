@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 /**
  * Transaction info for dead-letter data
@@ -36,7 +35,7 @@ public class TransactionInfo {
 
     private String paymentMethodName;
 
-    private BigDecimal grandTotal;
+    private Integer grandTotal;
 
     private String rrn;
 
