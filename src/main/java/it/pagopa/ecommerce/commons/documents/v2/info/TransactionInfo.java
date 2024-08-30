@@ -1,6 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2.info;
 
-import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto
+import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
