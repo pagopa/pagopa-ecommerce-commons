@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2.info;
 
+import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestData;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class TransactionInfo {
     private TransactionStatusDto eCommerceStatus;
 
     @NotNull
-    private Gateway gateway;
+    private TransactionAuthorizationRequestData.PaymentGateway gateway;
 
     private List<String> paymentToken;
 
@@ -42,17 +43,4 @@ public class TransactionInfo {
 
     private TransactionInfoDetailsData details;
 
-    /**
-     * Transaction info gateway
-     */
-    public enum Gateway {
-        /**
-         * NPG gateway
-         */
-        NPG,
-        /**
-         * REDIRECT gateway
-         */
-        REDIRECT
-    }
 }
