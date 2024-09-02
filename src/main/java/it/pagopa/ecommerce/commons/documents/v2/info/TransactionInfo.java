@@ -31,7 +31,7 @@ public class TransactionInfo {
     @NotNull
     private TransactionAuthorizationRequestData.PaymentGateway gateway;
 
-    private List<String> paymentToken;
+    private List<String> paymentTokens;
 
     private String pspId;
 
