@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
 /**
  * Transaction info for NPG gateway
