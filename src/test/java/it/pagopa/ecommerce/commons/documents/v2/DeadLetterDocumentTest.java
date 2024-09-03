@@ -28,7 +28,7 @@ public class DeadLetterDocumentTest {
     }
 
     @Test
-    void setDeadLetterWithoutTransactionInfoData() {
+    void setValidDeadLetterWithoutTransactionInfoData() {
         DeadLetterEvent deadLetterEvent = DeadLetterTestUtils.deadLetterEventWithoutTransactionInfo();
         Set<ConstraintViolation<DeadLetterEvent>> violations = validator.validate(deadLetterEvent);
         assertTrue(violations.isEmpty());
@@ -36,7 +36,7 @@ public class DeadLetterDocumentTest {
     }
 
     @Test
-    void setValidTransactionInfoData() {
+    void setValidDeadLetterWithTransactionInfoData() {
         DeadLetterEvent deadLetterEventNpg = DeadLetterTestUtils
                 .deadLetterEventWithTransactionInfo(TransactionAuthorizationRequestData.PaymentGateway.NPG);
         DeadLetterEvent deadLetterEventRedirect = DeadLetterTestUtils
@@ -56,7 +56,7 @@ public class DeadLetterDocumentTest {
     }
 
     @Test
-    void thrownErrorWithIncompleteTransactionInfoData() {
+    void checkValidationErrorsWithIncompleteTransactionInfoData() {
         DeadLetterEvent deadLetterEvent = DeadLetterTestUtils.deadLetterEventWithIncompleteTransactionInfo();
         Set<ConstraintViolation<DeadLetterTransactionInfo>> violations = validator
                 .validate(deadLetterEvent.getTransactionInfo());
