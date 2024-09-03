@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
             @JsonSubTypes.Type(value = DeadLetterRedirectTransactionInfoDetailsData.class, name = "REDIRECT"),
     }
 )
-public sealed interface DeadLetterTransactionInfoDetailsData permits DeadLetterNpgTransactionInfoDetailsData, DeadLetterRedirectTransactionInfoDetailsData {
+public sealed interface DeadLetterTransactionInfoDetailsData permits DeadLetterNpgTransactionInfoDetailsData,DeadLetterRedirectTransactionInfoDetailsData {
 
     /**
      * Transaction info data type discriminator field enumeration
