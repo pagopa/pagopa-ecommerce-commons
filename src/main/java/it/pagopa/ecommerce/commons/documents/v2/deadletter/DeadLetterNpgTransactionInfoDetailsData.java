@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,16 +19,19 @@ public final class DeadLetterNpgTransactionInfoDetailsData implements DeadLetter
     /**
      * NPG operation result
      */
+    @Nullable
     private OperationResultDto operationResult;
 
     /**
      * NPG operation id
      */
+    @Nullable
     private String operationId;
 
     /**
      * NPG correlation id
      */
+    @Nullable
     private String correlationId;
 
     @NotNull

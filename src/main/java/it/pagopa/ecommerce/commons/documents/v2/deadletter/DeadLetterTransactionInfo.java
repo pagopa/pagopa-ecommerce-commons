@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -34,14 +35,19 @@ public class DeadLetterTransactionInfo {
     @NotNull
     private List<String> paymentTokens;
 
+    @Nullable
     private String pspId;
 
+    @Nullable
     private String paymentMethodName;
 
+    @Nullable
     private Integer grandTotal;
 
+    @Nullable
     private String rrn;
 
+    @Nullable
     private DeadLetterTransactionInfoDetailsData details;
 
 }

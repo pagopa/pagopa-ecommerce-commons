@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,6 +18,7 @@ public final class DeadLetterRedirectTransactionInfoDetailsData implements DeadL
     /**
      * Redirect outcome
      */
+    @Nullable
     private String outcome;
 
     @NotNull
