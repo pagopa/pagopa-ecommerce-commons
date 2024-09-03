@@ -182,6 +182,7 @@ class StrictJsonSerializerProviderTest {
                           }
                         ],
                         "companyName": null,
+                        "creditorReferenceId": null,
                         "allCCP": false
                       }
                     ],
@@ -216,6 +217,7 @@ class StrictJsonSerializerProviderTest {
                                                 )
                                         ),
                                         false,
+                                        null,
                                         null
                                 )
                         ),
@@ -261,6 +263,7 @@ class StrictJsonSerializerProviderTest {
                           }
                         ],
                         "companyName": "companyName",
+                        "creditorReferenceId": null,
                         "allCCP": false
                       }
                     ],
@@ -298,7 +301,8 @@ class StrictJsonSerializerProviderTest {
                                                 )
                                         ),
                                         false,
-                                        it.pagopa.ecommerce.commons.v2.TransactionTestUtils.COMPANY_NAME
+                                        it.pagopa.ecommerce.commons.v2.TransactionTestUtils.COMPANY_NAME,
+                                        null
                                 )
                         ),
                         FAULT_CODE,
@@ -367,5 +371,4 @@ class StrictJsonSerializerProviderTest {
         assertEquals(UnrecognizedPropertyException.class, exception.getCause().getClass());
         assertTrue(exception.getCause().getMessage().contains("Unrecognized field \"_class\""));
     }
-
 }
