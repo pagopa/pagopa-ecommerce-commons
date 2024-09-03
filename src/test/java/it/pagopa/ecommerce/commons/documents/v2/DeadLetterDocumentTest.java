@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DeadLetterDocumentTest {
+class DeadLetterDocumentTest {
 
     private static Validator validator;
 
@@ -46,12 +46,12 @@ public class DeadLetterDocumentTest {
         violations.addAll(validator.validate(deadLetterEventRedirect.getTransactionInfo()));
         assertTrue(violations.isEmpty());
         assertEquals(
-                deadLetterEventNpg.getTransactionInfo().getDetails().getType(),
-                DeadLetterTransactionInfoDetailsData.TransactionInfoDataType.NPG
+                DeadLetterTransactionInfoDetailsData.TransactionInfoDataType.NPG,
+                deadLetterEventNpg.getTransactionInfo().getDetails().getType()
         );
         assertEquals(
-                deadLetterEventRedirect.getTransactionInfo().getDetails().getType(),
-                DeadLetterTransactionInfoDetailsData.TransactionInfoDataType.REDIRECT
+                DeadLetterTransactionInfoDetailsData.TransactionInfoDataType.REDIRECT,
+                deadLetterEventRedirect.getTransactionInfo().getDetails().getType()
         );
     }
 
@@ -65,6 +65,6 @@ public class DeadLetterDocumentTest {
                 "transactionId-authorizationRequestId-eCommerceStatus-" +
                         "gateway-paymentTokens should not be null"
         );
-        assertEquals(violations.size(), 6);
+        assertEquals(6, violations.size());
     }
 }

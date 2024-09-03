@@ -47,7 +47,7 @@ public class DeadLetterTestUtils {
     public static DeadLetterEvent deadLetterEventWithTransactionInfo(
                                                                      TransactionAuthorizationRequestData.PaymentGateway gateway
     ) {
-        DeadLetterTransactionInfoDetailsData details = null;
+        DeadLetterTransactionInfoDetailsData details;
         switch (gateway) {
             case NPG -> details = new DeadLetterNpgTransactionInfoDetailsData(
                     OperationResultDto.CANCELED,
@@ -57,6 +57,7 @@ public class DeadLetterTestUtils {
             case REDIRECT -> details = new DeadLetterRedirectTransactionInfoDetailsData(
                     "outcome"
             );
+            default -> details = null;
         }
         return new DeadLetterEvent(
                 "id",
