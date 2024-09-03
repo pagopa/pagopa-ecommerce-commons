@@ -29,7 +29,7 @@ public final class NpgTransactionInfoDetailsData implements TransactionInfoDetai
     /**
      * NPG correlation id
      */
-    private UUID correlationId;
+    private String correlationId;
 
     @NotNull
     private static final TransactionInfoDataType TYPE = TransactionInfoDataType.NPG;
