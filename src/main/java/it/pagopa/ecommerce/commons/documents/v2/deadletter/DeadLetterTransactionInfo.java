@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents.v2.info;
+package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 
 import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestData;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Document
-public class TransactionInfo {
+public class DeadLetterTransactionInfo {
 
     @NotNull
     private String transactionId;
@@ -31,6 +31,7 @@ public class TransactionInfo {
     @NotNull
     private TransactionAuthorizationRequestData.PaymentGateway gateway;
 
+    @NotNull
     private List<String> paymentTokens;
 
     private String pspId;
@@ -41,6 +42,6 @@ public class TransactionInfo {
 
     private String rrn;
 
-    private TransactionInfoDetailsData details;
+    private DeadLetterTransactionInfoDetailsData details;
 
 }

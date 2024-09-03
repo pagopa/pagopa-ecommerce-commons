@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents.v2.info;
+package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 
 import lombok.*;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public final class RedirectTransactionInfoDetailsData implements TransactionInfoDetailsData {
+public final class DeadLetterRedirectTransactionInfoDetailsData implements DeadLetterTransactionInfoDetailsData {
 
     /**
      * Redirect outcome

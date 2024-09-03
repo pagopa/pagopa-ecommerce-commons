@@ -1,9 +1,8 @@
-package it.pagopa.ecommerce.commons.documents.v2.info;
+package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 
 /**
  * Extensible interface to handle multiple payment gateway transaction info data
@@ -16,11 +15,11 @@ import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGateway
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = false)
 @JsonSubTypes(
     {
-            @JsonSubTypes.Type(value = NpgTransactionGatewayActivationData.class, name = "NPG"),
-            @JsonSubTypes.Type(value = RedirectTransactionInfoDetailsData.class, name = "REDIRECT"),
+            @JsonSubTypes.Type(value = DeadLetterNpgTransactionInfoDetailsData.class, name = "NPG"),
+            @JsonSubTypes.Type(value = DeadLetterRedirectTransactionInfoDetailsData.class, name = "REDIRECT"),
     }
 )
-public sealed interface TransactionInfoDetailsData permits NpgTransactionInfoDetailsData,RedirectTransactionInfoDetailsData {
+public sealed interface DeadLetterTransactionInfoDetailsData permits DeadLetterNpgTransactionInfoDetailsData, DeadLetterRedirectTransactionInfoDetailsData {
 
     /**
      * Transaction info data type discriminator field enumeration
