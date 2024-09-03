@@ -8,6 +8,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.annotation.Nullable;
+
 /**
  * Persistence class for dead letter events
  */
@@ -38,5 +40,6 @@ public class DeadLetterEvent {
     /**
      * Transaction info data
      */
+    @Nullable
     private DeadLetterTransactionInfo transactionInfo;
 }
