@@ -55,7 +55,7 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
-    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.VPOS;
+    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.NPG;
     public static final String TRANSACTION_ID = UUID.randomUUID().toString().replace("-", "");
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;

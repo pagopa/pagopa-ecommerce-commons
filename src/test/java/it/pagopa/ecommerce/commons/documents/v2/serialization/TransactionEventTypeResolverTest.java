@@ -606,12 +606,15 @@ class TransactionEventTypeResolverTest {
                               "paymentMethodName": "CARDS",
                               "pspBusinessName": "pspBusinessName",
                               "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
-                              "paymentGateway": "VPOS",
+                              "paymentGateway": "NPG",
                               "paymentMethodDescription": "paymentMethodDescription",
                               "transactionGatewayAuthorizationRequestedData": {
-                                  "type": "PGS",
+                                  "type": "NPG",
                                   "logo": "http://paymentMethodLogo.it",
-                                  "brand": "VISA"
+                                  "brand": "VISA",
+                                  "sessionId":"sessionId",
+                                  "confirmPaymentSessionId":"confirmPaymentSessionId",
+                                  "walletInfo":null
                               },
                               "pspOnUs": false
                           },
