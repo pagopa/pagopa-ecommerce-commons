@@ -124,11 +124,11 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangIta() {
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSetIta() {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, "ITA");
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -159,81 +159,11 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangEng() {
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSetFra() {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
-
-        Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(
-                        npgClient.buildForm(
-                                correlationUUID,
-                                URI.create(MERCHANT_URL),
-                                URI.create(RESULT_URL),
-                                URI.create(NOTIFICATION_URL),
-                                URI.create(CANCEL_URL),
-                                ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS,
-                                MOCKED_API_KEY,
-                                null,
-                                "en"
-                        )
-                )
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangDeu() {
-        FieldsDto fieldsDto = buildTestFieldsDto();
-
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
-
-        Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(
-                        npgClient.buildForm(
-                                correlationUUID,
-                                URI.create(MERCHANT_URL),
-                                URI.create(RESULT_URL),
-                                URI.create(NOTIFICATION_URL),
-                                URI.create(CANCEL_URL),
-                                ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS,
-                                MOCKED_API_KEY,
-                                null,
-                                "de"
-                        )
-                )
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangFra() {
-        FieldsDto fieldsDto = buildTestFieldsDto();
-
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, "FRA");
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -264,11 +194,81 @@ class NpgClientTests {
     }
 
     @Test
-    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangSlv() {
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSetDeu() {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, "DEU");
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "de"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSetEng() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, "ENG");
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "en"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSetSlv() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, "SLV");
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -858,7 +858,8 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
-                transactionTotalAmount
+                transactionTotalAmount,
+                null
         );
 
         Mockito.when(
@@ -1116,13 +1117,18 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
-        return buildCreateHostedOrderRequestDto(contractId, null);
+        return buildCreateHostedOrderRequestDto(contractId, null, null);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
                                                                          String contractId,
-                                                                         Integer amount
+                                                                         Integer amount,
+                                                                         String language
     ) {
+        if (language == null) {
+            language = ORDER_REQUEST_LANGUAGE_ITA;
+        }
+
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
                 .merchantUrl(MERCHANT_URL)
@@ -1138,7 +1144,7 @@ class NpgClientTests {
                                 .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
                                 .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .actionType(ActionTypeDto.PAY)
-                                .language(ORDER_REQUEST_LANGUAGE_ITA)
+                                .language(language)
                                 .cancelUrl(CANCEL_URL)
                                 .notificationUrl(NOTIFICATION_URL)
                                 .resultUrl(RESULT_URL)
