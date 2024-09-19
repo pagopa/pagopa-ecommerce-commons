@@ -347,7 +347,7 @@ public class NpgClient {
      * @param paymentMethod   the payment method for which the form should be built
      * @param defaultApiKey   default API key
      * @param contractId      the wallet contractId
-     * @param language        the wallet contractId
+     * @param language        the language chosen by the user
      * @return An object containing sessionId and state
      */
     /*
