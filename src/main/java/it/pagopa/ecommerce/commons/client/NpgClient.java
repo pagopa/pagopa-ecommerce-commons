@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -264,6 +265,7 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 null,
+                null,
                 null
         );
     }
@@ -321,7 +323,68 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 contractId,
+                null,
                 null
+        );
+    }
+
+    /**
+     * method to invoke the orders/build api in order to start a payment session for
+     * subsequent payment, retrieve the sessionId and state. This method ensures
+     * that the request dto for the orders/build api will be built in the right way
+     * (it is easy to build it manually with wrong values, e.g. <i>amount</i> or
+     * <i>currency</i> as a string can be easily confused).
+     *
+     * @param correlationId   the unique id to identify the rest api invocation
+     * @param merchantUrl     the merchant url of the payment session
+     * @param resultUrl       the result url where the user should be redirected at
+     *                        the end of the payment session
+     * @param notificationUrl the notification url where notify the session
+     * @param cancelUrl       the url where the user should be redirected if the
+     *                        session is canceled by the user
+     * @param orderId         the orderId of the payment session
+     * @param customerId      the customerId url of the api
+     * @param paymentMethod   the payment method for which the form should be built
+     * @param defaultApiKey   default API key
+     * @param contractId      the wallet contractId
+     * @param language        the wallet contractId
+     * @return An object containing sessionId and state
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
+    public Mono<FieldsDto> buildForm(
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey,
+                                     String contractId,
+                                     String language
+    ) {
+        return executeBuildForm(
+                correlationId,
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                defaultApiKey,
+                contractId,
+                null,
+                language
         );
     }
 
@@ -380,7 +443,8 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 contractId,
-                totalAmount
+                totalAmount,
+                null
         );
     }
 
@@ -404,7 +468,8 @@ public class NpgClient {
                                              @NonNull PaymentMethod paymentMethod,
                                              @NonNull String defaultApiKey,
                                              String contractId,
-                                             Integer totalAmount
+                                             Integer totalAmount,
+                                             String language
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
         return Mono.using(
@@ -424,7 +489,8 @@ public class NpgClient {
                                 customerId,
                                 paymentMethod,
                                 contractId,
-                                totalAmount
+                                totalAmount,
+                                language
                         )
                 ).doOnError(
                         WebClientResponseException.class,
@@ -635,38 +701,41 @@ public class NpgClient {
      * @formatter:on
      */
     @SuppressWarnings("java:S107")
-    private CreateHostedOrderRequestDto buildOrderRequestDtoExplicitLanguage(
-                                                                             URI merchantUrl,
-                                                                             URI resultUrl,
-                                                                             URI notificationUrl,
-                                                                             URI cancelUrl,
-                                                                             String orderId,
-                                                                             String customerId,
-                                                                             PaymentMethod paymentMethod,
-                                                                             String contractId,
-                                                                             Integer totalAmount,
-                                                                             String language
+    private CreateHostedOrderRequestDto buildOrderRequestDto(
+                                                             URI merchantUrl,
+                                                             URI resultUrl,
+                                                             URI notificationUrl,
+                                                             URI cancelUrl,
+                                                             String orderId,
+                                                             String customerId,
+                                                             PaymentMethod paymentMethod,
+                                                             String contractId,
+                                                             Integer totalAmount,
+                                                             String language
     ) {
-        String ISO_639_3_lang;
-        switch (language.toLowerCase()) {
-            case "it":
-                ISO_639_3_lang = "ita";
-                break;
-            case "fr":
-                ISO_639_3_lang = "fra";
-                break;
-            case "en":
-                ISO_639_3_lang = "eng";
-                break;
-            case "de":
-                ISO_639_3_lang = "deu";
-                break;
-            case "sl":
-                ISO_639_3_lang = "slv";
-                break;
-            default:
-                ISO_639_3_lang = "ita";
-                break;
+
+        String ISO_639_3_lang = CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA;
+        if (language != null) {
+            switch (language.toLowerCase()) {
+                case "it":
+                    ISO_639_3_lang = "ita";
+                    break;
+                case "fr":
+                    ISO_639_3_lang = "fra";
+                    break;
+                case "en":
+                    ISO_639_3_lang = "eng";
+                    break;
+                case "de":
+                    ISO_639_3_lang = "deu";
+                    break;
+                case "sl":
+                    ISO_639_3_lang = "slv";
+                    break;
+                default:
+                    ISO_639_3_lang = "ita";
+                    break;
+            }
         }
 
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
@@ -702,40 +771,6 @@ public class NpgClient {
                                                 : null
                                 )
                 );
-    }
-
-    /*
-     * @formatter:off
-     *
-     * Warning java:S107 - Methods should not have too many parameters
-     * Suppressed because this method wraps the underlying API which has this many parameters
-     *
-     * @formatter:on
-     */
-    @SuppressWarnings("java:S107")
-    private CreateHostedOrderRequestDto buildOrderRequestDto(
-                                                             URI merchantUrl,
-                                                             URI resultUrl,
-                                                             URI notificationUrl,
-                                                             URI cancelUrl,
-                                                             String orderId,
-                                                             String customerId,
-                                                             PaymentMethod paymentMethod,
-                                                             String contractId,
-                                                             Integer totalAmount
-    ) {
-        return buildOrderRequestDtoExplicitLanguage(
-                merchantUrl,
-                resultUrl,
-                notificationUrl,
-                cancelUrl,
-                orderId,
-                customerId,
-                paymentMethod,
-                contractId,
-                totalAmount,
-                CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA
-        );
     }
 
     private RefundRequestDto buildRefundRequestDto(
