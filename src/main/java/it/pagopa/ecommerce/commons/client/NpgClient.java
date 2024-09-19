@@ -647,6 +647,29 @@ public class NpgClient {
                                                                              Integer totalAmount,
                                                                              String language
     ) {
+        String ISO_639_3_lang;
+        switch (language.toLowerCase()) {
+            case "it":
+                ISO_639_3_lang = "ita";
+                break;
+            case "fr":
+                ISO_639_3_lang = "fra";
+                break;
+            case "en":
+                ISO_639_3_lang = "eng";
+                break;
+            case "de":
+                ISO_639_3_lang = "deu";
+                break;
+            case "sl":
+                ISO_639_3_lang = "slv";
+                break;
+            default:
+                ISO_639_3_lang = "ita";
+                break;
+        }
+
+
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
         log.info(
@@ -668,7 +691,7 @@ public class NpgClient {
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
                                 .amount(orderBuildAmount)
-                                .language(language)
+                                .language(ISO_639_3_lang)
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
