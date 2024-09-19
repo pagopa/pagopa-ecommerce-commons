@@ -636,17 +636,17 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     private CreateHostedOrderRequestDto buildOrderRequestDtoExplicitLanguage(
-            URI merchantUrl,
-            URI resultUrl,
-            URI notificationUrl,
-            URI cancelUrl,
-            String orderId,
-            String customerId,
-            PaymentMethod paymentMethod,
-            String contractId,
-            Integer totalAmount,
-            String language
-    ){
+                                                                             URI merchantUrl,
+                                                                             URI resultUrl,
+                                                                             URI notificationUrl,
+                                                                             URI cancelUrl,
+                                                                             String orderId,
+                                                                             String customerId,
+                                                                             PaymentMethod paymentMethod,
+                                                                             String contractId,
+                                                                             Integer totalAmount,
+                                                                             String language
+    ) {
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
         log.info(
