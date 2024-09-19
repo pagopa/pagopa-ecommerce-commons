@@ -32,6 +32,14 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
+    private static final LANG_MAP = Map.of(
+            "it", "ita",
+            "fr", "fra",
+            "de", "deu",
+            "sl", "slv",
+            "en", "eng"
+            );
+
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
     private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
     private static final String CREATE_HOSTED_ORDER_REQUEST_CURRENCY_EUR = "EUR";
@@ -716,26 +724,7 @@ public class NpgClient {
 
         String ISO_639_3_lang = CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA;
         if (language != null) {
-            switch (language.toLowerCase()) {
-                case "it":
-                    ISO_639_3_lang = "ita";
-                    break;
-                case "fr":
-                    ISO_639_3_lang = "fra";
-                    break;
-                case "en":
-                    ISO_639_3_lang = "eng";
-                    break;
-                case "de":
-                    ISO_639_3_lang = "deu";
-                    break;
-                case "sl":
-                    ISO_639_3_lang = "slv";
-                    break;
-                default:
-                    ISO_639_3_lang = "ita";
-                    break;
-            }
+            ISO_639_3_lang = LANG_MAP.getOrDefault(language, CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA);
         }
 
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
