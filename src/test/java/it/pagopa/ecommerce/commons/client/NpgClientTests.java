@@ -124,6 +124,181 @@ class NpgClientTests {
     }
 
     @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangIta() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "it"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangEng() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "en"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangDeu() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "de"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangFra() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "fr"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangSlv() {
+        FieldsDto fieldsDto = buildTestFieldsDto();
+
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildForm(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                null,
+                                "sl"
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldRetrieveFieldsDtoForSubsequentPaymentUsingExplicitParameters() {
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
 
