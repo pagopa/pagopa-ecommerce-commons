@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,13 +33,18 @@ import java.util.UUID;
 @Slf4j
 public class NpgClient {
 
-    private static final LANG_MAP = Map.of(
-            "it", "ita",
-            "fr", "fra",
-            "de", "deu",
-            "sl", "slv",
-            "en", "eng"
-            );
+    private static final Map<String, String> LANG_MAP = Map.of(
+            "it",
+            "ita",
+            "fr",
+            "fra",
+            "de",
+            "deu",
+            "sl",
+            "slv",
+            "en",
+            "eng"
+    );
 
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
     private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
