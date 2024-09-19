@@ -383,8 +383,8 @@ public class NpgClient {
                                      @NotNull String customerId,
                                      @NonNull PaymentMethod paymentMethod,
                                      @NonNull String defaultApiKey,
-                                     @Nullable String contractId,
-                                     @Nullable String language
+                                     String contractId,
+                                     String language
     ) {
         return executeBuildForm(
                 correlationId,
