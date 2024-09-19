@@ -669,7 +669,6 @@ public class NpgClient {
                 break;
         }
 
-
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
         log.info(
