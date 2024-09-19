@@ -690,7 +690,7 @@ public class NpgClient {
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
                                 .amount(orderBuildAmount)
-                                .language(ISO_639_3_lang)
+                                .language(ISO_639_3_lang.toUpperCase())
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
