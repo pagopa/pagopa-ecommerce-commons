@@ -635,17 +635,18 @@ public class NpgClient {
      * @formatter:on
      */
     @SuppressWarnings("java:S107")
-    private CreateHostedOrderRequestDto buildOrderRequestDto(
-                                                             URI merchantUrl,
-                                                             URI resultUrl,
-                                                             URI notificationUrl,
-                                                             URI cancelUrl,
-                                                             String orderId,
-                                                             String customerId,
-                                                             PaymentMethod paymentMethod,
-                                                             String contractId,
-                                                             Integer totalAmount
-    ) {
+    private CreateHostedOrderRequestDto buildOrderRequestDtoExplicitLanguage(
+            URI merchantUrl,
+            URI resultUrl,
+            URI notificationUrl,
+            URI cancelUrl,
+            String orderId,
+            String customerId,
+            PaymentMethod paymentMethod,
+            String contractId,
+            Integer totalAmount,
+            String language
+    ){
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
         log.info(
@@ -667,7 +668,7 @@ public class NpgClient {
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
                                 .amount(orderBuildAmount)
-                                .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
+                                .language(language)
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())
@@ -679,6 +680,40 @@ public class NpgClient {
                                                 : null
                                 )
                 );
+    }
+
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
+    private CreateHostedOrderRequestDto buildOrderRequestDto(
+                                                             URI merchantUrl,
+                                                             URI resultUrl,
+                                                             URI notificationUrl,
+                                                             URI cancelUrl,
+                                                             String orderId,
+                                                             String customerId,
+                                                             PaymentMethod paymentMethod,
+                                                             String contractId,
+                                                             Integer totalAmount
+    ) {
+        return buildOrderRequestDtoExplicitLanguage(
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                contractId,
+                totalAmount,
+                CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA
+        );
     }
 
     private RefundRequestDto buildRefundRequestDto(
