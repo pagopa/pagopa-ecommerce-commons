@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.client;
 
+import javax.annotation.Nullable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
@@ -383,8 +384,8 @@ public class NpgClient {
                                      @NotNull String customerId,
                                      @NonNull PaymentMethod paymentMethod,
                                      @NonNull String defaultApiKey,
-                                     String contractId,
-                                     String language
+                                     @Nullable String contractId,
+                                     @Nullable String language
     ) {
         return executeBuildForm(
                 correlationId,
