@@ -716,13 +716,19 @@ class NpgClientTests {
             }
     )
     void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount(String input) {
+
+        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
+        if (input != null) {
+            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
+        }
+
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
         Integer transactionTotalAmount = 1000;
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
                 transactionTotalAmount,
-                input
+                ISO_639_3_lang
         );
 
         Mockito.when(
