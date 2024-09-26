@@ -156,7 +156,7 @@ class NpgClientTests {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, null, ISO_639_3_lang);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, ISO_639_3_lang);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -192,12 +192,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
+                        paymentServicesApi.pspApiV1OrdersBuildPost(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                requestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -237,12 +237,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
+                        paymentServicesApi.pspApiV1OrdersBuildPost(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                requestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -283,12 +283,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
+                        paymentServicesApi.pspApiV1OrdersBuildPost(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                requestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -328,12 +328,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
+                        paymentServicesApi.pspApiV1OrdersBuildPost(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                requestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -399,12 +399,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildCardDataGet(
-                        correlationUUID,
-                        SESSION_ID,
-                        MOCKED_API_KEY
+                        paymentServicesApi.pspApiV1BuildCardDataGet(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -437,12 +437,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildCardDataGet(
-                        correlationUUID,
-                        SESSION_ID,
-                        MOCKED_API_KEY
+                        paymentServicesApi.pspApiV1BuildCardDataGet(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -571,12 +571,12 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        confirmPaymentRequestDto
+                        paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                confirmPaymentRequestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -615,14 +615,14 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
-                        OPERATION_ID,
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY.toString(),
-                        refundRequestDto
+                        paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                                OPERATION_ID,
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                IDEMPOTENCE_KEY.toString(),
+                                refundRequestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -663,14 +663,14 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
-                        OPERATION_ID,
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        IDEMPOTENCE_KEY.toString(),
-                        refundRequestDto
+                        paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                                OPERATION_ID,
+                                correlationUUID,
+                                MOCKED_API_KEY,
+                                IDEMPOTENCE_KEY.toString(),
+                                refundRequestDto
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -705,184 +705,14 @@ class NpgClientTests {
                 .verify();
     }
 
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                    "it",
-                    "en",
-                    "de",
-                    "sl",
-                    "fr"
-            }
-    )
-    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguage(String input) {
-
-        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
-        if (input != null) {
-            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
-        }
-
-        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
-        Integer transactionTotalAmount = 1000;
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
-                ORDER_REQUEST_CONTRACT_ID,
-                transactionTotalAmount,
-                null,
-                ISO_639_3_lang
-        );
-
-        Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(
-                        npgClient.buildFormForPayment(
-                                correlationUUID,
-                                URI.create(MERCHANT_URL),
-                                URI.create(RESULT_URL),
-                                URI.create(NOTIFICATION_URL),
-                                URI.create(CANCEL_URL),
-                                ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.CARDS,
-                                MOCKED_API_KEY,
-                                ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount,
-                                input
-                        )
-                )
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                    "it",
-                    "en",
-                    "de",
-                    "sl",
-                    "fr"
-            }
-    )
-    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguageApple(String input) {
-
-        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
-        if (input != null) {
-            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
-        }
-
-        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
-        Integer transactionTotalAmount = 1000;
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
-                ORDER_REQUEST_CONTRACT_ID,
-                transactionTotalAmount,
-                NpgClient.PaymentMethod.APPLEPAY,
-                ISO_639_3_lang
-        );
-
-        Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(
-                        npgClient.buildFormForPayment(
-                                correlationUUID,
-                                URI.create(MERCHANT_URL),
-                                URI.create(RESULT_URL),
-                                URI.create(NOTIFICATION_URL),
-                                URI.create(CANCEL_URL),
-                                ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.APPLEPAY,
-                                MOCKED_API_KEY,
-                                ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount,
-                                input
-                        )
-                )
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                    "it",
-                    "en",
-                    "de",
-                    "sl",
-                    "fr"
-            }
-    )
-    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguagePaypal(String input) {
-
-        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
-        if (input != null) {
-            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
-        }
-
-        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
-        Integer transactionTotalAmount = 1000;
-        UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
-                ORDER_REQUEST_CONTRACT_ID,
-                transactionTotalAmount,
-                NpgClient.PaymentMethod.PAYPAL,
-                ISO_639_3_lang
-        );
-
-        Mockito.when(
-                paymentServicesApi.pspApiV1OrdersBuildPost(
-                        correlationUUID,
-                        MOCKED_API_KEY,
-                        requestDto
-                )
-        ).thenReturn(Mono.just(fieldsDto));
-
-        StepVerifier
-                .create(
-                        npgClient.buildFormForPayment(
-                                correlationUUID,
-                                URI.create(MERCHANT_URL),
-                                URI.create(RESULT_URL),
-                                URI.create(NOTIFICATION_URL),
-                                URI.create(CANCEL_URL),
-                                ORDER_REQUEST_ORDER_ID,
-                                ORDER_REQUEST_CUSTOMER_ID,
-                                NpgClient.PaymentMethod.PAYPAL,
-                                MOCKED_API_KEY,
-                                ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount,
-                                input
-                        )
-                )
-                .expectNext(fieldsDto)
-                .verifyComplete();
-    }
-
     @Test
     void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
-
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
         Integer transactionTotalAmount = 1000;
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
                 transactionTotalAmount,
-                null,
                 null
         );
 
@@ -992,12 +822,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildStateGet(
-                        correlationUUID,
-                        SESSION_ID,
-                        MOCKED_API_KEY
+                        paymentServicesApi.pspApiV1BuildStateGet(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -1034,12 +864,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildStateGet(
-                        correlationUUID,
-                        SESSION_ID,
-                        MOCKED_API_KEY
+                        paymentServicesApi.pspApiV1BuildStateGet(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -1079,12 +909,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                paymentServicesApi.pspApiV1BuildStateGet(
-                        correlationUUID,
-                        SESSION_ID,
-                        MOCKED_API_KEY
+                        paymentServicesApi.pspApiV1BuildStateGet(
+                                correlationUUID,
+                                SESSION_ID,
+                                MOCKED_API_KEY
+                        )
                 )
-        )
                 .thenReturn(
                         Mono.error(
                                 new NullPointerException("Error while invoke method for get state")
@@ -1141,21 +971,17 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
-        return buildCreateHostedOrderRequestDto(contractId, null, null, null);
+        return buildCreateHostedOrderRequestDto(contractId, null, null);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
-                                                                         String contractId,
-                                                                         Integer amount,
-                                                                         NpgClient.PaymentMethod paymentMethod,
-                                                                         String language
+            String contractId,
+            Integer amount,
+            String language
     ) {
         if (language == null) {
             language = ORDER_REQUEST_LANGUAGE_ITA;
         }
-
-        NpgClient.PaymentMethod paymentMethodActive = paymentMethod == null ? NpgClient.PaymentMethod.CARDS
-                : paymentMethod;
 
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
@@ -1169,7 +995,7 @@ class NpgClientTests {
                 )
                 .paymentSession(
                         new PaymentSessionDto()
-                                .paymentService(paymentMethodActive.serviceName)
+                                .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
                                 .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .actionType(ActionTypeDto.PAY)
                                 .language(language)
