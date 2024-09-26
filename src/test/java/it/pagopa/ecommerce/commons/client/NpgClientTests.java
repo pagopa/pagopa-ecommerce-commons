@@ -715,7 +715,7 @@ class NpgClientTests {
                     "fr"
             }
     )
-    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount(String input) {
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguage(String input) {
 
         String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
         if (input != null) {
@@ -754,6 +754,45 @@ class NpgClientTests {
                                 ORDER_REQUEST_CONTRACT_ID,
                                 transactionTotalAmount,
                                 input
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
+
+        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+        Integer transactionTotalAmount = 1000;
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
+                ORDER_REQUEST_CONTRACT_ID,
+                transactionTotalAmount,
+                null
+        );
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildFormForPayment(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.CARDS,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID,
+                                transactionTotalAmount
                         )
                 )
                 .expectNext(fieldsDto)
