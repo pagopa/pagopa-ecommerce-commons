@@ -705,15 +705,24 @@ class NpgClientTests {
                 .verify();
     }
 
-    @Test
-    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                    "it",
+                    "en",
+                    "de",
+                    "sl",
+                    "fr"
+            }
+    )
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount(String input) {
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
         Integer transactionTotalAmount = 1000;
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
                 transactionTotalAmount,
-                null
+                input
         );
 
         Mockito.when(
@@ -737,7 +746,8 @@ class NpgClientTests {
                                 NpgClient.PaymentMethod.CARDS,
                                 MOCKED_API_KEY,
                                 ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount
+                                transactionTotalAmount,
+                                input
                         )
                 )
                 .expectNext(fieldsDto)
