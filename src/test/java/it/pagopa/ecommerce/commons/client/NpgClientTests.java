@@ -192,12 +192,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OrdersBuildPost(
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                requestDto
-                        )
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -237,12 +237,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OrdersBuildPost(
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                requestDto
-                        )
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -283,12 +283,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null);
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OrdersBuildPost(
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                requestDto
-                        )
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -328,12 +328,12 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OrdersBuildPost(
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                requestDto
-                        )
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -399,12 +399,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildCardDataGet(
-                                correlationUUID,
-                                SESSION_ID,
-                                MOCKED_API_KEY
-                        )
+                paymentServicesApi.pspApiV1BuildCardDataGet(
+                        correlationUUID,
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -437,12 +437,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildCardDataGet(
-                                correlationUUID,
-                                SESSION_ID,
-                                MOCKED_API_KEY
-                        )
+                paymentServicesApi.pspApiV1BuildCardDataGet(
+                        correlationUUID,
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -571,12 +571,12 @@ class NpgClientTests {
         ConfirmPaymentRequestDto confirmPaymentRequestDto = buildTestConfirmPaymentRequestDto();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                confirmPaymentRequestDto
-                        )
+                paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        confirmPaymentRequestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -615,14 +615,14 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDto();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
-                                OPERATION_ID,
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                IDEMPOTENCE_KEY.toString(),
-                                refundRequestDto
-                        )
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
+                        refundRequestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -663,14 +663,14 @@ class NpgClientTests {
         RefundRequestDto refundRequestDto = buildRefundRequestDtoNullDescription();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
-                                OPERATION_ID,
-                                correlationUUID,
-                                MOCKED_API_KEY,
-                                IDEMPOTENCE_KEY.toString(),
-                                refundRequestDto
-                        )
+                paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
+                        OPERATION_ID,
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        IDEMPOTENCE_KEY.toString(),
+                        refundRequestDto
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -822,12 +822,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildStateGet(
-                                correlationUUID,
-                                SESSION_ID,
-                                MOCKED_API_KEY
-                        )
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -864,12 +864,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildStateGet(
-                                correlationUUID,
-                                SESSION_ID,
-                                MOCKED_API_KEY
-                        )
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new WebClientResponseException(
@@ -909,12 +909,12 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
 
         Mockito.when(
-                        paymentServicesApi.pspApiV1BuildStateGet(
-                                correlationUUID,
-                                SESSION_ID,
-                                MOCKED_API_KEY
-                        )
+                paymentServicesApi.pspApiV1BuildStateGet(
+                        correlationUUID,
+                        SESSION_ID,
+                        MOCKED_API_KEY
                 )
+        )
                 .thenReturn(
                         Mono.error(
                                 new NullPointerException("Error while invoke method for get state")
@@ -975,9 +975,9 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
-            String contractId,
-            Integer amount,
-            String language
+                                                                         String contractId,
+                                                                         Integer amount,
+                                                                         String language
     ) {
         if (language == null) {
             language = ORDER_REQUEST_LANGUAGE_ITA;

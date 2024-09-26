@@ -259,15 +259,15 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildForm(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey
     ) {
         return executeBuildForm(
                 correlationId,
@@ -316,16 +316,16 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildForm(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey,
-            String contractId
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey,
+                                     String contractId
     ) {
         return executeBuildForm(
                 correlationId,
@@ -375,17 +375,17 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildForm(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey,
-            @Nullable String contractId,
-            @Nullable String language
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey,
+                                     @Nullable String contractId,
+                                     @Nullable String language
     ) {
         return executeBuildForm(
                 correlationId,
@@ -435,17 +435,17 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildFormForPayment(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey,
-            String contractId,
-            Integer totalAmount
+                                               @NotNull UUID correlationId,
+                                               @NotNull URI merchantUrl,
+                                               @NotNull URI resultUrl,
+                                               @NotNull URI notificationUrl,
+                                               @NotNull URI cancelUrl,
+                                               @NotNull String orderId,
+                                               @NotNull String customerId,
+                                               @NonNull PaymentMethod paymentMethod,
+                                               @NonNull String defaultApiKey,
+                                               String contractId,
+                                               Integer totalAmount
     ) {
         return executeBuildForm(
                 correlationId,
@@ -473,18 +473,18 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     private Mono<FieldsDto> executeBuildForm(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey,
-            String contractId,
-            Integer totalAmount,
-            String language
+                                             @NotNull UUID correlationId,
+                                             @NotNull URI merchantUrl,
+                                             @NotNull URI resultUrl,
+                                             @NotNull URI notificationUrl,
+                                             @NotNull URI cancelUrl,
+                                             @NotNull String orderId,
+                                             @NotNull String customerId,
+                                             @NonNull PaymentMethod paymentMethod,
+                                             @NonNull String defaultApiKey,
+                                             String contractId,
+                                             Integer totalAmount,
+                                             String language
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
         return Mono.using(
@@ -493,27 +493,27 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersBuildPost(
-                                correlationId,
-                                defaultApiKey,
-                                buildOrderRequestDto(
-                                        merchantUrl,
-                                        resultUrl,
-                                        notificationUrl,
-                                        cancelUrl,
-                                        orderId,
-                                        customerId,
-                                        paymentMethod,
-                                        contractId,
-                                        totalAmount,
-                                        language
-                                )
-                        ).doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
+                        correlationId,
+                        defaultApiKey,
+                        buildOrderRequestDto(
+                                merchantUrl,
+                                resultUrl,
+                                notificationUrl,
+                                cancelUrl,
+                                orderId,
+                                customerId,
+                                paymentMethod,
+                                contractId,
+                                totalAmount,
+                                language
                         )
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                NPG_LOG_ERROR_MESSAGE,
+                                e.getStatusCode()
+                        )
+                )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -529,9 +529,9 @@ public class NpgClient {
      *         show on the client-side
      */
     public Mono<CardDataResponseDto> getCardData(
-            @NotNull UUID correlationId,
-            @NotNull String sessionId,
-            @NonNull String defaultApiKey
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String sessionId,
+                                                 @NonNull String defaultApiKey
 
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.GET_CARD_DATA;
@@ -541,16 +541,16 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildCardDataGet(
-                                correlationId,
-                                sessionId,
-                                defaultApiKey
-                        ).doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
+                        correlationId,
+                        sessionId,
+                        defaultApiKey
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                NPG_LOG_ERROR_MESSAGE,
+                                e.getStatusCode()
                         )
+                )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -567,10 +567,10 @@ public class NpgClient {
      *         show on the client-side
      */
     public Mono<StateResponseDto> confirmPayment(
-            @NotNull UUID correlationId,
-            @NotNull String sessionId,
-            @NotNull BigDecimal grandTotal,
-            @NonNull String pspApiKey
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String sessionId,
+                                                 @NotNull BigDecimal grandTotal,
+                                                 @NonNull String pspApiKey
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.CONFIRM_PAYMENT;
         return Mono.using(
@@ -579,17 +579,17 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildConfirmPaymentPost(
-                                correlationId,
-                                pspApiKey,
-                                new ConfirmPaymentRequestDto()
-                                        .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
-                        ).doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
+                        correlationId,
+                        pspApiKey,
+                        new ConfirmPaymentRequestDto()
+                                .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                NPG_LOG_ERROR_MESSAGE,
+                                e.getStatusCode()
                         )
+                )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -609,12 +609,12 @@ public class NpgClient {
      *         operation details.
      */
     public Mono<RefundResponseDto> refundPayment(
-            @NotNull UUID correlationId,
-            @NotNull String operationId,
-            @NotNull UUID idempotenceKey,
-            @NotNull BigDecimal grandTotal,
-            @NonNull String defaultApiKey,
-            String description
+                                                 @NotNull UUID correlationId,
+                                                 @NotNull String operationId,
+                                                 @NotNull UUID idempotenceKey,
+                                                 @NotNull BigDecimal grandTotal,
+                                                 @NonNull String defaultApiKey,
+                                                 String description
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.REFUND_PAYMENT;
         return Mono.using(
@@ -623,18 +623,18 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OperationsOperationIdRefundsPost(
-                                operationId,
-                                correlationId,
-                                defaultApiKey,
-                                idempotenceKey.toString(),
-                                buildRefundRequestDto(grandTotal, description)
-                        ).doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
+                        operationId,
+                        correlationId,
+                        defaultApiKey,
+                        idempotenceKey.toString(),
+                        buildRefundRequestDto(grandTotal, description)
+                ).doOnError(
+                        WebClientResponseException.class,
+                        e -> log.info(
+                                NPG_LOG_ERROR_MESSAGE,
+                                e.getStatusCode()
                         )
+                )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -651,9 +651,9 @@ public class NpgClient {
      */
 
     public Mono<StateResponseDto> getState(
-            @NotNull UUID correlationId,
-            @NotNull String sessionId,
-            @NonNull String pspApiKey
+                                           @NotNull UUID correlationId,
+                                           @NotNull String sessionId,
+                                           @NonNull String pspApiKey
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.GET_STATE;
         return Mono.using(
@@ -684,9 +684,9 @@ public class NpgClient {
      *         related to.
      */
     public Mono<OrderResponseDto> getOrder(
-            UUID correlationId,
-            String pspApiKey,
-            String orderId
+                                           UUID correlationId,
+                                           String pspApiKey,
+                                           String orderId
     ) {
         final var gatewayOperation = GatewayOperation.GET_ORDER;
         return Mono.using(
@@ -717,16 +717,16 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     private CreateHostedOrderRequestDto buildOrderRequestDto(
-            URI merchantUrl,
-            URI resultUrl,
-            URI notificationUrl,
-            URI cancelUrl,
-            String orderId,
-            String customerId,
-            PaymentMethod paymentMethod,
-            String contractId,
-            Integer totalAmount,
-            String language
+                                                             URI merchantUrl,
+                                                             URI resultUrl,
+                                                             URI notificationUrl,
+                                                             URI cancelUrl,
+                                                             String orderId,
+                                                             String customerId,
+                                                             PaymentMethod paymentMethod,
+                                                             String contractId,
+                                                             Integer totalAmount,
+                                                             String language
     ) {
 
         String ISO_639_3_lang = CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA;
@@ -770,17 +770,17 @@ public class NpgClient {
     }
 
     private RefundRequestDto buildRefundRequestDto(
-            BigDecimal grandTotal,
-            String description
+                                                   BigDecimal grandTotal,
+                                                   String description
     ) {
         return new RefundRequestDto().amount(grandTotal.toString()).currency(EUR_CURRENCY)
                 .description(description);
     }
 
     private NpgResponseException exceptionToNpgResponseException(
-            Throwable err,
-            Span span,
-            GatewayOperation gatewayOperation
+                                                                 Throwable err,
+                                                                 Span span,
+                                                                 GatewayOperation gatewayOperation
     ) {
         List<String> errors = List.of();
         Optional<HttpStatus> statusCode = Optional.empty();
