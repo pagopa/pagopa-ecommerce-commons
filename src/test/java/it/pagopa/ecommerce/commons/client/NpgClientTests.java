@@ -737,7 +737,8 @@ class NpgClientTests {
                                 NpgClient.PaymentMethod.CARDS,
                                 MOCKED_API_KEY,
                                 ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount
+                                transactionTotalAmount,
+                                null
                         )
                 )
                 .expectNext(fieldsDto)

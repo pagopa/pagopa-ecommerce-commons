@@ -423,6 +423,7 @@ public class NpgClient {
      * @param defaultApiKey   default API key
      * @param contractId      the wallet contractId
      * @param totalAmount     payment total amount in eurocent
+     * @param language        payment total amount in language
      * @return An object containing sessionId and state
      */
     /*
@@ -445,7 +446,8 @@ public class NpgClient {
                                                @NonNull PaymentMethod paymentMethod,
                                                @NonNull String defaultApiKey,
                                                String contractId,
-                                               Integer totalAmount
+                                               Integer totalAmount,
+                                               String language
     ) {
         return executeBuildForm(
                 correlationId,
@@ -459,7 +461,7 @@ public class NpgClient {
                 defaultApiKey,
                 contractId,
                 totalAmount,
-                null
+                language
         );
     }
 
@@ -472,19 +474,19 @@ public class NpgClient {
      * @formatter:on
      */
     @SuppressWarnings("java:S107")
-    public Mono<FieldsDto> executeBuildForm(
-                                            @NotNull UUID correlationId,
-                                            @NotNull URI merchantUrl,
-                                            @NotNull URI resultUrl,
-                                            @NotNull URI notificationUrl,
-                                            @NotNull URI cancelUrl,
-                                            @NotNull String orderId,
-                                            @NotNull String customerId,
-                                            @NonNull PaymentMethod paymentMethod,
-                                            @NonNull String defaultApiKey,
-                                            String contractId,
-                                            Integer totalAmount,
-                                            String language
+    private Mono<FieldsDto> executeBuildForm(
+                                             @NotNull UUID correlationId,
+                                             @NotNull URI merchantUrl,
+                                             @NotNull URI resultUrl,
+                                             @NotNull URI notificationUrl,
+                                             @NotNull URI cancelUrl,
+                                             @NotNull String orderId,
+                                             @NotNull String customerId,
+                                             @NonNull PaymentMethod paymentMethod,
+                                             @NonNull String defaultApiKey,
+                                             String contractId,
+                                             Integer totalAmount,
+                                             String language
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
         return Mono.using(
