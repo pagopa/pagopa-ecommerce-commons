@@ -496,18 +496,18 @@ public class NpgClient {
      */
     @SuppressWarnings("java:S107")
     public Mono<FieldsDto> buildFormForPayment(
-            @NotNull UUID correlationId,
-            @NotNull URI merchantUrl,
-            @NotNull URI resultUrl,
-            @NotNull URI notificationUrl,
-            @NotNull URI cancelUrl,
-            @NotNull String orderId,
-            @NotNull String customerId,
-            @NonNull PaymentMethod paymentMethod,
-            @NonNull String defaultApiKey,
-            String contractId,
-            Integer totalAmount,
-            String language
+                                               @NotNull UUID correlationId,
+                                               @NotNull URI merchantUrl,
+                                               @NotNull URI resultUrl,
+                                               @NotNull URI notificationUrl,
+                                               @NotNull URI cancelUrl,
+                                               @NotNull String orderId,
+                                               @NotNull String customerId,
+                                               @NonNull PaymentMethod paymentMethod,
+                                               @NonNull String defaultApiKey,
+                                               String contractId,
+                                               Integer totalAmount,
+                                               String language
     ) {
         return executeBuildForm(
                 correlationId,
