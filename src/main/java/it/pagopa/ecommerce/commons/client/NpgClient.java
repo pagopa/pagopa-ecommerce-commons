@@ -472,7 +472,7 @@ public class NpgClient {
      * @formatter:on
      */
     @SuppressWarnings("java:S107")
-    private Mono<FieldsDto> executeBuildForm(
+    public Mono<FieldsDto> executeBuildForm(
                                              @NotNull UUID correlationId,
                                              @NotNull URI merchantUrl,
                                              @NotNull URI resultUrl,
