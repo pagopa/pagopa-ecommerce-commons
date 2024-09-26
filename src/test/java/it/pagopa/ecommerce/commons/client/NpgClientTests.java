@@ -760,6 +760,7 @@ class NpgClientTests {
                 .verifyComplete();
     }
 
+    @Test
     void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
 
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
