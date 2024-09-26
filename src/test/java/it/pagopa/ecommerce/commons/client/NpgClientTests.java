@@ -156,7 +156,7 @@ class NpgClientTests {
         FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, ISO_639_3_lang);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, null, ISO_639_3_lang);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -728,6 +728,7 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
                 transactionTotalAmount,
+                null,
                 ISO_639_3_lang
         );
 
@@ -760,6 +761,118 @@ class NpgClientTests {
                 .verifyComplete();
     }
 
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                    "it",
+                    "en",
+                    "de",
+                    "sl",
+                    "fr"
+            }
+    )
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguageApple(String input) {
+
+        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
+        if (input != null) {
+            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
+        }
+
+        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+        Integer transactionTotalAmount = 1000;
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
+                ORDER_REQUEST_CONTRACT_ID,
+                transactionTotalAmount,
+                NpgClient.PaymentMethod.APPLEPAY,
+                ISO_639_3_lang
+        );
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildFormForPayment(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.APPLEPAY,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID,
+                                transactionTotalAmount,
+                                input
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                    "it",
+                    "en",
+                    "de",
+                    "sl",
+                    "fr"
+            }
+    )
+    void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmountWithLanguagePaypal(String input) {
+
+        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
+        if (input != null) {
+            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
+        }
+
+        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+        Integer transactionTotalAmount = 1000;
+        UUID correlationUUID = UUID.randomUUID();
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
+                ORDER_REQUEST_CONTRACT_ID,
+                transactionTotalAmount,
+                NpgClient.PaymentMethod.PAYPAL,
+                ISO_639_3_lang
+        );
+
+        Mockito.when(
+                paymentServicesApi.pspApiV1OrdersBuildPost(
+                        correlationUUID,
+                        MOCKED_API_KEY,
+                        requestDto
+                )
+        ).thenReturn(Mono.just(fieldsDto));
+
+        StepVerifier
+                .create(
+                        npgClient.buildFormForPayment(
+                                correlationUUID,
+                                URI.create(MERCHANT_URL),
+                                URI.create(RESULT_URL),
+                                URI.create(NOTIFICATION_URL),
+                                URI.create(CANCEL_URL),
+                                ORDER_REQUEST_ORDER_ID,
+                                ORDER_REQUEST_CUSTOMER_ID,
+                                NpgClient.PaymentMethod.PAYPAL,
+                                MOCKED_API_KEY,
+                                ORDER_REQUEST_CONTRACT_ID,
+                                transactionTotalAmount,
+                                input
+                        )
+                )
+                .expectNext(fieldsDto)
+                .verifyComplete();
+    }
+
     @Test
     void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
 
@@ -769,6 +882,7 @@ class NpgClientTests {
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
                 transactionTotalAmount,
+                null,
                 null
         );
 
@@ -1027,17 +1141,21 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
-        return buildCreateHostedOrderRequestDto(contractId, null, null);
+        return buildCreateHostedOrderRequestDto(contractId, null, null, null);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
                                                                          String contractId,
                                                                          Integer amount,
+                                                                         NpgClient.PaymentMethod paymentMethod,
                                                                          String language
     ) {
         if (language == null) {
             language = ORDER_REQUEST_LANGUAGE_ITA;
         }
+
+        NpgClient.PaymentMethod paymentMethodActive = paymentMethod == null ? NpgClient.PaymentMethod.CARDS
+                : paymentMethod;
 
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
@@ -1051,7 +1169,7 @@ class NpgClientTests {
                 )
                 .paymentSession(
                         new PaymentSessionDto()
-                                .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
+                                .paymentService(paymentMethodActive.serviceName)
                                 .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .actionType(ActionTypeDto.PAY)
                                 .language(language)
