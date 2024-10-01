@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,7 +22,7 @@ public class WalletInfo {
     @NotNull
     private String walletId;
 
-    @NotNull
+    @Nullable
     private WalletDetails walletDetails;
 
     /**
