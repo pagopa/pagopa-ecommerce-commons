@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
+import it.pagopa.ecommerce.commons.documents.userstats.v1.UserStatistics;
 import it.pagopa.ecommerce.commons.utils.UserStatisticsTestUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,8 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
-import static it.pagopa.ecommerce.commons.documents.UserStatistics.LastUsage.PaymentType.GUEST_PAYMENT_METHOD;
-import static it.pagopa.ecommerce.commons.documents.UserStatistics.LastUsage.PaymentType.SAVED_WALLET;
+import static it.pagopa.ecommerce.commons.documents.userstats.v1.LastUsage.PaymentType.GUEST_PAYMENT_METHOD;
+import static it.pagopa.ecommerce.commons.documents.userstats.v1.LastUsage.PaymentType.SAVED_WALLET;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserStatisticsTest {
