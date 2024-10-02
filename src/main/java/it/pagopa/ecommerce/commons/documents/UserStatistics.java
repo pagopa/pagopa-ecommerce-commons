@@ -34,7 +34,7 @@ public class UserStatistics {
         /**
          * Payment type enumeration
          */
-        enum PaymentType {
+        public enum PaymentType {
             /**
              * User wallet
              */
