@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.documents;
+package it.pagopa.ecommerce.commons.documents.userstats.v1;
 
 import it.pagopa.ecommerce.commons.documents.userstats.v1.UserStatistics;
 import it.pagopa.ecommerce.commons.utils.UserStatisticsTestUtils;
