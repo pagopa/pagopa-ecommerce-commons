@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -56,5 +57,11 @@ public class UserStatistics {
          */
         @NotNull
         private UUID instrumentId;
+
+        /**
+         * The date of the last usage
+         */
+        @NotNull
+        private Instant date;
     }
 }

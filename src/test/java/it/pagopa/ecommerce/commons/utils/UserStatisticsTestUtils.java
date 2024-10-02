@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.documents.UserStatistics;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import static it.pagopa.ecommerce.commons.documents.UserStatistics.LastUsage.PaymentType.GUEST_PAYMENT_METHOD;
@@ -14,7 +15,7 @@ public class UserStatisticsTestUtils {
     }
 
     private static UserStatistics.LastUsage lastUsageWallet() {
-        return new UserStatistics.LastUsage(SAVED_WALLET, UUID.randomUUID());
+        return new UserStatistics.LastUsage(SAVED_WALLET, UUID.randomUUID(), Instant.now());
     }
 
     public static UserStatistics userStatisticsGuest() {
@@ -22,6 +23,6 @@ public class UserStatisticsTestUtils {
     }
 
     private static UserStatistics.LastUsage lastUsageGuest() {
-        return new UserStatistics.LastUsage(GUEST_PAYMENT_METHOD, UUID.randomUUID());
+        return new UserStatistics.LastUsage(GUEST_PAYMENT_METHOD, UUID.randomUUID(), Instant.now());
     }
 }

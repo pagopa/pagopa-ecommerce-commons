@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,6 +57,8 @@ public class UserStatisticsTest {
         assertInstanceOf(String.class, saved.getUserId());
         assertInstanceOf(UUID.class, guest.getLastUsage().getInstrumentId());
         assertInstanceOf(UUID.class, saved.getLastUsage().getInstrumentId());
+        assertInstanceOf(Instant.class, guest.getLastUsage().getDate());
+        assertInstanceOf(Instant.class, saved.getLastUsage().getDate());
     }
 
 }
