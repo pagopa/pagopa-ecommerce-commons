@@ -52,7 +52,8 @@ public class DeadLetterTestUtils {
             case NPG -> details = new DeadLetterNpgTransactionInfoDetailsData(
                     OperationResultDto.CANCELED,
                     "operationId",
-                    "correlationaId"
+                    "correlationaId",
+                    "paymentEndToEndId"
             );
             case REDIRECT -> details = new DeadLetterRedirectTransactionInfoDetailsData(
                     "outcome"
