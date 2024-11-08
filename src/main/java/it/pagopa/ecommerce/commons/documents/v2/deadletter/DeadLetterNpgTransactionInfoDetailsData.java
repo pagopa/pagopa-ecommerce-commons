@@ -34,6 +34,12 @@ public final class DeadLetterNpgTransactionInfoDetailsData implements DeadLetter
     @Nullable
     private String correlationId;
 
+    /**
+     * NPG payment end to end id
+     */
+    @Nullable
+    private String paymentEndToEndId;
+
     @NotNull
     private static final TransactionInfoDataType TYPE = TransactionInfoDataType.NPG;
 
