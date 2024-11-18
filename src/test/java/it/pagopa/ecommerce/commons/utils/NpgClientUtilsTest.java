@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class NpgClientUtilsTest {
+class NpgClientUtilsTest {
 
     private static Stream<Arguments> paymentEndToEndIdTestCase() {
         return Stream.of(
@@ -53,10 +53,10 @@ public class NpgClientUtilsTest {
 
     @ParameterizedTest
     @MethodSource("paymentEndToEndIdTestCase")
-    public void shouldGetPaymentEndToEndId(
-                                           NpgClient.PaymentMethod paymentMethod,
-                                           Map<String, Object> additionalData,
-                                           String expectedPaymentId
+    void shouldGetPaymentEndToEndId(
+                                    NpgClient.PaymentMethod paymentMethod,
+                                    Map<String, Object> additionalData,
+                                    String expectedPaymentId
     ) {
         OperationDto operationDto = mock(OperationDto.class);
         if (additionalData == null || additionalData.isEmpty())
@@ -69,12 +69,12 @@ public class NpgClientUtilsTest {
     }
 
     @Test
-    public void shouldReturnNullForGetPaymentEndToEndIdWithOperationNull() {
+    void shouldReturnNullForGetPaymentEndToEndIdWithOperationNull() {
         assertNull(getPaymentEndToEndId(null));
     }
 
     @Test
-    public void shouldReturnNullForGetPaymentEndToEndIdWithPaymentCircuitNull() {
+    void shouldReturnNullForGetPaymentEndToEndIdWithPaymentCircuitNull() {
         OperationDto operationDto = mock(OperationDto.class);
         when(operationDto.getPaymentCircuit()).thenReturn(null);
         assertNull(getPaymentEndToEndId(operationDto));
