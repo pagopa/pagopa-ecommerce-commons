@@ -1739,7 +1739,7 @@ class TransactionEventTypeResolverTest {
     }
 
     @Test
-    void canRoundTripQueueAuthorizationRequestedEventSerializationWithNullIdBundle() {
+    void shouldDeserializeAuthorizationRequestedEventWithNullIdBundle() {
         String serializedEvent = """
                 {
                         "event": {
@@ -1775,7 +1775,6 @@ class TransactionEventTypeResolverTest {
                                         }
                                     }
                                 },
-                                "idBundle": null,
                                 "pspOnUs": false
                             },
                             "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
