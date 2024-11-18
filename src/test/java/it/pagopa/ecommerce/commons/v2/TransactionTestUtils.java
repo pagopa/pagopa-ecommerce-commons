@@ -122,6 +122,8 @@ public class TransactionTestUtils {
     public static final String COMPANY_NAME = "companyName";
     public static final String CREDITOR_REFERENCE_ID = "222222222222";
 
+    public static final String ID_BUNDLE = "idBundle";
+
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
         return transactionActivateEvent(new EmptyTransactionGatewayActivationData());
@@ -329,7 +331,8 @@ public class TransactionTestUtils {
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
                         PAYMENT_METHOD_DESCRIPTION,
-                        transactionGatewayAuthorizationRequestedData
+                        transactionGatewayAuthorizationRequestedData,
+                        ID_BUNDLE
                 )
         );
     }
