@@ -7,6 +7,14 @@ import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationDto;
  * Utility class for handling NPG client operations.
  */
 public class NpgClientUtils {
+
+    /**
+     * Create NpgClientUtils object.
+     */
+    private NpgClientUtils() {
+        throw new IllegalStateException("Utility EuroUtils class");
+    }
+
     /**
      * Enum representing the mapping between payment circuits and their respective
      * field names for the `paymentEndToEndId` in the additional data map.
