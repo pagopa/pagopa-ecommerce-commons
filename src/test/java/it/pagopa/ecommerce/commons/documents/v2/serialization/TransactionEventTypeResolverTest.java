@@ -36,7 +36,6 @@ import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
@@ -616,6 +615,7 @@ class TransactionEventTypeResolverTest {
                                   "confirmPaymentSessionId":"confirmPaymentSessionId",
                                   "walletInfo":null
                               },
+                              "idBundle": "idBundle",
                               "pspOnUs": false
                           },
                           "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -689,6 +689,7 @@ class TransactionEventTypeResolverTest {
                                    "confirmPaymentSessionId":"npgConfirmPaymentSessionId",
                                    "walletInfo": null
                                },
+                               "idBundle": "idBundle",
                                "pspOnUs": false
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -762,6 +763,7 @@ class TransactionEventTypeResolverTest {
                                    "logo":"http://paymentMethodLogo.it",
                                    "transactionOutcomeTimeoutMillis":60000
                                },
+                               "idBundle": "idBundle",
                                "pspOnUs": false
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -976,6 +978,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     }
                                 },
+                                "idBundle": "idBundle",
                                 "pspOnUs": false
                             },
                             "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -1063,6 +1066,7 @@ class TransactionEventTypeResolverTest {
                                     }
                                 }
                             },
+                            "idBundle": "idBundle",
                             "pspOnUs": false
                         },
                         "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -1732,5 +1736,84 @@ class TransactionEventTypeResolverTest {
         );
 
         assertEquals(event, deserializedEvent);
+    }
+
+    @Test
+    void canRoundTripQueueAuthorizationRequestedEventSerializationWithNullIdBundle() {
+        String serializedEvent = """
+                {
+                        "event": {
+                            "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestedEvent",
+                            "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                            "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                            "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                            "data": {
+                                "amount": 100,
+                                "fee": 10,
+                                "paymentInstrumentId": "paymentInstrumentId",
+                                "pspId": "pspId",
+                                "paymentTypeCode": "CP",
+                                "brokerName": "brokerName",
+                                "pspChannelCode": "pspChannelCode",
+                                "paymentMethodName": "CARDS",
+                                "pspBusinessName": "pspBusinessName",
+                                "authorizationRequestId": "d93cb073-445c-476b-b0fd-abe343d8b6a5",
+                                "paymentGateway": "NPG",
+                                "paymentMethodDescription": "paymentMethodDescription",
+                                "transactionGatewayAuthorizationRequestedData": {
+                                    "type": "NPG",
+                                    "logo": "http://paymentMethodLogo.it",
+                                    "brand": "VISA",
+                                    "sessionId": "npgSessionId",
+                                    "confirmPaymentSessionId": "npgConfirmPaymentSessionId",
+                                    "walletInfo": {
+                                        "walletId": "17601410-5f1d-4189-b8d1-92637952ee5f",
+                                        "walletDetails": {
+                                            "type": "CARDS",
+                                            "bin": "12345678",
+                                            "lastFourDigits": "1234"
+                                        }
+                                    }
+                                },
+                                "idBundle": null,
+                                "pspOnUs": false
+                            },
+                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
+                        },
+                        "tracingInfo": {
+                            "traceparent": "mock_traceparent",
+                            "tracestate": "mock_tracestate",
+                            "baggage": "mock_baggage"
+                        }
+                    }
+                """.replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionAuthorizationRequestedEvent> expectedEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionAuthorizationRequestedEvent(
+                        TransactionAuthorizationRequestData.PaymentGateway.NPG,
+                        TransactionTestUtils
+                                .npgTransactionGatewayAuthorizationRequestedData(TransactionTestUtils.cardsWalletInfo())
+                ),
+                MOCK_TRACING_INFO
+        );
+        expectedEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        expectedEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        expectedEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        expectedEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        expectedEvent.event().getData().setIdBundle(null);
+        NpgTransactionGatewayAuthorizationRequestedData authRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) expectedEvent
+                .event().getData().getTransactionGatewayAuthorizationRequestedData();
+        authRequestedData.getWalletInfo().setWalletId("17601410-5f1d-4189-b8d1-92637952ee5f");
+
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionAuthorizationRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(expectedEvent)
+                .verifyComplete();
     }
 }
