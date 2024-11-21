@@ -56,7 +56,7 @@ public class NpgClientUtils {
      *                     object contains details about the payment operation,
      *                     including the payment circuit and additional data.
      * @return The `paymentEndToEndId` corresponding to the payment circuit, or
-     *         {@code null} if the value cannot be determined.
+     *         {@code null} if the operationDto is null.
      *
      *         <p>
      *         For supported payment circuits:
@@ -71,9 +71,12 @@ public class NpgClientUtils {
      *         fallback.
      */
     public static String getPaymentEndToEndId(OperationDto operationDto) {
-        if (operationDto == null || operationDto.getPaymentCircuit() == null)
+        if (operationDto == null) {
             return null;
-
+        }
+        if (operationDto.getPaymentCircuit() == null) {
+            return operationDto.getPaymentEndToEndId();
+        }
         if (operationDto.getPaymentCircuit().equals(NpgClient.PaymentMethod.BANCOMATPAY.serviceName)) {
             // for bancomatPay we expect an `bpayEndToEndId` entry into additional data map
             // to be used as
