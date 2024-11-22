@@ -84,4 +84,5 @@ public sealed interface Transaction permits EmptyTransaction,TransactionActivate
      * @return a new transaction object with the event applied
      */
     Transaction applyEvent(Object event);
+
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -31,6 +32,13 @@ public class TransactionAuthorizationRequestData {
     private String paymentMethodDescription;
     @NotNull
     private TransactionGatewayAuthorizationRequestedData transactionGatewayAuthorizationRequestedData;
+
+    /**
+     * Bundle unique id, set as nullable for backward compatibility with previously
+     * written events
+     */
+    @Nullable
+    private String idBundle;
 
     /**
      * Enumeration of different PaymentGateway

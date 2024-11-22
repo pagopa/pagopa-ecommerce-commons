@@ -1,11 +1,14 @@
 package it.pagopa.ecommerce.commons.documents;
 
+import it.pagopa.ecommerce.commons.documents.v2.deadletter.DeadLetterTransactionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.annotation.Nullable;
 
 /**
  * Persistence class for dead letter events
@@ -34,4 +37,9 @@ public class DeadLetterEvent {
      * Dead letter unhandled read data
      */
     private String data;
+    /**
+     * Transaction info data
+     */
+    @Nullable
+    private DeadLetterTransactionInfo transactionInfo;
 }

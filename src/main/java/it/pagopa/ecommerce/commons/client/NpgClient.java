@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.client;
 
+import javax.annotation.Nullable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
@@ -15,11 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +33,19 @@ import java.util.UUID;
  */
 @Slf4j
 public class NpgClient {
+
+    private static final Map<String, String> LANG_MAP = Map.of(
+            "it",
+            "ita",
+            "fr",
+            "fra",
+            "de",
+            "deu",
+            "sl",
+            "slv",
+            "en",
+            "eng"
+    );
 
     private static final String CREATE_HOSTED_ORDER_REQUEST_VERSION = "2";
     private static final String CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT = "1";
@@ -120,7 +136,11 @@ public class NpgClient {
         /**
          * PIS (3DS2 Payment Initiation Service)
          */
-        PIS("PIS");
+        PIS("PIS"),
+        /**
+         * Satispay direct
+         */
+        SATISPAY("SATISPAY_DIRECT");
 
         /**
          * API value for `serviceName`
@@ -260,6 +280,7 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 null,
+                null,
                 null
         );
     }
@@ -317,6 +338,7 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 contractId,
+                null,
                 null
         );
     }
@@ -340,7 +362,68 @@ public class NpgClient {
      * @param paymentMethod   the payment method for which the form should be built
      * @param defaultApiKey   default API key
      * @param contractId      the wallet contractId
+     * @param language        the language chosen by the user
+     * @return An object containing sessionId and state
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S107 - Methods should not have too many parameters
+     * Suppressed because this method wraps the underlying API which has this many parameters
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S107")
+    public Mono<FieldsDto> buildForm(
+                                     @NotNull UUID correlationId,
+                                     @NotNull URI merchantUrl,
+                                     @NotNull URI resultUrl,
+                                     @NotNull URI notificationUrl,
+                                     @NotNull URI cancelUrl,
+                                     @NotNull String orderId,
+                                     @NotNull String customerId,
+                                     @NonNull PaymentMethod paymentMethod,
+                                     @NonNull String defaultApiKey,
+                                     @Nullable String contractId,
+                                     @Nullable String language
+    ) {
+        return executeBuildForm(
+                correlationId,
+                merchantUrl,
+                resultUrl,
+                notificationUrl,
+                cancelUrl,
+                orderId,
+                customerId,
+                paymentMethod,
+                defaultApiKey,
+                contractId,
+                null,
+                language
+        );
+    }
+
+    /**
+     * method to invoke the orders/build api in order to start a payment session for
+     * subsequent payment, retrieve the sessionId and state. This method ensures
+     * that the request dto for the orders/build api will be built in the right way
+     * (it is easy to build it manually with wrong values, e.g. <i>amount</i> or
+     * <i>currency</i> as a string can be easily confused).
+     *
+     * @param correlationId   the unique id to identify the rest api invocation
+     * @param merchantUrl     the merchant url of the payment session
+     * @param resultUrl       the result url where the user should be redirected at
+     *                        the end of the payment session
+     * @param notificationUrl the notification url where notify the session
+     * @param cancelUrl       the url where the user should be redirected if the
+     *                        session is canceled by the user
+     * @param orderId         the orderId of the payment session
+     * @param customerId      the customerId url of the api
+     * @param paymentMethod   the payment method for which the form should be built
+     * @param defaultApiKey   default API key
+     * @param contractId      the wallet contractId
      * @param totalAmount     payment total amount in eurocent
+     * @param language        payment total amount in language
      * @return An object containing sessionId and state
      */
     /*
@@ -363,7 +446,8 @@ public class NpgClient {
                                                @NonNull PaymentMethod paymentMethod,
                                                @NonNull String defaultApiKey,
                                                String contractId,
-                                               Integer totalAmount
+                                               Integer totalAmount,
+                                               String language
     ) {
         return executeBuildForm(
                 correlationId,
@@ -376,7 +460,8 @@ public class NpgClient {
                 paymentMethod,
                 defaultApiKey,
                 contractId,
-                totalAmount
+                totalAmount,
+                language
         );
     }
 
@@ -400,7 +485,8 @@ public class NpgClient {
                                              @NonNull PaymentMethod paymentMethod,
                                              @NonNull String defaultApiKey,
                                              String contractId,
-                                             Integer totalAmount
+                                             Integer totalAmount,
+                                             String language
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
         return Mono.using(
@@ -420,7 +506,8 @@ public class NpgClient {
                                 customerId,
                                 paymentMethod,
                                 contractId,
-                                totalAmount
+                                totalAmount,
+                                language
                         )
                 ).doOnError(
                         WebClientResponseException.class,
@@ -640,8 +727,15 @@ public class NpgClient {
                                                              String customerId,
                                                              PaymentMethod paymentMethod,
                                                              String contractId,
-                                                             Integer totalAmount
+                                                             Integer totalAmount,
+                                                             String language
     ) {
+
+        String ISO_639_3_lang = CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA;
+        if (language != null) {
+            ISO_639_3_lang = LANG_MAP.getOrDefault(language, CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA);
+        }
+
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
         log.info(
@@ -663,7 +757,7 @@ public class NpgClient {
                         new PaymentSessionDto()
                                 .actionType(ActionTypeDto.PAY)
                                 .amount(orderBuildAmount)
-                                .language(CREATE_HOSTED_ORDER_REQUEST_LANGUAGE_ITA)
+                                .language(ISO_639_3_lang.toUpperCase())
                                 .paymentService(paymentMethod.serviceName)
                                 .resultUrl(resultUrl.toString())
                                 .cancelUrl(cancelUrl.toString())

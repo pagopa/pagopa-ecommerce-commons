@@ -8,7 +8,7 @@ servers:
   - url: "https://{gateway_prod}/api/v1"
     description: PROD
 security:
-  - OAuth2: []
+  - OAuth2: [ ]
 paths:
   /psp/api/v1/orders/build:
     post:
@@ -56,17 +56,17 @@ paths:
                   value:
                     sessionId: 052211e8-54c8-4e0a-8402-e10bcb8ff264
                     securityToken: SECURITY_TOKEN
-                    fields: [{"type": "ACTION", "class": "APM", "id": "APM", "src": "https://<fe>/field.html?id=APM&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264"},
-                       {"type": "ACTION", "class": "CARD", "id": "PAY_WITH_CARD",
-                          "src": "https://<fe>/field.html?id=CARD&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264"}]
+                    fields: [ { "type": "ACTION", "class": "APM", "id": "APM", "src": "https://<fe>/field.html?id=APM&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264" },
+                      { "type": "ACTION", "class": "CARD", "id": "PAY_WITH_CARD",
+                        "src": "https://<fe>/field.html?id=CARD&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264" } ]
                 CARD_DATA_COLLECTION:
                   value:
                     sessionId: 052211e8-54c8-4e0a-8402-e10bcb8ff264
                     securityToken: SECURITY_TOKEN
-                    fields: [{"type": "TEXT", "class": "CARD", "id": "SECURITY_CODE",
-                          "src": "https://<fe>/field.html?id=SECURITY_CODE&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264"},
-                       {"type": "TEXT", "class": "CARD", "id": "CARDHOLDER_EMAIL",
-                          "src": "https://<fe>/field.html?id=CARDHOLDER_EMAIL&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264"}]
+                    fields: [ { "type": "TEXT", "class": "CARD", "id": "SECURITY_CODE",
+                                "src": "https://<fe>/field.html?id=SECURITY_CODE&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264" },
+                      { "type": "TEXT", "class": "CARD", "id": "CARDHOLDER_EMAIL",
+                        "src": "https://<fe>/field.html?id=CARDHOLDER_EMAIL&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264" } ]
                 APM_PAYMENT_SERVICE:
                   value:
                     sessionId: 052211e8-54c8-4e0a-8402-e10bcb8ff264
@@ -92,7 +92,7 @@ paths:
       tags:
         - Payment Services
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       summary: Finalize a payment.
       description: This service shall be invoked by the ecommerce platforms to finalize
         the payment. It is limited to the flow versions 1 and 3.
@@ -231,7 +231,7 @@ paths:
       tags:
         - Payment Services
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       summary: Confirm a payment.
       description: This service shall be invoked by the ecommerce platforms to finalize
         the payment. It is limited to the flow version 2.
@@ -382,7 +382,7 @@ paths:
       tags:
         - Payment Services
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       summary: Cancel a payment.
       description: This service is targeted to ecommerce platforms in order to cancel
         the current payment session. This is typically required to clean up the collected
@@ -494,7 +494,7 @@ paths:
       tags:
         - Payment Services
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       summary: Get current payment state.
       description: This service the ecommerce platforms to retrieve the current state
         of a payment flow.
@@ -617,7 +617,7 @@ paths:
                       - type: text
                         class: cardData
                         id: cardholderName
-                        src: 
+                        src:
                           https://<fe>/field.html?id=CARDHOLDER_NAME&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264
                 REDIRECTED_TO_EXTERNAL_DOMAIN:
                   value:
@@ -650,7 +650,7 @@ paths:
       tags:
         - Payment Services
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       summary: Get card characteristics.
       description: It provides PCI-free non sensitive information about the payment
         card entered by the user along the current payment session.
@@ -762,7 +762,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
-  /psp/api/v1/orders/{orderId}:
+  /psp/api/v1/orders/{orderId}/:
     get:
       tags:
         - Payment Services
@@ -807,7 +807,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: It stores a given text data in the ongoing build session.
       description: Through this service, the text is sent to Nexi back end and stored
         in a secure environment associated to the ongoing payment session. This service
@@ -885,7 +885,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Stores the array of data the current build session.
       description: Through this service, the data is sent to Nexi back end and stored
         in a secure environment associated to the ongoing payment session.
@@ -975,7 +975,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Submit the action requested by the user
       description: The service executes the requested action.
       parameters:
@@ -1027,7 +1027,7 @@ paths:
                   - type: text
                     class: CARD_DATA
                     id: CARDHOLDER_NAME
-                    src: 
+                    src:
                       https://<fe>/field.html?id=CARDHOLDER_NAME&sid=052211e8-54c8-4e0a-8402-e10bcb8ff264
 
         "400":
@@ -1049,7 +1049,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Get the settings of the specified field.
       parameters:
         - name: Correlation-Id
@@ -1107,7 +1107,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Verify and return the result of the gdi.
       parameters:
         - name: Correlation-Id
@@ -1175,7 +1175,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Verify the GDI result in order to return the result of finalize_payment.
       parameters:
         - name: Correlation-Id
@@ -1233,7 +1233,7 @@ paths:
       tags:
         - Hosted Fields
       security:
-        - OAuth2: []
+        - OAuth2: [ ]
       summary: Finalize a payment after a challenge
       description: Through this service, Nexi back end finalize the payment.
       parameters:
@@ -1344,7 +1344,7 @@ components:
           example: "234244353"
         additionalData:
           type: object
-          additionalProperties: {}
+          additionalProperties: { }
           description: Map of additional fields specific to the chosen payment method
           example:
             authorizationCode: "647189"

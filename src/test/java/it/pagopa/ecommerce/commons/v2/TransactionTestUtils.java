@@ -61,7 +61,7 @@ public class TransactionTestUtils {
     public static final AuthorizationResultDto AUTHORIZATION_RESULT_DTO = AuthorizationResultDto.OK;
     public static final String AUTHORIZATION_REQUEST_ID = UUID.randomUUID().toString();
 
-    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.VPOS;
+    public static final TransactionAuthorizationRequestData.PaymentGateway PAYMENT_GATEWAY = TransactionAuthorizationRequestData.PaymentGateway.NPG;
     public static final String TRANSACTION_ID = UUID.randomUUID().toString().replace("-", "");
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
@@ -120,6 +120,9 @@ public class TransactionTestUtils {
     public static final String NPG_WALLET_ID = UUID.randomUUID().toString();
 
     public static final String COMPANY_NAME = "companyName";
+    public static final String CREDITOR_REFERENCE_ID = "222222222222";
+
+    public static final String ID_BUNDLE = "idBundle";
 
     @Nonnull
     public static TransactionActivatedEvent transactionActivateEvent() {
@@ -147,6 +150,33 @@ public class TransactionTestUtils {
                                                                      TransactionGatewayActivationData transactionActivatedData,
                                                                      String userId
     ) {
+        return transactionActivateEvent(creationDate, transactionActivatedData, userId, Transaction.ClientId.CHECKOUT);
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData,
+                                                                     String userId,
+                                                                     Transaction.ClientId clientId
+    ) {
+        return transactionActivateEvent(
+                creationDate,
+                transactionActivatedData,
+                userId,
+                clientId,
+                CREDITOR_REFERENCE_ID
+        );
+    }
+
+    @Nonnull
+    public static TransactionActivatedEvent transactionActivateEvent(
+                                                                     String creationDate,
+                                                                     TransactionGatewayActivationData transactionActivatedData,
+                                                                     String userId,
+                                                                     Transaction.ClientId clientId,
+                                                                     String creditorReferenceId
+    ) {
         return new TransactionActivatedEvent(
                 TRANSACTION_ID,
                 creationDate,
@@ -168,12 +198,13 @@ public class TransactionTestUtils {
                                                 )
                                         ),
                                         IS_ALL_CCP_FALSE,
-                                        COMPANY_NAME
+                                        COMPANY_NAME,
+                                        creditorReferenceId
                                 )
                         ),
                         FAULT_CODE,
                         FAULT_CODE_STRING,
-                        Transaction.ClientId.CHECKOUT,
+                        clientId,
                         ID_CART,
                         PAYMENT_TOKEN_VALIDITY_TIME_SEC,
                         transactionActivatedData,
@@ -212,7 +243,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                new CompanyName(COMPANY_NAME)
+                                new CompanyName(COMPANY_NAME),
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 EMAIL,
@@ -242,9 +274,12 @@ public class TransactionTestUtils {
     public static TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent() {
         return transactionAuthorizationRequestedEvent(
                 PAYMENT_GATEWAY,
-                new PgsTransactionGatewayAuthorizationRequestedData(
+                new NpgTransactionGatewayAuthorizationRequestedData(
                         LOGO_URI,
-                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+                        "VISA",
+                        "sessionId",
+                        "confirmPaymentSessionId",
+                        null
                 )
         );
     }
@@ -265,9 +300,12 @@ public class TransactionTestUtils {
     ) {
         return transactionAuthorizationRequestedEvent(
                 paymentGateway,
-                new PgsTransactionGatewayAuthorizationRequestedData(
+                new NpgTransactionGatewayAuthorizationRequestedData(
                         LOGO_URI,
-                        PgsTransactionGatewayAuthorizationRequestedData.CardBrand.VISA
+                        "VISA",
+                        "sessionId",
+                        null,
+                        null
                 )
         );
     }
@@ -293,7 +331,8 @@ public class TransactionTestUtils {
                         AUTHORIZATION_REQUEST_ID,
                         paymentGateway,
                         PAYMENT_METHOD_DESCRIPTION,
-                        transactionGatewayAuthorizationRequestedData
+                        transactionGatewayAuthorizationRequestedData,
+                        ID_BUNDLE
                 )
         );
     }
@@ -663,7 +702,8 @@ public class TransactionTestUtils {
                                         )
                                 ),
                                 IS_ALL_CCP_FALSE,
-                                COMPANY_NAME
+                                COMPANY_NAME,
+                                CREDITOR_REFERENCE_ID
                         )
                 ),
                 null,
@@ -714,7 +754,8 @@ public class TransactionTestUtils {
                                 TRANSFER_CATEGORY
                         )
                 ),
-                false
+                false,
+                CREDITOR_REFERENCE_ID
         );
     }
 

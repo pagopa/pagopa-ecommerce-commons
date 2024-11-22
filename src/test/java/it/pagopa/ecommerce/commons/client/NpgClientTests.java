@@ -6,6 +6,8 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
@@ -26,10 +28,7 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +36,20 @@ import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class NpgClientTests {
+
+    private static final Map<String, String> LANG_MAP = Map.of(
+            "it",
+            "ITA",
+            "fr",
+            "FRA",
+            "de",
+            "DEU",
+            "sl",
+            "SLV",
+            "en",
+            "ENG"
+    );
+
     private static final String MOCKED_API_KEY = "mocked-api-key";
     private static final String ORDER_REQUEST_VERSION = "2";
     private static final String MERCHANT_URL = "localhost/merchant";
@@ -123,12 +136,27 @@ class NpgClientTests {
                 .verifyComplete();
     }
 
-    @Test
-    void shouldRetrieveFieldsDtoForSubsequentPaymentUsingExplicitParameters() {
-        FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                    "it",
+                    "en",
+                    "de",
+                    "sl",
+                    "fr"
+            }
+    )
+    void shouldRetrieveFieldsDtoUsingExplicitParametersWithLangExplicitSet(String input) {
+
+        String ISO_639_3_lang = ORDER_REQUEST_LANGUAGE_ITA;
+        if (input != null) {
+            ISO_639_3_lang = LANG_MAP.getOrDefault(input, ORDER_REQUEST_LANGUAGE_ITA);
+        }
+
+        FieldsDto fieldsDto = buildTestFieldsDto();
 
         UUID correlationUUID = UUID.randomUUID();
-        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(ORDER_REQUEST_CONTRACT_ID);
+        CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(null, null, ISO_639_3_lang);
 
         Mockito.when(
                 paymentServicesApi.pspApiV1OrdersBuildPost(
@@ -150,7 +178,8 @@ class NpgClientTests {
                                 ORDER_REQUEST_CUSTOMER_ID,
                                 NpgClient.PaymentMethod.CARDS,
                                 MOCKED_API_KEY,
-                                ORDER_REQUEST_CONTRACT_ID
+                                null,
+                                input
                         )
                 )
                 .expectNext(fieldsDto)
@@ -683,7 +712,8 @@ class NpgClientTests {
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
-                transactionTotalAmount
+                transactionTotalAmount,
+                null
         );
 
         Mockito.when(
@@ -707,7 +737,8 @@ class NpgClientTests {
                                 NpgClient.PaymentMethod.CARDS,
                                 MOCKED_API_KEY,
                                 ORDER_REQUEST_CONTRACT_ID,
-                                transactionTotalAmount
+                                transactionTotalAmount,
+                                null
                         )
                 )
                 .expectNext(fieldsDto)
@@ -941,13 +972,18 @@ class NpgClientTests {
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(String contractId) {
-        return buildCreateHostedOrderRequestDto(contractId, null);
+        return buildCreateHostedOrderRequestDto(contractId, null, null);
     }
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
                                                                          String contractId,
-                                                                         Integer amount
+                                                                         Integer amount,
+                                                                         String language
     ) {
+        if (language == null) {
+            language = ORDER_REQUEST_LANGUAGE_ITA;
+        }
+
         return new CreateHostedOrderRequestDto()
                 .version(ORDER_REQUEST_VERSION)
                 .merchantUrl(MERCHANT_URL)
@@ -963,7 +999,7 @@ class NpgClientTests {
                                 .paymentService(ORDER_REQUEST_PAYMENT_SERVICE_CARDS)
                                 .amount(Optional.ofNullable(amount).map(Objects::toString).orElse(ORDER_REQUEST_PAY))
                                 .actionType(ActionTypeDto.PAY)
-                                .language(ORDER_REQUEST_LANGUAGE_ITA)
+                                .language(language)
                                 .cancelUrl(CANCEL_URL)
                                 .notificationUrl(NOTIFICATION_URL)
                                 .resultUrl(RESULT_URL)
