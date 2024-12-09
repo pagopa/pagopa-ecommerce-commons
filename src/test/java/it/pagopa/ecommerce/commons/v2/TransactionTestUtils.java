@@ -388,8 +388,14 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
+        return transactionClosureErrorEvent(null);
+    }
+
+    @Nonnull
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent(ClosureErrorData closureErrorData) {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                closureErrorData
         );
     }
 
@@ -571,9 +577,17 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
+        return transactionClosureRetriedEvent(retryCount, null);
+    }
+
+    @Nonnull
+    public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(
+                                                                                int retryCount,
+                                                                                ClosureErrorData closureErrorData
+    ) {
         return new TransactionClosureRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRetriedData(retryCount)
+                new TransactionClosureRetriedData(closureErrorData, retryCount)
         );
     }
 
