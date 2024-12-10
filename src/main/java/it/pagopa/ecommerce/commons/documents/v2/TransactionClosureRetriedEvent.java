@@ -14,18 +14,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Generated
 @NoArgsConstructor
 @ToString(callSuper = true)
-public final class TransactionClosureRetriedEvent extends TransactionEvent<TransactionRetriedData> {
+public final class TransactionClosureRetriedEvent extends TransactionEvent<TransactionClosureRetriedData> {
 
     /**
      * Convenience constructor which sets the creation date to now
      *
-     * @param transactionId          transaction unique id
-     * @param transactionRetriedData retry count data
+     * @param transactionId      transaction unique id
+     * @param closureRetriedData closure retry data
      */
     public TransactionClosureRetriedEvent(
             String transactionId,
-            TransactionRetriedData transactionRetriedData
+            TransactionClosureRetriedData closureRetriedData
     ) {
-        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_RETRIED_EVENT, transactionRetriedData);
+        super(transactionId, TransactionEventCode.TRANSACTION_CLOSURE_RETRIED_EVENT, closureRetriedData);
     }
 }

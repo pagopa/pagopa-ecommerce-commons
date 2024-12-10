@@ -31,6 +31,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
@@ -1483,7 +1484,12 @@ class TransactionEventTypeResolverTest {
                                  "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
                                  "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
                                  "data": {
-                                     "retryCount": 0
+                                     "retryCount": 0,
+                                     "closureErrorData": {
+                                        "httpErrorCode":"BAD_REQUEST",
+                                        "errorDescription":"ERROR",
+                                        "errorType": "KO_RESPONSE_RECEIVED"
+                                     }
                                  },
                                  "eventCode": "TRANSACTION_CLOSURE_RETRIED_EVENT"
                              },
@@ -1497,7 +1503,12 @@ class TransactionEventTypeResolverTest {
                 .replace("\n", "").replace(" ", "");
         QueueEvent<TransactionClosureRetriedEvent> originalEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionClosureRetriedEvent(
-                        0
+                        0,
+                        new ClosureErrorData(
+                                HttpStatus.BAD_REQUEST,
+                                "ERROR",
+                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
+                        )
                 ),
                 MOCK_TRACING_INFO
         );
@@ -1813,6 +1824,151 @@ class TransactionEventTypeResolverTest {
                         )
         )
                 .expectNext(expectedEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeClosureRetriedEventWithoutClosureErrorData() {
+        String serializedEvent = """
+                {
+                             "event": {
+                                 "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionClosureRetriedEvent",
+                                 "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                                 "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                                 "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                                 "data": {
+                                     "retryCount": 0
+                                 },
+                                 "eventCode": "TRANSACTION_CLOSURE_RETRIED_EVENT"
+                             },
+                             "tracingInfo": {
+                                 "traceparent": "mock_traceparent",
+                                 "tracestate": "mock_tracestate",
+                                 "baggage": "mock_baggage"
+                             }
+                         }
+                """
+                .replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionClosureRetriedEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionClosureRetriedEvent(
+                        0
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        originalEvent.event().getData().setClosureErrorData(null);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionClosureRetriedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueClosureErrorEventWithClosureErrorData() {
+        String expectedSerializedEvent = """
+                {
+                             "event": {
+                                 "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionClosureErrorEvent",
+                                 "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                                 "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                                 "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                                 "data": {
+                                        "httpErrorCode":"BAD_REQUEST",
+                                        "errorDescription":"ERROR",
+                                        "errorType": "KO_RESPONSE_RECEIVED"
+                                 },
+                                 "eventCode": "TRANSACTION_CLOSURE_ERROR_EVENT"
+                             },
+                             "tracingInfo": {
+                                 "traceparent": "mock_traceparent",
+                                 "tracestate": "mock_tracestate",
+                                 "baggage": "mock_baggage"
+                             }
+                         }
+                """
+                .replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionClosureErrorEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionClosureErrorEvent(
+                        new ClosureErrorData(
+                                HttpStatus.BAD_REQUEST,
+                                "ERROR",
+                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionClosureErrorEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent, serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionClosureErrorEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeClosureErrorEventWithoutClosureErrorData() {
+        String serializedEvent = """
+                {
+                             "event": {
+                                 "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionClosureErrorEvent",
+                                 "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                                 "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                                 "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                                 "eventCode": "TRANSACTION_CLOSURE_ERROR_EVENT"
+                             },
+                             "tracingInfo": {
+                                 "traceparent": "mock_traceparent",
+                                 "tracestate": "mock_tracestate",
+                                 "baggage": "mock_baggage"
+                             }
+                         }
+                """
+                .replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionClosureErrorEvent> originalEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionClosureErrorEvent(),
+                MOCK_TRACING_INFO
+        );
+        originalEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionClosureErrorEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
                 .verifyComplete();
     }
 }
