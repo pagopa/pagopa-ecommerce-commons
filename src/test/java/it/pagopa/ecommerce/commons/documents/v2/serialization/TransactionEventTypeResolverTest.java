@@ -1487,7 +1487,8 @@ class TransactionEventTypeResolverTest {
                                      "retryCount": 0,
                                      "closureErrorData": {
                                         "httpErrorCode":"BAD_REQUEST",
-                                        "errorDescription":"ERROR"
+                                        "errorDescription":"ERROR",
+                                        "errorType": "KO_RESPONSE_RECEIVED"
                                      }
                                  },
                                  "eventCode": "TRANSACTION_CLOSURE_RETRIED_EVENT"
@@ -1505,7 +1506,8 @@ class TransactionEventTypeResolverTest {
                         0,
                         new ClosureErrorData(
                                 HttpStatus.BAD_REQUEST,
-                                "ERROR"
+                                "ERROR",
+                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
                         )
                 ),
                 MOCK_TRACING_INFO
@@ -1881,7 +1883,8 @@ class TransactionEventTypeResolverTest {
                                  "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
                                  "data": {
                                         "httpErrorCode":"BAD_REQUEST",
-                                        "errorDescription":"ERROR"
+                                        "errorDescription":"ERROR",
+                                        "errorType": "KO_RESPONSE_RECEIVED"
                                  },
                                  "eventCode": "TRANSACTION_CLOSURE_ERROR_EVENT"
                              },
@@ -1897,7 +1900,8 @@ class TransactionEventTypeResolverTest {
                 TransactionTestUtils.transactionClosureErrorEvent(
                         new ClosureErrorData(
                                 HttpStatus.BAD_REQUEST,
-                                "ERROR"
+                                "ERROR",
+                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
                         )
                 ),
                 MOCK_TRACING_INFO
