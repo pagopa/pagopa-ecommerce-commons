@@ -93,13 +93,20 @@ public class NpgClientUtils {
                         op -> Optional.ofNullable(op.getAdditionalData())
                 )
                 .map(
-                        additionalData -> switch (NpgClient.PaymentMethod
-                                .fromServiceName(operationDto.getPaymentCircuit())) {
+                        additionalData -> switch (getValidPaymentMethod(operationDto.getPaymentCircuit())) {
                         case BANCOMATPAY -> additionalData.get(EndToEndId.BANCOMAT_PAY.getValue()).toString();
                         case MYBANK -> additionalData.get(EndToEndId.MYBANK.getValue()).toString();
                         default -> paymentEndToEndId;
                         }
                 )
                 .orElse(paymentEndToEndId);
+    }
+
+    private static Optional<NpgClient.PaymentMethod> getValidPaymentMethod(String paymentCircuit) {
+        try {
+            return Optional.of(NpgClient.PaymentMethod.fromServiceName(paymentCircuit));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 }
