@@ -74,6 +74,13 @@ class NpgClientUtilsTest {
     }
 
     @Test
+    void shouldReturnNullForGetPaymentEndToEndIdWithInvalidPaymentMethod() {
+        OperationDto operationDto = mock(OperationDto.class);
+        when(operationDto.getPaymentCircuit()).thenReturn("invalid");
+        assertNull(getPaymentEndToEndId(operationDto));
+    }
+
+    @Test
     void shouldReturnNullForGetPaymentEndToEndIdWithPaymentCircuitNull() {
         OperationDto operationDto = mock(OperationDto.class);
         when(operationDto.getPaymentCircuit()).thenReturn(null);
