@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
-public sealed class BaseTransactionRetriedData permits TransactionRefundRetriedData,TransactionRetriedData {
+public sealed class BaseTransactionRetriedData permits TransactionClosureRetriedData,TransactionRefundRetriedData,TransactionRetriedData {
     /**
      * Retry event count
      */

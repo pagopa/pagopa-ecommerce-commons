@@ -58,6 +58,9 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private String userId;
 
+    @Nullable
+    private ClosureErrorData closureErrorData;
+
     /**
      * Enumeration of transaction client initiators
      */
