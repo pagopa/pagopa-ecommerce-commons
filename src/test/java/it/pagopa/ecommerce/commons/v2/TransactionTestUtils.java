@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
-import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
@@ -511,7 +511,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-                                                                                  BaseTransaction transaction,
+                                                                                  BaseTransactionWithPaymentToken transaction,
                                                                                   TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
