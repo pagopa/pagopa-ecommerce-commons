@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransaction;
+import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionExpiredNotAuthorized extends BaseTransaction implements Transaction {
+public final class TransactionExpiredNotAuthorized extends BaseTransactionWithPaymentToken implements Transaction {
 
     private final TransactionExpiredEvent transactionExpiredEvent;
 
@@ -33,16 +34,10 @@ public final class TransactionExpiredNotAuthorized extends BaseTransaction imple
      * @param transactionExpiredEvent the transaction expired event
      */
     public TransactionExpiredNotAuthorized(
-            BaseTransaction baseTransaction,
+            BaseTransactionWithPaymentToken baseTransaction,
             TransactionExpiredEvent transactionExpiredEvent
     ) {
-        super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
-        );
+        super(baseTransaction, baseTransaction.getTransactionActivatedData());
         this.transactionExpiredEvent = transactionExpiredEvent;
     }
 
