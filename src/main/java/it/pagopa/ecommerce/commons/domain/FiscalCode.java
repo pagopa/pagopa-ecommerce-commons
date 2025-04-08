@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 /**
  * <p>
- * A value object holding a valid fiscal code address.
+ * A value object holding an user fiscal code.
  * </p>
  *
  * @param value fiscal code address
