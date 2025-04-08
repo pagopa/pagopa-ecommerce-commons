@@ -9,14 +9,10 @@ import java.util.regex.Pattern;
 
 /**
  * <p>
- * A value object holding a valid email address.
- * </p>
- * <p>
- * Email addresses are validated against an RFC 5332 compliant regular
- * expression.
+ * A value object holding a valid fiscal code address.
  * </p>
  *
- * @param value email address
+ * @param value fiscal code address
  */
 @ValueObject
 public record FiscalCode(String value)
@@ -24,9 +20,9 @@ public record FiscalCode(String value)
         ConfidentialDataManager.ConfidentialData {
 
     /**
-     * {@link FiscalCode} constructor. Validates the input email.
+     * {@link FiscalCode} constructor. Validates the input fiscal code.
      *
-     * @param value email address
+     * @param value fiscal code address
      */
     public FiscalCode { }
 
