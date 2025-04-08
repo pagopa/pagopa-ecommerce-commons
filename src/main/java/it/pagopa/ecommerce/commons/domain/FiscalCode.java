@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
  * A value object holding an user fiscal code.
  * </p>
  *
- * @param value fiscal code address
+ * @param value fiscal code
  */
 @ValueObject
 public record FiscalCode(String value)
