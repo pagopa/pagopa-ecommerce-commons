@@ -5,7 +5,6 @@ import it.pagopa.ecommerce.commons.annotations.ValueObject;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
 import javax.annotation.Nonnull;
-import java.util.regex.Pattern;
 
 /**
  * <p>
