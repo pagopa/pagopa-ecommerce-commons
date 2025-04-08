@@ -20,7 +20,7 @@ public record FiscalCode(String value)
         ConfidentialDataManager.ConfidentialData {
 
     /**
-     * {@link FiscalCode} constructor. Validates the input fiscal code.
+     * {@link FiscalCode} constructor.
      *
      * @param value fiscal code address
      */
