@@ -21,7 +21,7 @@ public record FiscalCode(String value)
     /**
      * {@link FiscalCode} constructor.
      *
-     * @param value fiscal code address
+     * @param value fiscal code
      */
     public FiscalCode {
     }
