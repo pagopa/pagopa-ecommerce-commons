@@ -38,6 +38,7 @@ public class TransactionTestUtils {
     public static final int AMOUNT = 100;
 
     public static final String EMAIL_STRING = "foo@example.com";
+    public static final String FISCAL_CODE_STRING = "test";
 
     private static final String timestampOperation = "2023-01-01T01:02:03+01:00";
 
