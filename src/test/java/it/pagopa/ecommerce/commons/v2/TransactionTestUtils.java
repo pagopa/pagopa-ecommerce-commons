@@ -713,7 +713,9 @@ public class TransactionTestUtils {
                 creationDateTime.toString(),
                 ID_CART,
                 RRN,
-                USER_ID
+                USER_ID,
+                null,
+                null
         );
     }
 
