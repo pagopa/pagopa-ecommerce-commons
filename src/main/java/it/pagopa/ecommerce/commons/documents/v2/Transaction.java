@@ -61,6 +61,12 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private ClosureErrorData closureErrorData;
 
+    @Nullable
+    private String paymentTypeCode;
+
+    @Nullable
+    private String pspId;
+
     /**
      * Enumeration of transaction client initiators
      */
@@ -119,16 +125,18 @@ public class Transaction extends BaseTransactionView {
      * Primary persistence constructor. Warning java:S107 - Methods should not have
      * too many parameters
      *
-     * @param transactionId  transaction unique id
-     * @param paymentNotices notice code list
-     * @param email          user email where the payment receipt will be sent to
-     * @param status         transaction status
-     * @param clientId       the client identifier
-     * @param feeTotal       transaction total fee
-     * @param creationDate   transaction creation date
-     * @param idCart         the ec cart id
-     * @param rrn            the rrn information
-     * @param userId         the user unique id
+     * @param transactionId   transaction unique id
+     * @param paymentNotices  notice code list
+     * @param email           user email where the payment receipt will be sent to
+     * @param status          transaction status
+     * @param clientId        the client identifier
+     * @param feeTotal        transaction total fee
+     * @param creationDate    transaction creation date
+     * @param idCart          the ec cart id
+     * @param rrn             the rrn information
+     * @param userId          the user unique id
+     * @param paymentTypeCode the payment type code defined in Node domain
+     * @param pspId           the psp id
      */
     /*
      * @formatter:off
@@ -155,7 +163,9 @@ public class Transaction extends BaseTransactionView {
             String creationDate,
             @Nullable String idCart,
             @Nullable String rrn,
-            @Nullable String userId
+            @Nullable String userId,
+            @Nullable String paymentTypeCode,
+            @Nullable String pspId
     ) {
         super(transactionId);
         this.email = email;
@@ -167,6 +177,8 @@ public class Transaction extends BaseTransactionView {
         this.idCart = idCart;
         this.rrn = rrn;
         this.userId = userId;
+        this.paymentTypeCode = paymentTypeCode;
+        this.pspId = pspId;
     }
 
     /**
@@ -186,7 +198,9 @@ public class Transaction extends BaseTransactionView {
                 transaction.getCreationDate().toString(),
                 transaction.getTransactionActivatedData().getIdCart(),
                 null,
-                transaction.getTransactionActivatedData().getUserId()
+                transaction.getTransactionActivatedData().getUserId(),
+                null,
+                null
         );
     }
 
