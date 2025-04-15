@@ -50,7 +50,7 @@ class NodeForwarderClientTest {
     @BeforeEach
     public void beforeAll() throws IOException {
         mockWebServer = new MockWebServer();
-        mockWebServer.start(8080);
+        mockWebServer.start();
         System.out.printf("Mock web server listening on %s:%s%n", mockWebServer.getHostName(), mockWebServer.getPort());
 
     }

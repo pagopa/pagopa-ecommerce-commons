@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
-import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
@@ -38,6 +38,7 @@ public class TransactionTestUtils {
     public static final int AMOUNT = 100;
 
     public static final String EMAIL_STRING = "foo@example.com";
+    public static final String FISCAL_CODE_STRING = "test";
 
     private static final String timestampOperation = "2023-01-01T01:02:03+01:00";
 
@@ -388,8 +389,14 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
+        return transactionClosureErrorEvent(null);
+    }
+
+    @Nonnull
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent(ClosureErrorData closureErrorData) {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                closureErrorData
         );
     }
 
@@ -505,7 +512,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-                                                                                  BaseTransaction transaction,
+                                                                                  BaseTransactionWithPaymentToken transaction,
                                                                                   TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
@@ -571,9 +578,17 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
+        return transactionClosureRetriedEvent(retryCount, null);
+    }
+
+    @Nonnull
+    public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(
+                                                                                int retryCount,
+                                                                                ClosureErrorData closureErrorData
+    ) {
         return new TransactionClosureRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRetriedData(retryCount)
+                new TransactionClosureRetriedData(closureErrorData, retryCount)
         );
     }
 

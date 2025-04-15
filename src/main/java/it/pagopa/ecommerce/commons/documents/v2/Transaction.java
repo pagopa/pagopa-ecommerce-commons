@@ -58,6 +58,8 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private String userId;
 
+    private ClosureErrorData closureErrorData;
+
     @Nullable
     private String paymentTypeCode;
 
