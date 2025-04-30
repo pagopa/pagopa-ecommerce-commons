@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.domain.v2.pojos;
 import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.domain.v2.Confidential;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.Email;
 import it.pagopa.ecommerce.commons.domain.v2.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionId;

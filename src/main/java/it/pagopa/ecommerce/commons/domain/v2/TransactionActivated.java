@@ -7,6 +7,7 @@ import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequeste
 import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;

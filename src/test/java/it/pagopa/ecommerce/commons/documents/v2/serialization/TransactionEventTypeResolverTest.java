@@ -14,7 +14,7 @@ import it.pagopa.ecommerce.commons.documents.v2.authorization.PgsTransactionGate
 import it.pagopa.ecommerce.commons.documents.v2.authorization.RedirectTransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.documents.v2.refund.EmptyGatewayRefundData;
 import it.pagopa.ecommerce.commons.documents.v2.refund.NpgGatewayRefundData;
-import it.pagopa.ecommerce.commons.domain.v2.Confidential;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionEventCode;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;

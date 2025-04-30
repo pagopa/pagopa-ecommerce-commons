@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.domain.v2;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import it.pagopa.ecommerce.commons.annotations.ValueObject;
-import it.pagopa.ecommerce.commons.utils.v2.ConfidentialDataManager;
+import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 
 import javax.annotation.Nonnull;
 

@@ -199,7 +199,7 @@ class StrictJsonSerializerProviderTest {
                 "b753273c789140bf9938df4c50842ef3",
                 "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
                 new TransactionActivatedData(
-                        new it.pagopa.ecommerce.commons.domain.v1.Confidential<>(
+                        new it.pagopa.ecommerce.commons.domain.Confidential<>(
                                 "1653f446-18ec-4f83-afc9-36ce7de07398"
                         ),
                         List.of(
@@ -285,7 +285,7 @@ class StrictJsonSerializerProviderTest {
                 "b753273c789140bf9938df4c50842ef3",
                 "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
                 new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData(
-                        new it.pagopa.ecommerce.commons.domain.v2.Confidential<>(
+                        new it.pagopa.ecommerce.commons.domain.Confidential<>(
                                 "1653f446-18ec-4f83-afc9-36ce7de07398"
                         ),
                         List.of(

@@ -1,6 +1,6 @@
-package it.pagopa.ecommerce.commons.utils.v2;
+package it.pagopa.ecommerce.commons.utils;
 
-import it.pagopa.ecommerce.commons.domain.v2.Confidential;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
 import it.pagopa.generated.pdv.v1.dto.PiiResourceDto;

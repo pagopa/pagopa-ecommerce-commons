@@ -1,8 +1,8 @@
-package it.pagopa.ecommerce.commons.domain.v1;
+package it.pagopa.ecommerce.commons.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.pagopa.ecommerce.commons.utils.v1.ConfidentialDataManager;
+import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
