@@ -9,13 +9,11 @@ import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayAct
 import it.pagopa.ecommerce.commons.documents.v2.authorization.*;
 import it.pagopa.ecommerce.commons.documents.v2.refund.EmptyGatewayRefundData;
 import it.pagopa.ecommerce.commons.documents.v2.refund.GatewayRefundData;
-import it.pagopa.ecommerce.commons.domain.*;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -229,7 +227,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
-                        new it.pagopa.ecommerce.commons.domain.PaymentNotice(
+                        new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -752,8 +750,32 @@ public class TransactionTestUtils {
         );
     }
 
-    public static PaymentRequestInfo paymentRequestInfo() {
-        return new PaymentRequestInfo(
+    public static it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo paymentRequestInfoV1() {
+        return new it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo(
+                new it.pagopa.ecommerce.commons.domain.v1.RptId(RPT_ID),
+                PA_FISCAL_CODE,
+                PA_NAME,
+                DESCRIPTION,
+                AMOUNT,
+                DUE_DATE,
+                PAYMENT_TOKEN,
+                ZonedDateTime.now().toString(),
+                new it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey(IDEMPOTENCY_KEY),
+                List.of(
+                        new it.pagopa.ecommerce.commons.domain.v1.PaymentTransferInfo(
+                                TRANSFER_PA_FISCAL_CODE,
+                                TRANSFER_DIGITAL_STAMP,
+                                TRANSFER_AMOUNT,
+                                TRANSFER_CATEGORY
+                        )
+                ),
+                false,
+                CREDITOR_REFERENCE_ID
+        );
+    }
+
+    public static it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo paymentRequestInfoV2() {
+        return new it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo(
                 new RptId(RPT_ID),
                 PA_FISCAL_CODE,
                 PA_NAME,

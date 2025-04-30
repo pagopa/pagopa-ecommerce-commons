@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.v1.templatewrappers;
 
-import it.pagopa.ecommerce.commons.redis.templatewrappers.PaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
+import it.pagopa.ecommerce.commons.redis.templatewrappers.v1.PaymentRequestInfoRedisTemplateWrapper;
+import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,7 +43,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     @Test
     void shouldGetEntitySuccessfully() {
         // assertions
-        PaymentRequestInfo expected = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo expected = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         Mockito.when(valueOperations.get("keys:%s".formatted(TransactionTestUtils.RPT_ID))).thenReturn(expected);
 
@@ -71,7 +71,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     @Test
     void shouldSaveEntitySuccessfully() {
         // assertions
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         Mockito.doNothing().when(valueOperations)
                 .set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl);
@@ -127,7 +127,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     void shouldSaveEntityWithCustomTTLSuccessfully() {
         // assertions
         Duration customTTL = Duration.ofMillis(100);
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         Mockito.doNothing().when(valueOperations)
                 .set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, customTTL);
@@ -142,7 +142,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     @Test
     void shouldSaveIfAbsentEntitySuccessfully() {
         // assertions
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         Mockito.when(
                 valueOperations.setIfAbsent("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl)
@@ -158,7 +158,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     void shouldSaveIfAbsentEntityWithCustomTTLSuccessfully() {
         // assertions
         Duration customTTL = Duration.ofMillis(100);
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         Mockito.when(
                 valueOperations
@@ -191,7 +191,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Set<String> keys = Set.of("keys:1", "keys:2");
         List<PaymentRequestInfo> values = keys.stream().map(
-                key -> TransactionTestUtils.paymentRequestInfo()
+                key -> TransactionTestUtils.paymentRequestInfoV1()
         ).toList();
         Mockito.when(redisTemplate.keys("keys*")).thenReturn(keys);
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
@@ -210,7 +210,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
     void shouldWriteEventToStreamSuccessfully() {
         // assertions
         String streamKey = "streamKey";
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
 
         Mockito.when(streamOperations.add(argThat(r -> {
@@ -230,7 +230,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         String streamKey = "streamKey";
         int streamSize = 0;
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
         Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
         Mockito.when(streamOperations.add(argThat(r -> {
@@ -269,7 +269,7 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         String streamKey = "streamKey";
         int streamSize = -1;
-        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfo();
+        PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
         Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
         Mockito.when(streamOperations.add(argThat(r -> {
