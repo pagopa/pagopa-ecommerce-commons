@@ -21,7 +21,7 @@ import java.util.UUID;
  *
  * @see Claims
  */
-@Component
+@Component("jwtTokenUtilsV2")
 @Slf4j
 public class JwtTokenUtils {
 
