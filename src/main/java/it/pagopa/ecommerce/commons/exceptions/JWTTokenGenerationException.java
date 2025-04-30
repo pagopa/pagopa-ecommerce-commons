@@ -4,7 +4,9 @@ package it.pagopa.ecommerce.commons.exceptions;
  * Exception class wrapping checked exceptions that can occur during jwt
  * generation
  *
- * @see it.pagopa.ecommerce.commons.utils.JwtTokenUtils
+ * @see it.pagopa.ecommerce.commons.utils.v1.JwtTokenUtils
+ * or
+ * @see it.pagopa.ecommerce.commons.utils.v2.JwtTokenUtils
  */
 public class JWTTokenGenerationException extends RuntimeException {
 
