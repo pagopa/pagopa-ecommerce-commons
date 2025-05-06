@@ -8,9 +8,6 @@ import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
-import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -61,7 +58,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            List<it.pagopa.ecommerce.commons.domain.PaymentNotice> paymentNotices,
+            List<PaymentNotice> paymentNotices,
             Confidential<Email> email,
             String faultCode,
             String faultCodeString,

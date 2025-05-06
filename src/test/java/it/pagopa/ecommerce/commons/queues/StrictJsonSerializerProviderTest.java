@@ -9,7 +9,6 @@ import it.pagopa.ecommerce.commons.documents.PaymentNotice;
 import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
 import it.pagopa.ecommerce.commons.documents.v1.*;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
-import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -200,7 +199,9 @@ class StrictJsonSerializerProviderTest {
                 "b753273c789140bf9938df4c50842ef3",
                 "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
                 new TransactionActivatedData(
-                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        new it.pagopa.ecommerce.commons.domain.Confidential<>(
+                                "1653f446-18ec-4f83-afc9-36ce7de07398"
+                        ),
                         List.of(
                                 new PaymentNotice(
                                         PAYMENT_TOKEN,
@@ -284,7 +285,9 @@ class StrictJsonSerializerProviderTest {
                 "b753273c789140bf9938df4c50842ef3",
                 "2023-09-22T14:36:44.733455+02:00[Europe/Rome]",
                 new it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedData(
-                        new Confidential<>("1653f446-18ec-4f83-afc9-36ce7de07398"),
+                        new it.pagopa.ecommerce.commons.domain.Confidential<>(
+                                "1653f446-18ec-4f83-afc9-36ce7de07398"
+                        ),
                         List.of(
                                 new PaymentNotice(
                                         PAYMENT_TOKEN,

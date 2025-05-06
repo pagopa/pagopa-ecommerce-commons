@@ -1,8 +1,8 @@
 package it.pagopa.ecommerce.commons.utils.v2;
 
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
-import it.pagopa.ecommerce.commons.domain.FiscalCode;
+import it.pagopa.ecommerce.commons.domain.v2.Email;
+import it.pagopa.ecommerce.commons.domain.v2.FiscalCode;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.generated.pdv.v1.api.TokenApi;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import it.pagopa.ecommerce.commons.domain.IdempotencyKey;
+import it.pagopa.ecommerce.commons.domain.v2.IdempotencyKey;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeyDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySerializer;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
