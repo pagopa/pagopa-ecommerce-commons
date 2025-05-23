@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v2.deadletter;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Transaction info for Redirect gateway

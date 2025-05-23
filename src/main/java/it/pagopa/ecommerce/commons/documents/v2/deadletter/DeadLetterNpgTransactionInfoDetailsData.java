@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Transaction info for NPG gateway

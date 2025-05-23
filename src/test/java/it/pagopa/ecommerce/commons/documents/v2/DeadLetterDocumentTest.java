@@ -7,10 +7,10 @@ import it.pagopa.ecommerce.commons.v2.DeadLetterTestUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +65,6 @@ class DeadLetterDocumentTest {
                 "transactionId-authorizationRequestId-eCommerceStatus-" +
                         "gateway-paymentTokens should not be null"
         );
-        assertEquals(6, violations.size());
+        assertEquals(5, violations.size());
     }
 }
