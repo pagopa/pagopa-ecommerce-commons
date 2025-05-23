@@ -3,10 +3,13 @@ package it.pagopa.ecommerce.commons.client;
 import com.azure.core.http.HttpHeaders;
 import com.azure.core.http.HttpRequest;
 import com.azure.core.http.rest.Response;
+import com.azure.core.serializer.json.jackson.JacksonJsonSerializerBuilder;
 import com.azure.core.util.BinaryData;
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.core.util.serializer.JsonSerializerProviders;
 import com.azure.storage.queue.models.SendMessageResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import it.pagopa.ecommerce.commons.v1.TransactionTestUtils;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.testcontainers.shaded.org.bouncycastle.crypto.agreement.srp.SRP6Util;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -31,7 +35,16 @@ class QueueAsyncClientTest {
     private final com.azure.storage.queue.QueueAsyncClient azureQueueAsyncClient = Mockito
             .mock(com.azure.storage.queue.QueueAsyncClient.class);
 
-    private final JsonSerializer jsonSerializer = JsonSerializerProviders.createInstance(true);
+    private final JsonSerializer jsonSerializer = createCustomJsonSerializer();
+
+    private static JsonSerializer createCustomJsonSerializer() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new Jdk8Module());
+
+        return new JacksonJsonSerializerBuilder()
+                .serializer(objectMapper)
+                .build();
+    }
 
     private final QueueAsyncClient queueAsyncClient = new QueueAsyncClient(azureQueueAsyncClient, jsonSerializer);
 
@@ -46,7 +59,10 @@ class QueueAsyncClientTest {
 
         Duration visibilityTimeout = Duration.ofSeconds(10);
         Duration timeToLive = Duration.ofSeconds(10);
-        BinaryData serializedEvent = BinaryData.fromObject(queueEvent);
+        // BinaryData serializedEvent = BinaryData.fromObject(queueEvent);
+
+        JsonSerializer serializer = createCustomJsonSerializer();
+        BinaryData serializedEvent = BinaryData.fromObject(queueEvent, serializer);
 
         Mockito.when(
                 azureQueueAsyncClient

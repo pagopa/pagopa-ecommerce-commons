@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * <p>
@@ -789,15 +791,19 @@ public class NpgClient {
 
         if (err instanceof WebClientResponseException e) {
             try {
-                List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
+
+                HttpStatus httpStatus = HttpStatus.resolve(e.getStatusCode().value());
+                List<ErrorsInnerDto> responseErrors = switch (httpStatus) {
                     case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
                             e.getResponseBodyAsByteArray(),
                             ServerErrorDto.class
                     ).getErrors();
+
                     case BAD_REQUEST -> objectMapper.readValue(
                             e.getResponseBodyAsByteArray(),
                             ClientErrorDto.class
                     ).getErrors();
+
                     default -> List.of();
                 };
 
@@ -806,14 +812,14 @@ public class NpgClient {
                         .orElse(List.of())
                         .stream()
                         .map(ErrorsInnerDto::getCode).toList();
-                statusCode = Optional.of(e.getStatusCode());
+                statusCode = Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value()));
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";
                 log.error(errorMessage.formatted(e.getStatusCode()));
 
                 return new NpgResponseException(
                         errorMessage.formatted(e.getStatusCode()),
-                        Optional.of(e.getStatusCode()),
+                        Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value())),
                         ex
                 );
             }

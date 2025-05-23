@@ -2,7 +2,7 @@ package it.pagopa.ecommerce.commons.documents.v2.activation;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Activation data associated for NPG gateway

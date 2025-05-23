@@ -36,7 +36,7 @@ class TransactionDocumentTest {
 
         // Different transaction (creation date)
         Transaction differentTransaction = TransactionTestUtils
-                .transactionDocument(transactionStatus, ZonedDateTime.now());
+                .transactionDocument(transactionStatus, creationDateTime.plusSeconds(5));
 
         /* Assertions */
         assertEquals(TransactionTestUtils.PAYMENT_TOKEN, transaction.getPaymentNotices().get(0).getPaymentToken());

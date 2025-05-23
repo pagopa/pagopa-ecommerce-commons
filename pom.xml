@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
+        <version>3.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>it.pagopa</groupId>
@@ -86,6 +86,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,6 +116,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.18.3</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
@@ -351,7 +353,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>6.2.1</version>
+                <version>7.13.0</version>
                 <executions>
                     <execution>
                         <id>transactions-dtos</id>
@@ -373,6 +375,8 @@
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <useSwaggerUI>false</useSwaggerUI>
                                 <reactive>true</reactive>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -439,6 +443,8 @@
                             <configOptions>
                                 <swaggerAnnotations>false</swaggerAnnotations>
                                 <openApiNullable>false</openApiNullable>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <modelPackage>it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.dto</modelPackage>
                             <apiPackage>it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api</apiPackage>
