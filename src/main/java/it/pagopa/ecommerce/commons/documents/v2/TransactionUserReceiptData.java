@@ -49,8 +49,8 @@ public class TransactionUserReceiptData {
      * Constructor for creating a TransactionUserReceiptData with basic parameters
      *
      * @param responseOutcome The outcome of the payment response
-     * @param language The notification language
-     * @param paymentDate The date of the payment
+     * @param language        The notification language
+     * @param paymentDate     The date of the payment
      */
     public TransactionUserReceiptData(
             Outcome responseOutcome,
@@ -63,12 +63,14 @@ public class TransactionUserReceiptData {
     }
 
     /**
-     * Constructor for creating a TransactionUserReceiptData with all parameters including notification trigger
+     * Constructor for creating a TransactionUserReceiptData with all parameters
+     * including notification trigger
      *
-     * @param responseOutcome The outcome of the payment response
-     * @param language The notification language
-     * @param paymentDate The date of the payment
-     * @param notificationTrigger The trigger type for the notification (AUTOMATIC or MANUAL)
+     * @param responseOutcome     The outcome of the payment response
+     * @param language            The notification language
+     * @param paymentDate         The date of the payment
+     * @param notificationTrigger The trigger type for the notification (AUTOMATIC
+     *                            or MANUAL)
      */
     public TransactionUserReceiptData(
             Outcome responseOutcome,
