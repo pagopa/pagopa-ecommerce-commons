@@ -1971,4 +1971,246 @@ class TransactionEventTypeResolverTest {
                 .expectNext(originalEvent)
                 .verifyComplete();
     }
+
+    @Test
+    void canRoundTripQueueRefundRequestedEventWithRefundTrigger() {
+        String expectedSerializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "statusBeforeRefunded": "ACTIVATED",
+                            "gatewayAuthData": null,
+                            "refundTrigger": "MANUAL"
+                        },
+                        "eventCode": "TRANSACTION_REFUND_REQUESTED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace(" ", "");
+
+        TransactionRefundRequestedData data = new TransactionRefundRequestedData(
+                null,
+                TransactionStatusDto.ACTIVATED,
+                TransactionRefundRequestedData.RefundTrigger.MANUAL
+        );
+
+        TransactionRefundRequestedEvent event = new TransactionRefundRequestedEvent(
+                "bdb92a6577fb4aab9bba2ebb80cd8310",
+                data
+        );
+        event.setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        event.setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+
+        QueueEvent<TransactionRefundRequestedEvent> originalEvent = new QueueEvent<>(
+                event,
+                MOCK_TRACING_INFO
+        );
+
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent.replace("\n", "").replace(" ", ""), serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionRefundRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeRefundRequestedEventWithoutRefundTrigger() {
+        String serializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "statusBeforeRefunded": "ACTIVATED",
+                            "gatewayAuthData": null
+                        },
+                        "eventCode": "TRANSACTION_REFUND_REQUESTED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace(" ", "");
+
+        TransactionRefundRequestedData data = new TransactionRefundRequestedData(
+                null,
+                TransactionStatusDto.ACTIVATED
+        );
+
+        TransactionRefundRequestedEvent event = new TransactionRefundRequestedEvent(
+                "bdb92a6577fb4aab9bba2ebb80cd8310",
+                data
+        );
+        event.setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        event.setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+
+        QueueEvent<TransactionRefundRequestedEvent> expectedEvent = new QueueEvent<>(
+                event,
+                MOCK_TRACING_INFO
+        );
+
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionRefundRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(expectedEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canRoundTripQueueUserReceiptEventWithNotificationTrigger() {
+        String expectedSerializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "responseOutcome": "OK",
+                            "language": "it-IT",
+                            "paymentDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                            "notificationTrigger": "AUTOMATIC"
+                        },
+                        "eventCode": "TRANSACTION_USER_RECEIPT_REQUESTED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace("\\n", "").replace(" ", "");
+
+        TransactionUserReceiptData data = new TransactionUserReceiptData(
+                TransactionUserReceiptData.Outcome.OK,
+                "it-IT",
+                "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                TransactionUserReceiptData.NotificationTrigger.AUTOMATIC
+        );
+
+        TransactionUserReceiptRequestedEvent event = new TransactionUserReceiptRequestedEvent(
+                "bdb92a6577fb4aab9bba2ebb80cd8310",
+                data
+        );
+        event.setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        event.setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+
+        QueueEvent<TransactionUserReceiptRequestedEvent> originalEvent = new QueueEvent<>(
+                event,
+                MOCK_TRACING_INFO
+        );
+
+        byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
+        String serializedString = new String(serialized);
+        System.out.println("Serialized object: " + serializedString);
+
+        assertTrue(
+                serializedString
+                        .contains(
+                                "\"_class\":\"it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent\""
+                        )
+        );
+        assertEquals(expectedSerializedEvent.replace("\n", "").replace(" ", ""), serializedString);
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serialized,
+                                new TypeReference<QueueEvent<TransactionUserReceiptRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(originalEvent)
+                .verifyComplete();
+    }
+
+    @Test
+    void canDeserializeUserReceiptEventWithoutNotificationTrigger() {
+        String serializedEvent = """
+                {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "responseOutcome": "OK",
+                            "language": "it-IT",
+                            "paymentDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]"
+                        },
+                        "eventCode": "TRANSACTION_USER_RECEIPT_REQUESTED_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """.replace("\\n", "").replace(" ", "");
+
+        TransactionUserReceiptData data = new TransactionUserReceiptData(
+                TransactionUserReceiptData.Outcome.OK,
+                "it-IT",
+                "2023-09-25T14:44:31.177776+02:00[Europe/Rome]"
+        );
+
+        TransactionUserReceiptRequestedEvent event = new TransactionUserReceiptRequestedEvent(
+                "bdb92a6577fb4aab9bba2ebb80cd8310",
+                data
+        );
+        event.setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        event.setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+
+        QueueEvent<TransactionUserReceiptRequestedEvent> expectedEvent = new QueueEvent<>(
+                event,
+                MOCK_TRACING_INFO
+        );
+
+        Hooks.onOperatorDebug();
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionUserReceiptRequestedEvent>>() {
+                                }
+                        )
+        )
+                .expectNext(expectedEvent)
+                .verifyComplete();
+    }
 }
