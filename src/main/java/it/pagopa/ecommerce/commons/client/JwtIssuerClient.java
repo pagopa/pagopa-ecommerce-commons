@@ -2,14 +2,12 @@ package it.pagopa.ecommerce.commons.client;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.exceptions.JwtIssuerClientException;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api.JwtIssuerApi;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequestDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
-import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -43,27 +41,6 @@ public class JwtIssuerClient {
             @NotNull JwtIssuerApi jwtIssuerApi
     ) {
         this.jwtIssuerApi = jwtIssuerApi;
-    }
-
-    /**
-     * Instantiate a jwt issuer client to establish communication via the jwt issuer
-     * api, and initialize it using the backend uri <i>jwtIssuerBackendUrl</i>, the
-     * <i>readTimeout</i> and the <i>connectionTimeout</i>
-     *
-     * @param jwtIssuerBackendUrl the api
-     * @param readTimeout         the api
-     * @param connectionTimeout   the api
-     */
-    public JwtIssuerClient(
-            @NotNull String jwtIssuerBackendUrl,
-            @NotNull Integer readTimeout,
-            @NotNull Integer connectionTimeout
-    ) {
-        this.jwtIssuerApi = initializeClient(
-                jwtIssuerBackendUrl,
-                readTimeout,
-                connectionTimeout
-        );
     }
 
     /**
