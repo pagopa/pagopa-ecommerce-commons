@@ -43,40 +43,6 @@ public class JwtIssuerClient {
         this.jwtIssuerApi = jwtIssuerApi;
     }
 
-    /**
-     * Build a new {@link JwtIssuerApi} that will be used to perform api calls to be
-     * forwarded
-     *
-     * @return the initialized api client instance
-     */
-    private JwtIssuerApi initializeClient(
-                                          @NotNull String backendUrl,
-                                          @NotNull Integer readTimeout,
-                                          @NotNull Integer connectionTimeout
-    ) {
-        HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
-                .doOnConnected(
-                        connection -> connection.addHandlerLast(
-                                new ReadTimeoutHandler(
-                                        readTimeout,
-                                        TimeUnit.MILLISECONDS
-                                )
-                        )
-                );
-
-        WebClient webClient = ApiClient.buildWebClientBuilder()
-                .clientConnector(
-                        new ReactorClientHttpConnector(httpClient)
-                ).baseUrl(backendUrl)
-                .build();
-
-        ApiClient apiClient = new ApiClient(
-                webClient
-        ).setBasePath(backendUrl);
-        return new JwtIssuerApi(apiClient);
-    }
-
     private static void logError(WebClientResponseException e) {
         log.info(
                 JWT_ISSUER_LOG_ERROR_MESSAGE,
