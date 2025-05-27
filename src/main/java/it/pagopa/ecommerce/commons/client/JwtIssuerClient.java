@@ -108,7 +108,7 @@ public class JwtIssuerClient {
     }
 
     /**
-     * method to invoke to retrieve the keys to validate a jwt token
+     * Retrieve the keys to validate a jwt token
      *
      * @return An object containing the keys to validate a token
      */
@@ -121,9 +121,9 @@ public class JwtIssuerClient {
     }
 
     /**
-     * method to invoke to crate a valid jwt token. The parameters set the audience
-     * of the token, its duration and a map of all private claims to set in the
-     * token.
+     * Create a valid jwt token. The parameters set the <i>audience</i> of the
+     * token, its <i>duration</i> and the <i>privateClaims</i> map of all private
+     * claims to set into the token.
      *
      * @param audience      the audience of the token
      * @param duration      the duration of the token
