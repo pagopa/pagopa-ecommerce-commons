@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.client;
 
 import it.pagopa.ecommerce.commons.exceptions.JwtIssuerClientException;
-import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api.JwtIssuerApi;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequestDto;
@@ -23,8 +22,6 @@ import reactor.test.StepVerifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.*;
-
 @ExtendWith(MockitoExtension.class)
 class JwtIssuerClientTests {
 
@@ -37,7 +34,7 @@ class JwtIssuerClientTests {
     private JwtIssuerClient jwtIssuerClient;
 
     @BeforeEach
-    public void init() {
+    void init() {
         jwtIssuerClient = new JwtIssuerClient(jwtIssuerApi);
     }
 
