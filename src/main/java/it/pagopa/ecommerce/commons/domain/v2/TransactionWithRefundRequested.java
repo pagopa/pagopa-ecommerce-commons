@@ -55,11 +55,11 @@ public final class TransactionWithRefundRequested extends BaseTransactionWithRef
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundedEvent e) {
-            return new TransactionRefunded(this, e);
+        if (event instanceof TransactionRefundedEvent transactionRefundedEvent) {
+            return new TransactionRefunded(this, transactionRefundedEvent);
         }
-        if (event instanceof TransactionRefundErrorEvent e) {
-            return new TransactionWithRefundError(this, e);
+        if (event instanceof TransactionRefundErrorEvent transactionRefundErrorEvent) {
+            return new TransactionWithRefundError(this, transactionRefundErrorEvent);
         }
         return this;
     }

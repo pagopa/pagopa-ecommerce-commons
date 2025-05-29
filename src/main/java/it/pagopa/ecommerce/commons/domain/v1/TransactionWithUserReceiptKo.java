@@ -64,10 +64,10 @@ public final class TransactionWithUserReceiptKo extends BaseTransactionWithUserR
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundRequestedEvent e) {
-            return new TransactionWithRefundRequested(this, e);
-        } else if (event instanceof TransactionExpiredEvent e) {
-            return new TransactionExpired(this, e);
+        if (event instanceof TransactionRefundRequestedEvent transactionRefundRequestedEvent) {
+            return new TransactionWithRefundRequested(this, transactionRefundRequestedEvent);
+        } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
         }
         return this;
     }

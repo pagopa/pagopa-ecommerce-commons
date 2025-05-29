@@ -64,20 +64,21 @@ public final class TransactionWithUserReceiptError extends BaseTransactionWithRe
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionUserReceiptAddedEvent e) {
-            return e.getData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.OK)
-                    ? new TransactionWithUserReceiptOk(this, e)
-                    : new TransactionWithUserReceiptKo(this, e);
+        if (event instanceof TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent) {
+            return transactionUserReceiptAddedEvent.getData().getResponseOutcome()
+                    .equals(TransactionUserReceiptData.Outcome.OK)
+                            ? new TransactionWithUserReceiptOk(this, transactionUserReceiptAddedEvent)
+                            : new TransactionWithUserReceiptKo(this, transactionUserReceiptAddedEvent);
         }
 
-        if (event instanceof TransactionExpiredEvent e) {
-            return new TransactionExpired(this, e);
+        if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
         }
 
-        if (event instanceof TransactionRefundRequestedEvent e &&
+        if (event instanceof TransactionRefundRequestedEvent transactionRefundRequestedEvent &&
                 this.getTransactionUserReceiptData().getResponseOutcome()
                         .equals(TransactionUserReceiptData.Outcome.KO)) {
-            return new TransactionWithRefundRequested(this, e);
+            return new TransactionWithRefundRequested(this, transactionRefundRequestedEvent);
         }
 
         return this;

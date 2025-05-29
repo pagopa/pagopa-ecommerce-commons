@@ -62,8 +62,8 @@ public final class EmptyTransaction implements Transaction {
      */
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionActivatedEvent) {
-            return this.applyActivation((TransactionActivatedEvent) event);
+        if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
+            return this.applyActivation(transactionActivatedEvent);
         }
         return this;
     }
