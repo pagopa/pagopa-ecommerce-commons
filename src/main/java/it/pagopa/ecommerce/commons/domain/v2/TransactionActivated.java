@@ -170,17 +170,14 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent ->
-                    new TransactionWithRequestedAuthorization(
-                            this,
-                            transactionAuthorizationRequestedEvent.getData()
-                    );
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
-            case TransactionUserCanceledEvent transactionUserCanceledEvent ->
-                    new TransactionWithCancellationRequested(this, transactionUserCanceledEvent);
-            default -> this;
-        };
+        if (event instanceof TransactionAuthorizationRequestedEvent e) {
+            return new TransactionWithRequestedAuthorization(this, e.getData());
+        } else if (event instanceof TransactionExpiredEvent e) {
+            return new TransactionExpiredNotAuthorized(this, e);
+        } else if (event instanceof TransactionUserCanceledEvent e) {
+            return new TransactionWithCancellationRequested(this, e);
+        } else {
+            return this;
+        }
     }
 }

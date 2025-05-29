@@ -68,57 +68,64 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     @Override
     public Transaction applyEvent(Object event) {
         Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithClosureRequested>> transactionAtPreviousState = transactionAtPreviousState();
-        return transactionAtPreviousState
-                .map(either -> either.fold(
-                        trxWithCancellation -> switch (event) {
-                            case TransactionClosedEvent e -> new TransactionUserCanceled(trxWithCancellation, e);
-                            case TransactionExpiredEvent e ->
-                                    new TransactionCancellationExpired(trxWithCancellation, e);
-                            default -> this;
-                        },
-                        trxWithClosureRequested ->
-                        {
-                            boolean wasTransactionAuthorized = trxWithClosureRequested.wasTransactionAuthorized();
-                            return switch (event) {
-                                case TransactionClosedEvent e -> {
-                                    if (wasTransactionAuthorized) {
-                                        yield new TransactionClosed(trxWithClosureRequested, e);
-                                    } else {
-                                        yield this;
-                                    }
-                                }
-                                case TransactionExpiredEvent e ->
-                                        new TransactionExpired(trxWithClosureRequested, e);
-                                case TransactionRefundRequestedEvent e ->
-                                        new TransactionWithRefundRequested(trxWithClosureRequested, e);
-                                case TransactionClosureFailedEvent e -> {
-                                    if (!wasTransactionAuthorized) {
-                                        yield new TransactionUnauthorized(trxWithClosureRequested, e);
-                                    } else {
-                                        yield this;
-                                    }
-                                }
-                                default -> this;
-                            };
-                        }
-                ))
-                .orElse(this);
 
+        if (transactionAtPreviousState.isEmpty()) {
+            return this;
+        }
+
+        Either<BaseTransactionWithCancellationRequested, BaseTransactionWithClosureRequested> either = transactionAtPreviousState
+                .get();
+
+        if (either.isLeft()) {
+            BaseTransactionWithCancellationRequested trxWithCancellation = either.getLeft();
+
+            if (event instanceof TransactionClosedEvent) {
+                return new TransactionUserCanceled(trxWithCancellation, (TransactionClosedEvent) event);
+            } else if (event instanceof TransactionExpiredEvent) {
+                return new TransactionCancellationExpired(trxWithCancellation, (TransactionExpiredEvent) event);
+            }
+        } else {
+            BaseTransactionWithClosureRequested trxWithClosureRequested = either.get();
+            boolean wasTransactionAuthorized = trxWithClosureRequested.wasTransactionAuthorized();
+
+            if (event instanceof TransactionClosedEvent && wasTransactionAuthorized) {
+                return new TransactionClosed(trxWithClosureRequested, (TransactionClosedEvent) event);
+            } else if (event instanceof TransactionExpiredEvent) {
+                return new TransactionExpired(trxWithClosureRequested, (TransactionExpiredEvent) event);
+            } else if (event instanceof TransactionRefundRequestedEvent) {
+                return new TransactionWithRefundRequested(
+                        trxWithClosureRequested,
+                        (TransactionRefundRequestedEvent) event
+                );
+            } else if (event instanceof TransactionClosureFailedEvent && !wasTransactionAuthorized) {
+                return new TransactionUnauthorized(
+                        trxWithClosureRequested,
+                        (TransactionClosureFailedEvent) event
+                );
+            }
+        }
+
+        return this;
     }
 
     /**
      * Return an Either of the transaction at previous point
      *
-     * @return an optional Either instance populated from the transaction value at previous step.
-     * If the transaction is not one of  {@link BaseTransactionWithCancellationRequested} or {@link BaseTransactionWithRequestedAuthorization} then an empty
-     * Optional is returned
+     * @return an optional Either instance populated from the transaction value at
+     *         previous step. If the transaction is not one of
+     *         {@link BaseTransactionWithCancellationRequested} or
+     *         {@link BaseTransactionWithRequestedAuthorization} then an empty
+     *         Optional is returned
      */
     public Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithClosureRequested>> transactionAtPreviousState() {
-        return switch (this.getTransactionAtPreviousState()) {
-            case BaseTransactionWithCancellationRequested trx -> Optional.of(Either.left(trx));
-            case BaseTransactionWithClosureRequested trx -> Optional.of(Either.right(trx));
-            default -> Optional.empty();
-        };
+        Object prev = this.getTransactionAtPreviousState();
+        if (prev instanceof BaseTransactionWithCancellationRequested) {
+            return Optional.of(Either.left((BaseTransactionWithCancellationRequested) prev));
+        } else if (prev instanceof BaseTransactionWithClosureRequested) {
+            return Optional.of(Either.right((BaseTransactionWithClosureRequested) prev));
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**

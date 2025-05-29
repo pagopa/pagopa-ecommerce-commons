@@ -284,21 +284,18 @@
                         <configuration>
                             <source>17</source>
                             <target>17</target>
-                            <compilerArgs>--enable-preview</compilerArgs>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>${argLine} --enable-preview</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -547,9 +544,6 @@
                 </reportSets>
                 <configuration>
                     <failOnWarnings>true</failOnWarnings>
-                    <additionalOptions>
-                        <additionalOption>--enable-preview</additionalOption>
-                    </additionalOptions>
                     <excludePackageNames>
                         org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.*
                     </excludePackageNames>

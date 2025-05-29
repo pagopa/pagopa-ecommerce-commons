@@ -46,20 +46,24 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(
+        if (event instanceof TransactionRefundRequestedEvent) {
+            return new TransactionWithRefundRequested(
                     this.getTransactionAtPreviousState(),
-                    e
+                    (TransactionRefundRequestedEvent) event
             );
-            case TransactionUserReceiptRequestedEvent e -> {
-                if (getTransactionAtPreviousState() instanceof BaseTransactionClosed baseTransactionClosed) {
-                    yield new TransactionWithRequestedUserReceipt(baseTransactionClosed, e);
-                } else {
-                    yield this;
-                }
+        } else if (event instanceof TransactionUserReceiptRequestedEvent) {
+            Object previousState = getTransactionAtPreviousState();
+            if (previousState instanceof BaseTransactionClosed) {
+                return new TransactionWithRequestedUserReceipt(
+                        (BaseTransactionClosed) previousState,
+                        (TransactionUserReceiptRequestedEvent) event
+                );
+            } else {
+                return this;
             }
-            default -> this;
-        };
+        } else {
+            return this;
+        }
     }
 
     /**

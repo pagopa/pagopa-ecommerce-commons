@@ -70,18 +70,19 @@ public final class TransactionWithRequestedUserReceipt extends BaseTransactionWi
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionUserReceiptAddedEvent e -> {
-                if (e.getData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.OK)) {
-                    yield new TransactionWithUserReceiptOk(this, e);
-                } else {
-                    yield new TransactionWithUserReceiptKo(this, e);
-                }
+        if (event instanceof TransactionUserReceiptAddedEvent e) {
+            if (e.getData().getResponseOutcome().equals(TransactionUserReceiptData.Outcome.OK)) {
+                return new TransactionWithUserReceiptOk(this, e);
+            } else {
+                return new TransactionWithUserReceiptKo(this, e);
             }
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionUserReceiptAddErrorEvent e -> new TransactionWithUserReceiptError(this, e);
-            default -> this;
-        };
+        } else if (event instanceof TransactionExpiredEvent) {
+            return new TransactionExpired(this, (TransactionExpiredEvent) event);
+        } else if (event instanceof TransactionUserReceiptAddErrorEvent) {
+            return new TransactionWithUserReceiptError(this, (TransactionUserReceiptAddErrorEvent) event);
+        } else {
+            return this;
+        }
     }
 
     @Override
