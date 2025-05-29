@@ -80,9 +80,8 @@ public final class TransactionWithRequestedUserReceipt extends BaseTransactionWi
             return new TransactionExpired(this, e);
         } else if (event instanceof TransactionUserReceiptAddErrorEvent e) {
             return new TransactionWithUserReceiptError(this, e);
-        } else {
-            return this;
         }
+        return this;
     }
 
     @Override

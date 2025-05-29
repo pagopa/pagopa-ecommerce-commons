@@ -58,9 +58,8 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
             return new TransactionWithClosureRequested(this);
         } else if (event instanceof TransactionExpiredEvent) {
             return new TransactionExpired(this, (TransactionExpiredEvent) event);
-        } else {
-            return this;
         }
+        return this;
     }
 
     @Override

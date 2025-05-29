@@ -56,25 +56,23 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
     public Transaction applyEvent(Object event) {
         boolean wasTransactionAuthorized = wasTransactionAuthorized();
 
-        if (event instanceof TransactionClosedEvent e) {
-            if (wasTransactionAuthorized) {
-                return new TransactionClosed(this, e);
-            } else {
-                return this;
-            }
-        } else if (event instanceof TransactionClosureErrorEvent e) {
-            return new TransactionWithClosureError(this, e);
-        } else if (event instanceof TransactionExpiredEvent e) {
-            return new TransactionExpired(this, e);
-        } else if (event instanceof TransactionClosureFailedEvent e) {
-            if (!wasTransactionAuthorized) {
-                return new TransactionUnauthorized(this, e);
-            } else {
-                return this;
-            }
-        } else {
-            return this;
+        if (event instanceof TransactionClosedEvent e && wasTransactionAuthorized) {
+            return new TransactionClosed(this, e);
         }
+
+        if (event instanceof TransactionClosureErrorEvent e) {
+            return new TransactionWithClosureError(this, e);
+        }
+
+        if (event instanceof TransactionExpiredEvent e) {
+            return new TransactionExpired(this, e);
+        }
+
+        if (event instanceof TransactionClosureFailedEvent e && !wasTransactionAuthorized) {
+            return new TransactionUnauthorized(this, e);
+        }
+
+        return this;
     }
 
     @Override

@@ -74,9 +74,8 @@ public final class TransactionWithRefundError extends BaseTransactionWithRefundR
             return new TransactionRefunded(this, (TransactionRefundedEvent) event);
         } else if (event instanceof TransactionRefundRetriedEvent e) {
             return new TransactionWithRefundError(this, e.getData().getTransactionGatewayAuthorizationData());
-        } else {
-            return this;
         }
+        return this;
     }
 
     @Override

@@ -64,8 +64,7 @@ public final class EmptyTransaction implements Transaction {
     public Transaction applyEvent(Object event) {
         if (event instanceof TransactionActivatedEvent) {
             return this.applyActivation((TransactionActivatedEvent) event);
-        } else {
-            return this;
         }
+        return this;
     }
 }

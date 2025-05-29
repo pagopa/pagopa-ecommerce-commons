@@ -59,9 +59,8 @@ public final class TransactionWithRefundRequested extends BaseTransactionWithRef
             return new TransactionRefunded(this, (TransactionRefundedEvent) event);
         } else if (event instanceof TransactionRefundErrorEvent) {
             return new TransactionWithRefundError(this, (TransactionRefundErrorEvent) event);
-        } else {
-            return this;
         }
+        return this;
     }
 
     @Override

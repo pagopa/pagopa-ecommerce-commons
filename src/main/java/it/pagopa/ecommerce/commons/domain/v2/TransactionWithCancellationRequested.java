@@ -72,8 +72,7 @@ public final class TransactionWithCancellationRequested extends BaseTransactionW
             return new TransactionWithClosureError(this, e);
         } else if (event instanceof TransactionExpiredEvent e) {
             return new TransactionCancellationExpired(this, e);
-        } else {
-            return this;
         }
+        return this;
     }
 }

@@ -61,9 +61,8 @@ public final class TransactionClosed extends BaseTransactionClosed
             return new TransactionWithRefundRequested(this, (TransactionRefundRequestedEvent) event);
         } else if (event instanceof TransactionUserReceiptRequestedEvent) {
             return new TransactionWithRequestedUserReceipt(this, (TransactionUserReceiptRequestedEvent) event);
-        } else {
-            return this;
         }
+        return this;
     }
 
     /**

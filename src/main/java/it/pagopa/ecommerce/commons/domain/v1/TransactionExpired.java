@@ -58,12 +58,9 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
                         (BaseTransactionClosed) previousState,
                         (TransactionUserReceiptRequestedEvent) event
                 );
-            } else {
-                return this;
             }
-        } else {
-            return this;
         }
+        return this;
     }
 
     /**

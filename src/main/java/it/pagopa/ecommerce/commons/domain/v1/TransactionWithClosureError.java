@@ -68,45 +68,43 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
     @Override
     public Transaction applyEvent(Object event) {
         Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState = transactionAtPreviousState();
+
         if (transactionAtPreviousState.isEmpty()) {
             return this;
         }
 
         Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization> either = transactionAtPreviousState
                 .get();
+
         return either.fold(
                 // Left: BaseTransactionWithCancellationRequested
                 trxWithCancellation -> {
                     if (event instanceof TransactionClosedEvent e) {
                         return new TransactionUserCanceled(trxWithCancellation, e);
-                    } else if (event instanceof TransactionExpiredEvent e) {
-                        return new TransactionCancellationExpired(trxWithCancellation, e);
-                    } else {
-                        return this;
                     }
+                    if (event instanceof TransactionExpiredEvent e) {
+                        return new TransactionCancellationExpired(trxWithCancellation, e);
+                    }
+                    return this;
                 },
+
                 // Right: BaseTransactionWithCompletedAuthorization
                 trxWithAuthorizationCompleted -> {
                     boolean wasTransactionAuthorized = trxWithAuthorizationCompleted.wasTransactionAuthorized();
-                    if (event instanceof TransactionClosedEvent e) {
-                        if (wasTransactionAuthorized) {
-                            return new TransactionClosed(trxWithAuthorizationCompleted, e);
-                        } else {
-                            return this;
-                        }
-                    } else if (event instanceof TransactionExpiredEvent e) {
-                        return new TransactionExpired(trxWithAuthorizationCompleted, e);
-                    } else if (event instanceof TransactionRefundRequestedEvent e) {
-                        return new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
-                    } else if (event instanceof TransactionClosureFailedEvent e) {
-                        if (!wasTransactionAuthorized) {
-                            return new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
-                        } else {
-                            return this;
-                        }
-                    } else {
-                        return this;
+
+                    if (event instanceof TransactionClosedEvent e && wasTransactionAuthorized) {
+                        return new TransactionClosed(trxWithAuthorizationCompleted, e);
                     }
+                    if (event instanceof TransactionExpiredEvent e) {
+                        return new TransactionExpired(trxWithAuthorizationCompleted, e);
+                    }
+                    if (event instanceof TransactionRefundRequestedEvent e) {
+                        return new TransactionWithRefundRequested(trxWithAuthorizationCompleted, e);
+                    }
+                    if (event instanceof TransactionClosureFailedEvent e && !wasTransactionAuthorized) {
+                        return new TransactionUnauthorized(trxWithAuthorizationCompleted, e);
+                    }
+                    return this;
                 }
         );
     }

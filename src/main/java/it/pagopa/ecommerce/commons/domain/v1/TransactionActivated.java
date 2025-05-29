@@ -162,8 +162,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
             return new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
         } else if (event instanceof TransactionUserCanceledEvent transactionUserCanceledEvent) {
             return new TransactionWithCancellationRequested(this, transactionUserCanceledEvent);
-        } else {
-            return this;
         }
+        return this;
     }
 }

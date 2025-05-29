@@ -51,15 +51,14 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
                     this.getTransactionAtPreviousState(),
                     e
             );
-        } else if (event instanceof TransactionUserReceiptRequestedEvent e) {
-            if (getTransactionAtPreviousState()instanceof BaseTransactionClosed baseTransactionClosed) {
-                return new TransactionWithRequestedUserReceipt(baseTransactionClosed, e);
-            } else {
-                return this;
-            }
-        } else {
-            return this;
         }
+
+        if (event instanceof TransactionUserReceiptRequestedEvent e &&
+                getTransactionAtPreviousState()instanceof BaseTransactionClosed baseTransactionClosed) {
+            return new TransactionWithRequestedUserReceipt(baseTransactionClosed, e);
+        }
+
+        return this;
     }
 
     /**
