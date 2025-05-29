@@ -127,10 +127,10 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
      */
     public Optional<Either<BaseTransactionWithCancellationRequested, BaseTransactionWithCompletedAuthorization>> transactionAtPreviousState() {
         Object prevState = this.getTransactionAtPreviousState();
-        if (prevState instanceof BaseTransactionWithCancellationRequested) {
-            return Optional.of(Either.left((BaseTransactionWithCancellationRequested) prevState));
-        } else if (prevState instanceof BaseTransactionWithCompletedAuthorization) {
-            return Optional.of(Either.right((BaseTransactionWithCompletedAuthorization) prevState));
+        if (prevState instanceof BaseTransactionWithCancellationRequested baseTransactionWithCancellationRequested) {
+            return Optional.of(Either.left(baseTransactionWithCancellationRequested));
+        } else if (prevState instanceof BaseTransactionWithCompletedAuthorization baseTransactionWithCompletedAuthorization) {
+            return Optional.of(Either.right(baseTransactionWithCompletedAuthorization));
         } else {
             return Optional.empty();
         }
