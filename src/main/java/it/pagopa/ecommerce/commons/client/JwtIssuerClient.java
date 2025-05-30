@@ -26,6 +26,36 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class JwtIssuerClient {
+    /**
+     * The claim transactionId
+     */
+    public static final String TRANSACTION_ID_CLAIM = "transactionId";
+
+    /**
+     * The claim orderId
+     */
+    public static final String ORDER_ID_CLAIM = "orderId";
+
+    /**
+     * The claim payment methodId
+     */
+    public static final String PAYMENT_METHOD_ID_CLAIM = "paymentMethodId";
+    /**
+     * The claim userId
+     */
+    public static final String USER_ID_CLAIM = "userId";
+    /**
+     * Audience for ecommerce
+     */
+    public static final String ECOMMERCE_AUDIENCE = "ecommerce";
+    /**
+     * Audience for npg
+     */
+    public static final String NPG_AUDIENCE = "npg";
+    /**
+     * Audience for webview
+     */
+    public static final String WEBVIEW_AUDIENCE = "ecommerce";
 
     private static final String JWT_ISSUER_LOG_ERROR_MESSAGE = "Got bad response from jwt-issuer-service [HTTP {}]";
 
