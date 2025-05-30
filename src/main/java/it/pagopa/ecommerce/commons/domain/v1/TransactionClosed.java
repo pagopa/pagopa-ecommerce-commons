@@ -55,12 +55,14 @@ public final class TransactionClosed extends BaseTransactionClosed
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            case TransactionRefundRequestedEvent e -> new TransactionWithRefundRequested(this, e);
-            case TransactionUserReceiptRequestedEvent e -> new TransactionWithRequestedUserReceipt(this, e);
-            default -> this;
-        };
+        if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
+        } else if (event instanceof TransactionRefundRequestedEvent transactionRefundRequestedEvent) {
+            return new TransactionWithRefundRequested(this, transactionRefundRequestedEvent);
+        } else if (event instanceof TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent) {
+            return new TransactionWithRequestedUserReceipt(this, transactionUserReceiptRequestedEvent);
+        }
+        return this;
     }
 
     /**

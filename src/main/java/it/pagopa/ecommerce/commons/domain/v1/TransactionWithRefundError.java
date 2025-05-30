@@ -52,8 +52,8 @@ public final class TransactionWithRefundError extends BaseTransactionWithRefundR
 
     @Override
     public Transaction applyEvent(Object event) {
-        if (event instanceof TransactionRefundedEvent e) {
-            return new TransactionRefunded(this, e);
+        if (event instanceof TransactionRefundedEvent transactionRefundedEvent) {
+            return new TransactionRefunded(this, transactionRefundedEvent);
         }
         return this;
     }
