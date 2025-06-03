@@ -52,10 +52,6 @@ public class JwtIssuerClient {
      * Audience for npg
      */
     public static final String NPG_AUDIENCE = "npg";
-    /**
-     * Audience for ecommerce webview
-     */
-    public static final String ECOMMERCE_WEBVIEW_AUDIENCE = "ecommerce-webview";
 
     private static final String JWT_ISSUER_LOG_ERROR_MESSAGE = "Got bad response from jwt-issuer-service [HTTP {}]";
 
