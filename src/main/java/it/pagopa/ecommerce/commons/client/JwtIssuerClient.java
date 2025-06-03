@@ -53,9 +53,18 @@ public class JwtIssuerClient {
      */
     public static final String NPG_AUDIENCE = "npg";
     /**
-     * Audience for webview
+     * Audience for ecommerce webview
      */
-    public static final String WEBVIEW_AUDIENCE = "ecommerce";
+    public static final String ECOMMERCE_WEBVIEW_AUDIENCE = "ecommerce-webview";
+
+    /**
+     * Audience for wallet
+     */
+    public static final String WALLET_AUDIENCE = "wallet";
+    /**
+     * Audience for wallet webview
+     */
+    public static final String WALLET_WEBVIEW_AUDIENCE = "wallet-webview";
 
     private static final String JWT_ISSUER_LOG_ERROR_MESSAGE = "Got bad response from jwt-issuer-service [HTTP {}]";
 
