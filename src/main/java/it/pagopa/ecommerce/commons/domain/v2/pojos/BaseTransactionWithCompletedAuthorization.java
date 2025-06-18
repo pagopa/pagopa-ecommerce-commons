@@ -55,15 +55,15 @@ public abstract class BaseTransactionWithCompletedAuthorization extends BaseTran
      * @return true iff the transaction was authorized
      */
     public boolean wasTransactionAuthorized() {
-        TransactionGatewayAuthorizationData transactionGatewayAuthorizationData = this.getTransactionAuthorizationCompletedData().getTransactionGatewayAuthorizationData();
-        return
-                switch (transactionGatewayAuthorizationData) {
-                    case PgsTransactionGatewayAuthorizationData p ->
-                            p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
-                    case NpgTransactionGatewayAuthorizationData n ->
-                            n.getOperationResult().equals(OperationResultDto.EXECUTED);
-                    case RedirectTransactionGatewayAuthorizationData r ->
-                            r.getOutcome().equals(RedirectTransactionGatewayAuthorizationData.Outcome.OK);
-                };
+        TransactionGatewayAuthorizationData data = this.getTransactionAuthorizationCompletedData()
+                .getTransactionGatewayAuthorizationData();
+        if (data instanceof PgsTransactionGatewayAuthorizationData p) {
+            return p.getAuthorizationResultDto().equals(AuthorizationResultDto.OK);
+        } else if (data instanceof NpgTransactionGatewayAuthorizationData n) {
+            return n.getOperationResult().equals(OperationResultDto.EXECUTED);
+        } else if (data instanceof RedirectTransactionGatewayAuthorizationData r) {
+            return r.getOutcome().equals(RedirectTransactionGatewayAuthorizationData.Outcome.OK);
+        }
+        return false;
     }
 }

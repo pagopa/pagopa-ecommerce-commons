@@ -10,7 +10,7 @@
     </parent>
     <groupId>it.pagopa</groupId>
     <artifactId>pagopa-ecommerce-commons</artifactId>
-    <version>1.36.0</version>
+    <version>1.37.3</version>
     <licenses>
         <license>
             <name>EUPL 1.2 Public License</name>
@@ -286,21 +286,18 @@
                         <configuration>
                             <source>17</source>
                             <target>17</target>
-                            <compilerArgs>--enable-preview</compilerArgs>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>${argLine} --enable-preview</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -451,6 +448,30 @@
                             <modelNameSuffix>dto</modelNameSuffix>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>jwt-issuer-api-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                https://raw.githubusercontent.com/pagopa/pagopa-jwt-issuer-service/refs/tags/0.3.4/api-spec/v1/openapi.yaml
+                            </inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <configOptions>
+                                <swaggerAnnotations>false</swaggerAnnotations>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                            <modelPackage>it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto</modelPackage>
+                            <apiPackage>it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api</apiPackage>
+                            <modelNameSuffix>dto</modelNameSuffix>
+                        </configuration>
+                    </execution>
                 </executions>
 
             </plugin>
@@ -553,9 +574,6 @@
                 </reportSets>
                 <configuration>
                     <failOnWarnings>true</failOnWarnings>
-                    <additionalOptions>
-                        <additionalOption>--enable-preview</additionalOption>
-                    </additionalOptions>
                     <excludePackageNames>
                         org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.*
                     </excludePackageNames>

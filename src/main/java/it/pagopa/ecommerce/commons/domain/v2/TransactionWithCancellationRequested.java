@@ -66,12 +66,13 @@ public final class TransactionWithCancellationRequested extends BaseTransactionW
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionClosedEvent e -> new TransactionUserCanceled(this, e);
-            case TransactionClosureErrorEvent e -> new TransactionWithClosureError(this, e);
-            case TransactionExpiredEvent e -> new TransactionCancellationExpired(this, e);
-            default -> this;
-        };
-
+        if (event instanceof TransactionClosedEvent transactionClosedEvent) {
+            return new TransactionUserCanceled(this, transactionClosedEvent);
+        } else if (event instanceof TransactionClosureErrorEvent transactionClosureErrorEvent) {
+            return new TransactionWithClosureError(this, transactionClosureErrorEvent);
+        } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionCancellationExpired(this, transactionExpiredEvent);
+        }
+        return this;
     }
 }

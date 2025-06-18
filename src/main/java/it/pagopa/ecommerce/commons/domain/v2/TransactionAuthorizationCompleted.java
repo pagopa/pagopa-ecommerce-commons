@@ -54,11 +54,12 @@ public final class TransactionAuthorizationCompleted extends BaseTransactionWith
 
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionClosureRequestedEvent ignore -> new TransactionWithClosureRequested(this);
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            default -> this;
-        };
+        if (event instanceof TransactionClosureRequestedEvent) {
+            return new TransactionWithClosureRequested(this);
+        } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
+        }
+        return this;
     }
 
     @Override

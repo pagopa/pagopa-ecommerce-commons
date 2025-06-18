@@ -48,13 +48,12 @@ public final class TransactionWithRequestedAuthorization extends BaseTransaction
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionAuthorizationCompletedEvent authorizedEvent ->
-                    new TransactionAuthorizationCompleted(this, authorizedEvent);
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpired(this, transactionExpiredEvent);
-            default -> this;
-        };
+        if (event instanceof TransactionAuthorizationCompletedEvent authorizedEvent) {
+            return new TransactionAuthorizationCompleted(this, authorizedEvent);
+        } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
+        }
+        return this;
     }
 
     /**

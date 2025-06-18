@@ -47,28 +47,24 @@ public final class TransactionWithClosureRequested extends BaseTransactionWithCl
     @Override
     public Transaction applyEvent(Object event) {
         boolean wasTransactionAuthorized = wasTransactionAuthorized();
-        return switch (event) {
-            case TransactionClosedEvent e -> {
-                if (wasTransactionAuthorized) {
-                    yield new TransactionClosed(this, e);
-                } else {
-                    yield this;
-                }
-            }
-            case TransactionClosureErrorEvent e -> new TransactionWithClosureError(
-                    this,
-                    e
-            );
-            case TransactionClosureFailedEvent e -> {
-                if (!wasTransactionAuthorized) {
-                    yield new TransactionUnauthorized(this, e);
-                } else {
-                    yield this;
-                }
-            }
-            case TransactionExpiredEvent e -> new TransactionExpired(this, e);
-            default -> this;
-        };
+
+        if (event instanceof TransactionClosedEvent transactionClosedEvent && wasTransactionAuthorized) {
+            return new TransactionClosed(this, transactionClosedEvent);
+        }
+
+        if (event instanceof TransactionClosureErrorEvent transactionClosureErrorEvent) {
+            return new TransactionWithClosureError(this, transactionClosureErrorEvent);
+        }
+
+        if (event instanceof TransactionClosureFailedEvent transactionClosureFailedEvent && !wasTransactionAuthorized) {
+            return new TransactionUnauthorized(this, transactionClosureFailedEvent);
+        }
+
+        if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpired(this, transactionExpiredEvent);
+        }
+
+        return this;
     }
 
     /**
