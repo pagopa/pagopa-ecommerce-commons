@@ -791,9 +791,7 @@ public class NpgClient {
 
         if (err instanceof WebClientResponseException e) {
             try {
-
-                HttpStatus httpStatus = HttpStatus.resolve(e.getStatusCode().value());
-                List<ErrorsInnerDto> responseErrors = switch (httpStatus) {
+                List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
                     case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
                             e.getResponseBodyAsByteArray(),
                             ServerErrorDto.class
