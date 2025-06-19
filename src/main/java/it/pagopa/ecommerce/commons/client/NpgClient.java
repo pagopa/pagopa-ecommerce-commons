@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.client;
 
-import javax.annotation.Nullable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
@@ -10,14 +9,14 @@ import io.opentelemetry.context.Context;
 import it.pagopa.ecommerce.commons.exceptions.NpgResponseException;
 import it.pagopa.ecommerce.commons.generated.npg.v1.api.PaymentServicesApi;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Nonnull;
-import jakarta.validation.constraints.NotNull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -25,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * <p>
@@ -791,7 +788,8 @@ public class NpgClient {
 
         if (err instanceof WebClientResponseException e) {
             try {
-                List<ErrorsInnerDto> responseErrors = switch (e.getStatusCode()) {
+                HttpStatus errorStatusCode = HttpStatus.valueOf(e.getStatusCode().value());
+                List<ErrorsInnerDto> responseErrors = switch (errorStatusCode) {
                     case INTERNAL_SERVER_ERROR -> objectMapper.readValue(
                             e.getResponseBodyAsByteArray(),
                             ServerErrorDto.class
