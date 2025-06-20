@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Base class containing information for a refunded transaction

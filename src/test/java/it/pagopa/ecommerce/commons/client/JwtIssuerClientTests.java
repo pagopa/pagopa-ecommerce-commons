@@ -5,8 +5,8 @@ import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api.JwtIssuerApi;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequestDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
-import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
+import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.RsaJwkResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,14 +40,15 @@ class JwtIssuerClientTests {
 
     @Test
     void shouldRetrieveJWKS() {
-        JWKResponseDto jwkResponseDto = new JWKResponseDto();
-        jwkResponseDto.alg("alg");
-        jwkResponseDto.use("use");
-        jwkResponseDto.e("e");
-        jwkResponseDto.n("n");
-        jwkResponseDto.kid("kid");
-        jwkResponseDto.kty(JWKResponseDto.KtyEnum.RSA);
-        JWKSResponseDto jwksResponseDto = new JWKSResponseDto().addKeysItem(jwkResponseDto);
+        JWKSResponseDto jwkResponseDto = new JWKSResponseDto();
+        RsaJwkResponseDto responseDto = new RsaJwkResponseDto();
+        responseDto.alg("alg");
+        responseDto.use("use");
+        responseDto.e("e");
+        responseDto.n("n");
+        responseDto.kid("kid");
+        responseDto.kty(RsaJwkResponseDto.KtyEnum.RSA);
+        JWKSResponseDto jwksResponseDto = new JWKSResponseDto().addKeysItem(responseDto);
 
         Mockito.when(
                 jwtIssuerApi.getTokenPublicKeys()

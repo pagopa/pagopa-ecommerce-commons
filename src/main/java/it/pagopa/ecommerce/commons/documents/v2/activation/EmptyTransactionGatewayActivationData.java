@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v2.activation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Empty transaction activation data indicating no additional information are

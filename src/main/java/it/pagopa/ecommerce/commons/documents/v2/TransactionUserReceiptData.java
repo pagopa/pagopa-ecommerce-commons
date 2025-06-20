@@ -1,12 +1,11 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 /**
  * Data related to Nodo send payment result operation such as outcome (OK/KO)

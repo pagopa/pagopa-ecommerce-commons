@@ -4,7 +4,7 @@ import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * PGS transaction authorization completed data

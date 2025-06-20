@@ -1,23 +1,16 @@
 package it.pagopa.ecommerce.commons.client;
 
-import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import it.pagopa.ecommerce.commons.exceptions.JwtIssuerClientException;
-import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api.JwtIssuerApi;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequestDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Jwt issuer client PI implementation
@@ -97,7 +90,6 @@ public class JwtIssuerClient {
      * @param audience      the audience of the token
      * @param duration      the duration of the token
      * @param privateClaims the private claims to set into the token
-     *
      * @return An object containing the generated token
      */
     public Mono<CreateTokenResponseDto> createJWTToken(
