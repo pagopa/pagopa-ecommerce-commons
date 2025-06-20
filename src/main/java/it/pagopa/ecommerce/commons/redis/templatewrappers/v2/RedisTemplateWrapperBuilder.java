@@ -68,7 +68,7 @@ public class RedisTemplateWrapperBuilder {
      *         objects serialization proper serialization
      */
     private static <T> Jackson2JsonRedisSerializer<T> buildJackson2RedisSerializer(Class<T> clazz) {
-        Jackson2JsonRedisSerializer<T> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(clazz);
+
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule rptSerializationModule = new SimpleModule();
         rptSerializationModule.addSerializer(RptId.class, new JacksonRptIdSerializer());
@@ -77,7 +77,6 @@ public class RedisTemplateWrapperBuilder {
         rptSerializationModule.addDeserializer(IdempotencyKey.class, new JacksonIdempotencyKeyDeserializer());
         objectMapper.registerModule(rptSerializationModule);
         objectMapper.setSerializationInclusion(NON_NULL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        return jackson2JsonRedisSerializer;
+        return new Jackson2JsonRedisSerializer<>(objectMapper, clazz);
     }
 }
