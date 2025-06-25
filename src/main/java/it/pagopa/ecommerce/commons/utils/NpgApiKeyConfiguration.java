@@ -24,6 +24,12 @@ public class NpgApiKeyConfiguration {
         );
 
         /**
+         * No-args constructor
+         */
+        public Builder() {
+        }
+
+        /**
          * Set the default NPG api key
          *
          * @param defaultApiKey the default api key to be set

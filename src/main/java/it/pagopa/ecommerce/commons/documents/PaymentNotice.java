@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.documents;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.util.List;
  */
 @Data
 @Document
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public class PaymentNotice {
@@ -28,4 +26,39 @@ public class PaymentNotice {
     private String companyName;
     @Nullable
     private String creditorReferenceId;
+
+    /**
+     * All-args constructor
+     *
+     * @param paymentToken        the payment token
+     * @param rptId               the rptId
+     * @param description         the transaction description
+     * @param amount              the transaction amount
+     * @param paymentContextCode  the payment context code
+     * @param transferList        the list of transfer information
+     * @param isAllCCP            the isAllCCP flag
+     * @param companyName         the company name
+     * @param creditorReferenceId the creditor reference id
+     */
+    public PaymentNotice(
+            String paymentToken,
+            String rptId,
+            String description,
+            Integer amount,
+            String paymentContextCode,
+            List<PaymentTransferInformation> transferList,
+            boolean isAllCCP,
+            String companyName,
+            String creditorReferenceId
+    ) {
+        this.paymentToken = paymentToken;
+        this.rptId = rptId;
+        this.description = description;
+        this.amount = amount;
+        this.paymentContextCode = paymentContextCode;
+        this.transferList = transferList;
+        this.isAllCCP = isAllCCP;
+        this.companyName = companyName;
+        this.creditorReferenceId = creditorReferenceId;
+    }
 }

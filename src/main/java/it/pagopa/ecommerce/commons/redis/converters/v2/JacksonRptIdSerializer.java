@@ -13,6 +13,12 @@ import java.io.IOException;
 public class JacksonRptIdSerializer extends JsonSerializer<RptId> {
 
     /**
+     * No-args constructor
+     */
+    public JacksonRptIdSerializer() {
+    }
+
+    /**
      * @param value       Value to serialize; can <b>not</b> be null.
      * @param gen         Generator used to output resulting Json content
      * @param serializers Provider that can be used to get serializers for

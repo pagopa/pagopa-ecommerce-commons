@@ -12,6 +12,12 @@ import java.io.IOException;
  */
 public class JacksonRptIdDeserializer extends JsonDeserializer<RptId> {
     /**
+     * No-args constructor
+     */
+    public JacksonRptIdDeserializer() {
+    }
+
+    /**
      * Deserialize json object to {@link RptId}
      *
      * @param p    Parsed used for reading JSON content

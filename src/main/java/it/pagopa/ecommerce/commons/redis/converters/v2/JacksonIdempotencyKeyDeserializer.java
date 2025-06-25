@@ -12,6 +12,12 @@ import java.io.IOException;
  */
 public class JacksonIdempotencyKeyDeserializer extends JsonDeserializer<IdempotencyKey> {
     /**
+     * No-args constructor
+     */
+    public JacksonIdempotencyKeyDeserializer() {
+    }
+
+    /**
      * Deserialize json object to {@link IdempotencyKey}
      *
      * @param p    Parsed used for reading JSON content

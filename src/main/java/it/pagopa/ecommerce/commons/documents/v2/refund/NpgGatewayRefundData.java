@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public final class NpgGatewayRefundData implements GatewayRefundData {
@@ -23,6 +22,15 @@ public final class NpgGatewayRefundData implements GatewayRefundData {
      */
     @NotNull
     private String operationId;
+
+    /**
+     * All-args constructor
+     *
+     * @param operationId the operation id
+     */
+    public NpgGatewayRefundData(String operationId) {
+        this.operationId = operationId;
+    }
 
     @Override
     public RefundDataType getType() {

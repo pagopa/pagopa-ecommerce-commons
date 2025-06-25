@@ -20,6 +20,13 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode
 public final class EmptyTransaction implements Transaction {
+
+    /**
+     * No-args constructor
+     */
+    public EmptyTransaction() {
+    }
+
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(event.getTransactionId()),
