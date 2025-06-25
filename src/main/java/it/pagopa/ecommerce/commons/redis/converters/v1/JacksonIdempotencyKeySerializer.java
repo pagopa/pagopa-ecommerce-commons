@@ -15,6 +15,16 @@ public class JacksonIdempotencyKeySerializer extends JsonSerializer<IdempotencyK
     /**
      * No-args constructor
      */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Jackson framework
+     * for serialization and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
     public JacksonIdempotencyKeySerializer() {
     }
 
