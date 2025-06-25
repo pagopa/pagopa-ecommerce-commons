@@ -71,14 +71,13 @@ public abstract class BaseTransaction {
     ClientId clientId;
 
     /**
-     * Primary constructor for the BaseTransaction class.
+     * Initializes a v1 base transaction with its core attributes
      *
-     * @param transactionId  the unique identifier for this transaction.
-     * @param paymentNotices the list of payment notices associated with the
-     *                       transaction.
-     * @param email          the confidential email of the user.
-     * @param creationDate   the timestamp of the transaction's creation.
-     * @param clientId       the client ID that initiated the transaction.
+     * @param transactionId  the transaction's v1 unique identifier
+     * @param paymentNotices the list of included v1 payment notices
+     * @param email          the user's confidential email for receipts
+     * @param creationDate   the v1 transaction's creation timestamp
+     * @param clientId       the originating client identifier
      */
     public BaseTransaction(
             TransactionId transactionId,
