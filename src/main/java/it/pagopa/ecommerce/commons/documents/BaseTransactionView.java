@@ -20,7 +20,7 @@ public abstract class BaseTransactionView {
      *
      * @param transactionId the transaction id
      */
-    public BaseTransactionView(String transactionId) {
+    protected BaseTransactionView(String transactionId) {
         this.transactionId = transactionId;
     }
 }

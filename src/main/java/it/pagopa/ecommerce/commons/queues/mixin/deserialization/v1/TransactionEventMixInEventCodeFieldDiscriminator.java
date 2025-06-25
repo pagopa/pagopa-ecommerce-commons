@@ -15,6 +15,6 @@ public abstract class TransactionEventMixInEventCodeFieldDiscriminator {
     /**
      * Default constructor
      */
-    public TransactionEventMixInEventCodeFieldDiscriminator() {
+    protected TransactionEventMixInEventCodeFieldDiscriminator() {
     }
 }

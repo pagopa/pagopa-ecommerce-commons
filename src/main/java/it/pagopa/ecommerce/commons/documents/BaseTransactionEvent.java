@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -39,7 +38,7 @@ public abstract class BaseTransactionEvent<T> {
      * @param data          the specific data payload for this event
      * @param eventCode     the unique code identifying the event type
      */
-    public BaseTransactionEvent(
+    protected BaseTransactionEvent(
             String id,
             String transactionId,
             String creationDate,

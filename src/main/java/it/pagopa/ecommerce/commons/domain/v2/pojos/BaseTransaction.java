@@ -80,7 +80,7 @@ public abstract class BaseTransaction {
      * @param creationDate   the timestamp of the transaction's creation.
      * @param clientId       the client ID that initiated the transaction.
      */
-    public BaseTransaction(
+    protected BaseTransaction(
             TransactionId transactionId,
             List<PaymentNotice> paymentNotices,
             Confidential<Email> email,

@@ -28,7 +28,7 @@ public abstract sealed class BaseTransactionRefundedData permits TransactionRefu
      *
      * @param statusBeforeRefunded Transaction status before being refunded
      */
-    public BaseTransactionRefundedData(TransactionStatusDto statusBeforeRefunded) {
+    protected BaseTransactionRefundedData(TransactionStatusDto statusBeforeRefunded) {
         this.statusBeforeRefunded = statusBeforeRefunded;
     }
 }
