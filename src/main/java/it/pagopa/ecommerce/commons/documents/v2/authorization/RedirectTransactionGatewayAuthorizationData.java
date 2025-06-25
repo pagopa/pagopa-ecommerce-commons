@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 public final class RedirectTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
@@ -53,6 +52,20 @@ public final class RedirectTransactionGatewayAuthorizationData implements Transa
      */
     @Nullable
     private String errorCode;
+
+    /**
+     * All-args constructor
+     *
+     * @param outcome   the authorization outcome
+     * @param errorCode the authorization error code
+     */
+    public RedirectTransactionGatewayAuthorizationData(
+            Outcome outcome,
+            String errorCode
+    ) {
+        this.outcome = outcome;
+        this.errorCode = errorCode;
+    }
 
     @Override
     public AuthorizationDataType getType() {

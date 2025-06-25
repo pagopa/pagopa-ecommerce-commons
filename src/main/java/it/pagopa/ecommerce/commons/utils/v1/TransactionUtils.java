@@ -16,6 +16,12 @@ import java.util.Optional;
 public class TransactionUtils {
 
     /**
+     * No-args constructor
+     */
+    public TransactionUtils() {
+    }
+
+    /**
      * The method used for check if the specific status is transient
      *
      * @param status the status to check

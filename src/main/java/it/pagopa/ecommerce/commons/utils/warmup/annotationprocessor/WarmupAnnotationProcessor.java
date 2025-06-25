@@ -24,6 +24,12 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(WarmupAnnotationProcessor.class);
 
+    /**
+     * No-args constructor
+     */
+    public WarmupAnnotationProcessor() {
+    }
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);

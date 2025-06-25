@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.documents.PaymentNotice;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.Email;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
  */
 @Data
 @Document
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public class TransactionActivatedData {
@@ -34,4 +32,39 @@ public class TransactionActivatedData {
     @Nullable
     private String userId;
 
+    /**
+     * All-args constructor
+     *
+     * @param email                            the user email
+     * @param paymentNotices                   the list of payment notices
+     * @param faultCode                        the fault code
+     * @param faultCodeString                  the fault code string description
+     * @param clientId                         the client id
+     * @param idCart                           the cart id
+     * @param paymentTokenValiditySeconds      the payment token validity in seconds
+     * @param transactionGatewayActivationData the transaction gateway activation
+     *                                         data
+     * @param userId                           the user id
+     */
+    public TransactionActivatedData(
+            Confidential<Email> email,
+            List<PaymentNotice> paymentNotices,
+            String faultCode,
+            String faultCodeString,
+            Transaction.ClientId clientId,
+            @Nullable String idCart,
+            int paymentTokenValiditySeconds,
+            TransactionGatewayActivationData transactionGatewayActivationData,
+            @Nullable String userId
+    ) {
+        this.email = email;
+        this.paymentNotices = paymentNotices;
+        this.faultCode = faultCode;
+        this.faultCodeString = faultCodeString;
+        this.clientId = clientId;
+        this.idCart = idCart;
+        this.paymentTokenValiditySeconds = paymentTokenValiditySeconds;
+        this.transactionGatewayActivationData = transactionGatewayActivationData;
+        this.userId = userId;
+    }
 }

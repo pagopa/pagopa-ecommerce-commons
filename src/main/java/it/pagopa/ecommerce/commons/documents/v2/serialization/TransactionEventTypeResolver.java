@@ -38,6 +38,12 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         PATH_TO_CLASS_MAP = classToPathMappings._2();
     }
 
+    /**
+     * No-args constructor
+     */
+    public TransactionEventTypeResolver() {
+    }
+
     private static Tuple2<Map<Class<? extends TransactionEvent<?>>, String>, Map<String, Class<? extends TransactionEvent<?>>>> initializePathToClassAssociations(
                                                                                                                                                                   String basePackage
     ) {

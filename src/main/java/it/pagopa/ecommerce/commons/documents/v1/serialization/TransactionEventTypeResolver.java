@@ -42,6 +42,12 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         checkEventCodeToClassAssociations(BASE_PACKAGE, CLASS_TO_EVENT_CODE_MAP, EVENT_CODE_TO_CLASS_MAP);
     }
 
+    /**
+     * No-args constructor
+     */
+    public TransactionEventTypeResolver() {
+    }
+
     private static Tuple2<Map<Class<? extends TransactionEvent<?>>, TransactionEventCode>, Map<TransactionEventCode, Class<? extends TransactionEvent<?>>>> initializeEventCodeToClassAssociations(
                                                                                                                                                                                                    String basePackage
     ) {

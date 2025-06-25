@@ -27,6 +27,12 @@ public class StrictJsonSerializerProvider implements JsonSerializerProvider {
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     /**
+     * No-args constructor
+     */
+    public StrictJsonSerializerProvider() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

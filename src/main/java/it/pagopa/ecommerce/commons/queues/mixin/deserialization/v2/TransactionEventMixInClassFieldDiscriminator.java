@@ -12,5 +12,9 @@ import it.pagopa.ecommerce.commons.documents.v2.serialization.TransactionEventTy
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "_class", visible = false)
 @JsonTypeIdResolver(TransactionEventTypeResolver.class)
 public abstract class TransactionEventMixInClassFieldDiscriminator {
-
+    /**
+     * Default constructor
+     */
+    public TransactionEventMixInClassFieldDiscriminator() {
+    }
 }
