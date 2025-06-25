@@ -46,6 +46,7 @@ public class TransactionActivatedData {
      *                                         data
      * @param userId                           the user id
      */
+    @SuppressWarnings("java:S107") // Constructor has 9 parameters, required for activation data model
     public TransactionActivatedData(
             Confidential<Email> email,
             List<PaymentNotice> paymentNotices,

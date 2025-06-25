@@ -40,6 +40,7 @@ public class PaymentNotice {
      * @param companyName         the company name
      * @param creditorReferenceId the creditor reference id
      */
+    @SuppressWarnings("java:S107") // Constructor has 9 parameters, required for payment notice model
     public PaymentNotice(
             String paymentToken,
             String rptId,

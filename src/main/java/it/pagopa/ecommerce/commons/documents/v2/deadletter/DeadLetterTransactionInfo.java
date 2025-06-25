@@ -62,6 +62,7 @@ public class DeadLetterTransactionInfo {
      * @param rrn                    the retrieval reference number
      * @param details                the gateway-specific details
      */
+    @SuppressWarnings("java:S107") // Constructor has 10 parameters, required for dead letter info model
     public DeadLetterTransactionInfo(
             String transactionId,
             String authorizationRequestId,
