@@ -57,7 +57,6 @@ import java.util.List;
  */
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public abstract class BaseTransaction {
@@ -70,6 +69,30 @@ public abstract class BaseTransaction {
     ZonedDateTime creationDate;
 
     ClientId clientId;
+
+    /**
+     * Primary constructor for the BaseTransaction class.
+     *
+     * @param transactionId  the unique identifier for this transaction.
+     * @param paymentNotices the list of payment notices associated with the
+     *                       transaction.
+     * @param email          the confidential email of the user.
+     * @param creationDate   the timestamp of the transaction's creation.
+     * @param clientId       the client ID that initiated the transaction.
+     */
+    public BaseTransaction(
+            TransactionId transactionId,
+            List<PaymentNotice> paymentNotices,
+            Confidential<Email> email,
+            ZonedDateTime creationDate,
+            ClientId clientId
+    ) {
+        this.transactionId = transactionId;
+        this.paymentNotices = paymentNotices;
+        this.email = email;
+        this.creationDate = creationDate;
+        this.clientId = clientId;
+    }
 
     /**
      * Retrieves the current transaction status

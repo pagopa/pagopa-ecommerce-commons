@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Document(collection = "eventstore")
 public abstract class BaseTransactionEvent<T> {
     @Id
@@ -30,4 +29,27 @@ public abstract class BaseTransactionEvent<T> {
     private T data;
 
     private String eventCode;
+
+    /**
+     * Primary constructor for a base transaction event.
+     *
+     * @param id            the unique ID of the event document
+     * @param transactionId the transaction identifier
+     * @param creationDate  the creation timestamp for the event
+     * @param data          the specific data payload for this event
+     * @param eventCode     the unique code identifying the event type
+     */
+    public BaseTransactionEvent(
+            String id,
+            String transactionId,
+            String creationDate,
+            T data,
+            String eventCode
+    ) {
+        this.id = id;
+        this.transactionId = transactionId;
+        this.creationDate = creationDate;
+        this.data = data;
+        this.eventCode = eventCode;
+    }
 }

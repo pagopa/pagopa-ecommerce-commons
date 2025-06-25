@@ -27,6 +27,12 @@ import java.util.Arrays;
 public class ControllerWarmup implements ApplicationListener<ContextRefreshedEvent> {
 
     /**
+     * Default constructor
+     */
+    public ControllerWarmup() {
+    }
+
+    /**
      * Callback method that handles {@link ContextRefreshedEvent} event
      *
      * @param event the event to respond to

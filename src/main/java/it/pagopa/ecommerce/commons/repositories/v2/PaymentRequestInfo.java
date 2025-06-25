@@ -14,19 +14,21 @@ import java.util.List;
 /**
  * Redis structure to hold volatile information about a payment request.
  *
- * @param id             RPT id of the request
- * @param paFiscalCode   Fiscal code of the public entity that published the
- *                       payment notice
- * @param paName         Human-readable name of the public entity that published
- *                       the payment notice
- * @param description    Description of the payment notice
- * @param amount         Amount on the payment notice
- * @param dueDate        Payment's due date
- * @param paymentToken   Payment token associated to this payment request
- * @param idempotencyKey Idempotency key associated to the payment request
- * @param transferList   Payment transfer list information
- * @param isAllCCP       isAllCCP flag for GEC. If true includes poste bundles,
- *                       false excludes them
+ * @param isAllCCP            isAllCCP flag for GEC. If true includes poste
+ *                            bundles, false excludes them
+ * @param id                  RPT id of the request
+ * @param paFiscalCode        Fiscal code of the public entity that published
+ *                            the payment notice
+ * @param paName              Human-readable name of the public entity that
+ *                            published the payment notice
+ * @param description         Description of the payment notice
+ * @param amount              Amount on the payment notice
+ * @param dueDate             Payment's due date
+ * @param paymentToken        Payment token associated to this payment request
+ * @param activationDate      Payment activation date
+ * @param idempotencyKey      Idempotency key associated to the payment request
+ * @param transferList        Payment transfer list information
+ * @param creditorReferenceId The creditor reference identifier
  */
 @RedisHash(value = "keys", timeToLive = 10 * 60)
 public record PaymentRequestInfo(

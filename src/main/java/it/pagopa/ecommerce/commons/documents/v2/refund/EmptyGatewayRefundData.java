@@ -3,7 +3,6 @@ package it.pagopa.ecommerce.commons.documents.v2.refund;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Generated;
-import lombok.NoArgsConstructor;
 
 /**
  * Empty gateway refund data, used for gateway for which no additional data have
@@ -11,13 +10,18 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @Generated
 public final class EmptyGatewayRefundData implements GatewayRefundData {
     /**
      * Refund data type
      */
     private static final RefundDataType TYPE = RefundDataType.EMPTY;
+
+    /**
+     * No-args constructor
+     */
+    public EmptyGatewayRefundData() {
+    }
 
     @Override
     public RefundDataType getType() {

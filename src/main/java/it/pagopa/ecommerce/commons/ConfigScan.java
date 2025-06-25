@@ -11,4 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @Configuration
 public class ConfigScan {
+    /**
+     * Default constructor
+     */
+    public ConfigScan() {
+    }
 }

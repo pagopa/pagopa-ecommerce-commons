@@ -628,16 +628,18 @@ public class UpdateTransactionStatusTracerUtils {
     /**
      * Authorization requested status update info
      *
-     * @param trigger              authorization request trigger
-     * @param outcome              the transaction update outcome
-     * @param pspId                psp identifier for the current transaction
-     *                             (absent for user canceled transaction)
-     * @param clientId             client identifier that have initiated the
-     *                             transaction
-     * @param walletPayment        boolean value indicating if the transaction have
-     *                             been performed with an onboarded method (wallet)
-     *                             or not (absent for user canceled transaction)
-     * @param gatewayOutcomeResult authorization result
+     * @param trigger               authorization request trigger
+     * @param outcome               the transaction update outcome
+     * @param pspId                 psp identifier for the current transaction
+     *                              (absent for user canceled transaction)
+     * @param clientId              client identifier that have initiated the
+     *                              transaction
+     * @param walletPayment         boolean value indicating if the transaction have
+     *                              been performed with an onboarded method (wallet)
+     *                              or not (absent for user canceled transaction)
+     * @param paymentMethodTypeCode payment method type code used for the
+     *                              authorization
+     * @param gatewayOutcomeResult  authorization result
      */
     public record AuthorizationRequestedStatusUpdate(
             @NotNull UpdateTransactionTrigger trigger,

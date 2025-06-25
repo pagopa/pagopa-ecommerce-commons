@@ -574,7 +574,6 @@
                 </reportSets>
                 <configuration>
                     <failOnWarnings>true</failOnWarnings>
-                    <doclint>all,-missing</doclint>
                     <excludePackageNames>
                         org.openapitools.*:it.pagopa.generated.*:it.pagopa.ecommerce.commons.generated.*
                     </excludePackageNames>

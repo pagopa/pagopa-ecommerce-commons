@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
  * Transaction info for NPG gateway
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
@@ -42,6 +41,26 @@ public final class DeadLetterNpgTransactionInfoDetailsData implements DeadLetter
 
     @NotNull
     private static final TransactionInfoDataType TYPE = TransactionInfoDataType.NPG;
+
+    /**
+     * All-args constructor
+     *
+     * @param operationResult   the operation result
+     * @param operationId       the operation id
+     * @param correlationId     the correlation id
+     * @param paymentEndToEndId the payment end to end id
+     */
+    public DeadLetterNpgTransactionInfoDetailsData(
+            OperationResultDto operationResult,
+            String operationId,
+            String correlationId,
+            String paymentEndToEndId
+    ) {
+        this.operationResult = operationResult;
+        this.operationId = operationId;
+        this.correlationId = correlationId;
+        this.paymentEndToEndId = paymentEndToEndId;
+    }
 
     @Override
     public TransactionInfoDataType getType() {

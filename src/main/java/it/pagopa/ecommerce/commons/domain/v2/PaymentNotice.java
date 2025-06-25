@@ -22,6 +22,7 @@ import java.util.List;
  *                               associated to postal IBAN's
  * @param companyName            payment notice company name as received by Node
  *                               in activate response
+ * @param creditorReferenceId    the creditor reference identifier
  */
 @ValueObject
 public record PaymentNotice(
