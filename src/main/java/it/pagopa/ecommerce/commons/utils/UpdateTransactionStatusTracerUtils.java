@@ -733,18 +733,24 @@ public class UpdateTransactionStatusTracerUtils {
      */
     public interface StatusUpdateInfo {
         /**
+         * Get the update transaction status type
+         *
          * @return the update transaction status type
          * @see UpdateTransactionStatusType
          */
         UpdateTransactionStatusType getType();
 
         /**
+         * Get the update transaction trigger
+         *
          * @return the update transaction trigger
          * @see UpdateTransactionTrigger
          */
         UpdateTransactionTrigger getTrigger();
 
         /**
+         * Get the update transaction outcome
+         *
          * @return the update transaction outcome
          * @see UpdateTransactionStatusOutcome
          */

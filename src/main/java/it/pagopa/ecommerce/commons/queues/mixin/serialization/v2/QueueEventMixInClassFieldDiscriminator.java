@@ -18,6 +18,8 @@ public abstract class QueueEventMixInClassFieldDiscriminator<T extends BaseTrans
 
     /**
      * No-args constructor
+     *
+     * @param event the event
      */
     protected QueueEventMixInClassFieldDiscriminator(T event) {
     }
