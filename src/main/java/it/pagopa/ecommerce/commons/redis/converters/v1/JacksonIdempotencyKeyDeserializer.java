@@ -12,6 +12,22 @@ import java.io.IOException;
  */
 public class JacksonIdempotencyKeyDeserializer extends JsonDeserializer<IdempotencyKey> {
     /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Jackson framework
+     * for deserialization and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public JacksonIdempotencyKeyDeserializer() {
+    }
+
+    /**
      * Deserialize json object to {@link IdempotencyKey}
      *
      * @param p    Parsed used for reading JSON content

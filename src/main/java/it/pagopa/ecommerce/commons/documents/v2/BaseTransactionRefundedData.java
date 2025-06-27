@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Document
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public abstract sealed class BaseTransactionRefundedData permits TransactionRefundErrorData,TransactionRefundRequestedData,TransactionRefundedData {
@@ -23,4 +22,13 @@ public abstract sealed class BaseTransactionRefundedData permits TransactionRefu
      * Transaction status before transaction being refunded
      */
     protected @NotNull TransactionStatusDto statusBeforeRefunded;
+
+    /**
+     * All-args constructor
+     *
+     * @param statusBeforeRefunded Transaction status before being refunded
+     */
+    protected BaseTransactionRefundedData(TransactionStatusDto statusBeforeRefunded) {
+        this.statusBeforeRefunded = statusBeforeRefunded;
+    }
 }

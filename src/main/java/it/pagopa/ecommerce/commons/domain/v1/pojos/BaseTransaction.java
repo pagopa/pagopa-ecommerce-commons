@@ -57,7 +57,6 @@ import java.util.List;
  */
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public abstract class BaseTransaction {
@@ -70,6 +69,29 @@ public abstract class BaseTransaction {
     ZonedDateTime creationDate;
 
     ClientId clientId;
+
+    /**
+     * Initializes a v1 base transaction with its core attributes
+     *
+     * @param transactionId  the transaction's v1 unique identifier
+     * @param paymentNotices the list of included v1 payment notices
+     * @param email          the user's confidential email for receipts
+     * @param creationDate   the v1 transaction's creation timestamp
+     * @param clientId       the originating client identifier
+     */
+    protected BaseTransaction(
+            TransactionId transactionId,
+            List<PaymentNotice> paymentNotices,
+            Confidential<Email> email,
+            ZonedDateTime creationDate,
+            ClientId clientId
+    ) {
+        this.transactionId = transactionId;
+        this.paymentNotices = paymentNotices;
+        this.email = email;
+        this.creationDate = creationDate;
+        this.clientId = clientId;
+    }
 
     /**
      * Retrieves the current transaction status

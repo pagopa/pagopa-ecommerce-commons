@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 public final class NpgTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
@@ -42,6 +41,29 @@ public final class NpgTransactionGatewayAuthorizationData implements Transaction
     private String validationServiceId;
 
     private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.NPG;
+
+    /**
+     * All-args constructor
+     *
+     * @param operationResult     the operation result
+     * @param operationId         the operation id
+     * @param paymentEndToEndId   the payment end to end id
+     * @param errorCode           the authorization error code
+     * @param validationServiceId the validation service id
+     */
+    public NpgTransactionGatewayAuthorizationData(
+            OperationResultDto operationResult,
+            String operationId,
+            String paymentEndToEndId,
+            String errorCode,
+            String validationServiceId
+    ) {
+        this.operationResult = operationResult;
+        this.operationId = operationId;
+        this.paymentEndToEndId = paymentEndToEndId;
+        this.errorCode = errorCode;
+        this.validationServiceId = validationServiceId;
+    }
 
     @Override
     public AuthorizationDataType getType() {

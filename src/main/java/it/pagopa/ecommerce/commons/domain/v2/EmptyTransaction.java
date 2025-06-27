@@ -20,6 +20,23 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode
 public final class EmptyTransaction implements Transaction {
+
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required for transaction
+     * state management and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public EmptyTransaction() {
+    }
+
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(event.getTransactionId()),

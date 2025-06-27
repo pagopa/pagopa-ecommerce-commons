@@ -11,4 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @Configuration
 public class ConfigScan {
+    /**
+     * Default constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Spring framework
+     * for configuration scanning and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public ConfigScan() {
+    }
 }

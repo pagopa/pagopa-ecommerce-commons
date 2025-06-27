@@ -13,6 +13,22 @@ import java.io.IOException;
 public class JacksonIdempotencyKeySerializer extends JsonSerializer<IdempotencyKey> {
 
     /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Jackson framework
+     * for serialization and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public JacksonIdempotencyKeySerializer() {
+    }
+
+    /**
      * @param value       Value to serialize; can <b>not</b> be null.
      * @param gen         Generator used to output resulting Json content
      * @param serializers Provider that can be used to get serializers for

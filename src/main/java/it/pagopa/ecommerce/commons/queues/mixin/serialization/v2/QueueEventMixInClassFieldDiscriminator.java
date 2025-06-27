@@ -15,6 +15,15 @@ import it.pagopa.ecommerce.commons.documents.v2.serialization.TransactionEventTy
  *            type
  */
 public abstract class QueueEventMixInClassFieldDiscriminator<T extends BaseTransactionEvent<?>> {
+
+    /**
+     * No-args constructor
+     *
+     * @param event the event
+     */
+    protected QueueEventMixInClassFieldDiscriminator(T event) {
+    }
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, property = "_class", visible = false)
     @JsonTypeIdResolver(TransactionEventTypeResolver.class)
     private T event;

@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 /**
  * PGS transaction authorization completed data
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,6 +28,20 @@ public final class PgsTransactionGatewayAuthorizationData implements Transaction
 
     @NotNull
     private static final TransactionGatewayAuthorizationData.AuthorizationDataType TYPE = AuthorizationDataType.PGS;
+
+    /**
+     * All-args constructor
+     *
+     * @param errorCode              the error code
+     * @param authorizationResultDto the authorization result
+     */
+    public PgsTransactionGatewayAuthorizationData(
+            String errorCode,
+            AuthorizationResultDto authorizationResultDto
+    ) {
+        this.errorCode = errorCode;
+        this.authorizationResultDto = authorizationResultDto;
+    }
 
     @Override
     public AuthorizationDataType getType() {

@@ -16,6 +16,22 @@ import java.util.Optional;
 public class TransactionUtils {
 
     /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Spring framework
+     * for component instantiation and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public TransactionUtils() {
+    }
+
+    /**
      * The method used for check if the specific status is transient
      *
      * @param status the status to check

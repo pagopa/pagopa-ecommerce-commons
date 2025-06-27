@@ -94,9 +94,10 @@ public class Transaction extends BaseTransactionView {
         );
 
         /**
-         * @param enumValue - the enumeration value to be converted to {@link ClientId}
-         *                  enumeration instance
-         * @return the converted {@link ClientId} enumeration instance
+         * Create a ClientId from its string representation
+         *
+         * @param enumValue the string value to convert
+         * @return the corresponding ClientId enum
          */
         public static ClientId fromString(String enumValue) {
             return lookupMap.get(enumValue);

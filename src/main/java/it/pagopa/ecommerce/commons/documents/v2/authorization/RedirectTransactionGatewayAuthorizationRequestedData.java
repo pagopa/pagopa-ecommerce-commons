@@ -11,7 +11,6 @@ import java.net.URI;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public final class RedirectTransactionGatewayAuthorizationRequestedData
         implements TransactionGatewayAuthorizationRequestedData {
@@ -27,6 +26,21 @@ public final class RedirectTransactionGatewayAuthorizationRequestedData
      * received (max timeout)
      */
     private int transactionOutcomeTimeoutMillis;
+
+    /**
+     * All-args constructor
+     *
+     * @param logo                            the logo URI
+     * @param transactionOutcomeTimeoutMillis the transaction outcome timeout in
+     *                                        milliseconds
+     */
+    public RedirectTransactionGatewayAuthorizationRequestedData(
+            URI logo,
+            int transactionOutcomeTimeoutMillis
+    ) {
+        this.logo = logo;
+        this.transactionOutcomeTimeoutMillis = transactionOutcomeTimeoutMillis;
+    }
 
     @Override
     public AuthorizationDataType getType() {

@@ -2,6 +2,11 @@
 
 A utility library for the [eCommerce](https://github.com/topics/pagopa-ecommerce) project.
 
+## Requirements
+
+- Java 21 or higher
+- Maven 3.6+ for building
+
 ## CI
 
 Repo has Github workflow and actions that trigger Azure devops deploy pipeline once a PR is merged on main branch.

@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
  */
 @Data
 @Document
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public class ClosureErrorData {
@@ -50,4 +48,20 @@ public class ClosureErrorData {
     @NotNull
     private ErrorType errorType;
 
+    /**
+     * All-args constructor
+     *
+     * @param httpErrorCode    the http error code received
+     * @param errorDescription the error description received
+     * @param errorType        the type of error
+     */
+    public ClosureErrorData(
+            HttpStatus httpErrorCode,
+            String errorDescription,
+            ErrorType errorType
+    ) {
+        this.httpErrorCode = httpErrorCode;
+        this.errorDescription = errorDescription;
+        this.errorType = errorType;
+    }
 }
