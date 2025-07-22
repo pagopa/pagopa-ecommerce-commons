@@ -708,7 +708,7 @@ class NpgClientTests {
     @Test
     void shouldPerformOrderBuildForApmWithPayActionAndTransactionAmount() {
         FieldsDto fieldsDto = buildTestFieldsDtoForSubsequentPayment();
-        Integer transactionTotalAmount = 1000;
+        Long transactionTotalAmount = 1000L;
         UUID correlationUUID = UUID.randomUUID();
         CreateHostedOrderRequestDto requestDto = buildCreateHostedOrderRequestDto(
                 ORDER_REQUEST_CONTRACT_ID,
@@ -977,7 +977,7 @@ class NpgClientTests {
 
     private CreateHostedOrderRequestDto buildCreateHostedOrderRequestDto(
                                                                          String contractId,
-                                                                         Integer amount,
+                                                                         Long amount,
                                                                          String language
     ) {
         if (language == null) {
