@@ -28,7 +28,7 @@ public class TransactionTestUtils {
     public static final String RPT_ID = "77777777777111111111111111111";
     public static final String PAYMENT_TOKEN = "paymentToken";
     public static final String DESCRIPTION = "description";
-    public static final int AMOUNT = 100;
+    public static final Long AMOUNT = 100L;
 
     public static final String EMAIL_STRING = "foo@example.com";
 
@@ -58,7 +58,7 @@ public class TransactionTestUtils {
     public static final String TRANSACTION_ID = UUID.randomUUID().toString().replace("-", "");
     public static final String TRANSFER_PA_FISCAL_CODE = "transferPAFiscalCode";
     public static final Boolean TRANSFER_DIGITAL_STAMP = true;
-    public static final Integer TRANSFER_AMOUNT = 0;
+    public static final Long TRANSFER_AMOUNT = 0L;
     public static final String TRANSFER_CATEGORY = "transferCategory";
     public static final String ID_CART = "ecIdCart";
     public static final String LANGUAGE = "it-IT";
