@@ -35,7 +35,7 @@ public class EuroUtils {
      * @param euro euro value to convert.
      * @return Integer euro value.
      */
-    public static Integer euroToEuroCents(BigDecimal euro) {
-        return euro.multiply(BigDecimal.valueOf(100)).intValue();
+    public static Long euroToEuroCents(BigDecimal euro) {
+        return euro.multiply(BigDecimal.valueOf(100)).longValue();
     }
 }

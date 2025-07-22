@@ -21,7 +21,7 @@ class EuroUtilsTest {
 
     @Test
     void shouldConvertEuroToEuroCentSuccessfully() {
-        Integer euroCent = EuroUtils.euroToEuroCents(BigDecimal.valueOf(111, 2));
+        Long euroCent = EuroUtils.euroToEuroCents(BigDecimal.valueOf(111, 2));
         assertEquals("111", euroCent.toString());
     }
 
