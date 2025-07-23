@@ -13,8 +13,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class EuroUtilsTest {
 
     @Test
-    void shouldConvertEuroCentToEuroSuccessfully() {
+    void shouldConvertLongEuroCentToEuroSuccessfully() {
         BigDecimal euro = EuroUtils.euroCentsToEuro(111L);
+        System.out.println(euro);
+        assertEquals("1.11", euro.toString());
+    }
+
+    @Test
+    void shouldConvertIntEuroCentToEuroSuccessfully() {
+        BigDecimal euro = EuroUtils.euroCentsToEuro(111);
         System.out.println(euro);
         assertEquals("1.11", euro.toString());
     }
