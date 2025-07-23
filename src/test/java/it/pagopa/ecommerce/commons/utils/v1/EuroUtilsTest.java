@@ -14,7 +14,7 @@ class EuroUtilsTest {
 
     @Test
     void shouldConvertEuroCentToEuroSuccessfully() {
-        BigDecimal euro = EuroUtils.euroCentsToEuro(111);
+        BigDecimal euro = EuroUtils.euroCentsToEuro(111L);
         System.out.println(euro);
         assertEquals("1.11", euro.toString());
     }
