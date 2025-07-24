@@ -213,7 +213,7 @@ public class Transaction extends BaseTransactionView {
                 transaction.getTransactionActivatedData().getUserId(),
                 null,
                 null,
-                null // lastProcessedEventAt - will be set by CDC service
+                transaction.getCreationDate().toInstant().toEpochMilli()
         );
     }
 
