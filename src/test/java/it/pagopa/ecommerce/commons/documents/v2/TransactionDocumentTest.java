@@ -77,7 +77,10 @@ class TransactionDocumentTest {
         );
         assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
-        assertEquals(transactionDocument.getLastProcessedEventAt(), transaction.getCreationDate().toInstant().toEpochMilli());
+        assertEquals(
+                transactionDocument.getLastProcessedEventAt(),
+                transaction.getCreationDate().toInstant().toEpochMilli()
+        );
     }
 
     @Test
