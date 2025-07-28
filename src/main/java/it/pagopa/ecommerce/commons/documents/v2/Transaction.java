@@ -68,6 +68,13 @@ public class Transaction extends BaseTransactionView {
     private String pspId;
 
     /**
+     * Timestamp of the last processed CDC event. Used by CDC service to handle
+     * out-of-order events and ensure status updates are applied chronologically.
+     */
+    @Nullable
+    private Long lastProcessedEventAt;
+
+    /**
      * Enumeration of transaction client initiators
      */
     public enum ClientId {
@@ -126,18 +133,20 @@ public class Transaction extends BaseTransactionView {
      * Primary persistence constructor. Warning java:S107 - Methods should not have
      * too many parameters
      *
-     * @param transactionId   transaction unique id
-     * @param paymentNotices  notice code list
-     * @param email           user email where the payment receipt will be sent to
-     * @param status          transaction status
-     * @param clientId        the client identifier
-     * @param feeTotal        transaction total fee
-     * @param creationDate    transaction creation date
-     * @param idCart          the ec cart id
-     * @param rrn             the rrn information
-     * @param userId          the user unique id
-     * @param paymentTypeCode the payment type code defined in Node domain
-     * @param pspId           the psp id
+     * @param transactionId        transaction unique id
+     * @param paymentNotices       notice code list
+     * @param email                user email where the payment receipt will be sent
+     *                             to
+     * @param status               transaction status
+     * @param clientId             the client identifier
+     * @param feeTotal             transaction total fee
+     * @param creationDate         transaction creation date
+     * @param idCart               the ec cart id
+     * @param rrn                  the rrn information
+     * @param userId               the user unique id
+     * @param paymentTypeCode      the payment type code defined in Node domain
+     * @param pspId                the psp id
+     * @param lastProcessedEventAt UNIX timestamp of last processed CDC event
      */
     /*
      * @formatter:off
@@ -166,7 +175,8 @@ public class Transaction extends BaseTransactionView {
             @Nullable String rrn,
             @Nullable String userId,
             @Nullable String paymentTypeCode,
-            @Nullable String pspId
+            @Nullable String pspId,
+            @Nullable Long lastProcessedEventAt
     ) {
         super(transactionId);
         this.email = email;
@@ -180,6 +190,7 @@ public class Transaction extends BaseTransactionView {
         this.userId = userId;
         this.paymentTypeCode = paymentTypeCode;
         this.pspId = pspId;
+        this.lastProcessedEventAt = lastProcessedEventAt;
     }
 
     /**
@@ -201,7 +212,8 @@ public class Transaction extends BaseTransactionView {
                 null,
                 transaction.getTransactionActivatedData().getUserId(),
                 null,
-                null
+                null,
+                transaction.getCreationDate().toInstant().toEpochMilli()
         );
     }
 
