@@ -30,17 +30,19 @@ class RedisTemplateWrapperTests {
     void shouldBuildPaymentRequestWrapperSuccessfully() {
         Duration ttl = Duration.ofMinutes(10);
 
-        PaymentRequestInfoReactiveRedisTemplateWrapper paymentRequestInfoRedisTemplateWrapper =
-                RedisTemplateWrapperBuilder.buildPaymentRequestInfoRedisTemplateWrapper(redisConnectionFactory, ttl);
+        PaymentRequestInfoReactiveRedisTemplateWrapper paymentRequestInfoRedisTemplateWrapper = RedisTemplateWrapperBuilder
+                .buildPaymentRequestInfoRedisTemplateWrapper(redisConnectionFactory, ttl);
 
         assertNotNull(paymentRequestInfoRedisTemplateWrapper);
 
-        ReactiveRedisTemplate<String, PaymentRequestInfo> redisTemplate = paymentRequestInfoRedisTemplateWrapper.unwrap();
+        ReactiveRedisTemplate<String, PaymentRequestInfo> redisTemplate = paymentRequestInfoRedisTemplateWrapper
+                .unwrap();
         assertNotNull(redisTemplate);
 
-        RedisSerializationContext<String, PaymentRequestInfo> serializationContext = redisTemplate.getSerializationContext();
-        RedisSerializationContext.SerializationPair<PaymentRequestInfo> valueSerializationPair =
-                serializationContext.getValueSerializationPair();
+        RedisSerializationContext<String, PaymentRequestInfo> serializationContext = redisTemplate
+                .getSerializationContext();
+        RedisSerializationContext.SerializationPair<PaymentRequestInfo> valueSerializationPair = serializationContext
+                .getValueSerializationPair();
 
         PaymentRequestInfo value = Mockito.mock(PaymentRequestInfo.class);
 
