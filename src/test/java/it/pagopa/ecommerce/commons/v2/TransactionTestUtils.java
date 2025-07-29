@@ -98,6 +98,8 @@ public class TransactionTestUtils {
     public static final String DUE_DATE = "1900-01-01";
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
 
+    public static final Long LAST_PROCESSED_EVENT_AT = System.currentTimeMillis();
+
     public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
 
     public static final String NPG_ORDER_ID = "npgOrderId";
@@ -729,7 +731,8 @@ public class TransactionTestUtils {
                 RRN,
                 USER_ID,
                 null,
-                null
+                null,
+                LAST_PROCESSED_EVENT_AT
         );
     }
 
