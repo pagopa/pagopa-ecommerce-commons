@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
 import it.pagopa.ecommerce.commons.repositories.ExclusiveLockDocument;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
@@ -8,7 +9,7 @@ import java.time.Duration;
 /**
  * Redis template wrapper instance for handling exclusive lock
  */
-public class ExclusiveLockDocumentWrapper extends RedisTemplateWrapper<ExclusiveLockDocument> {
+public class ExclusiveLockDocumentWrapperReactive extends ReactiveRedisTemplateWrapper<ExclusiveLockDocument> {
 
     /**
      * Constructor
@@ -17,8 +18,8 @@ public class ExclusiveLockDocumentWrapper extends RedisTemplateWrapper<Exclusive
      * @param keyspace      keyspace associated to this wrapper
      * @param ttl           time to live for keys
      */
-    public ExclusiveLockDocumentWrapper(
-            RedisTemplate<String, ExclusiveLockDocument> redisTemplate,
+    public ExclusiveLockDocumentWrapperReactive(
+            ReactiveRedisTemplate<String, ExclusiveLockDocument> redisTemplate,
             String keyspace,
             Duration ttl
     ) {

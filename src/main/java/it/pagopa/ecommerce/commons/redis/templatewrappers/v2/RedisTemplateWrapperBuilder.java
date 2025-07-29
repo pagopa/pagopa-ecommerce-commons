@@ -9,9 +9,12 @@ import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySeri
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdSerializer;
 import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
@@ -43,18 +46,25 @@ public class RedisTemplateWrapperBuilder {
      * @return PaymentRequestInfoRedisTemplateWrapper new instance
      */
     public static PaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
-                                                                                                     RedisConnectionFactory redisConnectionFactory,
+                                                                                                     ReactiveRedisConnectionFactory redisConnectionFactory,
                                                                                                      Duration entitiesTTL
     ) {
-        RedisTemplate<String, PaymentRequestInfo> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> jacksonRedisSerializer = buildJackson2RedisSerializer(
+        StringRedisSerializer keySerializer = new StringRedisSerializer();
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> valueSerializer = buildJackson2RedisSerializer(
                 PaymentRequestInfo.class
         );
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(jacksonRedisSerializer);
-        redisTemplate.afterPropertiesSet();
-        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", entitiesTTL);
+
+        RedisSerializationContext.RedisSerializationContextBuilder<String, PaymentRequestInfo> builder = RedisSerializationContext
+                .newSerializationContext(keySerializer);
+        RedisSerializationContext<String, PaymentRequestInfo> context = builder.value(valueSerializer).build();
+
+        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = new ReactiveRedisTemplate<>(
+                redisConnectionFactory,
+                context
+        );
+
+        return new PaymentRequestInfoRedisTemplateWrapper(reactiveRedisTemplate, "keys", entitiesTTL);
+
     }
 
     /**

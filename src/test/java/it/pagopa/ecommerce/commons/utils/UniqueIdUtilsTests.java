@@ -1,16 +1,17 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
+import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapperReactive;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
 class UniqueIdUtilsTests {
-    private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper = mock(UniqueIdTemplateWrapper.class);
+    private final UniqueIdTemplateWrapperReactive uniqueIdTemplateWrapper = mock(UniqueIdTemplateWrapperReactive.class);
 
     private final UniqueIdUtils uniqueIdUtils = new UniqueIdUtils(uniqueIdTemplateWrapper);
 
@@ -18,7 +19,7 @@ class UniqueIdUtilsTests {
 
     @Test
     void shouldGenerateUniqueIdGenerateException() {
-        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(false);
+        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(Mono.just(false));
         StepVerifier.create(uniqueIdUtils.generateUniqueId())
                 .expectErrorMatches(e -> e instanceof UniqueIdGenerationException)
                 .verify();
@@ -27,7 +28,8 @@ class UniqueIdUtilsTests {
 
     @Test
     void shouldGenerateUniqueIdWithRetry() {
-        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(false, false, true);
+        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any()))
+                .thenReturn(Mono.just(false), Mono.just(false), Mono.just(true));
         StepVerifier.create(uniqueIdUtils.generateUniqueId())
                 .expectNextMatches(
                         response -> response.length() == 18 && response.startsWith(PRODUCT_PREFIX)
@@ -38,7 +40,7 @@ class UniqueIdUtilsTests {
 
     @Test
     void shouldGenerateUniqueIdNoRetry() {
-        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(true);
+        Mockito.when(uniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(Mono.just(true));
         StepVerifier.create(uniqueIdUtils.generateUniqueId())
                 .expectNextMatches(
                         response -> response.length() == 18 && response.startsWith(PRODUCT_PREFIX)

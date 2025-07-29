@@ -1,7 +1,7 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
+import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapperReactive;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +12,7 @@ import java.time.Duration;
  * This class generate unique identifier
  */
 public class UniqueIdUtils {
-    private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
+    private final UniqueIdTemplateWrapperReactive uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String ALPHANUMERICS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._";
     private static final int MAX_LENGTH = 18;
@@ -25,7 +25,7 @@ public class UniqueIdUtils {
      * @param uniqueIdTemplateWrapper redis template wrapper used for save id into
      *                                cache
      */
-    public UniqueIdUtils(UniqueIdTemplateWrapper uniqueIdTemplateWrapper) {
+    public UniqueIdUtils(UniqueIdTemplateWrapperReactive uniqueIdTemplateWrapper) {
         this.uniqueIdTemplateWrapper = uniqueIdTemplateWrapper;
     }
 
@@ -36,18 +36,28 @@ public class UniqueIdUtils {
      * @return Mono with unique id value
      */
     public Mono<String> generateUniqueId() {
-        boolean isSuccessfullySaved = false;
-        int attempt = 0;
-        String uniqueId = generateRandomIdentifier();
-        while (attempt < MAX_NUMBER_ATTEMPTS && !isSuccessfullySaved) {
-            isSuccessfullySaved = uniqueIdTemplateWrapper
-                    .saveIfAbsent(new UniqueIdDocument(uniqueId), Duration.ofSeconds(60));
-            attempt++;
-            if (!isSuccessfullySaved) {
-                uniqueId = generateRandomIdentifier();
-            }
+        return tryGenerateId(0, generateRandomIdentifier());
+    }
+
+    private Mono<String> tryGenerateId(
+                                       int attempt,
+                                       String uniqueId
+    ) {
+        if (attempt >= MAX_NUMBER_ATTEMPTS) {
+            return Mono.error(new UniqueIdGenerationException());
         }
-        return !isSuccessfullySaved ? Mono.error(new UniqueIdGenerationException()) : Mono.just(uniqueId);
+
+        UniqueIdDocument doc = new UniqueIdDocument(uniqueId);
+
+        return uniqueIdTemplateWrapper
+                .saveIfAbsent(doc, Duration.ofSeconds(60))
+                .flatMap(success -> {
+                    if (success) {
+                        return Mono.just(uniqueId);
+                    } else {
+                        return tryGenerateId(attempt + 1, generateRandomIdentifier());
+                    }
+                });
     }
 
     /**

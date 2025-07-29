@@ -9,9 +9,12 @@ import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonIdempotencyKeySeri
 import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdSerializer;
 import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
@@ -33,28 +36,36 @@ public class RedisTemplateWrapperBuilder {
     }
 
     /**
-     * Build {@link PaymentRequestInfoRedisTemplateWrapper} instance using input
-     * redis connection factory and configuring custom converters for {@link RptId},
-     * {@link IdempotencyKey} and other domain objects
+     * Build {@link PaymentRequestInfoReactiveRedisTemplateWrapper} instance using
+     * input redis connection factory and configuring custom converters for
+     * {@link RptId}, {@link IdempotencyKey} and other domain objects
      *
-     * @param redisConnectionFactory - the redis connection factory to be used for
-     * @param entitiesTTL            - the default TTL to be applied to all saved
-     *                               entities if not overridden
+     * @param reactiveRedisConnectionFactory - the redis connection factory to be
+     *                                       used for
+     * @param entitiesTTL                    - the default TTL to be applied to all
+     *                                       saved entities if not overridden
      * @return PaymentRequestInfoRedisTemplateWrapper new instance
      */
-    public static PaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
-                                                                                                     RedisConnectionFactory redisConnectionFactory,
-                                                                                                     Duration entitiesTTL
+    public static PaymentRequestInfoReactiveRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
+                                                                                                             ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
+                                                                                                             Duration entitiesTTL
     ) {
-        RedisTemplate<String, PaymentRequestInfo> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> jacksonRedisSerializer = buildJackson2RedisSerializer(
+
+        StringRedisSerializer keySerializer = new StringRedisSerializer();
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> valueSerializer = buildJackson2RedisSerializer(
                 PaymentRequestInfo.class
         );
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(jacksonRedisSerializer);
-        redisTemplate.afterPropertiesSet();
-        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", entitiesTTL);
+
+        RedisSerializationContext.RedisSerializationContextBuilder<String, PaymentRequestInfo> builder = RedisSerializationContext
+                .newSerializationContext(keySerializer);
+        RedisSerializationContext<String, PaymentRequestInfo> context = builder.value(valueSerializer).build();
+
+        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = new ReactiveRedisTemplate<>(
+                reactiveRedisConnectionFactory,
+                context
+        );
+
+        return new PaymentRequestInfoReactiveRedisTemplateWrapper(reactiveRedisTemplate, "keys", entitiesTTL);
     }
 
     /**

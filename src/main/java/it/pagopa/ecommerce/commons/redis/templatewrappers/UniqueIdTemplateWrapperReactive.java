@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.templatewrappers;
 
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
@@ -8,20 +9,20 @@ import java.time.Duration;
 /**
  * Wrapper for {@link UniqueIdDocument} redis template
  */
-public class UniqueIdTemplateWrapper extends RedisTemplateWrapper<UniqueIdDocument> {
+public class UniqueIdTemplateWrapperReactive extends ReactiveRedisTemplateWrapper<UniqueIdDocument> {
     /**
      * Primary constructor
      *
-     * @param redisTemplate inner redis template
-     * @param keyspace      keyspace associated to this wrapper
-     * @param ttl           time to live for keys
+     * @param reactiveRedisTemplate inner redis template
+     * @param keyspace              keyspace associated to this wrapper
+     * @param ttl                   time to live for keys
      */
-    public UniqueIdTemplateWrapper(
-            RedisTemplate<String, UniqueIdDocument> redisTemplate,
+    public UniqueIdTemplateWrapperReactive(
+            ReactiveRedisTemplate<String, UniqueIdDocument> reactiveRedisTemplate,
             String keyspace,
             Duration ttl
     ) {
-        super(redisTemplate, keyspace, ttl);
+        super(reactiveRedisTemplate, keyspace, ttl);
     }
 
     /**

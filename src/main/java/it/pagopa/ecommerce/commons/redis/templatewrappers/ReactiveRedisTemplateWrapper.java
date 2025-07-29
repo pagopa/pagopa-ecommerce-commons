@@ -3,14 +3,14 @@ package it.pagopa.ecommerce.commons.redis.templatewrappers;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class is a {@link RedisTemplate} wrapper class, used to centralize
@@ -18,9 +18,9 @@ import java.util.Set;
  *
  * @param <V> - the RedisTemplate value type
  */
-public abstract class RedisTemplateWrapper<V> {
+public abstract class ReactiveRedisTemplateWrapper<V> {
 
-    private final RedisTemplate<String, V> redisTemplate;
+    private final ReactiveRedisTemplate<String, V> reactiveRedisTemplate;
 
     private final String keyspace;
 
@@ -29,19 +29,19 @@ public abstract class RedisTemplateWrapper<V> {
     /**
      * Primary constructor
      *
-     * @param redisTemplate inner redis template
-     * @param keyspace      keyspace associated to this wrapper
-     * @param ttl           time to live for keys
+     * @param reactiveRedisTemplate inner redis template
+     * @param keyspace              keyspace associated to this wrapper
+     * @param ttl                   time to live for keys
      */
-    protected RedisTemplateWrapper(
-            @NonNull RedisTemplate<String, V> redisTemplate,
+    protected ReactiveRedisTemplateWrapper(
+            @NonNull ReactiveRedisTemplate<String, V> reactiveRedisTemplate,
             @NonNull String keyspace,
             @NonNull Duration ttl
     ) {
-        Objects.requireNonNull(redisTemplate, "RedisTemplate null not valid");
+        Objects.requireNonNull(reactiveRedisTemplate, "RedisTemplate null not valid");
         Objects.requireNonNull(keyspace, "Keyspace null not valid");
         Objects.requireNonNull(ttl, "TTL null not valid");
-        this.redisTemplate = redisTemplate;
+        this.reactiveRedisTemplate = reactiveRedisTemplate;
         this.keyspace = keyspace;
         this.ttl = ttl;
     }
@@ -52,8 +52,8 @@ public abstract class RedisTemplateWrapper<V> {
      *
      * @param value - the entity to be saved
      */
-    public void save(V value) {
-        save(value, getDefaultTTL());
+    public Mono<Boolean> save(V value) {
+        return save(value, ttl);
     }
 
     /**
@@ -63,11 +63,12 @@ public abstract class RedisTemplateWrapper<V> {
      * @param ttl   the TTL for the entity to be saved. This parameter will override
      *              the default TTL value
      */
-    public void save(
-                     V value,
-                     Duration ttl
+    public Mono<Boolean> save(
+                              V value,
+                              Duration ttl
     ) {
-        redisTemplate.opsForValue().set(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
+        String key = keyspace + ":" + getKeyFromEntity(value);
+        return reactiveRedisTemplate.opsForValue().set(key, value, ttl);
     }
 
     /**
@@ -76,10 +77,10 @@ public abstract class RedisTemplateWrapper<V> {
      * @param value the entity to be saved
      * @return returns false if it already exists, true if it does not exist.
      */
-    public Boolean saveIfAbsent(
-                                V value
+    public Mono<Boolean> saveIfAbsent(
+                                      V value
     ) {
-        return redisTemplate.opsForValue()
+        return reactiveRedisTemplate.opsForValue()
                 .setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, getDefaultTTL());
     }
 
@@ -91,11 +92,12 @@ public abstract class RedisTemplateWrapper<V> {
      *              the default TTL value
      * @return returns false if it already exists, true if it does not exist.
      */
-    public Boolean saveIfAbsent(
-                                V value,
-                                Duration ttl
+    public Mono<Boolean> saveIfAbsent(
+                                      V value,
+                                      Duration ttl
     ) {
-        return redisTemplate.opsForValue().setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
+        return reactiveRedisTemplate.opsForValue()
+                .setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
     }
 
     /**
@@ -113,8 +115,9 @@ public abstract class RedisTemplateWrapper<V> {
      * @param key - the key of the entity to be found
      * @return an Optional object valued with the found entity, if any
      */
-    public Optional<V> findById(String key) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(compoundKeyWithKeyspace(key)));
+    public Mono<V> findById(String key) {
+        String fullKey = compoundKeyWithKeyspace(key);
+        return reactiveRedisTemplate.opsForValue().get(fullKey);
     }
 
     /**
@@ -123,8 +126,11 @@ public abstract class RedisTemplateWrapper<V> {
      * @param key - the entity key to be deleted
      * @return true if the key has been removed
      */
-    public Boolean deleteById(String key) {
-        return redisTemplate.delete(compoundKeyWithKeyspace(key));
+    public Mono<Boolean> deleteById(String key) {
+        String fullKey = compoundKeyWithKeyspace(key);
+        return reactiveRedisTemplate
+                .delete(fullKey)
+                .map(deletedCount -> deletedCount > 0);
     }
 
     /**
@@ -139,9 +145,11 @@ public abstract class RedisTemplateWrapper<V> {
      * @param key - the entity key for which retrieve TTL
      * @return the entity associated TTL duration.
      */
-    public Duration getTTL(String key) {
-        Long duration = redisTemplate.getExpire(compoundKeyWithKeyspace(key));
-        return duration != null ? Duration.ofSeconds(duration) : Duration.ofSeconds(-3);
+    public Mono<Duration> getTTL(String key) {
+        String fullKey = compoundKeyWithKeyspace(key);
+        return reactiveRedisTemplate
+                .getExpire(fullKey)
+                .defaultIfEmpty(Duration.ofSeconds(-3));
     }
 
     /**
@@ -151,18 +159,14 @@ public abstract class RedisTemplateWrapper<V> {
      * @param event     the event to be sent
      * @return the {@link RecordId} associated to the written event
      */
-    public RecordId writeEventToStream(
-                                       String streamKey,
-                                       V event
+    public Mono<RecordId> writeEventToStream(
+                                             String streamKey,
+                                             V event
     ) {
-        return redisTemplate
+        ObjectRecord<String, V> record = ObjectRecord.create(streamKey, event);
+        return reactiveRedisTemplate
                 .opsForStream()
-                .add(
-                        ObjectRecord.create(
-                                streamKey,
-                                event
-                        )
-                );
+                .add(record);
     }
 
     /**
@@ -174,23 +178,25 @@ public abstract class RedisTemplateWrapper<V> {
      * @param streamSize the wanted length of the stream
      * @return the {@link RecordId} associated to the written event
      */
-    public RecordId writeEventToStreamTrimmingEvents(
-                                                     String streamKey,
-                                                     V event,
-                                                     long streamSize
+    public Mono<RecordId> writeEventToStreamTrimmingEvents(
+                                                           String streamKey,
+                                                           V event,
+                                                           long streamSize
     ) {
         if (streamSize < 0) {
-            throw new IllegalArgumentException("Invalid input %s events to trim, it must be >=0".formatted(streamSize));
+            return Mono.error(
+                    new IllegalArgumentException(
+                            String.format("Invalid input %s events to trim, it must be >=0", streamSize)
+                    )
+            );
         }
-        redisTemplate.opsForStream().trim(streamKey, streamSize);
-        return redisTemplate
+
+        ObjectRecord<String, V> record = ObjectRecord.create(streamKey, event);
+
+        return reactiveRedisTemplate
                 .opsForStream()
-                .add(
-                        ObjectRecord.create(
-                                streamKey,
-                                event
-                        )
-                );
+                .trim(streamKey, streamSize)
+                .then(reactiveRedisTemplate.opsForStream().add(record));
     }
 
     /**
@@ -200,11 +206,11 @@ public abstract class RedisTemplateWrapper<V> {
      * @param streamSize the wanted stream size
      * @return the number or removed events from the stream
      */
-    public Long trimEvents(
-                           String streamKey,
-                           long streamSize
+    public Mono<Long> trimEvents(
+                                 String streamKey,
+                                 long streamSize
     ) {
-        return redisTemplate.opsForStream().trim(streamKey, streamSize);
+        return reactiveRedisTemplate.opsForStream().trim(streamKey, streamSize);
     }
 
     /**
@@ -215,12 +221,14 @@ public abstract class RedisTemplateWrapper<V> {
      * @param recordIds records for which perform ack operation
      * @return the number of stream operations performed
      */
-    public Long acknowledgeEvents(
-                                  String streamKey,
-                                  String groupId,
-                                  String... recordIds
+    public Mono<Long> acknowledgeEvents(
+                                        String streamKey,
+                                        String groupId,
+                                        String... recordIds
     ) {
-        return redisTemplate.opsForStream().acknowledge(streamKey, groupId, recordIds);
+        return reactiveRedisTemplate
+                .opsForStream()
+                .acknowledge(streamKey, groupId, recordIds);
     }
 
     /**
@@ -231,11 +239,14 @@ public abstract class RedisTemplateWrapper<V> {
      * @param groupName the group name
      * @return OK if operation was successful
      */
-    public String createGroup(
-                              String streamKey,
-                              String groupName
+    public Mono<String> createGroup(
+                                    String streamKey,
+                                    String groupName
     ) {
-        return redisTemplate.opsForStream().createGroup(streamKey, groupName);
+        return reactiveRedisTemplate
+                .opsForStream()
+                .createGroup(streamKey, groupName)
+                .thenReturn("OK");
     }
 
     /**
@@ -247,12 +258,15 @@ public abstract class RedisTemplateWrapper<V> {
      * @param readOffset the offset from which start the receiver group
      * @return OK if operation was successful
      */
-    public String createGroup(
-                              String streamKey,
-                              String groupName,
-                              ReadOffset readOffset
+    public Mono<String> createGroup(
+                                    String streamKey,
+                                    String groupName,
+                                    ReadOffset readOffset
     ) {
-        return redisTemplate.opsForStream().createGroup(streamKey, readOffset, groupName);
+        return reactiveRedisTemplate
+                .opsForStream()
+                .createGroup(streamKey, readOffset, groupName)
+                .thenReturn("OK");
     }
 
     /**
@@ -262,11 +276,15 @@ public abstract class RedisTemplateWrapper<V> {
      * @param groupName the group name to be destroyed
      * @return true iff the operation is completed successfully
      */
-    public Boolean destroyGroup(
-                                String streamKey,
-                                String groupName
+    public Mono<Boolean> destroyGroup(
+                                      String streamKey,
+                                      String groupName
     ) {
-        return redisTemplate.opsForStream().destroyGroup(streamKey, groupName);
+        return reactiveRedisTemplate
+                .opsForStream()
+                .destroyGroup(streamKey, groupName)
+                .map("OK"::equalsIgnoreCase)
+                .onErrorReturn(false);
     }
 
     /**
@@ -274,8 +292,10 @@ public abstract class RedisTemplateWrapper<V> {
      *
      * @return a set populated with all the keys in keyspace
      */
-    public Set<String> keysInKeyspace() {
-        return redisTemplate.keys(keyspace.concat("*"));
+    public Flux<String> keysInKeyspace() {
+        String fullKey = compoundKeyWithKeyspace("*");
+        return reactiveRedisTemplate
+                .keys(fullKey);
     }
 
     /**
@@ -283,8 +303,25 @@ public abstract class RedisTemplateWrapper<V> {
      *
      * @return a list populated with all the entries in keyspace
      */
-    public List<V> getAllValuesInKeySpace() {
-        return redisTemplate.opsForValue().multiGet(keysInKeyspace());
+    public Flux<V> allValuesInKeySpace() {
+        return reactiveRedisTemplate
+                .keys(keyspace + "*")
+                .collectList()
+                .flatMapMany(keys -> {
+                    if (keys.isEmpty()) {
+                        return Flux.empty();
+                    }
+                    return reactiveRedisTemplate
+                            .opsForValue()
+                            .multiGet(new HashSet<>(keys))
+                            .flatMapMany(
+                                    values -> Flux.fromIterable(
+                                            values.stream()
+                                                    .filter(Objects::nonNull)
+                                                    .toList()
+                                    )
+                            );
+                });
     }
 
     /**
@@ -292,8 +329,8 @@ public abstract class RedisTemplateWrapper<V> {
      *
      * @return this wrapper associated RedisTemplate instance
      */
-    public RedisTemplate<String, V> unwrap() {
-        return redisTemplate;
+    public ReactiveRedisTemplate<String, V> unwrap() {
+        return reactiveRedisTemplate;
     }
 
     /**
