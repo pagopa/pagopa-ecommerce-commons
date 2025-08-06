@@ -26,9 +26,11 @@ import static org.mockito.ArgumentMatchers.argThat;
 
 class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
 
-    private final ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = Mockito.mock(ReactiveRedisTemplate.class);
+    private final ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = Mockito
+            .mock(ReactiveRedisTemplate.class);
 
-    private final ReactiveValueOperations<String, PaymentRequestInfo> reactiveValueOperations = Mockito.mock(ReactiveValueOperations.class);
+    private final ReactiveValueOperations<String, PaymentRequestInfo> reactiveValueOperations = Mockito
+            .mock(ReactiveValueOperations.class);
 
     private final ReactiveStreamOperations<String, String, PaymentRequestInfo> reactiveStreamOperations = Mockito
             .mock(ReactiveStreamOperations.class);
@@ -48,7 +50,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         Mono<PaymentRequestInfo> expected = Mono.just(TransactionTestUtils.paymentRequestInfoV1());
         Mockito.when(reactiveRedisTemplate.opsForValue()).thenReturn(reactiveValueOperations);
-        Mockito.when(reactiveValueOperations.get("keys:%s".formatted(TransactionTestUtils.RPT_ID))).thenReturn(expected);
+        Mockito.when(reactiveValueOperations.get("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
+                .thenReturn(expected);
 
         // test
         Mono<PaymentRequestInfo> actual = paymentRequestInfoRedisTemplateWrapper
@@ -106,7 +109,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .thenReturn(Mono.just(entityExpiration));
 
         Mono<Duration> ttl = paymentRequestInfoRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
-        Mockito.verify(reactiveRedisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
+                .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
         assertEquals(entityExpiration, ttl);
     }
 
@@ -117,7 +121,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .thenReturn(null);
 
         Mono<Duration> ttl = paymentRequestInfoRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
-        Mockito.verify(reactiveRedisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
+                .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
         assertEquals(expectedDuration, ttl);
     }
 
@@ -148,7 +153,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(reactiveRedisTemplate.opsForValue()).thenReturn(reactiveValueOperations);
         Mockito.when(
-                reactiveValueOperations.setIfAbsent("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl)
+                reactiveValueOperations
+                        .setIfAbsent("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl)
         ).thenReturn(Mono.just(true));
         // test
         paymentRequestInfoRedisTemplateWrapper.saveIfAbsent(paymentRequestInfo).block();
@@ -221,7 +227,6 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.verify(reactiveValueOperations).get("keys:2");
     }
 
-
     @Test
     void shouldWriteEventToStreamSuccessfully() {
         // arrange
@@ -232,8 +237,6 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.when(reactiveRedisTemplate.opsForStream())
                 .thenReturn(reactiveStreamOperations);
 
-
-
         Mockito.when(reactiveStreamOperations.add(Mockito.argThat(record -> {
             if (record instanceof ObjectRecord<?, ?> objRecord) {
                 return objRecord.getValue().equals(paymentRequestInfo) && objRecord.getStream().equals(streamKey);
@@ -242,7 +245,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         }))).thenReturn(Mono.just(expectedRecordId));
 
         // act
-        Mono<RecordId> result = paymentRequestInfoRedisTemplateWrapper.writeEventToStream(streamKey, paymentRequestInfo);
+        Mono<RecordId> result = paymentRequestInfoRedisTemplateWrapper
+                .writeEventToStream(streamKey, paymentRequestInfo);
 
         // assert
         StepVerifier.create(result)
@@ -253,7 +257,6 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .add(any(ObjectRecord.class));
     }
 
-
     @Test
     void shouldWriteEventToStreamSuccessfullyTrimmingPreviousEvents() {
         // arrange
@@ -262,7 +265,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         RecordId expectedRecordId = RecordId.of(System.currentTimeMillis(), 0);
 
-        OngoingStubbing<ReactiveStreamOperations<String, Object, Object>> reactiveStreamOperationsOngoingStubbing = Mockito.when(reactiveRedisTemplate.opsForStream())
+        OngoingStubbing<ReactiveStreamOperations<String, Object, Object>> reactiveStreamOperationsOngoingStubbing = Mockito
+                .when(reactiveRedisTemplate.opsForStream())
                 .thenReturn(reactiveStreamOperations);
 
         Mockito.when(reactiveStreamOperations.trim(streamKey, streamSize))
@@ -288,7 +292,6 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.verify(reactiveStreamOperations, Mockito.times(1)).add(any(ObjectRecord.class));
     }
 
-
     @Test
     void shouldTrimEventsSuccessfully() {
         // arrange
@@ -313,7 +316,6 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.verify(reactiveStreamOperations, Mockito.times(1))
                 .trim(streamKey, streamSize);
     }
-
 
     @Test
     void shouldThrowExceptionWritingEventToStreamWithInvalidStreamSize() {
@@ -349,7 +351,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         String streamKey = "streamKey";
         String groupName = "groupName";
-        Mockito.when(reactiveRedisTemplate.opsForStream()).thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
+        Mockito.when(reactiveRedisTemplate.opsForStream())
+                .thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
         Mockito.when(reactiveStreamOperations.createGroup(streamKey, groupName)).thenReturn(Mono.just("OK"));
         // test
         String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName).block();
@@ -366,7 +369,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         String streamKey = "streamKey";
         String groupName = "groupName";
         ReadOffset offset = ReadOffset.from("0-0");
-        Mockito.when(reactiveRedisTemplate.opsForStream()).thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
+        Mockito.when(reactiveRedisTemplate.opsForStream())
+                .thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
         Mockito.when(reactiveStreamOperations.createGroup(streamKey, offset, groupName)).thenReturn(Mono.just("OK"));
         // test
         String outcome = paymentRequestInfoRedisTemplateWrapper.createGroup(streamKey, groupName, offset).block();
@@ -382,7 +386,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         String streamKey = "streamKey";
         String groupName = "groupName";
-        Mockito.when(reactiveRedisTemplate.opsForStream()).thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
+        Mockito.when(reactiveRedisTemplate.opsForStream())
+                .thenReturn((ReactiveStreamOperations) reactiveStreamOperations);
         Mockito.when(reactiveStreamOperations.destroyGroup(streamKey, groupName)).thenReturn(Boolean.TRUE);
         // test
         Mono<Boolean> outcome = paymentRequestInfoRedisTemplateWrapper.destroyGroup(streamKey, groupName).block();

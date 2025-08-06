@@ -14,8 +14,8 @@ public class ReactiveExclusiveLockDocumentWrapper extends ReactiveRedisTemplateW
      * Constructor
      *
      * @param reactiveRedisTemplate inner redis template
-     * @param keyspace      keyspace associated to this wrapper
-     * @param ttl           time to live for keys
+     * @param keyspace              keyspace associated to this wrapper
+     * @param ttl                   time to live for keys
      */
     public ReactiveExclusiveLockDocumentWrapper(
             ReactiveRedisTemplate<String, ExclusiveLockDocument> reactiveRedisTemplate,

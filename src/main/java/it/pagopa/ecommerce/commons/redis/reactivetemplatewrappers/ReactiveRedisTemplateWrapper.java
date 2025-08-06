@@ -16,8 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class is a {@link ReactiveRedisTemplate} wrapper class, used to centralize
- * commons ReactiveRedisTemplate operations
+ * This class is a {@link ReactiveRedisTemplate} wrapper class, used to
+ * centralize commons ReactiveRedisTemplate operations
  *
  * @param <V> - the ReactiveRedisTemplate value type
  */
@@ -33,8 +33,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Primary constructor
      *
      * @param reactiveRedisTemplate inner redis template
-     * @param keyspace      keyspace associated to this wrapper
-     * @param ttl           time to live for keys
+     * @param keyspace              keyspace associated to this wrapper
+     * @param ttl                   time to live for keys
      */
     protected ReactiveRedisTemplateWrapper(
             @NonNull ReactiveRedisTemplate<String, V> reactiveRedisTemplate,
@@ -67,8 +67,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *              the default TTL value
      */
     public Mono<Boolean> save(
-                     V value,
-                     Duration ttl
+                              V value,
+                              Duration ttl
     ) {
         return reactiveRedisTemplate.opsForValue().set(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
     }
@@ -80,7 +80,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return returns false if it already exists, true if it does not exist.
      */
     public Mono<Boolean> saveIfAbsent(
-                                V value
+                                      V value
     ) {
         return reactiveRedisTemplate.opsForValue()
                 .setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, getDefaultTTL());
@@ -95,10 +95,11 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return returns false if it already exists, true if it does not exist.
      */
     public Mono<Boolean> saveIfAbsent(
-                                V value,
-                                Duration ttl
+                                      V value,
+                                      Duration ttl
     ) {
-        return reactiveRedisTemplate.opsForValue().setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
+        return reactiveRedisTemplate.opsForValue()
+                .setIfAbsent(compoundKeyWithKeyspace(getKeyFromEntity(value)), value, ttl);
     }
 
     /**
@@ -145,10 +146,9 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
     public Mono<Duration> getTTL(String key) {
         return reactiveRedisTemplate
                 .getExpire(compoundKeyWithKeyspace(key))
-                .map(ttl -> Duration.ofSeconds(ttl.isNegative() ? -3: ttl.toSeconds()))
+                .map(ttl -> Duration.ofSeconds(ttl.isNegative() ? -3 : ttl.toSeconds()))
                 .defaultIfEmpty(Duration.ofSeconds(-3));
     }
-
 
     /**
      * Write an event to the stream with the specified key
@@ -157,12 +157,14 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param event     the event to be sent
      * @return the {@link RecordId} associated to the written event
      */
-    public Mono<RecordId> writeEventToStream(String streamKey, V event) {
+    public Mono<RecordId> writeEventToStream(
+                                             String streamKey,
+                                             V event
+    ) {
         return reactiveRedisTemplate
                 .opsForStream()
                 .add(ObjectRecord.create(streamKey, event));
     }
-
 
     /**
      * Write an event to the stream with the specified key trimming events before
@@ -173,9 +175,17 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param streamSize the wanted length of the stream
      * @return the {@link RecordId} associated to the written event
      */
-    public Mono<RecordId> writeEventToStreamTrimmingEvents(String streamKey, V event, long streamSize) {
+    public Mono<RecordId> writeEventToStreamTrimmingEvents(
+                                                           String streamKey,
+                                                           V event,
+                                                           long streamSize
+    ) {
         if (streamSize < 0) {
-            return Mono.error(new IllegalArgumentException("Invalid input %s events to trim, it must be >=0".formatted(streamSize)));
+            return Mono.error(
+                    new IllegalArgumentException(
+                            "Invalid input %s events to trim, it must be >=0".formatted(streamSize)
+                    )
+            );
         }
 
         return reactiveRedisTemplate
@@ -188,7 +198,6 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
                 );
     }
 
-
     /**
      * Trim events from the stream with input key to the wanted size
      *
@@ -197,8 +206,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return the number or removed events from the stream
      */
     public Mono<Long> trimEvents(
-                           String streamKey,
-                           long streamSize
+                                 String streamKey,
+                                 long streamSize
     ) {
         return reactiveRedisTemplate
                 .opsForStream()
@@ -214,9 +223,9 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return the number of stream operations performed
      */
     public Mono<Long> acknowledgeEvents(
-                                  String streamKey,
-                                  String groupId,
-                                  String... recordIds
+                                        String streamKey,
+                                        String groupId,
+                                        String... recordIds
     ) {
         return reactiveRedisTemplate
                 .opsForStream()
@@ -232,8 +241,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return OK if operation was successful
      */
     public Mono<String> createGroup(
-                              String streamKey,
-                              String groupName
+                                    String streamKey,
+                                    String groupName
     ) {
         return reactiveRedisTemplate
                 .opsForStream()
@@ -250,9 +259,9 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return OK if operation was successful
      */
     public Mono<String> createGroup(
-                              String streamKey,
-                              String groupName,
-                              ReadOffset readOffset
+                                    String streamKey,
+                                    String groupName,
+                                    ReadOffset readOffset
     ) {
         return reactiveRedisTemplate
                 .opsForStream()
@@ -266,7 +275,10 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param groupName the group name to be destroyed
      * @return true iff the operation is completed successfully
      */
-    public Mono<Boolean> destroyGroup(String streamKey, String groupName) {
+    public Mono<Boolean> destroyGroup(
+                                      String streamKey,
+                                      String groupName
+    ) {
         return reactiveRedisTemplate
                 .opsForStream()
                 .destroyGroup(streamKey, groupName)

@@ -38,29 +38,34 @@ public class RedisTemplateWrapperBuilder {
     }
 
     /**
-     * Build {@link ReactivePaymentRequestInfoRedisTemplateWrapper} instance using input
-     * redis connection factory and configuring custom converters for {@link RptId},
-     * {@link IdempotencyKey} and other domain objects
+     * Build {@link ReactivePaymentRequestInfoRedisTemplateWrapper} instance using
+     * input redis connection factory and configuring custom converters for
+     * {@link RptId}, {@link IdempotencyKey} and other domain objects
      *
-     * @param reactiveRedisConnectionFactory - the redis connection factory to be used for
-     * @param entitiesTTL            - the default TTL to be applied to all saved
-     *                               entities if not overridden
+     * @param reactiveRedisConnectionFactory - the redis connection factory to be
+     *                                       used for
+     * @param entitiesTTL                    - the default TTL to be applied to all
+     *                                       saved entities if not overridden
      * @return ReactivePaymentRequestInfoRedisTemplateWrapper new instance
      */
     public static ReactivePaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
-                                                                                                     ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
-                                                                                                     Duration entitiesTTL
+                                                                                                             ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
+                                                                                                             Duration entitiesTTL
     ) {
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = new Jackson2JsonRedisSerializer<>(PaymentRequestInfo.class);
-        RedisSerializationContext<String, PaymentRequestInfo> serializationContext =
-                RedisSerializationContext.<String, PaymentRequestInfo>newSerializationContext(new StringRedisSerializer())
-                        .value(serializer)
-                        .build();
-        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate =
-                new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, serializationContext);
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = new Jackson2JsonRedisSerializer<>(
+                PaymentRequestInfo.class
+        );
+        RedisSerializationContext<String, PaymentRequestInfo> serializationContext = RedisSerializationContext
+                .<String, PaymentRequestInfo>newSerializationContext(new StringRedisSerializer())
+                .value(serializer)
+                .build();
+        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = new ReactiveRedisTemplate<>(
+                reactiveRedisConnectionFactory,
+                serializationContext
+        );
 
         return new ReactivePaymentRequestInfoRedisTemplateWrapper(reactiveRedisTemplate, "keys", entitiesTTL);
-       }
+    }
 
     /**
      * Build {@link Jackson2JsonRedisSerializer} specialized instance with object

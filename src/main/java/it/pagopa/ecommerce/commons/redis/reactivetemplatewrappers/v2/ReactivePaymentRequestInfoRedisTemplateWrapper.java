@@ -11,13 +11,16 @@ import java.time.Duration;
 /**
  * Wrapper for {@link PaymentRequestInfo} redis template
  */
-public final class ReactivePaymentRequestInfoRedisTemplateWrapper extends ReactiveRedisTemplateWrapper<PaymentRequestInfo> {
+public final class ReactivePaymentRequestInfoRedisTemplateWrapper
+        extends ReactiveRedisTemplateWrapper<PaymentRequestInfo> {
     /**
      * Constructor
      *
-     * @param reactiveRedisTemplate - the redis template instance to access entity store
-     * @param keyspace      - the keyspace on which entities will be stored
-     * @param ttl           - the ttl that will be set on each saved entities
+     * @param reactiveRedisTemplate - the redis template instance to access entity
+     *                              store
+     * @param keyspace              - the keyspace on which entities will be stored
+     * @param ttl                   - the ttl that will be set on each saved
+     *                              entities
      */
     public ReactivePaymentRequestInfoRedisTemplateWrapper(
             ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate,

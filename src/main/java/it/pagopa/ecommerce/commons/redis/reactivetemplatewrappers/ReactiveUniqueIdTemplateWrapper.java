@@ -15,8 +15,8 @@ public class ReactiveUniqueIdTemplateWrapper extends ReactiveRedisTemplateWrappe
      * Primary constructor
      *
      * @param reactiveRedisTemplate inner redis template
-     * @param keyspace      keyspace associated to this wrapper
-     * @param ttl           time to live for keys
+     * @param keyspace              keyspace associated to this wrapper
+     * @param ttl                   time to live for keys
      */
     public ReactiveUniqueIdTemplateWrapper(
             ReactiveRedisTemplate<String, UniqueIdDocument> reactiveRedisTemplate,

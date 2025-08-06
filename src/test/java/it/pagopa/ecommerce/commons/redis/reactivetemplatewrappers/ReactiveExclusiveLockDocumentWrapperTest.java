@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReactiveExclusiveLockDocumentWrapperTest {
 
-    private final ReactiveRedisTemplate<String, ExclusiveLockDocument> reactiveRedisTemplate = Mockito.mock(ReactiveRedisTemplate.class);
+    private final ReactiveRedisTemplate<String, ExclusiveLockDocument> reactiveRedisTemplate = Mockito
+            .mock(ReactiveRedisTemplate.class);
     private final ReactiveExclusiveLockDocumentWrapper exclusiveLockDocumentWrapper = new ReactiveExclusiveLockDocumentWrapper(
             reactiveRedisTemplate,
             "keyspace",

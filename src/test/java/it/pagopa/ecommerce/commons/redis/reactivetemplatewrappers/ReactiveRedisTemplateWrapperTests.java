@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class ReactiveRedisTemplateWrapperTests {
 
-    private ReactiveRedisConnectionFactory reactiveRedisConnectionFactory = Mockito.mock(ReactiveRedisConnectionFactory.class);
+    private ReactiveRedisConnectionFactory reactiveRedisConnectionFactory = Mockito
+            .mock(ReactiveRedisConnectionFactory.class);
 
     @Test
     void shouldBuildPaymentRequestWrapperSuccessfully() {
@@ -29,18 +30,19 @@ class ReactiveRedisTemplateWrapperTests {
         ReactivePaymentRequestInfoRedisTemplateWrapper paymentRequestInfoRedisTemplateWrapper = ReactiveRedisTemplateWrapperBuilder
                 .buildPaymentRequestInfoRedisTemplateWrapper(reactiveRedisConnectionFactory, ttl);
         assertNotNull(paymentRequestInfoRedisTemplateWrapper);
-        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = paymentRequestInfoRedisTemplateWrapper.unwrap();
+        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = paymentRequestInfoRedisTemplateWrapper
+                .unwrap();
         assertNotNull(reactiveRedisTemplate);
 
-        RedisSerializationContext<String, PaymentRequestInfo> context =
-                paymentRequestInfoRedisTemplateWrapper.unwrap().getSerializationContext();
+        RedisSerializationContext<String, PaymentRequestInfo> context = paymentRequestInfoRedisTemplateWrapper.unwrap()
+                .getSerializationContext();
 
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = buildJackson2RedisSerializer(PaymentRequestInfo.class);
-
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = buildJackson2RedisSerializer(
+                PaymentRequestInfo.class
+        );
 
         assertEquals(StringRedisSerializer.class, context.getKeySerializationPair().getWriter().getClass());
         assertTrue(serializer.canSerialize(PaymentRequestInfo.class));
-
 
 //        assertEquals(reactiveRedisTemplate.getKeySerializer().getClass(), StringRedisSerializer.class);
 //        assertTrue(redisTemplate.getValueSerializer().canSerialize(PaymentRequestInfo.class));

@@ -15,9 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
 
-    private final ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = Mockito.mock(ReactiveRedisTemplate.class);
+    private final ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = Mockito
+            .mock(ReactiveRedisTemplate.class);
 
-    private final ReactiveValueOperations<String, PaymentRequestInfo> reactiveValueOperations = Mockito.mock(ReactiveValueOperations.class);
+    private final ReactiveValueOperations<String, PaymentRequestInfo> reactiveValueOperations = Mockito
+            .mock(ReactiveValueOperations.class);
 
     private final String keyspace = "keys";
 
@@ -34,7 +36,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         PaymentRequestInfo expected = TransactionTestUtils.paymentRequestInfoV2();
         Mockito.when(reactiveRedisTemplate.opsForValue()).thenReturn(reactiveValueOperations);
-        Mockito.when(reactiveValueOperations.get("keys:%s".formatted(TransactionTestUtils.RPT_ID))).thenReturn(Mono.just(expected));
+        Mockito.when(reactiveValueOperations.get("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
+                .thenReturn(Mono.just(expected));
 
         // test
         Mono<PaymentRequestInfo> actual = paymentRequestInforeactiveRedisTemplateWrapper
@@ -78,7 +81,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.when(reactiveRedisTemplate.delete("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
                 .thenReturn(Mono.just(0L));
         // test
-        Boolean deleteResult = paymentRequestInforeactiveRedisTemplateWrapper.deleteById(TransactionTestUtils.RPT_ID).block();
+        Boolean deleteResult = paymentRequestInforeactiveRedisTemplateWrapper.deleteById(TransactionTestUtils.RPT_ID)
+                .block();
         // assertions
         Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
                 .delete("keys:%s".formatted(TransactionTestUtils.RPT_ID));
@@ -92,7 +96,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .thenReturn(Mono.just(entityExpiration));
 
         Duration ttl = paymentRequestInforeactiveRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID).block();
-        Mockito.verify(reactiveRedisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
+                .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
         assertEquals(entityExpiration, ttl);
     }
 
@@ -103,7 +108,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .thenReturn(null);
 
         Duration ttl = paymentRequestInforeactiveRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID).block();
-        Mockito.verify(reactiveRedisTemplate, Mockito.times(1)).getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
+        Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
+                .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
         assertEquals(expectedDuration, ttl);
     }
 
