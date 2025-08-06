@@ -23,18 +23,17 @@ jobs:
   semver_labels:
     name: Read semver labels from merged PR
     runs-on: ubuntu-latest
-    environment: prod
     outputs:
       semver_app: ${{ steps.semver_labels.outputs.semver_app }}
       skip_release: ${{ steps.semver_labels.outputs.skip_release }}
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.github_token }}
       - uses: ./.github/actions/check-pr-semver-labels
         id: semver_labels
         with:
-          github_token: ${{ secrets.BOT_GITHUB_TOKEN}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
   semver_update:
     if: ${{needs.semver_labels.outputs.skip_release == 'False'}}
     name: Update semver for every eligible file of repo (helm charts, mvn files, etc.)
