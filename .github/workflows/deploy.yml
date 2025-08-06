@@ -21,6 +21,7 @@ jobs:
   semver_labels:
     name: Read semver labels from merged PR
     runs-on: ubuntu-latest
+    environment: prod
     outputs:
       semver_app: ${{ steps.semver_labels.outputs.semver_app }}
       skip_release: ${{ steps.semver_labels.outputs.skip_release }}
