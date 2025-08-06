@@ -1,8 +1,10 @@
 name: Make new release
 
 on:
-  push:
-    branches: [ "main" ]
+  pull_request:
+    branches:
+      - main
+    types: [ opened, synchronize, labeled, unlabeled, reopened, edited ]
   workflow_dispatch:
     inputs:
       semver:
