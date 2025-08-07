@@ -6,15 +6,7 @@ on:
       - main
     types: [ opened, synchronize, labeled, unlabeled, reopened, edited ]
   workflow_dispatch:
-    inputs:
-      semver:
-        type: choice
-        description: the semantic versioning to be applied
-        options:
-          - patch
-          - minor
-          - major
-
+    
 permissions:
   contents: write
   pull-requests: write
@@ -29,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: ./.github/actions/check-pr-semver-labels
         id: semver_labels
         with:
@@ -39,7 +31,6 @@ jobs:
     name: Update semver for every eligible file of repo (helm charts, mvn files, etc.)
     runs-on: ubuntu-latest
     needs: semver_labels
-    environment: prod
     outputs:
       app_version: ${{ steps.get_new_ver.outputs.version }}
     steps:
@@ -86,13 +77,12 @@ jobs:
     name: Create a New Github Release
     needs: semver_update
     runs-on: ubuntu-latest
-    environment: prod
     steps:
       - name: Checkout release branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
         with:
           persist-credentials: false
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: 'main'
       - name: Set Up Github Release
         id: setup_github_release
@@ -119,5 +109,5 @@ jobs:
         id: package
         uses: pagopa/github-actions-template/maven-package@483a0ceb9ef07dee34f7ce0de5b689cc3043eac4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.BOT_GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}
