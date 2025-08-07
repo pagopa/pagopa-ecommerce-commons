@@ -135,12 +135,26 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build with Maven
+      #Setup maven setting to add pagopa-ecommerce-commons repository settings
+      - uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d #V22
+        with:
+          repositories: >
+            [
+              {
+                  "id": "github",
+                  "url": "https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+              }
+            ]
+          servers: >
+            [
+              {
+                "id":"github",
+                "username":"${{ github.actor }}",
+                "password":"${{ secrets.BOT_GITHUB_TOKEN }}"
+              }
+            ]
+      - name: Build and deploy to GitHub Package Registry
         run: |
-          mvn package
-      - name: Deploy to GitHub Package Registry
-        run: |
-          REPO="github::default::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
-          mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
+          mvn package deploy
         env:
           GITHUB_TOKEN: ${{ inputs.github_token }}
