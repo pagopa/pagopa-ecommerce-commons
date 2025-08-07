@@ -139,28 +139,27 @@ jobs:
       - name: Build artifact
         run: |
           mvn package
-        env:
-          GITHUB_TOKEN: ${{ inputs.github_token }}
       #Setup maven setting to add pagopa-ecommerce-commons repository settings
-      - uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d #V22
-        with:
-          repositories: >
-            [
-              {
-                  "id": "github",
-                  "url": "https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
-              }
-            ]
-          servers: >
-            [
-              {
-                "id":"github",
-                "username":"${{ secrets.BOT_GIT_USER }}",
-                "password":"${{ secrets.BOT_GITHUB_TOKEN }}"
-              }
-            ]
+      #      - uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d #V22
+      #        with:
+      #          repositories: >
+      #            [
+      #              {
+      #                  "id": "github",
+      #                  "url": "https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+      #              }
+      #            ]
+      #          servers: >
+      #            [
+      #              {
+      #                "id":"github",
+      #                "username":"${{ secrets.BOT_GIT_USER }}",
+      #                "password":"${{ secrets.BOT_GITHUB_TOKEN }}"
+      #              }
+      #            ]
       - name: Deploy to GitHub Package Registry
         run: |
-          mvn deploy
+          REPO="github::default::https://maven.pkg.github.com/${{github.repository}}"
+          mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
         env:
-          GITHUB_TOKEN: ${{ inputs.github_token }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
