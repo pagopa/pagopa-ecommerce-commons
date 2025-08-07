@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   deploy_artifact:
-    if: github.ref == "refs/heads/main" || startsWith(github.ref, 'refs/tags')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')
     name: Deploy github package
     runs-on: ubuntu-latest
     steps:
