@@ -6,7 +6,7 @@ on:
       - main
     types: [ opened, synchronize, labeled, unlabeled, reopened, edited ]
   workflow_dispatch:
-    
+
 permissions:
   contents: write
   pull-requests: write
@@ -31,6 +31,7 @@ jobs:
     name: Update semver for every eligible file of repo (helm charts, mvn files, etc.)
     runs-on: ubuntu-latest
     needs: semver_labels
+    environment: prod
     outputs:
       app_version: ${{ steps.get_new_ver.outputs.version }}
     steps:
@@ -38,7 +39,7 @@ jobs:
       - name: Checkout release branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       # setup git author
       - name: Setup git author
         run: |
@@ -100,7 +101,7 @@ jobs:
           commit: ${{ steps.setup_github_release.outputs.HEAD_SHA }}
           tag: ${{ steps.setup_github_release.outputs.TAG }}
           name: ${{ steps.setup_github_release.outputs.TITLE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           makeLatest: true
           generateReleaseNotes: true
           draft: false
@@ -109,5 +110,5 @@ jobs:
         id: package
         uses: pagopa/github-actions-template/maven-package@483a0ceb9ef07dee34f7ce0de5b689cc3043eac4
         with:
-          github_token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}
