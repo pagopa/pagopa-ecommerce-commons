@@ -91,7 +91,7 @@ jobs:
         id: setup_github_release
         run: |
           HEAD_SHA=$(git rev-parse HEAD)
-          TAG="$chart_version"
+          TAG="${{ needs.semver_update.outputs.app_version }}"
           TITLE="Release ${{ needs.semver_update.outputs.app_version }}"
           echo "HEAD_SHA=$HEAD_SHA" >> $GITHUB_OUTPUT
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
