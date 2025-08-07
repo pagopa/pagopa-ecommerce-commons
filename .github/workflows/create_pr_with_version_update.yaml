@@ -7,8 +7,37 @@ on:
 
 permissions:
   pull-requests: write
+  packages: write
 
 jobs:
+  deploy_artifact:
+    if: ${{needs.semver_labels.outputs.skip_release == 'False'}}
+    name: Deploy github package
+    needs: semver_update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      # this action set up also maven configuring github as server
+      - name: Set up JDK 21
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+      - name: Cache Maven packages
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Deploy to GitHub Package Registry
+        run: |
+          REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+          mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   create_pr:
     strategy:
       matrix:
@@ -18,12 +47,14 @@ jobs:
           - pagopa-ecommerce-event-dispatcher-service
           - pagopa-ecommerce-payment-methods-service
           - pagopa-ecommerce-helpdesk-service
+          - pagopa-ecommerce-helpdesk-commands-service
+          - pagopa-ecommerce-cdc-service
 
     name: Create PR on ${{ matrix.repo }}
     runs-on: ubuntu-latest
-
+    needs: deploy_artifact
     steps:
-      - name: Get latest release tag from pagopa-ecomemrce-commons
+      - name: Get latest release tag from pagopa-ecommerce-commons
         id: get_latest_tag
         run: |
           git clone https://github.com/pagopa/pagopa-ecommerce-commons
@@ -82,20 +113,20 @@ jobs:
             <!--- Please describe in detail how you tested your changes. -->
             <!--- Include details of your testing environment, tests ran to see how -->
             <!--- your change affects other areas of the code, etc. -->
-          
+            
             #### Types of changes
             
             <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
-          
+            
             - [ ] Bug fix (non-breaking change which fixes an issue)
             - [ ] New feature (non-breaking change which adds functionality)
             - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-          
+            
             #### Checklist:
             
             <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
             <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-          
+            
             - [ ] My change requires a change to the documentation.
             - [ ] I have updated the documentation accordingly.
           labels: |
