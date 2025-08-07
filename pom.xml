@@ -10,7 +10,7 @@
     </parent>
     <groupId>it.pagopa</groupId>
     <artifactId>pagopa-ecommerce-commons</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.1</version>
     <licenses>
         <license>
             <name>EUPL 1.2 Public License</name>
