@@ -1,0 +1,17 @@
+name: Create PR on eCommerce project with version update
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+
+jobs:
+  deploy_artifact:
+    name: Deploy github package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/publish-maven_artifacts
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
