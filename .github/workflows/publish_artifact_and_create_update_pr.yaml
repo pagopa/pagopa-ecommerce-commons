@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   deploy_artifact:
-    if: ${{needs.semver_labels.outputs.skip_release == 'False'}}
     name: Deploy github package
-    needs: semver_update
     runs-on: ubuntu-latest
     steps:
       - uses: ./.github/actions/publish-maven_artifacts
