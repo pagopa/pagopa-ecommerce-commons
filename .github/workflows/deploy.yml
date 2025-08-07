@@ -70,7 +70,6 @@ jobs:
           echo $version
           echo "version=$version" >> $GITHUB_OUTPUT
       - name: Push New Version
-        #TODO remove explicit checkout main step, add just for test into open branch
         run: |
           git diff --cached
           git commit -m "Bump version [skip ci]"
