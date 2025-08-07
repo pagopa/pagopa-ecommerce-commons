@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
   semver_labels:
@@ -109,7 +110,7 @@ jobs:
           prerelease: false
       - name: Make Package
         id: package
-        uses: pagopa/github-actions-template/maven-package@483a0ceb9ef07dee34f7ce0de5b689cc3043eac4
+        uses: pagopa/github-actions-template/maven-package@525266fb788f4da438e5919fcf660fe8637271ed #v2.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}
