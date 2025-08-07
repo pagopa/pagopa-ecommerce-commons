@@ -1,4 +1,4 @@
-name: Create PR on eCommerce project with version update
+name: Publish on Github artifacts
 
 on:
   workflow_dispatch:
