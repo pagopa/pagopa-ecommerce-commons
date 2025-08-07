@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotNull;
+import javax.annotation.Nullable;
 
 /**
  * Data related to Nodo close payment operation such as outcome (OK/KO)
@@ -20,6 +21,9 @@ public class TransactionClosureData {
      */
     @NotNull
     private Outcome responseOutcome;
+
+    @Nullable
+    private Boolean wasCanceledByUser;
 
     /**
      * Enumeration of Nodo closePayment outcome

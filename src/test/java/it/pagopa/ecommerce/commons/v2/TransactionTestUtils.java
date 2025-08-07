@@ -384,7 +384,15 @@ public class TransactionTestUtils {
     public static TransactionClosedEvent transactionClosedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, false)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosedEvent transactionClosedEventCanceledByUser(TransactionClosureData.Outcome outcome) {
+        return new TransactionClosedEvent(
+                TRANSACTION_ID,
+                new TransactionClosureData(outcome, true)
         );
     }
 
@@ -573,7 +581,17 @@ public class TransactionTestUtils {
     public static TransactionClosureFailedEvent transactionClosureFailedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureFailedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, false)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosureFailedEvent transactionClosureFailedEventCanceledByUSer(
+                                                                                            TransactionClosureData.Outcome outcome
+    ) {
+        return new TransactionClosureFailedEvent(
+                TRANSACTION_ID,
+                new TransactionClosureData(outcome, true)
         );
     }
 
