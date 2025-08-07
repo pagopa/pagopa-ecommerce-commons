@@ -2,10 +2,7 @@ name: Create PR on eCommerce project with version update
 
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        type: string
-        description: git ref to be checked out for artifact publish
+
 permissions:
   packages: write
 
@@ -18,4 +15,3 @@ jobs:
       - uses: ./.github/actions/publish-maven_artifacts
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ inputs.ref }}
