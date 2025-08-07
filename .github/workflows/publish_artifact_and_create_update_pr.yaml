@@ -1,4 +1,4 @@
-name: Publish artifact and create PR on eCommerce project with version update
+name: Publish artifact and create update PR on eCommerce projects
 
 on:
   release:
