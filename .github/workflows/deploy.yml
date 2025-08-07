@@ -108,12 +108,6 @@ jobs:
           generateReleaseNotes: true
           draft: false
           prerelease: false
-      - name: Make Package
-        id: package
-        uses: pagopa/github-actions-template/maven-package@525266fb788f4da438e5919fcf660fe8637271ed #v2.2.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref_name }}
   deploy_artifact:
     if: ${{needs.semver_labels.outputs.skip_release == 'False'}}
     name: Deploy artifact to main
@@ -131,7 +125,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-      #this step setup maven configuring github token in server section
       - name: Set up Maven
         uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f # v4.5
         with:
@@ -149,3 +142,5 @@ jobs:
         run: |
           REPO="github::default::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
           mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
+        env:
+          GITHUB_TOKEN: ${{ inputs.github_token }}
