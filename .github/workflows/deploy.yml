@@ -40,6 +40,7 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
       # setup git author
       - name: Setup git author
         run: |
