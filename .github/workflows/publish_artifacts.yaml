@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: ./.github/actions/publish-maven_artifacts
+      - uses: ./.github/actions/publish-maven-artifacts
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
