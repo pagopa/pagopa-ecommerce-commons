@@ -586,7 +586,7 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
-    public static TransactionClosureFailedEvent transactionClosureFailedEventCanceledByUSer(
+    public static TransactionClosureFailedEvent transactionClosureFailedEventCanceledByUser(
                                                                                             TransactionClosureData.Outcome outcome
     ) {
         return new TransactionClosureFailedEvent(
