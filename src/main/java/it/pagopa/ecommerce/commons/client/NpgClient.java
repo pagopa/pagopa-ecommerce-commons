@@ -445,7 +445,7 @@ public class NpgClient {
                                                @NonNull PaymentMethod paymentMethod,
                                                @NonNull String defaultApiKey,
                                                String contractId,
-                                               Integer totalAmount,
+                                               Long totalAmount,
                                                String language
     ) {
         return executeBuildForm(
@@ -484,7 +484,7 @@ public class NpgClient {
                                              @NonNull PaymentMethod paymentMethod,
                                              @NonNull String defaultApiKey,
                                              String contractId,
-                                             Integer totalAmount,
+                                             Long totalAmount,
                                              String language
     ) {
         GatewayOperation gatewayOperation = GatewayOperation.BUILD_FORM;
@@ -726,7 +726,7 @@ public class NpgClient {
                                                              String customerId,
                                                              PaymentMethod paymentMethod,
                                                              String contractId,
-                                                             Integer totalAmount,
+                                                             Long totalAmount,
                                                              String language
     ) {
 
