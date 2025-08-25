@@ -1,0 +1,19 @@
+name: Publish on Github artifacts
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+
+jobs:
+  deploy_artifact:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')
+    name: Deploy github package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./.github/actions/publish-maven-artifacts
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
