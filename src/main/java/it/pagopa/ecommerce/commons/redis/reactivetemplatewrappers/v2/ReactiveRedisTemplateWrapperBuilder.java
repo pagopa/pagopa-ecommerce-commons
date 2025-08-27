@@ -8,13 +8,9 @@ import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeyDese
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySerializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdSerializer;
-import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactivePaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.v2.PaymentRequestInfoRedisTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -28,12 +24,12 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
  * adding custom serializers
  */
 
-public class RedisTemplateWrapperBuilder {
+public class ReactiveRedisTemplateWrapperBuilder {
 
     /**
      * Private constructor used to hide default public ones
      */
-    private RedisTemplateWrapperBuilder() {
+    private ReactiveRedisTemplateWrapperBuilder() {
         // Utility class, no need to instantiate it
     }
 
