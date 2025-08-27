@@ -301,8 +301,15 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @return a list populated with all the entries in keyspace
      */
     public Flux<V> getAllValuesInKeySpace() {
-        return keysInKeyspace()
-                .flatMap(key -> reactiveRedisTemplate.opsForValue().get(key));
+        return keysInKeyspace().collectList()
+                .flatMapMany(keys -> {
+                    if (keys.isEmpty())
+                        return Flux.empty();
+                    else
+                        return reactiveRedisTemplate.opsForValue().multiGet(keys).filter(Objects::nonNull).flatMapMany(
+                                Flux::fromIterable
+                        );
+                });
     }
 
     /**
