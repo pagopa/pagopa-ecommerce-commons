@@ -65,9 +65,10 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         // assertions
         PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV2();
         Mockito.when(reactiveRedisTemplate.opsForValue()).thenReturn(reactiveValueOperations);
-        Mockito.when(reactiveValueOperations.set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl))
+        Mockito.when(
+                reactiveValueOperations.set("keys:%s".formatted(TransactionTestUtils.RPT_ID), paymentRequestInfo, ttl)
+        )
                 .thenReturn(Mono.just(true));
-
 
         // test
         paymentRequestInforeactiveRedisTemplateWrapper.save(paymentRequestInfo);
