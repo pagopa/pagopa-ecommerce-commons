@@ -117,7 +117,8 @@ class ReactiveRedisTemplateWrapperTests {
         assertEquals(actual, paymentRequestInfo);
     }
 
-    private <T> Jackson2JsonRedisSerializer<T> buildJackson2RedisSerializer(Class<T> clazz) {
+    private static <T> Jackson2JsonRedisSerializer<T> buildJackson2RedisSerializer(Class<T> clazz) {
+
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule rptSerializationModule = new SimpleModule();
         rptSerializationModule.addSerializer(RptId.class, new JacksonRptIdSerializer());
@@ -128,5 +129,4 @@ class ReactiveRedisTemplateWrapperTests {
         objectMapper.setSerializationInclusion(NON_NULL);
         return new Jackson2JsonRedisSerializer<>(objectMapper, clazz);
     }
-
 }
