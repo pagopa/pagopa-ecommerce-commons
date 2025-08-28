@@ -53,18 +53,20 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Save the input entity into Redis. The entity TTL will be set to the default
      * configured one
      *
-     * @param value - the entity to be saved
+     * @param value the entity to be saved
      */
     public void save(V value) {
         save(value, getDefaultTTL());
     }
 
     /**
-     * Save the input entity into Redis
+     * Save the input entity into Redis.
      *
      * @param value the entity to be saved
-     * @param ttl   the TTL for the entity to be saved. This parameter will override
-     *              the default TTL value
+     * @param ttl   the TTL for the entity to be saved. This parameter overrides the
+     *              default TTL value
+     * @return a {@code Mono<Boolean>} completing with {@code true} se la chiave è
+     *         stata impostata correttamente, {@code false} altrimenti
      */
     public Mono<Boolean> save(
                               V value,
