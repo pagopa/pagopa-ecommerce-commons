@@ -48,9 +48,10 @@ public class ReactiveRedisTemplateWrapperBuilder {
                                                                                                              ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
                                                                                                              Duration entitiesTTL
     ) {
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = new Jackson2JsonRedisSerializer<>(
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = buildJackson2RedisSerializer(
                 PaymentRequestInfo.class
         );
+
         RedisSerializationContext<String, PaymentRequestInfo> serializationContext = RedisSerializationContext
                 .<String, PaymentRequestInfo>newSerializationContext(new StringRedisSerializer())
                 .value(serializer)
