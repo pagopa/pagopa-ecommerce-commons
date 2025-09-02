@@ -182,21 +182,25 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
                                                            V event,
                                                            long streamSize
     ) {
-        if (streamSize < 0) {
-            return Mono.error(
-                    new IllegalArgumentException(
-                            "Invalid input %s events to trim, it must be >=0".formatted(streamSize)
-                    )
-            );
-        }
-
-        return reactiveRedisTemplate
-                .opsForStream()
-                .trim(streamKey, streamSize)
-                .then(
-                        reactiveRedisTemplate
+        return Mono
+                .just(streamSize)
+                .filter(size -> size > 0)
+                .switchIfEmpty(
+                        Mono.error(
+                                new IllegalArgumentException(
+                                        "Invalid input %s events to trim, it must be >=0".formatted(streamSize)
+                                )
+                        )
+                )
+                .flatMap(
+                        size -> reactiveRedisTemplate
                                 .opsForStream()
-                                .add(ObjectRecord.create(streamKey, event))
+                                .trim(streamKey, size)
+                                .then(
+                                        reactiveRedisTemplate
+                                                .opsForStream()
+                                                .add(ObjectRecord.create(streamKey, event))
+                                )
                 );
     }
 
