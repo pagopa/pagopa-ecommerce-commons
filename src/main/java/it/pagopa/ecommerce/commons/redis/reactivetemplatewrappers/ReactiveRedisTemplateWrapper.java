@@ -133,13 +133,13 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
         return reactiveRedisTemplate.delete(compoundKeyWithKeyspace(key)).map(deletedCount -> deletedCount > 0);
     }
 
-   /**
+    /**
      * Get TTL duration for the entity
      *
      * @param key - the entity key for which retrieve TTL
      * @return the entity associated TTL duration.
-     * 
-     * @see org.springframework.data.redis.core.ReactiveRedisOperations#getExpire(Object) 
+     *
+     * @see org.springframework.data.redis.core.ReactiveRedisOperations#getExpire(Object)
      */
     public Mono<Duration> getTTL(String key) {
         return reactiveRedisTemplate
