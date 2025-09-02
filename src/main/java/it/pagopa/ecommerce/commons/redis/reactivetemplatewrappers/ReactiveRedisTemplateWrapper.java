@@ -133,23 +133,17 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
         return reactiveRedisTemplate.delete(compoundKeyWithKeyspace(key)).map(deletedCount -> deletedCount > 0);
     }
 
-    /**
-     * Get TTL duration for the entity with the given key Negative duration has the
-     * following meaning:
-     * <ul>
-     * <li>-1: entity that has no expiration set</li>
-     * <li>-2: input key does not exist</li>
-     * <li>-3: redis returned expiration is null</li>
-     * </ul>
+   /**
+     * Get TTL duration for the entity
      *
      * @param key - the entity key for which retrieve TTL
      * @return the entity associated TTL duration.
+     * 
+     * @see org.springframework.data.redis.core.ReactiveRedisOperations#getExpire(Object) 
      */
     public Mono<Duration> getTTL(String key) {
         return reactiveRedisTemplate
-                .getExpire(compoundKeyWithKeyspace(key))
-                .map(ttl -> Duration.ofSeconds(ttl.isNegative() ? -3 : ttl.toSeconds()))
-                .defaultIfEmpty(Duration.ofSeconds(-3));
+                .getExpire(compoundKeyWithKeyspace(key));
     }
 
     /**
