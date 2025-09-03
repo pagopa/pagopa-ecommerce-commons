@@ -66,8 +66,9 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param value the entity to be saved
      * @param ttl   the TTL for the entity to be saved. This parameter overrides the
-     *              default TTL value + @return a {@link Mono} emitting {@code true}
-     *              if the key was set, {@code false} otherwise
+     *              default TTL value
+     * @return a {@link Mono} emitting {@code true} if the key was set,
+     *         {@code false} otherwise
      */
     public Mono<Boolean> save(
                               V value,
