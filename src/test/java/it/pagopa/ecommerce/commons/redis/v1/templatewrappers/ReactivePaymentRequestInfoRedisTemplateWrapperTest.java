@@ -209,24 +209,34 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
 
     @Test
     void shouldRetrieveAllValuesInKeyspaceSuccessfully() {
-        // assertion
+        // arrange
         List<String> keys = List.of("keys:1", "keys:2");
-        List<PaymentRequestInfo> values = keys.stream().map(
-                key -> TransactionTestUtils.paymentRequestInfoV1()
-        ).toList();
+        List<PaymentRequestInfo> values = keys.stream()
+                .map(k -> TransactionTestUtils.paymentRequestInfoV1())
+                .toList();
+
         Mockito.when(redisTemplate.keys("keys*")).thenReturn(Flux.fromIterable(keys));
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        Mockito.when(valueOperations.multiGet(any())).thenReturn(Mono.just(values));
-        // test
+
+        // findById compone keyspace: + key -> passando "keys:1" diventa "keys:keys:1"
+        Mockito.when(valueOperations.get("keys:keys:1")).thenReturn(Mono.just(values.get(0)));
+        Mockito.when(valueOperations.get("keys:keys:2")).thenReturn(Mono.just(values.get(1)));
+
+        // act
         Flux<PaymentRequestInfo> returnedValues = paymentRequestInfoRedisTemplateWrapper.getAllValuesInKeySpace();
 
-        // assertions
-        StepVerifier.create(returnedValues)
-                .expectNextSequence(values)
+        // assert
+        StepVerifier.create(returnedValues.collectList())
+                .assertNext(list -> {
+                    org.junit.jupiter.api.Assertions.assertEquals(values.size(), list.size());
+                    org.junit.jupiter.api.Assertions.assertTrue(list.containsAll(values));
+                })
                 .verifyComplete();
 
         Mockito.verify(redisTemplate, Mockito.times(1)).keys("keys*");
-        Mockito.verify(valueOperations, Mockito.times(1)).multiGet(keys);
+        Mockito.verify(valueOperations, Mockito.times(1)).get("keys:keys:1");
+        Mockito.verify(valueOperations, Mockito.times(1)).get("keys:keys:2");
+        Mockito.verify(valueOperations, Mockito.never()).multiGet(Mockito.any());
     }
 
     @Test
