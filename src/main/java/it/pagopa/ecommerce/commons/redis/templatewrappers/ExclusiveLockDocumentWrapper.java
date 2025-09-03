@@ -6,7 +6,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 
 /**
- * Redis template wrapper instance for handling exclusive lock
+ * Redis template wrapper instance for handling exclusive lock.
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveExclusiveLockDocumentWrapper}
+ *             instead.
  */
 public class ExclusiveLockDocumentWrapper extends RedisTemplateWrapper<ExclusiveLockDocument> {
 

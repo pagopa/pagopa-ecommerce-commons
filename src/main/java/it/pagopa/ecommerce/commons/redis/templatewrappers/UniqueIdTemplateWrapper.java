@@ -6,8 +6,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 
 /**
- * Wrapper for {@link UniqueIdDocument} redis template
+ * Wrapper for {@link UniqueIdDocument} redis template.
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveUniqueIdTemplateWrapper}
+ *             instead.
  */
+@Deprecated
 public class UniqueIdTemplateWrapper extends RedisTemplateWrapper<UniqueIdDocument> {
     /**
      * Primary constructor

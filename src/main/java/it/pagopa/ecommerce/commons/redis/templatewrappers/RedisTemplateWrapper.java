@@ -3,6 +3,7 @@ package it.pagopa.ecommerce.commons.redis.templatewrappers;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.NonNull;
 
@@ -13,10 +14,14 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class is a {@link RedisTemplate} wrapper class, used to centralize
- * commons RedisTemplate operations
+ * This class is a {@link ReactiveRedisTemplate} wrapper used to centralize
+ * common ReactiveRedisTemplate operations.
  *
- * @param <V> - the RedisTemplate value type
+ * @param <V> the ReactiveRedisTemplate value type
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveRedisTemplateWrapper}
+ *             instead.
  */
 public abstract class RedisTemplateWrapper<V> {
 

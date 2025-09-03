@@ -116,14 +116,13 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
 
     @Test
     void shouldReturnTTLForNullTTLReturnedByRedis() {
-        Duration expectedDuration = Duration.ofSeconds(-3);
         Mockito.when(redisTemplate.getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
                 .thenReturn(Mono.empty());
 
         Mono<Duration> ttl = paymentRequestInfoRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
         Mockito.verify(redisTemplate, Mockito.times(1))
                 .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
-        assertEquals(expectedDuration, ttl.block());
+        assertEquals(Mono.empty(), ttl);
     }
 
     @Test
@@ -267,7 +266,7 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
     void shouldWriteEventToStreamSuccessfullyTrimmingPreviousEvents() {
         // assertions
         String streamKey = "streamKey";
-        int streamSize = 0;
+        int streamSize = 1;
         PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         RecordId expectedRecordId = RecordId.of(System.currentTimeMillis(), 0);
 

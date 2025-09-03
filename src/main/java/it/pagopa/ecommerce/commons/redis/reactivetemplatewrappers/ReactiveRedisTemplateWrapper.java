@@ -32,7 +32,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
     /**
      * Primary constructor
      *
-     * @param reactiveRedisTemplate inner redis template
+     * @param reactiveRedisTemplate underlying reactive Redis template
      * @param keyspace              keyspace associated to this wrapper
      * @param ttl                   time to live for keys
      */
@@ -54,9 +54,11 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * configured one
      *
      * @param value the entity to be saved
+     * @return a {@link Mono} emitting {@code true} if the key was set,
+     *         {@code false} otherwise
      */
-    public void save(V value) {
-        save(value, getDefaultTTL());
+    public Mono<Boolean> save(V value) {
+        return save(value, getDefaultTTL());
     }
 
     /**
@@ -64,9 +66,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param value the entity to be saved
      * @param ttl   the TTL for the entity to be saved. This parameter overrides the
-     *              default TTL value
-     * @return a {@code Mono<Boolean>} completing with {@code true} se la chiave è
-     *         stata impostata correttamente, {@code false} altrimenti
+     *              default TTL value + @return a {@link Mono} emitting {@code true}
+     *              if the key was set, {@code false} otherwise
      */
     public Mono<Boolean> save(
                               V value,
@@ -79,7 +80,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Save key to hold the string value if key is absent (SET with NX).
      *
      * @param value the entity to be saved
-     * @return returns false if it already exists, true if it does not exist.
+     * @return a {@link Mono} emitting {@code true} if the key did not exist and was
+     *         set, {@code false} otherwise
      */
     public Mono<Boolean> saveIfAbsent(
                                       V value
@@ -94,7 +96,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param value the entity to be saved
      * @param ttl   the TTL for the entity to be saved. This parameter will override
      *              the default TTL value
-     * @return returns false if it already exists, true if it does not exist.
+     * @return a {@link Mono} emitting {@code true} if the key did not exist and was
+     *         set, {@code false} otherwise
      */
     public Mono<Boolean> saveIfAbsent(
                                       V value,
@@ -117,7 +120,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Retrieve entity for the given key
      *
      * @param key - the key of the entity to be found
-     * @return an Optional object valued with the found entity, if any
+     * @return a {@link Mono} emitting the value if present; empty if not found
      */
     public Mono<V> findById(String key) {
         return reactiveRedisTemplate.opsForValue().get(compoundKeyWithKeyspace(key));
@@ -127,7 +130,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Delete the entity for the given key
      *
      * @param key - the entity key to be deleted
-     * @return true if the key has been removed
+     * @return a {@link Mono} emitting {@code true} if a key was removed,
+     *         {@code false} otherwise
      */
     public Mono<Boolean> deleteById(String key) {
         return reactiveRedisTemplate.delete(compoundKeyWithKeyspace(key)).map(deletedCount -> deletedCount > 0);
@@ -137,7 +141,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * Get TTL duration for the entity
      *
      * @param key - the entity key for which retrieve TTL
-     * @return the entity associated TTL duration.
+     * @return a {@link Mono} emitting the TTL {@link Duration}; may be empty if no
+     *         expiration is set
      *
      * @see org.springframework.data.redis.core.ReactiveRedisOperations#getExpire(Object)
      */
@@ -151,7 +156,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param streamKey the stream key where send the event to
      * @param event     the event to be sent
-     * @return the {@link RecordId} associated to the written event
+     * @return a {@link Mono} emitting the {@link RecordId} of the written event
      */
     public Mono<RecordId> writeEventToStream(
                                              String streamKey,
@@ -169,7 +174,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param streamKey  the stream key where send the event to
      * @param event      the event to be sent
      * @param streamSize the wanted length of the stream
-     * @return the {@link RecordId} associated to the written event
+     * @return a {@link Mono} emitting the {@link RecordId} of the written event
      */
     public Mono<RecordId> writeEventToStreamTrimmingEvents(
                                                            String streamKey,
@@ -203,7 +208,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param streamKey  the stream key from which trim events
      * @param streamSize the wanted stream size
-     * @return the number or removed events from the stream
+     * @return a {@link Mono} emitting the number of removed entries
      */
     public Mono<Long> trimEvents(
                                  String streamKey,
@@ -220,7 +225,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param streamKey the stream key
      * @param groupId   the group id for which perform acknowledgment operation
      * @param recordIds records for which perform ack operation
-     * @return the number of stream operations performed
+     * @return a {@link Mono} emitting the number of acknowledged entries
      */
     public Mono<Long> acknowledgeEvents(
                                         String streamKey,
@@ -238,7 +243,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param streamKey the stream key for which create the group
      * @param groupName the group name
-     * @return OK if operation was successful
+     * @return a {@link Mono} emitting {@code "OK"} if the operation succeeded
      */
     public Mono<String> createGroup(
                                     String streamKey,
@@ -256,7 +261,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param streamKey  the stream key for which create the group
      * @param groupName  the group name
      * @param readOffset the offset from which start the receiver group
-     * @return OK if operation was successful
+     * @return a {@link Mono} emitting {@code "OK"} if the operation succeeded
      */
     public Mono<String> createGroup(
                                     String streamKey,
@@ -273,7 +278,8 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      *
      * @param streamKey the stream for which remove the group
      * @param groupName the group name to be destroyed
-     * @return true iff the operation is completed successfully
+     * @return a {@link Mono} emitting {@code true} if the group was destroyed;
+     *         {@code false} otherwise
      */
     public Mono<Boolean> destroyGroup(
                                       String streamKey,
@@ -289,7 +295,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
     /**
      * Get all the keys in keyspace
      *
-     * @return a set populated with all the keys in keyspace
+     * @return a {@link Flux} emitting all keys in the keyspace
      */
     public Flux<String> keysInKeyspace() {
         return reactiveRedisTemplate.keys(keyspace.concat("*"));
@@ -298,7 +304,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
     /**
      * Get all the values in keyspace
      *
-     * @return a list populated with all the entries in keyspace
+     * @return a {@link Flux} emitting all values found in the keyspace
      */
     public Flux<V> getAllValuesInKeySpace() {
         return keysInKeyspace().collectList()

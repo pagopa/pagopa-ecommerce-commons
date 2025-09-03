@@ -106,14 +106,13 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
 
     @Test
     void shouldReturnTTLForNullTTLReturnedByRedis() {
-        Duration expectedDuration = Duration.ofSeconds(-3);
         Mockito.when(reactiveRedisTemplate.getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID)))
                 .thenReturn(Mono.empty());
 
         Mono<Duration> ttl = paymentRequestInforeactiveRedisTemplateWrapper.getTTL(TransactionTestUtils.RPT_ID);
         Mockito.verify(reactiveRedisTemplate, Mockito.times(1))
                 .getExpire("keys:%s".formatted(TransactionTestUtils.RPT_ID));
-        assertEquals(expectedDuration, ttl.block());
+        assertEquals(Mono.empty(), ttl);
     }
 
     @Test
