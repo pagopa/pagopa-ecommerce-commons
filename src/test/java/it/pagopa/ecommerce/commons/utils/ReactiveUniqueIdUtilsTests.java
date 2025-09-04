@@ -82,7 +82,10 @@ class ReactiveUniqueIdUtilsTests {
                 .map(UniqueIdDocument::id)
                 .collect(Collectors.toSet());
 
-        assertThat(savedIds).hasSize(allDocs.size());
+        assertTrue(
+            savedIds.size() == UniqueIdUtils.MAX_NUMBER_ATTEMPTS,
+            "saved ids: %s, expected %s different values".formatted(savedIds, UniqueIdUtils.MAX_NUMBER_ATTEMPTS)
+        )
     }
 
 }
