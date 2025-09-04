@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
 import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveUniqueIdTemplateWrapper;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
