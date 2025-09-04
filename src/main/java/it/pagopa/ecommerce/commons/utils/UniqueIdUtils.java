@@ -10,6 +10,10 @@ import java.time.Duration;
 
 /**
  * This class generate unique identifier
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.utils.ReactiveUniqueIdUtils}
+ *             instead.
  */
 @Deprecated
 public class UniqueIdUtils {
