@@ -1,4 +1,4 @@
-package it.pagopa.ecommerce.commons.redis.templatewrappers.v1;
+package it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -8,10 +8,14 @@ import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonIdempotencyKeyDese
 import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonIdempotencyKeySerializer;
 import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v1.JacksonRptIdSerializer;
+import it.pagopa.ecommerce.commons.redis.templatewrappers.v1.PaymentRequestInfoRedisTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
@@ -21,44 +25,47 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /**
  * Helper class that can be used to properly configure RedisTemplate wrapper
  * adding custom serializers
- *
- * @deprecated Use *
- *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v1.ReactiveRedisTemplateWrapperBuilder}
- *             * instead.
  */
-@Deprecated
-public class RedisTemplateWrapperBuilder {
+
+public class ReactiveRedisTemplateWrapperBuilder {
 
     /**
      * Private constructor used to hide default public ones
      */
-    private RedisTemplateWrapperBuilder() {
+    private ReactiveRedisTemplateWrapperBuilder() {
         // Utility class, no need to instantiate it
     }
 
     /**
-     * Build {@link PaymentRequestInfoRedisTemplateWrapper} instance using input
-     * redis connection factory and configuring custom converters for {@link RptId},
-     * {@link IdempotencyKey} and other domain objects
+     * Build {@link ReactivePaymentRequestInfoRedisTemplateWrapper} instance using
+     * input redis connection factory and configuring custom converters for
+     * {@link RptId}, {@link IdempotencyKey} and other domain objects
      *
-     * @param redisConnectionFactory - the redis connection factory to be used for
-     * @param entitiesTTL            - the default TTL to be applied to all saved
-     *                               entities if not overridden
-     * @return PaymentRequestInfoRedisTemplateWrapper new instance
+     * @param reactiveRedisConnectionFactory - the redis connection factory to be
+     *                                       used for
+     * @param entitiesTTL                    - the default TTL to be applied to all
+     *                                       saved entities if not overridden
+     * @return ReactivePaymentRequestInfoRedisTemplateWrapper new instance
      */
-    public static PaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
-                                                                                                     RedisConnectionFactory redisConnectionFactory,
-                                                                                                     Duration entitiesTTL
+    public static ReactivePaymentRequestInfoRedisTemplateWrapper buildPaymentRequestInfoRedisTemplateWrapper(
+                                                                                                             ReactiveRedisConnectionFactory reactiveRedisConnectionFactory,
+                                                                                                             Duration entitiesTTL
     ) {
-        RedisTemplate<String, PaymentRequestInfo> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        Jackson2JsonRedisSerializer<PaymentRequestInfo> jacksonRedisSerializer = buildJackson2RedisSerializer(
+        Jackson2JsonRedisSerializer<PaymentRequestInfo> serializer = buildJackson2RedisSerializer(
                 PaymentRequestInfo.class
         );
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(jacksonRedisSerializer);
-        redisTemplate.afterPropertiesSet();
-        return new PaymentRequestInfoRedisTemplateWrapper(redisTemplate, "keys", entitiesTTL);
+        RedisSerializationContext<String, PaymentRequestInfo> serializationContext = RedisSerializationContext
+                .<String, PaymentRequestInfo>newSerializationContext(new StringRedisSerializer())
+                .value(serializer)
+                .build();
+
+        ReactiveRedisTemplate<String, PaymentRequestInfo> reactiveRedisTemplate = new ReactiveRedisTemplate<>(
+                reactiveRedisConnectionFactory,
+                serializationContext
+        );
+
+        return new ReactivePaymentRequestInfoRedisTemplateWrapper(reactiveRedisTemplate, "keys", entitiesTTL);
+
     }
 
     /**
@@ -72,7 +79,6 @@ public class RedisTemplateWrapperBuilder {
      *         objects serialization proper serialization
      */
     private static <T> Jackson2JsonRedisSerializer<T> buildJackson2RedisSerializer(Class<T> clazz) {
-
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule rptSerializationModule = new SimpleModule();
         rptSerializationModule.addSerializer(RptId.class, new JacksonRptIdSerializer());

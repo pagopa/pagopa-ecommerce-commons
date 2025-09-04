@@ -232,7 +232,8 @@ class PaymentRequestInfoRedisTemplateWrapperTest {
         int streamSize = 0;
         PaymentRequestInfo paymentRequestInfo = TransactionTestUtils.paymentRequestInfoV1();
         Mockito.when(redisTemplate.opsForStream()).thenReturn((StreamOperations) streamOperations);
-        Mockito.when(streamOperations.trim(streamKey, streamSize)).thenReturn(0L);
+        Mockito.when(streamOperations.trim(streamKey, streamSize))
+                .thenReturn(0L);
         Mockito.when(streamOperations.add(argThat(r -> {
             ObjectRecord record = (ObjectRecord) r;
             return record.getValue().equals(paymentRequestInfo);
