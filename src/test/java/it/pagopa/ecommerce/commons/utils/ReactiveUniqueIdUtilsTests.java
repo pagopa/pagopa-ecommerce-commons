@@ -65,8 +65,7 @@ class ReactiveUniqueIdUtilsTests {
 
     @Test
     void shouldThrowUniqueIdGenerateExceptionOnExhaustedAttemptsGeneratingId() {
-        ArgumentCaptor<UniqueIdDocument> uniqueIdSaveArgumentCaptor =
-                ArgumentCaptor.forClass(UniqueIdDocument.class);
+        ArgumentCaptor<UniqueIdDocument> uniqueIdSaveArgumentCaptor = ArgumentCaptor.forClass(UniqueIdDocument.class);
 
         when(reactiveUniqueIdTemplateWrapper.saveIfAbsent(uniqueIdSaveArgumentCaptor.capture(), any(Duration.class)))
                 .thenReturn(Mono.just(false));
@@ -81,14 +80,15 @@ class ReactiveUniqueIdUtilsTests {
         List<UniqueIdDocument> allDocs = uniqueIdSaveArgumentCaptor.getAllValues();
         Set<String> savedIds = allDocs.stream()
                 .map(doc -> {
-                    try { return doc.id(); } catch (Throwable ignore) { return doc.id(); }
+                    try {
+                        return doc.id();
+                    } catch (Throwable ignore) {
+                        return doc.id();
+                    }
                 })
                 .collect(Collectors.toSet());
 
         assertThat(savedIds).hasSize(allDocs.size());
     }
-
-
-
 
 }
