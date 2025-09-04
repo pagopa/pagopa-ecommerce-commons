@@ -23,8 +23,8 @@ public class ReactiveUniqueIdUtils {
     /**
      * Constructor
      *
-     * @param reactiveUniqueIdTemplateWrapper reactive redis template wrapper used for save id into
-     *                                cache
+     * @param reactiveUniqueIdTemplateWrapper reactive redis template wrapper used
+     *                                        for save id into cache
      */
     public ReactiveUniqueIdUtils(ReactiveUniqueIdTemplateWrapper reactiveUniqueIdTemplateWrapper) {
         this.reactiveUniqueIdTemplateWrapper = reactiveUniqueIdTemplateWrapper;
@@ -54,8 +54,8 @@ public class ReactiveUniqueIdUtils {
     /**
      * Generate a unique identifier stored in Redis with a limited TTL.
      *
-     * @return a {@link Mono} that emits the generated unique identifier string,
-     *         or an error if the generation failed after all retries.
+     * @return a {@link Mono} that emits the generated unique identifier string, or
+     *         an error if the generation failed after all retries.
      */
     public Mono<String> generateUniqueId() {
         return attemptGenerate(MAX_NUMBER_ATTEMPTS);
@@ -82,7 +82,6 @@ public class ReactiveUniqueIdUtils {
                     return Mono.error(new UniqueIdGenerationException());
                 });
     }
-
 
     /**
      * This method generate a unique string by concatenating the millisecond
