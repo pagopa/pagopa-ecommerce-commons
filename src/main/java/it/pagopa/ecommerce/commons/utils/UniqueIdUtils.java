@@ -11,6 +11,7 @@ import java.time.Duration;
 /**
  * This class generate unique identifier
  */
+@Deprecated
 public class UniqueIdUtils {
     private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
