@@ -79,13 +79,7 @@ class ReactiveUniqueIdUtilsTests {
 
         List<UniqueIdDocument> allDocs = uniqueIdSaveArgumentCaptor.getAllValues();
         Set<String> savedIds = allDocs.stream()
-                .map(doc -> {
-                    try {
-                        return doc.id();
-                    } catch (Throwable ignore) {
-                        return doc.id();
-                    }
-                })
+                .map(UniqueIdDocument::id)
                 .collect(Collectors.toSet());
 
         assertThat(savedIds).hasSize(allDocs.size());
