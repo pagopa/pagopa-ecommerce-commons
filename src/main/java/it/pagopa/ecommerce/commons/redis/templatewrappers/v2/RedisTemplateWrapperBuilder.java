@@ -21,8 +21,12 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /**
  * Helper class that can be used to properly configure RedisTemplate wrapper
  * adding custom serializers
+ *
+ * @deprecated Use *
+ *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactiveRedisTemplateWrapperBuilder}
+ *             * instead.
  */
-
+@Deprecated
 public class RedisTemplateWrapperBuilder {
 
     /**

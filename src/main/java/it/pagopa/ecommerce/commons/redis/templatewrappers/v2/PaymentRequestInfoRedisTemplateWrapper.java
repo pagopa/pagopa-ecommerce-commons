@@ -8,7 +8,12 @@ import java.time.Duration;
 
 /**
  * Wrapper for {@link PaymentRequestInfo} redis template
+ *
+ * @deprecated Use *
+ *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactivePaymentRequestInfoRedisTemplateWrapper}
+ *             * instead.
  */
+@Deprecated
 public final class PaymentRequestInfoRedisTemplateWrapper extends RedisTemplateWrapper<PaymentRequestInfo> {
     /**
      * Constructor
