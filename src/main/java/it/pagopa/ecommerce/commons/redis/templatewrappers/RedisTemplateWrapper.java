@@ -14,8 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class is a {@link ReactiveRedisTemplate} wrapper used to centralize
- * common ReactiveRedisTemplate operations.
+ * This class is a {@link RedisTemplate} wrapper class, used to centralize
+ * commons RedisTemplate operations
  *
  * @param <V> the ReactiveRedisTemplate value type
  *
