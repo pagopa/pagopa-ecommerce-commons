@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
 import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveUniqueIdTemplateWrapper;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
@@ -11,7 +10,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
-class REactiveUniqueIdUtilsTests {
+class ReactiveUniqueIdUtilsTests {
     private final ReactiveUniqueIdTemplateWrapper reactiveUniqueIdTemplateWrapper = mock(
             ReactiveUniqueIdTemplateWrapper.class
     );

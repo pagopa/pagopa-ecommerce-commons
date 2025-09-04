@@ -5,6 +5,8 @@ import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveUnique
 import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -30,57 +32,25 @@ public class ReactiveUniqueIdUtils {
         this.reactiveUniqueIdTemplateWrapper = reactiveUniqueIdTemplateWrapper;
     }
 
-//    /**
-//     * This method generates a unique string and execute retry if the generated
-//     * string already exist into cache
-//     *
-//     * @return Mono with unique id value
-//     */
-//    public Mono<String> generateUniqueId() {
-//        boolean isSuccessfullySaved = false;
-//        int attempt = 0;
-//        String uniqueId = generateRandomIdentifier();
-//        while (attempt < MAX_NUMBER_ATTEMPTS && !isSuccessfullySaved) {
-//            isSuccessfullySaved = reactiveUniqueIdTemplateWrapper
-//                    .saveIfAbsent(new UniqueIdDocument(uniqueId), Duration.ofSeconds(60));
-//            attempt++;
-//            if (!isSuccessfullySaved) {
-//                uniqueId = generateRandomIdentifier();
-//            }
-//        }
-//        return !isSuccessfullySaved ? Mono.error(new UniqueIdGenerationException()) : Mono.just(uniqueId);
-//    }
-
     /**
-     * Generate a unique identifier stored in Redis with a limited TTL.
+     * This method generates a unique string and execute retry if the generated
+     * string already exist into cache
      *
-     * @return a {@link Mono} that emits the generated unique identifier string, or
-     *         an error if the generation failed after all retries.
+     * @return Mono with unique id value
      */
     public Mono<String> generateUniqueId() {
-        return attemptGenerate(MAX_NUMBER_ATTEMPTS);
-    }
-
-    /**
-     * Recursive helper method to attempt generation of a unique identifier.
-     *
-     * @param remainingAttempts the number of attempts left
-     * @return a {@link Mono} that emits a unique identifier if successfully saved
-     *         in Redis, retries otherwise, or errors when attempts are exhausted
-     */
-    private Mono<String> attemptGenerate(int remainingAttempts) {
-        String uniqueId = generateRandomIdentifier();
-        return reactiveUniqueIdTemplateWrapper
-                .saveIfAbsent(new UniqueIdDocument(uniqueId), Duration.ofSeconds(60))
-                .flatMap(saved -> {
-                    if (saved) {
-                        return Mono.just(uniqueId);
-                    }
-                    if (remainingAttempts > 1) {
-                        return attemptGenerate(remainingAttempts - 1);
-                    }
-                    return Mono.error(new UniqueIdGenerationException());
-                });
+        return Mono.fromSupplier(ReactiveUniqueIdUtils::generateRandomIdentifier)
+                .flatMap(
+                        uniqueId -> reactiveUniqueIdTemplateWrapper.saveIfAbsent(
+                                new UniqueIdDocument(uniqueId),
+                                Duration.ofSeconds(60)
+                        ).map(savedSuccessfully -> Tuples.of(uniqueId, savedSuccessfully))
+                )
+                .filter(Tuple2::getT2)
+                .map(Tuple2::getT1)
+                .onErrorResume(e -> Mono.empty())
+                .repeatWhenEmpty(repeat -> repeat.take(MAX_NUMBER_ATTEMPTS - 1))
+                .switchIfEmpty(Mono.error(new UniqueIdGenerationException()));
     }
 
     /**
