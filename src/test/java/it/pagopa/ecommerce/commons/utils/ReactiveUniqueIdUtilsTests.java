@@ -6,7 +6,6 @@ import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -15,8 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,7 +33,7 @@ class ReactiveUniqueIdUtilsTests {
     void shouldGenerateUniqueIdGenerateException() {
         when(reactiveUniqueIdTemplateWrapper.saveIfAbsent(any(), any())).thenReturn(Mono.just(false));
         StepVerifier.create(reactiveUniqueIdUtils.generateUniqueId())
-                .expectErrorMatches(e -> e instanceof UniqueIdGenerationException)
+                .expectErrorMatches(UniqueIdGenerationException.class::isInstance)
                 .verify();
         verify(reactiveUniqueIdTemplateWrapper, Mockito.times(3)).saveIfAbsent(any(), any());
     }
@@ -43,7 +41,7 @@ class ReactiveUniqueIdUtilsTests {
     @Test
     void shouldGenerateUniqueIdWithRetry() {
         when(reactiveUniqueIdTemplateWrapper.saveIfAbsent(any(), any()))
-                .thenReturn(Mono.just(false), Mono.just(false), Mono.just(true));
+                .thenReturn(Mono.just(false));
         StepVerifier.create(reactiveUniqueIdUtils.generateUniqueId())
                 .expectNextMatches(
                         response -> response.length() == 18 && response.startsWith(PRODUCT_PREFIX)
@@ -83,9 +81,9 @@ class ReactiveUniqueIdUtilsTests {
                 .collect(Collectors.toSet());
 
         assertTrue(
-            savedIds.size() == UniqueIdUtils.MAX_NUMBER_ATTEMPTS,
-            "saved ids: %s, expected %s different values".formatted(savedIds, UniqueIdUtils.MAX_NUMBER_ATTEMPTS)
-        )
+                savedIds.size() == UniqueIdUtils.MAX_NUMBER_ATTEMPTS,
+                "saved ids: %s, expected %s different values".formatted(savedIds, UniqueIdUtils.MAX_NUMBER_ATTEMPTS)
+        );
     }
 
 }

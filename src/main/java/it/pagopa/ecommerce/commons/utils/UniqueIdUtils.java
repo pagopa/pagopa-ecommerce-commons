@@ -21,7 +21,7 @@ public class UniqueIdUtils {
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String ALPHANUMERICS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._";
     private static final int MAX_LENGTH = 18;
-    private static final int MAX_NUMBER_ATTEMPTS = 3;
+    static final int MAX_NUMBER_ATTEMPTS = 3;
     private static final String PRODUCT_PREFIX = "E";
 
     /**
