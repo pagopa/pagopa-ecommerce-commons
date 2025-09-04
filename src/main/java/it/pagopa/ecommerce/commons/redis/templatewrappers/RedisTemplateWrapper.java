@@ -17,7 +17,7 @@ import java.util.Set;
  * This class is a {@link RedisTemplate} wrapper class, used to centralize
  * commons RedisTemplate operations
  *
- * @param <V> the ReactiveRedisTemplate value type
+ * @param <V> the RedisTemplate value type
  *
  * @deprecated Use
  *             {@link it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveRedisTemplateWrapper}
