@@ -10,10 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * This class is a {@link ReactiveRedisTemplate} wrapper class, used to
