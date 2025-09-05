@@ -141,7 +141,6 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      * @param key - the entity key for which retrieve TTL
      * @return a {@link Mono} emitting the TTL {@link Duration}; may be empty if no
      *         expiration is set
-     *
      * @see org.springframework.data.redis.core.ReactiveRedisOperations#getExpire(Object)
      */
     public Mono<Duration> getTTL(String key) {
@@ -181,7 +180,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
     ) {
         return Mono
                 .just(streamSize)
-                .filter(size -> size > 0)
+                .filter(size -> size >= 0)
                 .switchIfEmpty(
                         Mono.error(
                                 new IllegalArgumentException(
