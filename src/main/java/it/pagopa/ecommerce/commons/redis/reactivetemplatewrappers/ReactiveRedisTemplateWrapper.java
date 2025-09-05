@@ -305,7 +305,7 @@ public abstract class ReactiveRedisTemplateWrapper<V> {
      */
     public Flux<V> getAllValuesInKeySpace() {
         return keysInKeyspace()
-                .flatMap(this::findById);
+                .flatMap(reactiveRedisTemplate.opsForValue()::get);
     }
 
     /**
