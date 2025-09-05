@@ -1,23 +1,20 @@
 package it.pagopa.ecommerce.commons.utils;
 
 import it.pagopa.ecommerce.commons.exceptions.UniqueIdGenerationException;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.UniqueIdTemplateWrapper;
+import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveUniqueIdTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.security.SecureRandom;
 import java.time.Duration;
 
 /**
  * This class generate unique identifier
- *
- * @deprecated Use
- *             {@link it.pagopa.ecommerce.commons.utils.ReactiveUniqueIdUtils}
- *             instead.
  */
-@Deprecated(forRemoval = true)
-public class UniqueIdUtils {
-    private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
+public class ReactiveUniqueIdUtils {
+    private final ReactiveUniqueIdTemplateWrapper reactiveUniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String ALPHANUMERICS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._";
     private static final int MAX_LENGTH = 18;
@@ -27,11 +24,11 @@ public class UniqueIdUtils {
     /**
      * Constructor
      *
-     * @param uniqueIdTemplateWrapper redis template wrapper used for save id into
-     *                                cache
+     * @param reactiveUniqueIdTemplateWrapper reactive redis template wrapper used
+     *                                        for save id into cache
      */
-    public UniqueIdUtils(UniqueIdTemplateWrapper uniqueIdTemplateWrapper) {
-        this.uniqueIdTemplateWrapper = uniqueIdTemplateWrapper;
+    public ReactiveUniqueIdUtils(ReactiveUniqueIdTemplateWrapper reactiveUniqueIdTemplateWrapper) {
+        this.reactiveUniqueIdTemplateWrapper = reactiveUniqueIdTemplateWrapper;
     }
 
     /**
@@ -41,18 +38,18 @@ public class UniqueIdUtils {
      * @return Mono with unique id value
      */
     public Mono<String> generateUniqueId() {
-        boolean isSuccessfullySaved = false;
-        int attempt = 0;
-        String uniqueId = generateRandomIdentifier();
-        while (attempt < MAX_NUMBER_ATTEMPTS && !isSuccessfullySaved) {
-            isSuccessfullySaved = uniqueIdTemplateWrapper
-                    .saveIfAbsent(new UniqueIdDocument(uniqueId), Duration.ofSeconds(60));
-            attempt++;
-            if (!isSuccessfullySaved) {
-                uniqueId = generateRandomIdentifier();
-            }
-        }
-        return !isSuccessfullySaved ? Mono.error(new UniqueIdGenerationException()) : Mono.just(uniqueId);
+        return Mono.fromSupplier(ReactiveUniqueIdUtils::generateRandomIdentifier)
+                .flatMap(
+                        uniqueId -> reactiveUniqueIdTemplateWrapper.saveIfAbsent(
+                                new UniqueIdDocument(uniqueId),
+                                Duration.ofSeconds(60)
+                        ).map(savedSuccessfully -> Tuples.of(uniqueId, savedSuccessfully))
+                )
+                .filter(Tuple2::getT2)
+                .map(Tuple2::getT1)
+                .onErrorResume(e -> Mono.empty())
+                .repeatWhenEmpty(repeat -> repeat.take(MAX_NUMBER_ATTEMPTS - 1L))
+                .switchIfEmpty(Mono.error(new UniqueIdGenerationException()));
     }
 
     /**
