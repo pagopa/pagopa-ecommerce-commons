@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -80,8 +80,9 @@ class ReactiveUniqueIdUtilsTests {
                 .map(UniqueIdDocument::id)
                 .collect(Collectors.toSet());
 
-        assertTrue(
-                savedIds.size() == ReactiveUniqueIdUtils.MAX_NUMBER_ATTEMPTS,
+        assertEquals(
+                ReactiveUniqueIdUtils.MAX_NUMBER_ATTEMPTS,
+                savedIds.size(),
                 "saved ids: %s, expected %s different values"
                         .formatted(savedIds, ReactiveUniqueIdUtils.MAX_NUMBER_ATTEMPTS)
         );

@@ -220,9 +220,8 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
         Mockito.when(redisTemplate.keys("keys*")).thenReturn(Flux.fromIterable(keys));
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 
-        // findById compone keyspace: + key -> passando "keys:1" diventa "keys:keys:1"
-        Mockito.when(valueOperations.get("keys:keys:1")).thenReturn(Mono.just(values.get(0)));
-        Mockito.when(valueOperations.get("keys:keys:2")).thenReturn(Mono.just(values.get(1)));
+        Mockito.when(valueOperations.get("keys:1")).thenReturn(Mono.just(values.get(0)));
+        Mockito.when(valueOperations.get("keys:2")).thenReturn(Mono.just(values.get(1)));
 
         // act
         Flux<PaymentRequestInfo> returnedValues = paymentRequestInfoRedisTemplateWrapper.getAllValuesInKeySpace();
@@ -236,8 +235,9 @@ class ReactivePaymentRequestInfoRedisTemplateWrapperTest {
                 .verifyComplete();
 
         Mockito.verify(redisTemplate, Mockito.times(1)).keys("keys*");
-        Mockito.verify(valueOperations, Mockito.times(1)).get("keys:keys:1");
-        Mockito.verify(valueOperations, Mockito.times(1)).get("keys:keys:2");
+        keys.forEach(
+                k -> Mockito.verify(valueOperations, Mockito.times(1)).get(k)
+        );
         Mockito.verify(valueOperations, Mockito.never()).multiGet(Mockito.any());
     }
 
