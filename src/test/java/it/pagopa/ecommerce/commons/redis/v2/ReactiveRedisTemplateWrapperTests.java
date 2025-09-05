@@ -8,28 +8,23 @@ import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeyDese
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonIdempotencyKeySerializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdSerializer;
-import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactiveRedisTemplateWrapperBuilder;
 import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactivePaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.v2.PaymentRequestInfoRedisTemplateWrapper;
-import it.pagopa.ecommerce.commons.redis.templatewrappers.v2.RedisTemplateWrapperBuilder;
+import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.v2.ReactiveRedisTemplateWrapperBuilder;
 import it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.nio.ByteBuffer;
 import java.time.Duration;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class ReactiveRedisTemplateWrapperTests {

@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.utils;
 
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.exceptions.RedirectConfigurationException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

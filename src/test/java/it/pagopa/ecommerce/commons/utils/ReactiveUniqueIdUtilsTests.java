@@ -41,7 +41,7 @@ class ReactiveUniqueIdUtilsTests {
     @Test
     void shouldGenerateUniqueIdWithRetry() {
         when(reactiveUniqueIdTemplateWrapper.saveIfAbsent(any(), any()))
-                .thenReturn(Mono.just(false));
+                .thenReturn(Mono.just(false), Mono.just(false), Mono.just(true));
         StepVerifier.create(reactiveUniqueIdUtils.generateUniqueId())
                 .expectNextMatches(
                         response -> response.length() == 18 && response.startsWith(PRODUCT_PREFIX)
@@ -81,8 +81,9 @@ class ReactiveUniqueIdUtilsTests {
                 .collect(Collectors.toSet());
 
         assertTrue(
-                savedIds.size() == UniqueIdUtils.MAX_NUMBER_ATTEMPTS,
-                "saved ids: %s, expected %s different values".formatted(savedIds, UniqueIdUtils.MAX_NUMBER_ATTEMPTS)
+                savedIds.size() == ReactiveUniqueIdUtils.MAX_NUMBER_ATTEMPTS,
+                "saved ids: %s, expected %s different values"
+                        .formatted(savedIds, ReactiveUniqueIdUtils.MAX_NUMBER_ATTEMPTS)
         );
     }
 

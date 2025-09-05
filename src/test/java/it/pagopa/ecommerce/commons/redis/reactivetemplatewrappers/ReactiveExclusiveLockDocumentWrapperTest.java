@@ -1,6 +1,5 @@
 package it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers;
 
-import it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers.ReactiveExclusiveLockDocumentWrapper;
 import it.pagopa.ecommerce.commons.repositories.ExclusiveLockDocument;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

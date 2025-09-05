@@ -1,9 +1,7 @@
 package it.pagopa.ecommerce.commons.redis.reactivetemplatewrappers;
 
-import it.pagopa.ecommerce.commons.redis.templatewrappers.RedisTemplateWrapper;
 import it.pagopa.ecommerce.commons.repositories.UniqueIdDocument;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 

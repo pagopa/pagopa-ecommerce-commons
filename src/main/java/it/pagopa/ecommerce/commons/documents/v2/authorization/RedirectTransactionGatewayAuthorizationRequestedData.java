@@ -1,8 +1,11 @@
 package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
-import lombok.*;
-
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.net.URI;
 
 /**

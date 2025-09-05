@@ -1,9 +1,12 @@
 package it.pagopa.ecommerce.commons.documents.v2.authorization;
 
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * Redirect transaction authorization completed data
