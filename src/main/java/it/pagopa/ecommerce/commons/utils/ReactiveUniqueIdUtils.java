@@ -48,7 +48,7 @@ public class ReactiveUniqueIdUtils {
                 .filter(Tuple2::getT2)
                 .map(Tuple2::getT1)
                 .onErrorResume(e -> Mono.empty())
-                .repeatWhenEmpty(repeat -> repeat.take(MAX_NUMBER_ATTEMPTS - 1))
+                .repeatWhenEmpty(repeat -> repeat.take(MAX_NUMBER_ATTEMPTS - 1L))
                 .switchIfEmpty(Mono.error(new UniqueIdGenerationException()));
     }
 

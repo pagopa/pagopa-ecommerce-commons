@@ -41,7 +41,7 @@ class ReactiveUniqueIdUtilsTests {
     @Test
     void shouldGenerateUniqueIdWithRetry() {
         when(reactiveUniqueIdTemplateWrapper.saveIfAbsent(any(), any()))
-                .thenReturn(Mono.just(false));
+                .thenReturn(Mono.just(false), Mono.just(false), Mono.just(true));
         StepVerifier.create(reactiveUniqueIdUtils.generateUniqueId())
                 .expectNextMatches(
                         response -> response.length() == 18 && response.startsWith(PRODUCT_PREFIX)

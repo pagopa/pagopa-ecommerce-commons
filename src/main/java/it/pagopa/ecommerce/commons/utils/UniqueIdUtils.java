@@ -15,7 +15,7 @@ import java.time.Duration;
  *             {@link it.pagopa.ecommerce.commons.utils.ReactiveUniqueIdUtils}
  *             instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class UniqueIdUtils {
     private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
