@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PaymentTransferInformation {
     private String paFiscalCode;
     private Boolean digitalStamp;
-    private Integer transferAmount;
+    private Long transferAmount;
     private String transferCategory;
 
     /**
@@ -29,7 +29,7 @@ public class PaymentTransferInformation {
     public PaymentTransferInformation(
             String paFiscalCode,
             Boolean digitalStamp,
-            Integer transferAmount,
+            Long transferAmount,
             String transferCategory
     ) {
         this.paFiscalCode = paFiscalCode;
