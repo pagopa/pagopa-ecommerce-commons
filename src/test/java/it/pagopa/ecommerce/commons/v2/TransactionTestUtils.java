@@ -334,7 +334,8 @@ public class TransactionTestUtils {
                         paymentGateway,
                         PAYMENT_METHOD_DESCRIPTION,
                         transactionGatewayAuthorizationRequestedData,
-                        ID_BUNDLE
+                        ID_BUNDLE,
+                        true
                 )
         );
     }
