@@ -39,6 +39,8 @@ public class TransactionAuthorizationRequestData {
      */
     @Nullable
     private String idBundle;
+    @Nullable
+    private Boolean isContextualOnboard;
 
     /**
      * Enumeration of different PaymentGateway
