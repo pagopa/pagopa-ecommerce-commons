@@ -617,6 +617,7 @@ class TransactionEventTypeResolverTest {
                                   "walletInfo":null
                               },
                               "idBundle": "idBundle",
+                              "isContextualOnboard": true,
                               "pspOnUs": false
                           },
                           "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -691,6 +692,7 @@ class TransactionEventTypeResolverTest {
                                    "walletInfo": null
                                },
                                "idBundle": "idBundle",
+                               "isContextualOnboard": true,
                                "pspOnUs": false
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -765,6 +767,7 @@ class TransactionEventTypeResolverTest {
                                    "transactionOutcomeTimeoutMillis":60000
                                },
                                "idBundle": "idBundle",
+                               "isContextualOnboard": null,
                                "pspOnUs": false
                            },
                            "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -787,6 +790,7 @@ class TransactionEventTypeResolverTest {
         originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
         originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
         originalEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        originalEvent.event().getData().setIsContextualOnboard(null);
         byte[] serialized = jsonSerializer.serializeToBytes(originalEvent);
         String serializedString = new String(serialized);
         System.out.println("Serialized object: " + serializedString);
@@ -980,6 +984,7 @@ class TransactionEventTypeResolverTest {
                                     }
                                 },
                                 "idBundle": "idBundle",
+                                "isContextualOnboard": true,
                                 "pspOnUs": false
                             },
                             "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -1068,6 +1073,7 @@ class TransactionEventTypeResolverTest {
                                 }
                             },
                             "idBundle": "idBundle",
+                            "isContextualOnboard": false,
                             "pspOnUs": false
                         },
                         "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
@@ -1092,6 +1098,7 @@ class TransactionEventTypeResolverTest {
         originalEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
         originalEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
         originalEvent.event().getData().setAuthorizationRequestId("d93cb073-445c-476b-b0fd-abe343d8b6a5");
+        originalEvent.event().getData().setIsContextualOnboard(false);
         NpgTransactionGatewayAuthorizationRequestedData authRequestedData = (NpgTransactionGatewayAuthorizationRequestedData) originalEvent
                 .event().getData().getTransactionGatewayAuthorizationRequestedData();
         authRequestedData.getWalletInfo().setWalletId("17601410-5f1d-4189-b8d1-92637952ee5f");
@@ -1786,6 +1793,7 @@ class TransactionEventTypeResolverTest {
                                         }
                                     }
                                 },
+                                "isContextualOnboard": true,
                                 "pspOnUs": false
                             },
                             "eventCode": "TRANSACTION_AUTHORIZATION_REQUESTED_EVENT"
