@@ -17,7 +17,7 @@ import jakarta.validation.constraints.NotNull;
 @Document
 public class TransactionAuthorizationRequestData {
 
-    private int amount;
+    private long amount;
     private int fee;
     private String paymentInstrumentId;
     private String pspId;
