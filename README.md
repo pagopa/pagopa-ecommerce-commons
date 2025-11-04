@@ -1,5 +1,8 @@
 # pagopa eCommerce commons
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-ecommerce-commons&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pagopa_pagopa-ecommerce-commons)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-ecommerce-commons&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pagopa_pagopa-ecommerce-commons)
+
 A utility library for the [eCommerce](https://github.com/topics/pagopa-ecommerce) project.
 
 ## Requirements
