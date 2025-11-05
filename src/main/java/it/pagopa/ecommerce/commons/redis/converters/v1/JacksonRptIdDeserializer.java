@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.redis.converters.v1;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import it.pagopa.ecommerce.commons.domain.RptId;
+import it.pagopa.ecommerce.commons.domain.v1.RptId;
 
 import java.io.IOException;
 
@@ -11,6 +11,22 @@ import java.io.IOException;
  * {@link RptId} jackson deserializer
  */
 public class JacksonRptIdDeserializer extends JsonDeserializer<RptId> {
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by Jackson framework
+     * for deserialization and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public JacksonRptIdDeserializer() {
+    }
+
     /**
      * Deserialize json object to {@link RptId}
      *

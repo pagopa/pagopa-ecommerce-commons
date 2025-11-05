@@ -2,14 +2,13 @@ package it.pagopa.ecommerce.commons.documents.v2.refund;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * NPG gateway data for a refunded transaction
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @Generated
 public final class NpgGatewayRefundData implements GatewayRefundData {
@@ -23,6 +22,15 @@ public final class NpgGatewayRefundData implements GatewayRefundData {
      */
     @NotNull
     private String operationId;
+
+    /**
+     * All-args constructor
+     *
+     * @param operationId the operation id
+     */
+    public NpgGatewayRefundData(String operationId) {
+        this.operationId = operationId;
+    }
 
     @Override
     public RefundDataType getType() {

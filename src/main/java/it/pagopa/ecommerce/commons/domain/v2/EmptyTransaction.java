@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
 import it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent;
-import it.pagopa.ecommerce.commons.domain.*;
 import lombok.EqualsAndHashCode;
 
 import java.time.ZonedDateTime;
@@ -21,6 +20,23 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode
 public final class EmptyTransaction implements Transaction {
+
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required for transaction
+     * state management and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public EmptyTransaction() {
+    }
+
     private TransactionActivated applyActivation(TransactionActivatedEvent event) {
         return new TransactionActivated(
                 new TransactionId(event.getTransactionId()),
@@ -63,9 +79,9 @@ public final class EmptyTransaction implements Transaction {
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionActivatedEvent transactionActivatedEvent -> this.applyActivation(transactionActivatedEvent);
-            case null, default -> this;
-        };
+        if (event instanceof TransactionActivatedEvent transactionActivatedEvent) {
+            return this.applyActivation(transactionActivatedEvent);
+        }
+        return this;
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import it.pagopa.ecommerce.commons.documents.BaseTransactionView;
 import it.pagopa.ecommerce.commons.documents.PaymentNotice;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
+import it.pagopa.ecommerce.commons.domain.v2.Email;
 import it.pagopa.ecommerce.commons.domain.v2.TransactionActivated;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
@@ -58,6 +58,22 @@ public class Transaction extends BaseTransactionView {
     @Nullable
     private String userId;
 
+    @Nullable
+    private ClosureErrorData closureErrorData;
+
+    @Nullable
+    private String paymentTypeCode;
+
+    @Nullable
+    private String pspId;
+
+    /**
+     * Timestamp of the last processed CDC event. Used by CDC service to handle
+     * out-of-order events and ensure status updates are applied chronologically.
+     */
+    @Nullable
+    private Long lastProcessedEventAt;
+
     /**
      * Enumeration of transaction client initiators
      */
@@ -85,9 +101,10 @@ public class Transaction extends BaseTransactionView {
         );
 
         /**
-         * @param enumValue - the enumeration value to be converted to {@link ClientId}
-         *                  enumeration instance
-         * @return the converted {@link ClientId} enumeration instance
+         * Create a ClientId from its string representation
+         *
+         * @param enumValue the string value to convert
+         * @return the corresponding ClientId enum
          */
         public static ClientId fromString(String enumValue) {
             return lookupMap.get(enumValue);
@@ -116,16 +133,20 @@ public class Transaction extends BaseTransactionView {
      * Primary persistence constructor. Warning java:S107 - Methods should not have
      * too many parameters
      *
-     * @param transactionId  transaction unique id
-     * @param paymentNotices notice code list
-     * @param email          user email where the payment receipt will be sent to
-     * @param status         transaction status
-     * @param clientId       the client identifier
-     * @param feeTotal       transaction total fee
-     * @param creationDate   transaction creation date
-     * @param idCart         the ec cart id
-     * @param rrn            the rrn information
-     * @param userId         the user unique id
+     * @param transactionId        transaction unique id
+     * @param paymentNotices       notice code list
+     * @param email                user email where the payment receipt will be sent
+     *                             to
+     * @param status               transaction status
+     * @param clientId             the client identifier
+     * @param feeTotal             transaction total fee
+     * @param creationDate         transaction creation date
+     * @param idCart               the ec cart id
+     * @param rrn                  the rrn information
+     * @param userId               the user unique id
+     * @param paymentTypeCode      the payment type code defined in Node domain
+     * @param pspId                the psp id
+     * @param lastProcessedEventAt UNIX timestamp of last processed CDC event
      */
     /*
      * @formatter:off
@@ -152,7 +173,10 @@ public class Transaction extends BaseTransactionView {
             String creationDate,
             @Nullable String idCart,
             @Nullable String rrn,
-            @Nullable String userId
+            @Nullable String userId,
+            @Nullable String paymentTypeCode,
+            @Nullable String pspId,
+            @Nullable Long lastProcessedEventAt
     ) {
         super(transactionId);
         this.email = email;
@@ -164,6 +188,9 @@ public class Transaction extends BaseTransactionView {
         this.idCart = idCart;
         this.rrn = rrn;
         this.userId = userId;
+        this.paymentTypeCode = paymentTypeCode;
+        this.pspId = pspId;
+        this.lastProcessedEventAt = lastProcessedEventAt;
     }
 
     /**
@@ -183,7 +210,10 @@ public class Transaction extends BaseTransactionView {
                 transaction.getCreationDate().toString(),
                 transaction.getTransactionActivatedData().getIdCart(),
                 null,
-                transaction.getTransactionActivatedData().getUserId()
+                transaction.getTransactionActivatedData().getUserId(),
+                null,
+                null,
+                transaction.getCreationDate().toInstant().toEpochMilli()
         );
     }
 

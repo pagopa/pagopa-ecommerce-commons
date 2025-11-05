@@ -3,14 +3,13 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Redirect transaction authorization completed data
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 public final class RedirectTransactionGatewayAuthorizationData implements TransactionGatewayAuthorizationData {
@@ -53,6 +52,20 @@ public final class RedirectTransactionGatewayAuthorizationData implements Transa
      */
     @Nullable
     private String errorCode;
+
+    /**
+     * All-args constructor
+     *
+     * @param outcome   the authorization outcome
+     * @param errorCode the authorization error code
+     */
+    public RedirectTransactionGatewayAuthorizationData(
+            Outcome outcome,
+            String errorCode
+    ) {
+        this.outcome = outcome;
+        this.errorCode = errorCode;
+    }
 
     @Override
     public AuthorizationDataType getType() {

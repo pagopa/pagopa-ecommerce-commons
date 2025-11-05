@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * This class contains details about the wallet used to perform authorization
@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 public class WalletInfo {
 
@@ -24,6 +23,20 @@ public class WalletInfo {
 
     @Nullable
     private WalletDetails walletDetails;
+
+    /**
+     * All-args constructor
+     *
+     * @param walletId      the wallet id
+     * @param walletDetails the wallet details
+     */
+    public WalletInfo(
+            String walletId,
+            WalletDetails walletDetails
+    ) {
+        this.walletId = walletId;
+        this.walletDetails = walletDetails;
+    }
 
     /**
      * Common interface for all wallet details
@@ -68,7 +81,6 @@ public class WalletInfo {
     @Data
     @EqualsAndHashCode(callSuper = false)
     @NoArgsConstructor
-    @AllArgsConstructor
     @ToString
     public static class CardWalletDetails implements WalletDetails {
         @NotNull
@@ -78,6 +90,20 @@ public class WalletInfo {
         private String bin;
         @NotNull
         private String lastFourDigits;
+
+        /**
+         * All-args constructor
+         *
+         * @param bin            the card bin
+         * @param lastFourDigits the card last four digits
+         */
+        public CardWalletDetails(
+                String bin,
+                String lastFourDigits
+        ) {
+            this.bin = bin;
+            this.lastFourDigits = lastFourDigits;
+        }
     }
 
     /**
@@ -86,7 +112,6 @@ public class WalletInfo {
     @Data
     @EqualsAndHashCode(callSuper = false)
     @NoArgsConstructor
-    @AllArgsConstructor
     @ToString
     public static class PaypalWalletDetails implements WalletDetails {
         @NotNull
@@ -94,6 +119,15 @@ public class WalletInfo {
 
         @NotNull
         private String maskedEmail;
+
+        /**
+         * All-args constructor
+         *
+         * @param maskedEmail the masked email for paypal account
+         */
+        public PaypalWalletDetails(String maskedEmail) {
+            this.maskedEmail = maskedEmail;
+        }
     }
 
 }

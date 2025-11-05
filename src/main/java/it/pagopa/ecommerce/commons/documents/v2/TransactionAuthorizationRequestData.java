@@ -7,7 +7,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Additional data when requesting a payment authorization
@@ -39,6 +39,8 @@ public class TransactionAuthorizationRequestData {
      */
     @Nullable
     private String idBundle;
+    @Nullable
+    private Boolean isContextualOnboard;
 
     /**
      * Enumeration of different PaymentGateway

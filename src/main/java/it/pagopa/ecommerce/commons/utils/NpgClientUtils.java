@@ -3,6 +3,8 @@ package it.pagopa.ecommerce.commons.utils;
 import it.pagopa.ecommerce.commons.client.NpgClient;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationDto;
 
+import java.util.Optional;
+
 /**
  * Utility class for handling NPG client operations.
  */
@@ -46,6 +48,17 @@ public class NpgClientUtils {
         EndToEndId(String value) {
             this.value = value;
         }
+
+        /**
+         * Retrieves the field name in the additional data map associated with the
+         * payment circuit represented by this enum instance.
+         *
+         * @return the field name in the additional data map corresponding to the
+         *         payment circuit.
+         */
+        public String getValue() {
+            return value;
+        }
     }
 
     /**
@@ -56,7 +69,7 @@ public class NpgClientUtils {
      *                     object contains details about the payment operation,
      *                     including the payment circuit and additional data.
      * @return The `paymentEndToEndId` corresponding to the payment circuit, or
-     *         {@code null} if the value cannot be determined.
+     *         {@code null} if the operationDto is null.
      *
      *         <p>
      *         For supported payment circuits:
@@ -71,20 +84,30 @@ public class NpgClientUtils {
      *         fallback.
      */
     public static String getPaymentEndToEndId(OperationDto operationDto) {
-        if (operationDto == null || operationDto.getPaymentCircuit() == null)
-            return null;
+        String paymentEndToEndId = Optional.ofNullable(operationDto).map(OperationDto::getPaymentEndToEndId)
+                .orElse(null);
+        return Optional
+                .ofNullable(operationDto)
+                .filter(op -> op.getPaymentCircuit() != null)
+                .flatMap(
+                        op -> getValidPaymentMethod(op.getPaymentCircuit()).flatMap(
+                                paymentMethod -> Optional.ofNullable(op.getAdditionalData())
+                                        .map(additionalData -> switch (paymentMethod) {
+                                        case BANCOMATPAY -> additionalData.get(EndToEndId.BANCOMAT_PAY.getValue())
+                                                .toString();
+                                        case MYBANK -> additionalData.get(EndToEndId.MYBANK.getValue()).toString();
+                                        default -> paymentEndToEndId;
+                                        })
+                        )
+                )
+                .orElse(paymentEndToEndId);
+    }
 
-        if (operationDto.getPaymentCircuit().equals(NpgClient.PaymentMethod.BANCOMATPAY.serviceName)) {
-            // for bancomatPay we expect an `bpayEndToEndId` entry into additional data map
-            // to be used as
-            // the paymentEndToEndId
-            return operationDto.getAdditionalData() == null ? operationDto.getPaymentEndToEndId()
-                    : (String) operationDto.getAdditionalData().get(EndToEndId.BANCOMAT_PAY.value);
-        } else if (operationDto.getPaymentCircuit().equals(NpgClient.PaymentMethod.MYBANK.serviceName)) {
-            return operationDto.getAdditionalData() == null ? operationDto.getPaymentEndToEndId()
-                    : (String) operationDto.getAdditionalData().get(EndToEndId.MYBANK.value);
-        } else {
-            return operationDto.getPaymentEndToEndId();
+    private static Optional<NpgClient.PaymentMethod> getValidPaymentMethod(String paymentCircuit) {
+        try {
+            return Optional.of(NpgClient.PaymentMethod.fromServiceName(paymentCircuit));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
     }
 }

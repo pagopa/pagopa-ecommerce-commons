@@ -10,13 +10,18 @@ import java.time.Duration;
 
 /**
  * This class generate unique identifier
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.utils.ReactiveUniqueIdUtils}
+ *             instead.
  */
+@Deprecated(forRemoval = true)
 public class UniqueIdUtils {
     private final UniqueIdTemplateWrapper uniqueIdTemplateWrapper;
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String ALPHANUMERICS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._";
     private static final int MAX_LENGTH = 18;
-    private static final int MAX_NUMBER_ATTEMPTS = 3;
+    static final int MAX_NUMBER_ATTEMPTS = 3;
     private static final String PRODUCT_PREFIX = "E";
 
     /**

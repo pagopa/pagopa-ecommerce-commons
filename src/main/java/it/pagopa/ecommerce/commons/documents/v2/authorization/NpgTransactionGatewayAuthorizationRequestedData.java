@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 
 /**
@@ -12,7 +12,6 @@ import java.net.URI;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 public final class NpgTransactionGatewayAuthorizationRequestedData
         implements TransactionGatewayAuthorizationRequestedData {
@@ -41,6 +40,29 @@ public final class NpgTransactionGatewayAuthorizationRequestedData
      */
     @Nullable
     private WalletInfo walletInfo;
+
+    /**
+     * All-args constructor
+     *
+     * @param logo                    the logo URI
+     * @param brand                   the brand
+     * @param sessionId               the session id
+     * @param confirmPaymentSessionId the confirmation payment session id
+     * @param walletInfo              the wallet info
+     */
+    public NpgTransactionGatewayAuthorizationRequestedData(
+            URI logo,
+            String brand,
+            String sessionId,
+            String confirmPaymentSessionId,
+            WalletInfo walletInfo
+    ) {
+        this.logo = logo;
+        this.brand = brand;
+        this.sessionId = sessionId;
+        this.confirmPaymentSessionId = confirmPaymentSessionId;
+        this.walletInfo = walletInfo;
+    }
 
     @Override
     public AuthorizationDataType getType() {

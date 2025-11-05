@@ -6,10 +6,10 @@ import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * <p>
- * An object holding confidential opaque data, along with the necessary metadata
- * to get the original data back.
- * </p>
+ * An object holding confidential opaque data
+ *
+ * @param <T>        the type of the confidential data
+ * @param opaqueData opaque data such as a ciphertext or a token
  */
 /*
  * @formatter:off

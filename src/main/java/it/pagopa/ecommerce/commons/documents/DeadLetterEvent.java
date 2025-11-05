@@ -1,7 +1,6 @@
 package it.pagopa.ecommerce.commons.documents;
 
 import it.pagopa.ecommerce.commons.documents.v2.deadletter.DeadLetterTransactionInfo;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,7 +15,6 @@ import javax.annotation.Nullable;
 @Document(collection = "dead-letter-events")
 @Data
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 public class DeadLetterEvent {
 
@@ -42,4 +40,27 @@ public class DeadLetterEvent {
      */
     @Nullable
     private DeadLetterTransactionInfo transactionInfo;
+
+    /**
+     * All-args constructor
+     *
+     * @param id              the event unique id
+     * @param queueName       the queue name
+     * @param insertionDate   the event insertion date
+     * @param data            the event data
+     * @param transactionInfo the transaction info
+     */
+    public DeadLetterEvent(
+            String id,
+            String queueName,
+            String insertionDate,
+            String data,
+            DeadLetterTransactionInfo transactionInfo
+    ) {
+        this.id = id;
+        this.queueName = queueName;
+        this.insertionDate = insertionDate;
+        this.data = data;
+        this.transactionInfo = transactionInfo;
+    }
 }

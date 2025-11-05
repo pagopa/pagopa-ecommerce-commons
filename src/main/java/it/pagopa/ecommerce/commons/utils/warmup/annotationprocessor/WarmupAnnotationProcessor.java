@@ -24,6 +24,22 @@ public class WarmupAnnotationProcessor extends AbstractProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(WarmupAnnotationProcessor.class);
 
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required by annotation
+     * processing framework and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public WarmupAnnotationProcessor() {
+    }
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);

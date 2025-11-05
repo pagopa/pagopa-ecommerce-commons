@@ -8,9 +8,6 @@ import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserCanceledEvent;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
-import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithPaymentToken;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
@@ -61,7 +58,7 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     public TransactionActivated(
             TransactionId transactionId,
-            List<it.pagopa.ecommerce.commons.domain.PaymentNotice> paymentNotices,
+            List<PaymentNotice> paymentNotices,
             Confidential<Email> email,
             String faultCode,
             String faultCodeString,
@@ -173,17 +170,13 @@ public final class TransactionActivated extends BaseTransactionWithPaymentToken 
      */
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent ->
-                    new TransactionWithRequestedAuthorization(
-                            this,
-                            transactionAuthorizationRequestedEvent.getData()
-                    );
-            case TransactionExpiredEvent transactionExpiredEvent ->
-                    new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
-            case TransactionUserCanceledEvent transactionUserCanceledEvent ->
-                    new TransactionWithCancellationRequested(this, transactionUserCanceledEvent);
-            default -> this;
-        };
+        if (event instanceof TransactionAuthorizationRequestedEvent transactionAuthorizationRequestedEvent) {
+            return new TransactionWithRequestedAuthorization(this, transactionAuthorizationRequestedEvent.getData());
+        } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
+            return new TransactionExpiredNotAuthorized(this, transactionExpiredEvent);
+        } else if (event instanceof TransactionUserCanceledEvent transactionUserCanceledEvent) {
+            return new TransactionWithCancellationRequested(this, transactionUserCanceledEvent);
+        }
+        return this;
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import it.pagopa.ecommerce.commons.domain.RptId;
+import it.pagopa.ecommerce.commons.domain.v2.RptId;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdDeserializer;
 import it.pagopa.ecommerce.commons.redis.converters.v2.JacksonRptIdSerializer;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;

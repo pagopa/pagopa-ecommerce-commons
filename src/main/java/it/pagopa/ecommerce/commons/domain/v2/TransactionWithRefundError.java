@@ -70,12 +70,15 @@ public final class TransactionWithRefundError extends BaseTransactionWithRefundR
 
     @Override
     public Transaction applyEvent(Object event) {
-        return switch (event) {
-            case TransactionRefundedEvent e -> new TransactionRefunded(this, e);
-            case TransactionRefundRetriedEvent e ->
-                    new TransactionWithRefundError(this, e.getData().getTransactionGatewayAuthorizationData());
-            default -> this;
-        };
+        if (event instanceof TransactionRefundedEvent transactionRefundedEvent) {
+            return new TransactionRefunded(this, transactionRefundedEvent);
+        } else if (event instanceof TransactionRefundRetriedEvent transactionRefundRetriedEvent) {
+            return new TransactionWithRefundError(
+                    this,
+                    transactionRefundRetriedEvent.getData().getTransactionGatewayAuthorizationData()
+            );
+        }
+        return this;
     }
 
     @Override

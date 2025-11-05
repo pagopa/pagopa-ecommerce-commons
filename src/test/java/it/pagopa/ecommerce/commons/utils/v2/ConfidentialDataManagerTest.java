@@ -1,7 +1,8 @@
 package it.pagopa.ecommerce.commons.utils.v2;
 
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
+import it.pagopa.ecommerce.commons.domain.v2.Email;
+import it.pagopa.ecommerce.commons.domain.v2.FiscalCode;
 import it.pagopa.ecommerce.commons.exceptions.ConfidentialDataException;
 import it.pagopa.ecommerce.commons.utils.ConfidentialDataManager;
 import it.pagopa.generated.pdv.v1.api.TokenApi;
@@ -21,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.UUID;
 
 import static it.pagopa.ecommerce.commons.v2.TransactionTestUtils.EMAIL_STRING;
+import static it.pagopa.ecommerce.commons.v2.TransactionTestUtils.FISCAL_CODE_STRING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +50,27 @@ class ConfidentialDataManagerTest {
 
         /* assertions */
         assertEquals(email, decrypted);
+    }
+
+    @Test
+    void shouldEncryptAndDecryptFiscalCodeSuccessfullyWithPDV() {
+        FiscalCode fiscalCode = new FiscalCode(FISCAL_CODE_STRING);
+
+        TokenResourceDto pdvToken = new TokenResourceDto().token(UUID.randomUUID());
+
+        /* preconditions */
+        Mockito.when(pdvClient.saveUsingPUT(new PiiResourceDto().pii(FISCAL_CODE_STRING)))
+                .thenReturn(Mono.just(pdvToken));
+        Mockito.when(pdvClient.findPiiUsingGET(pdvToken.getToken().toString()))
+                .thenReturn(Mono.just(new PiiResourceDto().pii(FISCAL_CODE_STRING)));
+
+        /* test */
+        Confidential<FiscalCode> encrypted = confidentialDataManager
+                .encrypt(fiscalCode).block();
+        FiscalCode decrypted = confidentialDataManager.decrypt(encrypted, FiscalCode::new).block();
+
+        /* assertions */
+        assertEquals(fiscalCode, decrypted);
     }
 
     @Test

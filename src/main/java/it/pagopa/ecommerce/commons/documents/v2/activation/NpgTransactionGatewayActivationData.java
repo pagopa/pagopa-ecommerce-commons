@@ -2,13 +2,12 @@ package it.pagopa.ecommerce.commons.documents.v2.activation;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Activation data associated for NPG gateway
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
@@ -20,6 +19,20 @@ public final class NpgTransactionGatewayActivationData implements TransactionGat
 
     @NotNull
     private static final ActivationDataType TYPE = ActivationDataType.NPG;
+
+    /**
+     * All-args constructor
+     *
+     * @param orderId       the order id
+     * @param correlationId the correlation id
+     */
+    public NpgTransactionGatewayActivationData(
+            String orderId,
+            String correlationId
+    ) {
+        this.orderId = orderId;
+        this.correlationId = correlationId;
+    }
 
     /**
      * Get discriminator field enumeration value

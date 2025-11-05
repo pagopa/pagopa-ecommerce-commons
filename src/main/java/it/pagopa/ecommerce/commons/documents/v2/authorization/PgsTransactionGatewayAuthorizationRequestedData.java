@@ -3,7 +3,7 @@ package it.pagopa.ecommerce.commons.documents.v2.authorization;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 
 /**
@@ -11,7 +11,6 @@ import java.net.URI;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 public final class PgsTransactionGatewayAuthorizationRequestedData
@@ -23,6 +22,20 @@ public final class PgsTransactionGatewayAuthorizationRequestedData
 
     @NotNull
     private static final TransactionGatewayAuthorizationRequestedData.AuthorizationDataType TYPE = TransactionGatewayAuthorizationRequestedData.AuthorizationDataType.PGS;
+
+    /**
+     * All-args constructor
+     *
+     * @param logo  the logo URI
+     * @param brand the card brand
+     */
+    public PgsTransactionGatewayAuthorizationRequestedData(
+            URI logo,
+            CardBrand brand
+    ) {
+        this.logo = logo;
+        this.brand = brand;
+    }
 
     @Override
     public AuthorizationDataType getType() {

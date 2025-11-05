@@ -36,7 +36,7 @@ class TransactionDocumentTest {
 
         // Different transaction (creation date)
         Transaction differentTransaction = TransactionTestUtils
-                .transactionDocument(transactionStatus, ZonedDateTime.now());
+                .transactionDocument(transactionStatus, creationDateTime.plusSeconds(5));
 
         /* Assertions */
         assertEquals(TransactionTestUtils.PAYMENT_TOKEN, transaction.getPaymentNotices().get(0).getPaymentToken());
@@ -45,6 +45,7 @@ class TransactionDocumentTest {
         assertEquals(TransactionTestUtils.AMOUNT, transaction.getPaymentNotices().get(0).getAmount());
         assertEquals(TransactionTestUtils.TRANSACTION_ID, transaction.getTransactionId());
         assertEquals(transactionStatus, transaction.getStatus());
+        assertEquals(TransactionTestUtils.LAST_PROCESSED_EVENT_AT, transaction.getLastProcessedEventAt());
 
         assertNotEquals(transaction, differentTransaction);
         assertEquals(transaction.hashCode(), sameTransaction.hashCode());
@@ -76,6 +77,10 @@ class TransactionDocumentTest {
         );
         assertEquals(ZonedDateTime.parse(transactionDocument.getCreationDate()), transaction.getCreationDate());
         assertEquals(transactionDocument.getStatus(), transaction.getStatus());
+        assertEquals(
+                transactionDocument.getLastProcessedEventAt(),
+                transaction.getCreationDate().toInstant().toEpochMilli()
+        );
     }
 
     @Test

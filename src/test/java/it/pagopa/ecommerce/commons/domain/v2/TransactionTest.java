@@ -4,7 +4,6 @@ import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
-import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import it.pagopa.ecommerce.commons.v2.TransactionTestUtils;
 import org.junit.jupiter.api.Test;
@@ -637,10 +636,8 @@ class TransactionTest {
                 .transactionWithClosureRequested(transactionAuthorizationCompleted);
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureError expected = TransactionTestUtils
                 .transactionWithClosureError(transactionClosureErrorEvent, transactionWithClosureRequested);
-
         Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
                 .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
-
         StepVerifier.create(actual).expectNextMatches(e -> e.equals(expected)).verifyComplete();
     }
 

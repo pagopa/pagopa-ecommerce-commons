@@ -1,21 +1,20 @@
 package it.pagopa.ecommerce.commons.v2;
 
 import it.pagopa.ecommerce.commons.documents.PaymentTransferInformation;
-import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.*;
+import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.activation.EmptyTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.NpgTransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.activation.TransactionGatewayActivationData;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.*;
 import it.pagopa.ecommerce.commons.documents.v2.refund.EmptyGatewayRefundData;
 import it.pagopa.ecommerce.commons.documents.v2.refund.GatewayRefundData;
-import it.pagopa.ecommerce.commons.domain.*;
+import it.pagopa.ecommerce.commons.domain.Confidential;
 import it.pagopa.ecommerce.commons.domain.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.*;
 import it.pagopa.ecommerce.commons.generated.npg.v1.dto.OperationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.AuthorizationResultDto;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
-import it.pagopa.ecommerce.commons.repositories.PaymentRequestInfo;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -38,6 +37,7 @@ public class TransactionTestUtils {
     public static final int AMOUNT = 100;
 
     public static final String EMAIL_STRING = "foo@example.com";
+    public static final String FISCAL_CODE_STRING = "test";
 
     private static final String timestampOperation = "2023-01-01T01:02:03+01:00";
 
@@ -97,6 +97,8 @@ public class TransactionTestUtils {
 
     public static final String DUE_DATE = "1900-01-01";
     public static final String IDEMPOTENCY_KEY = "00000000000_AABBCCDDEE";
+
+    public static final Long LAST_PROCESSED_EVENT_AT = System.currentTimeMillis();
 
     public static final int PAYMENT_TOKEN_VALIDITY_TIME_SEC = 900;
 
@@ -228,7 +230,7 @@ public class TransactionTestUtils {
         return new TransactionActivated(
                 new TransactionId(TRANSACTION_ID),
                 List.of(
-                        new it.pagopa.ecommerce.commons.domain.PaymentNotice(
+                        new PaymentNotice(
                                 new PaymentToken(PAYMENT_TOKEN),
                                 new RptId(RPT_ID),
                                 new TransactionAmount(AMOUNT),
@@ -332,7 +334,8 @@ public class TransactionTestUtils {
                         paymentGateway,
                         PAYMENT_METHOD_DESCRIPTION,
                         transactionGatewayAuthorizationRequestedData,
-                        ID_BUNDLE
+                        ID_BUNDLE,
+                        true
                 )
         );
     }
@@ -382,14 +385,28 @@ public class TransactionTestUtils {
     public static TransactionClosedEvent transactionClosedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, false)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosedEvent transactionClosedEventCanceledByUser(TransactionClosureData.Outcome outcome) {
+        return new TransactionClosedEvent(
+                TRANSACTION_ID,
+                new TransactionClosureData(outcome, true)
         );
     }
 
     @Nonnull
     public static TransactionClosureErrorEvent transactionClosureErrorEvent() {
+        return transactionClosureErrorEvent(null);
+    }
+
+    @Nonnull
+    public static TransactionClosureErrorEvent transactionClosureErrorEvent(ClosureErrorData closureErrorData) {
         return new TransactionClosureErrorEvent(
-                TRANSACTION_ID
+                TRANSACTION_ID,
+                closureErrorData
         );
     }
 
@@ -505,7 +522,7 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionExpiredNotAuthorized transactionExpiredNotAuthorized(
-                                                                                  BaseTransaction transaction,
+                                                                                  BaseTransactionWithPaymentToken transaction,
                                                                                   TransactionExpiredEvent transactionExpiredEvent
     ) {
         return new TransactionExpiredNotAuthorized(transaction, transactionExpiredEvent);
@@ -565,15 +582,33 @@ public class TransactionTestUtils {
     public static TransactionClosureFailedEvent transactionClosureFailedEvent(TransactionClosureData.Outcome outcome) {
         return new TransactionClosureFailedEvent(
                 TRANSACTION_ID,
-                new TransactionClosureData(outcome)
+                new TransactionClosureData(outcome, false)
+        );
+    }
+
+    @Nonnull
+    public static TransactionClosureFailedEvent transactionClosureFailedEventCanceledByUser(
+                                                                                            TransactionClosureData.Outcome outcome
+    ) {
+        return new TransactionClosureFailedEvent(
+                TRANSACTION_ID,
+                new TransactionClosureData(outcome, true)
         );
     }
 
     @Nonnull
     public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(int retryCount) {
+        return transactionClosureRetriedEvent(retryCount, null);
+    }
+
+    @Nonnull
+    public static TransactionClosureRetriedEvent transactionClosureRetriedEvent(
+                                                                                int retryCount,
+                                                                                ClosureErrorData closureErrorData
+    ) {
         return new TransactionClosureRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRetriedData(retryCount)
+                new TransactionClosureRetriedData(closureErrorData, retryCount)
         );
     }
 
@@ -713,7 +748,10 @@ public class TransactionTestUtils {
                 creationDateTime.toString(),
                 ID_CART,
                 RRN,
-                USER_ID
+                USER_ID,
+                null,
+                null,
+                LAST_PROCESSED_EVENT_AT
         );
     }
 
@@ -735,8 +773,32 @@ public class TransactionTestUtils {
         );
     }
 
-    public static PaymentRequestInfo paymentRequestInfo() {
-        return new PaymentRequestInfo(
+    public static it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo paymentRequestInfoV1() {
+        return new it.pagopa.ecommerce.commons.repositories.v1.PaymentRequestInfo(
+                new it.pagopa.ecommerce.commons.domain.v1.RptId(RPT_ID),
+                PA_FISCAL_CODE,
+                PA_NAME,
+                DESCRIPTION,
+                AMOUNT,
+                DUE_DATE,
+                PAYMENT_TOKEN,
+                ZonedDateTime.now().toString(),
+                new it.pagopa.ecommerce.commons.domain.v1.IdempotencyKey(IDEMPOTENCY_KEY),
+                List.of(
+                        new it.pagopa.ecommerce.commons.domain.v1.PaymentTransferInfo(
+                                TRANSFER_PA_FISCAL_CODE,
+                                TRANSFER_DIGITAL_STAMP,
+                                TRANSFER_AMOUNT,
+                                TRANSFER_CATEGORY
+                        )
+                ),
+                false,
+                CREDITOR_REFERENCE_ID
+        );
+    }
+
+    public static it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo paymentRequestInfoV2() {
+        return new it.pagopa.ecommerce.commons.repositories.v2.PaymentRequestInfo(
                 new RptId(RPT_ID),
                 PA_FISCAL_CODE,
                 PA_NAME,

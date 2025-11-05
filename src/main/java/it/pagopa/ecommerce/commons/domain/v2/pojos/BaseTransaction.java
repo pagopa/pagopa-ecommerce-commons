@@ -4,9 +4,9 @@ import it.pagopa.ecommerce.commons.annotations.AggregateRootId;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction.ClientId;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionActivatedEvent;
 import it.pagopa.ecommerce.commons.domain.Confidential;
-import it.pagopa.ecommerce.commons.domain.Email;
-import it.pagopa.ecommerce.commons.domain.PaymentNotice;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
+import it.pagopa.ecommerce.commons.domain.v2.Email;
+import it.pagopa.ecommerce.commons.domain.v2.PaymentNotice;
+import it.pagopa.ecommerce.commons.domain.v2.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v2.Transaction;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.*;
@@ -57,7 +57,6 @@ import java.util.List;
  */
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
 public abstract class BaseTransaction {
@@ -70,6 +69,30 @@ public abstract class BaseTransaction {
     ZonedDateTime creationDate;
 
     ClientId clientId;
+
+    /**
+     * Primary constructor for the BaseTransaction class.
+     *
+     * @param transactionId  the unique identifier for this transaction.
+     * @param paymentNotices the list of payment notices associated with the
+     *                       transaction.
+     * @param email          the confidential email of the user.
+     * @param creationDate   the timestamp of the transaction's creation.
+     * @param clientId       the client ID that initiated the transaction.
+     */
+    protected BaseTransaction(
+            TransactionId transactionId,
+            List<PaymentNotice> paymentNotices,
+            Confidential<Email> email,
+            ZonedDateTime creationDate,
+            ClientId clientId
+    ) {
+        this.transactionId = transactionId;
+        this.paymentNotices = paymentNotices;
+        this.email = email;
+        this.creationDate = creationDate;
+        this.clientId = clientId;
+    }
 
     /**
      * Retrieves the current transaction status

@@ -38,6 +38,22 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         PATH_TO_CLASS_MAP = classToPathMappings._2();
     }
 
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required for transaction
+     * event type resolver implementation and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public TransactionEventTypeResolver() {
+    }
+
     private static Tuple2<Map<Class<? extends TransactionEvent<?>>, String>, Map<String, Class<? extends TransactionEvent<?>>>> initializePathToClassAssociations(
                                                                                                                                                                   String basePackage
     ) {

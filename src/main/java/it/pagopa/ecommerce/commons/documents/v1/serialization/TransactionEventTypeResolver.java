@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import it.pagopa.ecommerce.commons.documents.v1.TransactionEvent;
-import it.pagopa.ecommerce.commons.domain.TransactionId;
+import it.pagopa.ecommerce.commons.domain.v1.TransactionId;
 import it.pagopa.ecommerce.commons.domain.v1.TransactionEventCode;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -40,6 +40,22 @@ public class TransactionEventTypeResolver extends TypeIdResolverBase {
         EVENT_CODE_TO_CLASS_MAP = classToEventCodeMappings._2();
 
         checkEventCodeToClassAssociations(BASE_PACKAGE, CLASS_TO_EVENT_CODE_MAP, EVENT_CODE_TO_CLASS_MAP);
+    }
+
+    /**
+     * No-args constructor
+     */
+    /*
+     * @formatter:off
+     *
+     * Warning java:S1186 - Methods should not be empty
+     * Suppressed because this constructor is required for transaction
+     * event type resolver implementation and should remain empty
+     *
+     * @formatter:on
+     */
+    @SuppressWarnings("java:S1186")
+    public TransactionEventTypeResolver() {
     }
 
     private static Tuple2<Map<Class<? extends TransactionEvent<?>>, TransactionEventCode>, Map<TransactionEventCode, Class<? extends TransactionEvent<?>>>> initializeEventCodeToClassAssociations(

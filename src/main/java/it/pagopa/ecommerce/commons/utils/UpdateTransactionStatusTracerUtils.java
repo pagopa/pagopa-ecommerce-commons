@@ -7,7 +7,7 @@ import io.opentelemetry.api.trace.Tracer;
 import it.pagopa.ecommerce.commons.documents.v2.Transaction;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionAuthorizationRequestData;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -628,16 +628,18 @@ public class UpdateTransactionStatusTracerUtils {
     /**
      * Authorization requested status update info
      *
-     * @param trigger              authorization request trigger
-     * @param outcome              the transaction update outcome
-     * @param pspId                psp identifier for the current transaction
-     *                             (absent for user canceled transaction)
-     * @param clientId             client identifier that have initiated the
-     *                             transaction
-     * @param walletPayment        boolean value indicating if the transaction have
-     *                             been performed with an onboarded method (wallet)
-     *                             or not (absent for user canceled transaction)
-     * @param gatewayOutcomeResult authorization result
+     * @param trigger               authorization request trigger
+     * @param outcome               the transaction update outcome
+     * @param pspId                 psp identifier for the current transaction
+     *                              (absent for user canceled transaction)
+     * @param clientId              client identifier that have initiated the
+     *                              transaction
+     * @param walletPayment         boolean value indicating if the transaction have
+     *                              been performed with an onboarded method (wallet)
+     *                              or not (absent for user canceled transaction)
+     * @param paymentMethodTypeCode payment method type code used for the
+     *                              authorization
+     * @param gatewayOutcomeResult  authorization result
      */
     public record AuthorizationRequestedStatusUpdate(
             @NotNull UpdateTransactionTrigger trigger,
@@ -731,18 +733,24 @@ public class UpdateTransactionStatusTracerUtils {
      */
     public interface StatusUpdateInfo {
         /**
+         * Get the update transaction status type
+         *
          * @return the update transaction status type
          * @see UpdateTransactionStatusType
          */
         UpdateTransactionStatusType getType();
 
         /**
+         * Get the update transaction trigger
+         *
          * @return the update transaction trigger
          * @see UpdateTransactionTrigger
          */
         UpdateTransactionTrigger getTrigger();
 
         /**
+         * Get the update transaction outcome
+         *
          * @return the update transaction outcome
          * @see UpdateTransactionStatusOutcome
          */

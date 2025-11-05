@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Getter
-public final class TransactionUserCanceled extends BaseTransaction implements Transaction {
+public final class TransactionUserCanceled extends BaseTransactionWithCancellationRequested implements Transaction {
 
     TransactionClosedEvent transactionClosedEvent;
 
@@ -37,13 +37,7 @@ public final class TransactionUserCanceled extends BaseTransaction implements Tr
             BaseTransactionWithCancellationRequested baseTransaction,
             TransactionClosedEvent transactionClosedEvent
     ) {
-        super(
-                baseTransaction.getTransactionId(),
-                baseTransaction.getPaymentNotices(),
-                baseTransaction.getEmail(),
-                baseTransaction.getCreationDate(),
-                baseTransaction.getClientId()
-        );
+        super(baseTransaction);
         this.transactionClosedEvent = transactionClosedEvent;
     }
 

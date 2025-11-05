@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.documents.v2;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.pagopa.ecommerce.commons.documents.v2.authorization.TransactionGatewayAuthorizationData;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.Data;
@@ -32,7 +33,18 @@ public final class TransactionRefundRequestedData extends BaseTransactionRefunde
      * asynchronously (such as NPG GET orders))
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private TransactionGatewayAuthorizationData gatewayAuthData;
+
+    /**
+     * Specifies if the refund was initiated manually or triggered automatically. A
+     * manual refund typically occurs when an operator explicitly initiates a
+     * refund. An automatic refund is requested directly by the system flow in
+     * response to specific conditions.
+     */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private RefundTrigger refundTrigger;
 
     /**
      * Constructor
@@ -47,5 +59,38 @@ public final class TransactionRefundRequestedData extends BaseTransactionRefunde
     ) {
         super(statusBeforeRefunded);
         this.gatewayAuthData = gatewayAuthData;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param gatewayAuthData      transaction specific gateway authorization data
+     * @param statusBeforeRefunded the transaction status before the refund
+     *                             operation
+     * @param refundTrigger        whether the refund was initiated manually or
+     *                             triggered automatically
+     */
+    public TransactionRefundRequestedData(
+            @Nullable TransactionGatewayAuthorizationData gatewayAuthData,
+            TransactionStatusDto statusBeforeRefunded,
+            @Nullable RefundTrigger refundTrigger
+    ) {
+        super(statusBeforeRefunded);
+        this.gatewayAuthData = gatewayAuthData;
+        this.refundTrigger = refundTrigger;
+    }
+
+    /**
+     * Enumeration of possible refund operation trigger
+     */
+    public enum RefundTrigger {
+        /**
+         * requested directly by the system flow in response to specific conditions
+         */
+        AUTOMATIC,
+        /**
+         * an operator explicitly initiates a refund
+         */
+        MANUAL
     }
 }
