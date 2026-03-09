@@ -44,7 +44,7 @@ createMachine(
           EXPIRE: {
             target: "EXPIRED",
           },
-          CLOSURE_SYNT: {
+          CLOSURE_SYNTHETIC: {
             target: "CLOSED",
             cond: "auth_outcome_ok"
           },
