@@ -19,6 +19,8 @@ import java.util.Optional;
  * </p>
  * <ul>
  * <li>{@link TransactionClosedEvent} --> {@link TransactionClosed}</li>
+ * <li>{@link TransactionClosureSyntheticEvent} -->
+ * {@link TransactionClosed}</li>
  * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}</li>
  * <li>{@link TransactionRefundRequestedEvent} -->
  * {@link TransactionWithRefundRequested}</li>
@@ -90,6 +92,9 @@ public final class TransactionWithClosureError extends BaseTransactionWithClosur
 
             if (event instanceof TransactionClosedEvent transactionClosedEvent && wasTransactionAuthorized) {
                 return new TransactionClosed(trxWithClosureRequested, transactionClosedEvent);
+            } else if (event instanceof TransactionClosureSyntheticEvent transactionClosureSyntheticEvent
+                    && wasTransactionAuthorized) {
+                return new TransactionClosed(trxWithClosureRequested, transactionClosureSyntheticEvent);
             } else if (event instanceof TransactionExpiredEvent transactionExpiredEvent) {
                 return new TransactionExpired(trxWithClosureRequested, transactionExpiredEvent);
             } else if (event instanceof TransactionRefundRequestedEvent transactionRefundRequestedEvent) {

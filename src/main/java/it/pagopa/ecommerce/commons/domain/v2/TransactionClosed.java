@@ -1,9 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
-import it.pagopa.ecommerce.commons.documents.v2.TransactionClosedEvent;
-import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
-import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent;
-import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.*;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithClosureRequested;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
@@ -38,7 +35,7 @@ public final class TransactionClosed extends BaseTransactionClosed
         implements Transaction {
 
     /**
-     * Primary constructor
+     * Constructor that take in input a TransactionClosedEvent
      *
      * @param baseTransaction        base transaction
      * @param transactionClosedEvent the transaction closed event
@@ -48,6 +45,20 @@ public final class TransactionClosed extends BaseTransactionClosed
             TransactionClosedEvent transactionClosedEvent
     ) {
         super(baseTransaction, transactionClosedEvent.getData());
+    }
+
+    /**
+     * Constructor that take in input a transactionClosureSyntheticEvent
+     *
+     * @param baseTransaction                  base transaction
+     * @param transactionClosureSyntheticEvent the transaction closure synthetic
+     *                                         even
+     */
+    public TransactionClosed(
+            BaseTransactionWithClosureRequested baseTransaction,
+            TransactionClosureSyntheticEvent transactionClosureSyntheticEvent
+    ) {
+        super(baseTransaction, transactionClosureSyntheticEvent.getData());
     }
 
     /**
