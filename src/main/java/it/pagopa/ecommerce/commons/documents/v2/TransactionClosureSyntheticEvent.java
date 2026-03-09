@@ -23,18 +23,15 @@ public final class TransactionClosureSyntheticEvent extends TransactionEvent<Tra
      * Primary constructor
      *
      * @param transactionId transaction unique id
-     * @param creationDate  event creation date
      */
     public TransactionClosureSyntheticEvent(
-            String transactionId,
-            String creationDate
+            String transactionId
     ) {
         // transaction closure synthetic event assumes that close payment response
         // outcome is always OK (Nodo did not send payment result for KO outcomes)
         super(
                 transactionId,
                 TransactionEventCode.TRANSACTION_CLOSURE_SYNTHETIC_EVENT,
-                creationDate,
                 new TransactionClosureData(TransactionClosureData.Outcome.OK, false)
         );
     }
