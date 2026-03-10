@@ -52,7 +52,7 @@ public final class TransactionClosed extends BaseTransactionClosed
      *
      * @param baseTransaction                  base transaction
      * @param transactionClosureSyntheticEvent the transaction closure synthetic
-     *                                         even
+     *                                         event
      */
     public TransactionClosed(
             BaseTransactionWithClosureRequested baseTransaction,

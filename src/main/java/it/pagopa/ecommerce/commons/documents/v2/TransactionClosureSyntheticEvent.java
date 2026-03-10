@@ -28,7 +28,8 @@ public final class TransactionClosureSyntheticEvent extends TransactionEvent<Tra
             String transactionId
     ) {
         // transaction closure synthetic event assumes that close payment response
-        // outcome is always OK (Nodo did not send payment result for KO outcomes)
+        // outcome is always OK (Nodo did not send SendPaymentResult requests for KO
+        // outcomes)
         super(
                 transactionId,
                 TransactionEventCode.TRANSACTION_CLOSURE_SYNTHETIC_EVENT,

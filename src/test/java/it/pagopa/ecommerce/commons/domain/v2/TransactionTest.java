@@ -383,10 +383,10 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -443,10 +443,10 @@ class TransactionTest {
                 transactionUserReceiptAddedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -623,10 +623,10 @@ class TransactionTest {
                 transactionClosureErrorEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -666,10 +666,10 @@ class TransactionTest {
                 transactionAuthorizationCompletedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -715,10 +715,10 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1042,10 +1042,10 @@ class TransactionTest {
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
         assertEquals(TransactionStatusDto.AUTHORIZATION_REQUESTED, transactionWithRequestedAuthorization.getStatus());
     }
@@ -1060,10 +1060,10 @@ class TransactionTest {
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1095,10 +1095,10 @@ class TransactionTest {
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1121,10 +1121,10 @@ class TransactionTest {
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionWithCompletedAuthorization = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1152,10 +1152,10 @@ class TransactionTest {
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -1201,10 +1201,10 @@ class TransactionTest {
                 .transactionClosureRequestedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1266,10 +1266,10 @@ class TransactionTest {
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1341,10 +1341,10 @@ class TransactionTest {
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1406,10 +1406,10 @@ class TransactionTest {
                 .transactionClosureRequestedEvent();
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1468,10 +1468,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1521,10 +1521,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1584,10 +1584,10 @@ class TransactionTest {
                 .transactionClosureRequestedEvent();
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1638,10 +1638,10 @@ class TransactionTest {
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1697,10 +1697,10 @@ class TransactionTest {
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1748,10 +1748,10 @@ class TransactionTest {
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1801,10 +1801,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1844,10 +1844,10 @@ class TransactionTest {
                 .transactionAuthorizationCompletedEvent(
                         TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -1885,10 +1885,10 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(transactionWithRequestedAuthorization);
 
@@ -1917,10 +1917,10 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(transactionWithRequestedAuthorization);
 
@@ -2093,10 +2093,10 @@ class TransactionTest {
                 transactionClosureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2138,10 +2138,10 @@ class TransactionTest {
                 transactionClosureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2183,10 +2183,10 @@ class TransactionTest {
                 transactionClosedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2233,10 +2233,10 @@ class TransactionTest {
                 transactionClosureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2281,10 +2281,10 @@ class TransactionTest {
                 transactionClosedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2338,10 +2338,10 @@ class TransactionTest {
                 transactionUserReceiptAddedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -2411,10 +2411,10 @@ class TransactionTest {
                 transactionUserReceiptAddedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -2488,10 +2488,10 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -2874,10 +2874,10 @@ class TransactionTest {
                 );
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -2942,10 +2942,10 @@ class TransactionTest {
                 .transactionClosureRequestedEvent();
         TransactionClosureErrorEvent transactionClosureErrorEvent = TransactionTestUtils
                 .transactionClosureErrorEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -3703,10 +3703,10 @@ class TransactionTest {
                 transactionUserCanceledEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -3748,10 +3748,10 @@ class TransactionTest {
                 .transactionUserReceiptAddedEvent(
                         transactionUserReceiptRequestedEvent.getData()
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -3828,10 +3828,10 @@ class TransactionTest {
                 .transactionUserReceiptAddedEvent(
                         transactionUserReceiptRequestedEvent.getData()
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4022,10 +4022,10 @@ class TransactionTest {
                 expiredEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4102,10 +4102,10 @@ class TransactionTest {
                 userReceiptAddErrorEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4180,10 +4180,10 @@ class TransactionTest {
                 authorizationRequestedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4256,10 +4256,10 @@ class TransactionTest {
                 userReceiptAddErrorEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4337,10 +4337,10 @@ class TransactionTest {
                 userReceiptAddErrorEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4417,10 +4417,10 @@ class TransactionTest {
                 userReceiptAddedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4498,10 +4498,10 @@ class TransactionTest {
                 userReceiptAddedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4585,10 +4585,10 @@ class TransactionTest {
                 transactionExpiredEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4671,10 +4671,10 @@ class TransactionTest {
                 refundRequestedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4756,10 +4756,10 @@ class TransactionTest {
                 refundRequestedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4831,10 +4831,10 @@ class TransactionTest {
                 transactionExpiredEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4918,10 +4918,10 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -4994,10 +4994,10 @@ class TransactionTest {
                 addUserReceiptEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -5063,10 +5063,10 @@ class TransactionTest {
                 addUserReceiptEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -5123,10 +5123,10 @@ class TransactionTest {
                 closureSentEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted expected = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -5169,10 +5169,10 @@ class TransactionTest {
                 closureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted expected = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -5221,10 +5221,10 @@ class TransactionTest {
                 transactionClosedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5276,10 +5276,10 @@ class TransactionTest {
                 transactionClosureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5327,10 +5327,10 @@ class TransactionTest {
                 transactionClosedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5370,10 +5370,10 @@ class TransactionTest {
                 transactionClosureFailedEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5415,10 +5415,10 @@ class TransactionTest {
                 transactionExpiredEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5626,10 +5626,10 @@ class TransactionTest {
                 addUserReceiptEvent
         );
 
-        TransactionActivated TransactionActivated = TransactionTestUtils
+        TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
 
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
@@ -5703,10 +5703,10 @@ class TransactionTest {
                 addUserReceiptEvent
         );
 
-        TransactionActivated TransactionActivated = TransactionTestUtils
+        TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         authorizedEvent,
@@ -5746,10 +5746,10 @@ class TransactionTest {
                 );
         TransactionClosedEvent transactionClosedEvent = TransactionTestUtils
                 .transactionClosedEvent(TransactionClosureData.Outcome.OK);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -5808,10 +5808,10 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(transactionWithRequestedAuthorization);
         TransactionExpired transactionExpired = TransactionTestUtils
@@ -5858,11 +5858,11 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
 
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(transactionWithRequestedAuthorization);
         TransactionExpired transactionExpired = TransactionTestUtils
@@ -5902,10 +5902,10 @@ class TransactionTest {
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
         TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
                 .transactionAuthorizationRequestedEvent();
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils
                 .transactionExpiredEvent(transactionWithRequestedAuthorization);
         TransactionGatewayAuthorizationData gatewayAuthorizationData = TransactionTestUtils
@@ -5976,10 +5976,10 @@ class TransactionTest {
                 closureSyntheticEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -6040,10 +6040,10 @@ class TransactionTest {
                 closureSyntheticEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -6101,10 +6101,10 @@ class TransactionTest {
                 closureSyntheticEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
@@ -6148,10 +6148,10 @@ class TransactionTest {
                 closureSyntheticEvent
         );
 
-        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated TransactionActivated = TransactionTestUtils
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
                 .transactionActivated(transactionActivatedEvent.getCreationDate());
         it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
-                .transactionWithRequestedAuthorization(authorizationRequestedEvent, TransactionActivated);
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
         it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
                 .transactionAuthorizationCompleted(
                         transactionAuthorizationCompletedEvent,
