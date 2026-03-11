@@ -200,6 +200,12 @@ createMachine(
           },
           REFUND_ERROR: {
             target: "REFUND_ERROR"
+          },
+          CLOSURE_SYNTHETIC: {
+            target: "CLOSED"
+          },
+          ADD_USER_RECEIPT: {
+            target: "NOTIFICATION_REQUESTED"
           }
         },
       },

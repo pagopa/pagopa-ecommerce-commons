@@ -43,18 +43,22 @@ import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransaction;
  *              ▼                                                  │
  *     AUTHORIZATION_COMPLETED                                     │───► REFUND_REQUESTED ───► REFUND_ERROR / REFUNDED
  *              │                                                  │
- *              │                                                  │
- *              ▼                                                  │
- *       CLOSURE_REQUESTED                                         │
- *              │                                                  │
- *              ├──────────► CLOSURE_ERROR──────┐                  │
- *              ├──────────► EXPIRED ───────────┼──────────────────┚
- *              │                               │
- *              │                               │
- *              ──────────► UNAUTHORIZED        │
- *              │                               │
- *              ▼                               │
- *            CLOSED ───────────────────────────┘
+ *              │                                                  │──────► ┐
+ *              ▼                                                  │        │
+ *       CLOSURE_REQUESTED                                         │───► ┐  │
+ *              │                                                  │     │  │
+ *              ├──────────► CLOSURE_ERROR──────┐                  │     │  │
+ *              ├──────────► EXPIRED ───────────┼──────────────────┚     │  │
+ *              │                               │                        │  │
+ *              │                               │                        │  │
+ *              ──────────► UNAUTHORIZED        │                        │  │
+ *              │                               │                        │  │
+ *              ▼                               │                        │  │
+ *            CLOSED ◀──────────────────────────┘────────────────────────┘  │
+ *              │                                                           │
+ *              │                                                           │
+ *              ▼                                                           │
+ *     NOTIFICATION_REQUESTED ◀─────────────────────────────────────────────┘
  *              │
  *              ▼
  *    NOTIFIED OK / NOTIFIED KO
