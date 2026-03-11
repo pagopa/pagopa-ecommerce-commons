@@ -1,5 +1,6 @@
 package it.pagopa.ecommerce.commons.domain.v2;
 
+import it.pagopa.ecommerce.commons.documents.v2.TransactionClosureSyntheticEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent;
@@ -27,6 +28,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 public final class TransactionExpired extends BaseTransactionExpired implements Transaction {
+    /**
+     * The transaction expired event instance, used to perform re-aggregation
+     */
+    private final TransactionExpiredEvent event;
 
     /**
      * Primary constructor
@@ -39,6 +44,7 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
             TransactionExpiredEvent event
     ) {
         super(baseTransaction, event.getData());
+        this.event = event;
     }
 
     /**
@@ -51,6 +57,20 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
                     this.getTransactionAtPreviousState(),
                     transactionRefundRequestedEvent
             );
+        }
+        /*
+         * in case of closure synthetic event the transaction will remain in EXPIRED
+         * status. the transaction at previous state aggregate is recalculated applying
+         * the closure synthetic event to effectively recalculate aggregate. This logic
+         * reflects the fact that a transaction can recover from EXPIRED status with an
+         * addUserReceipt request from Nodo and should handle closed transactions coming
+         * from both close event and synthetic one but the closure event itself.
+         */
+        if (event instanceof TransactionClosureSyntheticEvent transactionClosureSyntheticEvent) {
+            BaseTransactionWithRequestedAuthorization transactionAtPreviousState = this.getTransactionAtPreviousState();
+            BaseTransactionWithRequestedAuthorization recalculatedBaseTransaction = (BaseTransactionWithRequestedAuthorization) ((Transaction) transactionAtPreviousState)
+                    .applyEvent(transactionClosureSyntheticEvent);
+            return new TransactionExpired(recalculatedBaseTransaction, this.event);
         }
 
         if (event instanceof TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent &&
