@@ -6418,4 +6418,71 @@ class TransactionTest {
                 )
                 .verifyComplete();
     }
+
+    @Test
+    void shouldIgnoreTransactionClosureSyntheticEventForExpiredTransactionWhereBeforeExpirationTransactionRejectEvents() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.redirectTransactionGatewayAuthorizationData(
+                                RedirectTransactionGatewayAuthorizationData.Outcome.OK,
+                                null
+                        )
+                );
+        TransactionClosureSyntheticEvent closureSyntheticEvent = TransactionTestUtils
+                .transactionClosureSyntheticEvent();
+
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent
+                )
+        );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                transactionExpiredEvent,
+                closureSyntheticEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+
+        TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(
+                        transactionAuthorizationCompleted,
+                        transactionExpiredEvent
+                );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .assertNext(
+                        t -> {
+                            TransactionExpired transactionExpired = (TransactionExpired) t;
+                            assertEquals(expected, transactionExpired);
+                            assertInstanceOf(
+                                    TransactionAuthorizationCompleted.class,
+                                    transactionExpired.getTransactionAtPreviousState()
+                            );
+
+                        }
+                )
+                .verifyComplete();
+    }
 }
