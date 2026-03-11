@@ -6411,7 +6411,7 @@ class TransactionTest {
     }
 
     @Test
-    void shouldIgnoreTransactionClosureSyntheticEventForExpiredTransactionWhereBeforeExpirationTransactionRejectEvents() {
+    void shouldIgnoreTransactionClosureSyntheticEventForExpiredTransactionWhereBeforeExpirationTransactionIsNotClosureRequested() {
         EmptyTransaction transaction = new EmptyTransaction();
 
         TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
@@ -6471,6 +6471,74 @@ class TransactionTest {
                                     TransactionAuthorizationCompleted.class,
                                     transactionExpired.getTransactionAtPreviousState()
                             );
+
+                        }
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRejectClosureSyntheticEventForTransactionThatWasNotAuthorized() {
+        EmptyTransaction transaction = new EmptyTransaction();
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.redirectTransactionGatewayAuthorizationData(
+                                RedirectTransactionGatewayAuthorizationData.Outcome.KO,
+                                null
+                        )
+                );
+        TransactionClosureRequestedEvent closureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosureSyntheticEvent closureSyntheticEvent = TransactionTestUtils
+                .transactionClosureSyntheticEvent();
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent,
+                        closureRequestedEvent
+                )
+        );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                closureRequestedEvent,
+                transactionExpiredEvent,
+                closureSyntheticEvent
+        );
+
+        TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+
+        TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(
+                        transactionAuthorizationCompleted
+                );
+
+        TransactionExpired expected = TransactionTestUtils.transactionExpired(
+                transactionWithClosureRequested,
+                transactionExpiredEvent
+        );
+
+        Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
+                .reduce(transaction, it.pagopa.ecommerce.commons.domain.v2.Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .assertNext(
+                        t -> {
+                            assertEquals(expected, t);
 
                         }
                 )
