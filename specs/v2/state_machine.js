@@ -43,7 +43,11 @@ createMachine(
           },
           EXPIRE: {
             target: "EXPIRED",
-          }
+          },
+          CLOSURE_SYNTHETIC: {
+            target: "CLOSED",
+            cond: "auth_outcome_ok"
+          },
         },
       },
       CLOSED: {
@@ -112,6 +116,10 @@ createMachine(
           CLOSURE_FAILED: {
             target: "UNAUTHORIZED",
             cond: "auth_outcome_ko"
+          },
+          CLOSURE_SYNTHETIC: {
+            target: "CLOSED",
+            cond: "auth_outcome_ok"
           }
         },
       },

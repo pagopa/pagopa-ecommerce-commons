@@ -45,6 +45,11 @@ public enum TransactionEventCode {
      */
     TRANSACTION_CLOSURE_RETRIED_EVENT("TRANSACTION_CLOSURE_RETRIED_EVENT"),
     /**
+     * Event when transaction closure operation is deducted from received send
+     * payment result from Nodo
+     */
+    TRANSACTION_CLOSURE_SYNTHETIC_EVENT("TRANSACTION_CLOSURE_SYNTHETIC_EVENT"),
+    /**
      * User receipt notification event
      */
     TRANSACTION_USER_RECEIPT_ADDED_EVENT("TRANSACTION_USER_RECEIPT_ADDED_EVENT"),
