@@ -6222,16 +6222,11 @@ class TransactionTest {
                 .transactionWithClosureRequested(
                         transactionAuthorizationCompleted
                 );
-        TransactionClosed transactionClosed = TransactionTestUtils
+        TransactionClosed expected = TransactionTestUtils
                 .transactionClosed(
 
                         transactionWithClosureRequested,
                         closureSyntheticEvent
-                );
-        TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(
-                        transactionClosed,
-                        transactionExpiredEvent
                 );
 
         Mono<it.pagopa.ecommerce.commons.domain.v2.Transaction> actual = events
@@ -6240,16 +6235,12 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .assertNext(
                         t -> {
-                            TransactionExpired transactionExpired = (TransactionExpired) t;
-                            assertEquals(expected, transactionExpired);
-                            assertEquals(TransactionStatusDto.EXPIRED, transactionExpired.getStatus());
-                            assertInstanceOf(
-                                    TransactionClosed.class,
-                                    transactionExpired.getTransactionAtPreviousState()
-                            );
+                            TransactionClosed trxClosed = (TransactionClosed) t;
+                            assertEquals(expected, trxClosed);
+                            assertEquals(TransactionStatusDto.CLOSED, trxClosed.getStatus());
                             assertEquals(
                                     TransactionClosureData.Outcome.OK,
-                                    ((TransactionClosed) transactionExpired.getTransactionAtPreviousState())
+                                    trxClosed
                                             .getTransactionClosureData().getResponseOutcome()
                             );
                         }
