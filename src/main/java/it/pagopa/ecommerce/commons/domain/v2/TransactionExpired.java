@@ -33,10 +33,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 public final class TransactionExpired extends BaseTransactionExpired implements Transaction {
-    /**
-     * The transaction expired event instance, used to perform re-aggregation
-     */
-    private final TransactionExpiredEvent event;
 
     /**
      * Primary constructor
@@ -49,7 +45,6 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
             TransactionExpiredEvent event
     ) {
         super(baseTransaction, event.getData());
-        this.event = event;
     }
 
     /**
