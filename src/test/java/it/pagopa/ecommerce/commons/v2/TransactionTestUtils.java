@@ -433,6 +433,17 @@ public class TransactionTestUtils {
     }
 
     @Nonnull
+    public static TransactionClosed transactionClosed(
+                                                      BaseTransactionWithClosureRequested baseTransactionWithClosureRequested,
+                                                      TransactionClosureSyntheticEvent transactionClosureSyntheticEvent
+    ) {
+        return new TransactionClosed(
+                baseTransactionWithClosureRequested,
+                transactionClosureSyntheticEvent
+        );
+    }
+
+    @Nonnull
     public static TransactionWithUserReceiptOk transactionWithUserReceiptOk(
                                                                             BaseTransactionWithRequestedUserReceipt baseTransaction,
                                                                             TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent
@@ -971,6 +982,10 @@ public class TransactionTestUtils {
                 outcome,
                 errorCode
         );
+    }
+
+    public static TransactionClosureSyntheticEvent transactionClosureSyntheticEvent() {
+        return new TransactionClosureSyntheticEvent(TRANSACTION_ID);
     }
 
 }

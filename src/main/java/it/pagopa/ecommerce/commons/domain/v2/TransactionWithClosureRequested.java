@@ -17,10 +17,14 @@ import lombok.experimental.FieldDefaults;
  * </p>
  * Applicable events with resulting aggregates are:
  * <ul>
- * <li>{@link TransactionExpiredEvent} -->
+ * <li>{@link TransactionExpiredEvent} --> {@link TransactionExpired}
  * <li>{@link TransactionClosureFailedEvent} -->
- * {@link TransactionClosureErrorEvent}</li>
- * <li>{@link TransactionClosedEvent} -->
+ * {@link TransactionUnauthorized}</li>
+ * <li>{@link TransactionClosedEvent} --> {@link TransactionClosed}
+ * <li>{@link TransactionClosureSyntheticEvent} --> {@link TransactionClosed}
+ * <li>{@link TransactionClosureErrorEvent} -->
+ * {@link TransactionWithClosureError}
+ *
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -50,6 +54,11 @@ public final class TransactionWithClosureRequested extends BaseTransactionWithCl
 
         if (event instanceof TransactionClosedEvent transactionClosedEvent && wasTransactionAuthorized) {
             return new TransactionClosed(this, transactionClosedEvent);
+        }
+
+        if (event instanceof TransactionClosureSyntheticEvent transactionClosureSyntheticEvent
+                && wasTransactionAuthorized) {
+            return new TransactionClosed(this, transactionClosureSyntheticEvent);
         }
 
         if (event instanceof TransactionClosureErrorEvent transactionClosureErrorEvent) {
