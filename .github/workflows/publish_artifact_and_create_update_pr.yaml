@@ -13,7 +13,7 @@ jobs:
     name: Deploy github package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1
       - uses: ./.github/actions/publish-maven-artifacts
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
