@@ -406,7 +406,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>./clients/api-specs/npg.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/clients/api-specs/npg.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <library>webclient</library>
                             <generateApiDocumentation>false</generateApiDocumentation>
