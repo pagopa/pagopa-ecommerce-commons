@@ -19,7 +19,7 @@ public class PaymentNotice {
     private String paymentToken;
     private String rptId; // TODO To be splitted
     private String description;
-    private Integer amount;
+    private Long amount;
     private String paymentContextCode;
     private List<PaymentTransferInformation> transferList;
     private boolean isAllCCP;
@@ -45,7 +45,7 @@ public class PaymentNotice {
             String paymentToken,
             String rptId,
             String description,
-            Integer amount,
+            Long amount,
             String paymentContextCode,
             List<PaymentTransferInformation> transferList,
             boolean isAllCCP,

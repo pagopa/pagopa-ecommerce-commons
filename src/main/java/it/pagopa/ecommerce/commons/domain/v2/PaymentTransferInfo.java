@@ -17,7 +17,7 @@ import org.springframework.lang.Nullable;
 public record PaymentTransferInfo(
         @NonNull String paFiscalCode,
         @NonNull Boolean digitalStamp,
-        @NonNull Integer transferAmount,
+        @NonNull Long transferAmount,
         @Nullable String transferCategory
 
 ) {

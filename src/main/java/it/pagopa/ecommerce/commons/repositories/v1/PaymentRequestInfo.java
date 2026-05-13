@@ -36,7 +36,7 @@ public record PaymentRequestInfo(
         @Nullable String paFiscalCode,
         @Nullable String paName,
         @Nullable String description,
-        @Nullable Integer amount,
+        @Nullable Long amount,
         @Nullable String dueDate,
         @Nullable String paymentToken,
         @Nullable String activationDate,

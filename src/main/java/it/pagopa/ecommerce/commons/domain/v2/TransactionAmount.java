@@ -10,5 +10,5 @@ import it.pagopa.ecommerce.commons.annotations.ValueObject;
  * @param value amount in euro cents
  */
 @ValueObject
-public record TransactionAmount(int value) {
+public record TransactionAmount(long value) {
 }
