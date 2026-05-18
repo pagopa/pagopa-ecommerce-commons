@@ -30,6 +30,13 @@
         <jacoco.version>0.8.12</jacoco.version>
         <spotless.version>2.27.2</spotless.version>
     </properties>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>github</id>
+            <name>GitHub Packages - Snapshots</name>
+            <url>https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons</url>
+        </snapshotRepository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
