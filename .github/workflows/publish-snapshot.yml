@@ -1,0 +1,21 @@
+name: Publish SNAPSHOT artifact
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  publish_snapshot:
+    name: Deploy SNAPSHOT to GitHub Packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1
+      - uses: ./.github/actions/publish-maven-snapshot
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
