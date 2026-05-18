@@ -44,6 +44,7 @@ runs:
         mvn deploy \
           -DaltSnapshotDeploymentRepository="${REPO}" \
           -DskipTests \
-          -Dspotless.check.skip=true
+          -Dspotless.check.skip=true \
+          -DskipDeploy=true
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
