@@ -86,7 +86,7 @@ Each workflow uses this variable to redirect operations that would otherwise tou
 | Maven deploy | publishes to GitHub Packages | deploys to `/tmp/local-maven-repo` (container) |
 | Create PR | opens a real PR on GitHub | prints a summary to the log |
 
-# **Important:** `actions/checkout` reinitializes the git repository inside the Docker container at every run, wiping all remotes configured on the host. For this reason, `fake_origin` is **not** configured on the host machine — it is created inside the container by a dedicated workflow step.
+### Important: `actions/checkout` reinitializes the git repository inside the Docker container at every run, wiping all remotes configured on the host. For this reason, `fake_origin` is **not** configured on the host machine — it is created inside the container by a dedicated workflow step.
 
 ---
 
