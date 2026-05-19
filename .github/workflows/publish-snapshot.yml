@@ -1,9 +1,9 @@
 name: Publish SNAPSHOT artifact
 
 on:
-  #push:
-   # branches:
-    #  - develop
+  push:
+    branches:
+      - develop
   workflow_dispatch:
 
 permissions:

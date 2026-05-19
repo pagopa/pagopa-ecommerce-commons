@@ -48,6 +48,7 @@ jobs:
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Checkout develop
+        if: ${{ env.ACT != 'true' }}
         uses: actions/checkout@v4
         with:
           ref: develop
@@ -75,7 +76,7 @@ jobs:
 
       - name: Push branch
         run: |
-          git push origin bump-develop-${{ steps.next.outputs.next_version }}
+          git push $REMOTE_NAME bump-develop-${{ steps.next.outputs.next_version }}
 
       - name: Create Pull Request
         if: ${{ env.ACT != 'true' }}

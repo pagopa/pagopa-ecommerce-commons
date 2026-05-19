@@ -222,7 +222,7 @@ act workflow_dispatch -W .github/workflows/create-develop.yml
 act workflow_dispatch -W .github/workflows/publish-snapshot.yml
 
 # Step 3 — bump develop after release
-act release -W .github/workflows/bump-develop.yml --eventpath event-release.json
+act release -W .github/workflows/bump-develop-after-release.yml --eventpath event-release.json
 ```
 
 When running locally, in all three cases:
