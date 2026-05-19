@@ -1,0 +1,101 @@
+name: Bump develop after release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump_develop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Restore fake_origin for local act testing
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          git fetch --unshallow
+          git init --bare /tmp/fake_origin.git
+          git remote add fake_origin /tmp/fake_origin.git
+
+      - name: Select remote (origin vs fake_origin)
+        run: |
+          if [ "$ACT" = "true" ]; then
+            echo "REMOTE_NAME=fake_origin" >> $GITHUB_ENV
+          else
+            echo "REMOTE_NAME=origin" >> $GITHUB_ENV
+          fi
+
+      - name: Extract released version
+        id: version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compute next SNAPSHOT version
+        id: next
+        run: |
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.version.outputs.version }}"
+          NEXT_PATCH=$((PATCH + 1))
+          NEXT_VERSION="$MAJOR.$MINOR.$NEXT_PATCH-SNAPSHOT"
+          echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Update pom.xml to next SNAPSHOT
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
+
+      - name: Simulate develop checkout (act only)
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          git checkout -b develop
+
+      - name: Update pom.xml to next SNAPSHOT
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
+
+      - name: Commit changes
+        run: |
+          git config user.name "pagopa-platform-github-bot"
+          git config user.email "pagopa-github-bot@pagopa.it"
+          git checkout -b bump-develop-${{ steps.next.outputs.next_version }}
+          git add pom.xml
+          git commit -m "chore: bump develop to ${{ steps.next.outputs.next_version }}"
+
+      - name: Push branch
+        run: |
+          git push origin bump-develop-${{ steps.next.outputs.next_version }}
+
+      - name: Create Pull Request
+        if: ${{ env.ACT != 'true' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bump-develop-${{ steps.next.outputs.next_version }}
+          base: develop
+          title: "chore: bump develop to ${{ steps.next.outputs.next_version }}"
+          body: "Aggiornamento automatico della versione SNAPSHOT dopo la release."
+          labels: |
+            automatic
+            versioning
+
+      - name: Simulate PR creation (act only)
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          echo "=== PR che verrebbe creata ==="
+          echo "Branch: bump-develop-${{ steps.next.outputs.next_version }}"
+          echo "Base:   develop"
+          echo "Title:  chore: bump develop to ${{ steps.next.outputs.next_version }}"
+          echo "=== pom.xml aggiornato ==="
+          grep "<version>" pom.xml | head -3

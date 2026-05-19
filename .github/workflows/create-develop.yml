@@ -1,0 +1,75 @@
+name: Create develop branch if missing
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create_develop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Restore fake_origin for local act testing
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          git fetch --unshallow
+          git init --bare /tmp/fake_origin.git
+          git remote add fake_origin /tmp/fake_origin.git
+
+      - name: Select remote (origin vs fake_origin)
+        run: |
+          if [ "$ACT" = "true" ]; then
+            echo "REMOTE_NAME=fake_origin" >> $GITHUB_ENV
+          else
+            echo "REMOTE_NAME=origin" >> $GITHUB_ENV
+          fi
+
+      - name: Check if develop exists
+        id: check
+        run: |
+          if git ls-remote --heads $REMOTE_NAME develop | grep develop; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop if develop already exists
+        if: steps.check.outputs.exists == 'true'
+        run: echo "Branch develop already exists. Nothing to do."
+
+      - name: Create develop branch
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git checkout -b develop
+
+      - name: Bump version to next SNAPSHOT
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          BASE_VERSION=$(echo $CURRENT_VERSION | sed 's/-.*//')
+          NEXT_VERSION=$(echo $BASE_VERSION | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')
+          sed -i "s/<version>$CURRENT_VERSION<\/version>/<version>${NEXT_VERSION}-SNAPSHOT<\/version>/" pom.xml
+          echo "Next version: ${NEXT_VERSION}-SNAPSHOT"
+          echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV 
+
+      - name: Show pom.xml result
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          echo "=== pom.xml version ==="
+          grep -A1 "<version>" pom.xml | head -5
+
+      - name: Commit and push develop
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add pom.xml
+          git commit -m "chore: initialize develop with ${NEXT_VERSION}-SNAPSHOT"
+          git push $REMOTE_NAME  develop

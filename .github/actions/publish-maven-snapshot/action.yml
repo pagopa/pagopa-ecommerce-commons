@@ -6,11 +6,16 @@ inputs:
     required: true
     description: The github token used to publish artifact
 
+outputs:
+  snapshot_version:
+    description: "The SNAPSHOT version that was published"
+    value: ${{ steps.get_version.outputs.version }}
+
 runs:
   using: "composite"
   steps:
     - name: Checkout branch
-      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 #v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       with:
         token: ${{ inputs.github_token }}
 
@@ -27,24 +32,38 @@ runs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Set SNAPSHOT version
+    - name: Validate SNAPSHOT version
+      id: get_version
       shell: bash
       run: |
-        RAW=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        BASE=$(echo "$RAW" | sed 's/-SNAPSHOT$//')
-        SNAP="${BASE}-SNAPSHOT"
-        echo "Versione originale: $RAW"
-        echo "Versione snapshot:  $SNAP"
-        mvn versions:set -DnewVersion="$SNAP" -DgenerateBackupPoms=false
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "Version found in pom.xml: $VERSION"
+        if [[ "$VERSION" != *"-SNAPSHOT" ]]; then
+          echo "ERROR: version '$VERSION' is not a SNAPSHOT version"
+          exit 1
+        fi
+        echo "Valid SNAPSHOT version: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Deploy SNAPSHOT to GitHub Package Registry
       shell: bash
       run: |
-        REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+        if [ "$ACT" = "true" ]; then
+          mkdir -p /tmp/local-maven-repo
+          REPO="local::file:///tmp/local-maven-repo"
+        else
+          REPO="github::https://QUESTO-NON-DEVE-MAI-ESSERE-RAGGIUNTO"
+        fi        
         mvn deploy \
           -DaltSnapshotDeploymentRepository="${REPO}" \
           -DskipTests \
-          -Dspotless.check.skip=true \
-          -DskipDeploy=true
+          -Dspotless.check.skip=true
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
+
+    - name: Verify local deploy (act only)
+      if: ${{ env.ACT == 'true' }}
+      shell: bash
+      run: |
+        echo "=== Files deployed locally ==="
+        find /tmp/local-maven-repo -name "*.jar" -o -name "*.pom" | sort

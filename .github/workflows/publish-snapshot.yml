@@ -1,9 +1,9 @@
 name: Publish SNAPSHOT artifact
 
 on:
-  #push:
-   # branches:
-    #  - develop
+  push:
+    branches:
+      - develop
   workflow_dispatch:
 
 permissions:
@@ -12,10 +12,33 @@ permissions:
 
 jobs:
   publish_snapshot:
-    name: Deploy SNAPSHOT to GitHub Packages
+    name: Publish SNAPSHOT
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1
-      - uses: ./.github/actions/publish-maven-snapshot
+      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e
+
+      - name: Publish SNAPSHOT artifact
+        id: publish
+        uses: ./.github/actions/publish-maven-snapshot
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write job summary
+        shell: bash
+        run: |
+          echo "## SNAPSHOT Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** \`${{ steps.publish.outputs.snapshot_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Registry:** \`https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### How to use this SNAPSHOT" >> $GITHUB_STEP_SUMMARY
+          echo "Add this to your \`pom.xml\`:" >> $GITHUB_STEP_SUMMARY
+          echo '```xml' >> $GITHUB_STEP_SUMMARY
+          echo "<dependency>" >> $GITHUB_STEP_SUMMARY
+          echo "    <groupId>it.pagopa</groupId>" >> $GITHUB_STEP_SUMMARY
+          echo "    <artifactId>pagopa-ecommerce-commons</artifactId>" >> $GITHUB_STEP_SUMMARY
+          echo "    <version>${{ steps.publish.outputs.snapshot_version }}</version>" >> $GITHUB_STEP_SUMMARY
+          echo "</dependency>" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

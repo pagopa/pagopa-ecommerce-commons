@@ -10,7 +10,7 @@
     </parent>
     <groupId>it.pagopa</groupId>
     <artifactId>pagopa-ecommerce-commons</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2-SNAPSHOT</version>
     <licenses>
         <license>
             <name>EUPL 1.2 Public License</name>
@@ -30,13 +30,6 @@
         <jacoco.version>0.8.12</jacoco.version>
         <spotless.version>2.27.2</spotless.version>
     </properties>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>github</id>
-            <name>GitHub Packages - Snapshots</name>
-            <url>https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons</url>
-        </snapshotRepository>
-    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -413,7 +406,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>./clients/api-specs/npg.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/clients/api-specs/npg.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <library>webclient</library>
                             <generateApiDocumentation>false</generateApiDocumentation>
