@@ -100,11 +100,11 @@ The workflow includes a step that creates a local bare repository inside the con
 
 ```yaml
 - name: Restore fake_origin for local act testing
-  if: ${{ env.ACT == 'true' }}
-  run: |
-    git fetch --unshallow        # needed to avoid "shallow update not allowed"
-    git init --bare /tmp/fake_origin.git
-    git remote add fake_origin /tmp/fake_origin.git
+if: ${{ env.ACT == 'true' }}
+run: |
+	git fetch --unshallow        # needed to avoid "shallow update not allowed"
+	git init --bare /tmp/fake_origin.git
+	git remote add fake_origin /tmp/fake_origin.git
 ```
 
 > `git fetch --unshallow` is required because `actions/checkout` performs a shallow clone (`--depth=1`) by default, and a bare repository does not accept shallow pushes.
@@ -131,18 +131,18 @@ When running under `act`, the deploy is redirected to a local directory inside t
 
 ```yaml
 - name: Deploy SNAPSHOT to GitHub Package Registry
-  shell: bash
-  run: |
-    if [ "$ACT" = "true" ]; then
-      mkdir -p /tmp/local-maven-repo
-      REPO="local::file:///tmp/local-maven-repo"
-    else
-      REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
-    fi
-    mvn deploy \
-      -DaltSnapshotDeploymentRepository="${REPO}" \
-      -DskipTests \
-      -Dspotless.check.skip=true
+shell: bash
+run: |
+	if [ "$ACT" = "true" ]; then
+	mkdir -p /tmp/local-maven-repo
+	REPO="local::file:///tmp/local-maven-repo"
+	else
+	REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+	fi
+	mvn deploy \
+	-DaltSnapshotDeploymentRepository="${REPO}" \
+	-DskipTests \
+	-Dspotless.check.skip=true
 ```
 
 > The `pom.xml` must contain a `-SNAPSHOT` version before running this workflow locally.
@@ -177,22 +177,22 @@ When running under `act`:
 # PowerShell
 @'
 {
-  "action": "published",
-  "release": {
-    "tag_name": "3.3.1",
-    "name": "3.3.1"
-  }
+"action": "published",
+"release": {
+	"tag_name": "3.3.1",
+	"name": "3.3.1"
+}
 }
 '@ | Out-File -FilePath event-release.json -Encoding utf8
 
 # macOS / Linux
 cat > event-release.json << 'EOF'
 {
-  "action": "published",
-  "release": {
-    "tag_name": "3.3.1",
-    "name": "3.3.1"
-  }
+"action": "published",
+"release": {
+	"tag_name": "3.3.1",
+	"name": "3.3.1"
+}
 }
 EOF
 ```
