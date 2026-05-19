@@ -52,7 +52,7 @@ runs:
           mkdir -p /tmp/local-maven-repo
           REPO="local::file:///tmp/local-maven-repo"
         else
-          REPO="github::https://QUESTO-NON-DEVE-MAI-ESSERE-RAGGIUNTO"
+          REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
         fi        
         mvn deploy \
           -DaltSnapshotDeploymentRepository="${REPO}" \
