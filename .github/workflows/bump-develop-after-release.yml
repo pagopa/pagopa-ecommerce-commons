@@ -79,7 +79,7 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ env.ACT != 'true' }}
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@c1a3f2b9e8d9c8b7d1f0c9a0f7e2e8a5b1c2d3e # v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: bump-develop-${{ steps.next.outputs.next_version }}
