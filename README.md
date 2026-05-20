@@ -26,6 +26,80 @@ tags presence during PR analysis:
 
 For the check to be successfully passed only one of the `Application version` labels labels must be present for a given PR or the `skip-release` for skipping release step
 
+---
+
+## SNAPSHOT versioning strategy
+
+The library uses a **branch-qualified SNAPSHOT** strategy to allow multiple developers to publish and use independent snapshots without overwriting each other.
+
+### How it works
+
+The `pom.xml` always contains the base SNAPSHOT version (e.g. `3.3.2-SNAPSHOT`). The CI pipeline automatically qualifies the version with the branch name **at publish time only** — the `pom.xml` is never modified on the branch.
+
+| Branch                 | Published version                         |
+|------------------------|-------------------------------------------|
+| `develop`              | `3.3.2-SNAPSHOT`                          |
+| `feature/foo`          | `3.3.2-feature-foo-SNAPSHOT`              |
+| `feature/PAGOPA-1234`  | `3.3.2-feature-PAGOPA-1234-SNAPSHOT`      |
+
+### Branch naming convention
+
+To trigger the publish workflow, branches must follow one of these patterns:
+
+| Pattern       | Example                | Triggers publish |
+|---------------|------------------------|------------------|
+| `develop`     | `develop`              | ✅               |
+| `feature/**`  | `feature/PAGOPA-1234`  | ✅               |
+| anything else | `branch-1`, `main`     | ❌               |
+
+### Full release lifecycle
+
+```
+develop (3.3.2-SNAPSHOT)
+    │
+    ├── git checkout -b feature/PAGOPA-1234
+    │       │
+    │       └── push → publishes 3.3.2-feature-PAGOPA-1234-SNAPSHOT
+    │                       │
+    │                       └── microservices use this version for testing
+    │
+    ├── merge feature/PAGOPA-1234 → develop
+    │       │
+    │       └── push → publishes 3.3.2-SNAPSHOT  (official shared snapshot)
+    │
+    └── merge develop → main  (PR with label patch/minor/major)
+            │
+            └── release 3.3.2
+                    │
+                    └── bump-develop → develop bumped to 3.3.3-SNAPSHOT
+```
+
+### How to use a branch snapshot in a microservice
+
+```xml
+<!-- testing a specific branch snapshot -->
+<dependency>
+    <groupId>it.pagopa</groupId>
+    <artifactId>pagopa-ecommerce-commons</artifactId>
+    <version>3.3.2-feature-PAGOPA-1234-SNAPSHOT</version>
+</dependency>
+
+<!-- using the official develop snapshot -->
+<dependency>
+    <groupId>it.pagopa</groupId>
+    <artifactId>pagopa-ecommerce-commons</artifactId>
+    <version>3.3.2-SNAPSHOT</version>
+</dependency>
+```
+
+You can also pass the version from the command line without changing `pom.xml`:
+
+```bash
+mvn spring-boot:run -Dpagopa-ecommerce-commons.version=3.3.2-feature-PAGOPA-1234-SNAPSHOT
+```
+
+---
+
 # Local testing of GitHub Actions workflows
 
 This repository supports local testing of GitHub Actions workflows using [act](https://github.com/nektos/act).
@@ -46,6 +120,15 @@ curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo ba
 
 # Windows (PowerShell)
 winget install nektos.act
+```
+
+### Install and start Docker
+
+`act` requires Docker to run. Make sure Docker Desktop is running before executing any `act` command.
+
+```bash
+# verify Docker is up
+docker info
 ```
 
 ### Initial configuration
@@ -80,13 +163,13 @@ event-release.json
 When running under `act`, the environment variable `ACT=true` is automatically set.
 Each workflow uses this variable to redirect operations that would otherwise touch the real GitHub repository:
 
-| Operation | On GitHub | Under act |
-|---|---|---|
-| `git push` | pushes to `origin` (GitHub) | pushes to `/tmp/fake_origin.git` (container) |
-| Maven deploy | publishes to GitHub Packages | deploys to `/tmp/local-maven-repo` (container) |
-| Create PR | opens a real PR on GitHub | prints a summary to the log |
+| Operation    | On GitHub                         | Under act                                    |
+|--------------|-----------------------------------|----------------------------------------------|
+| `git push`   | pushes to `origin` (GitHub)       | pushes to `/tmp/fake_origin.git` (container) |
+| Maven deploy | publishes to GitHub Packages      | deploys to `/tmp/local-maven-repo` (container) |
+| Create PR    | opens a real PR on GitHub         | prints a summary to the log                  |
 
-#### Important: `actions/checkout` reinitializes the git repository inside the Docker container at every run, wiping all remotes configured on the host. For this reason, `fake_origin` is **not** configured on the host machine — it is created inside the container by a dedicated workflow step.
+> `actions/checkout` reinitializes the git repository inside the Docker container at every run, wiping all remotes configured on the host. For this reason, `fake_origin` is **not** configured on the host machine — it is created inside the container by a dedicated workflow step.
 
 ---
 
@@ -94,17 +177,21 @@ Each workflow uses this variable to redirect operations that would otherwise tou
 
 ### 1. Create develop branch (`create-develop.yml`)
 
-Creates the `develop` branch from `main`, bumps the version to the next `-SNAPSHOT`, and pushes it.
+Creates the `develop` branch from `main`, bumps the patch version to the next `-SNAPSHOT`, and pushes it.
+
+```
+main: 3.3.1  →  develop: 3.3.2-SNAPSHOT
+```
 
 The workflow includes a step that creates a local bare repository inside the container to safely replace the real `origin`:
 
 ```yaml
 - name: Restore fake_origin for local act testing
-if: ${{ env.ACT == 'true' }}
-run: |
-	git fetch --unshallow        # needed to avoid "shallow update not allowed"
-	git init --bare /tmp/fake_origin.git
-	git remote add fake_origin /tmp/fake_origin.git
+  if: ${{ env.ACT == 'true' }}
+  run: |
+    git fetch --unshallow        # needed to avoid "shallow update not allowed"
+    git init --bare /tmp/fake_origin.git
+    git remote add fake_origin /tmp/fake_origin.git
 ```
 
 > `git fetch --unshallow` is required because `actions/checkout` performs a shallow clone (`--depth=1`) by default, and a bare repository does not accept shallow pushes.
@@ -127,26 +214,31 @@ This will:
 
 Builds and publishes the Maven SNAPSHOT artifact to GitHub Packages.
 
+Triggered automatically on push to:
+- `develop` → publishes `3.3.2-SNAPSHOT`
+- `feature/**` → publishes `3.3.2-feature-<branch-name>-SNAPSHOT`
+
+The branch name qualification happens **only inside the CI runner** — the `pom.xml` on the branch is never modified.
+
 When running under `act`, the deploy is redirected to a local directory inside the container:
 
 ```yaml
 - name: Deploy SNAPSHOT to GitHub Package Registry
-shell: bash
-run: |
-	if [ "$ACT" = "true" ]; then
-	mkdir -p /tmp/local-maven-repo
-	REPO="local::file:///tmp/local-maven-repo"
-	else
-	REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
-	fi
-	mvn deploy \
-	-DaltSnapshotDeploymentRepository="${REPO}" \
-	-DskipTests \
-	-Dspotless.check.skip=true
+  shell: bash
+  run: |
+    if [ "$ACT" = "true" ]; then
+      mkdir -p /tmp/local-maven-repo
+      REPO="local::file:///tmp/local-maven-repo"
+    else
+      REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+    fi
+    mvn deploy \
+      -DaltSnapshotDeploymentRepository="${REPO}" \
+      -DskipTests \
+      -Dspotless.check.skip=true
 ```
 
 > The `pom.xml` must contain a `-SNAPSHOT` version before running this workflow locally.
-> Since the `develop` branch does not exist on GitHub, the `pom.xml` in the working directory is used directly.
 > The current `pom.xml` already contains `3.3.2-SNAPSHOT` so no manual changes are needed.
 
 **Run locally:**
@@ -157,14 +249,19 @@ act workflow_dispatch -W .github/workflows/publish-snapshot.yml
 
 This will:
 - validate that the version in `pom.xml` ends with `-SNAPSHOT`
+- compute the branch-qualified version (e.g. `3.3.2-feature-PAGOPA-1234-SNAPSHOT`)
 - deploy the artifact to `/tmp/local-maven-repo` inside the container
 - never publish anything to GitHub Packages
 
 ---
 
-### 3. Bump develop after release (`bump-develop.yml`)
+### 3. Bump develop after release (`bump-develop-after-release.yml`)
 
 Triggered when a release is published on GitHub. Computes the next SNAPSHOT version, updates `pom.xml` on a new branch, and opens a Pull Request toward `develop`.
+
+```
+release 3.3.2  →  bump-develop PR  →  develop: 3.3.3-SNAPSHOT
+```
 
 When running under `act`:
 - `git push` is redirected to `/tmp/fake_origin.git`
@@ -177,22 +274,22 @@ When running under `act`:
 # PowerShell
 @'
 {
-"action": "published",
-"release": {
-	"tag_name": "3.3.1",
-	"name": "3.3.1"
-}
+  "action": "published",
+  "release": {
+    "tag_name": "3.3.1",
+    "name": "3.3.1"
+  }
 }
 '@ | Out-File -FilePath event-release.json -Encoding utf8
 
 # macOS / Linux
 cat > event-release.json << 'EOF'
 {
-"action": "published",
-"release": {
-	"tag_name": "3.3.1",
-	"name": "3.3.1"
-}
+  "action": "published",
+  "release": {
+    "tag_name": "3.3.1",
+    "name": "3.3.1"
+  }
 }
 EOF
 ```
@@ -200,11 +297,11 @@ EOF
 **Run locally:**
 
 ```bash
-act release -W .github/workflows/bump-develop.yml --eventpath event-release.json
+act release -W .github/workflows/bump-develop-after-release.yml --eventpath event-release.json
 ```
 
 This will:
-- read the current version from `pom.xml` on `main`
+- read the current version from `pom.xml` on `main` (stripping `-SNAPSHOT` if present)
 - compute the next SNAPSHOT version
 - update `pom.xml` on a new branch `bump-develop-<version>`
 - push to `/tmp/fake_origin.git` instead of GitHub

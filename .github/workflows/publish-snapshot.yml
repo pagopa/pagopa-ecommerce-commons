@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - 'feature/**'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4.3.1
 
       - name: Publish SNAPSHOT artifact
         id: publish

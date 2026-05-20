@@ -5,11 +5,15 @@ inputs:
   github_token:
     required: true
     description: The github token used to publish artifact
+  branch_name:
+    required: false
+    description: "Branch name override (optional, defaults to GITHUB_REF)"
+    default: ""
 
 outputs:
   snapshot_version:
     description: "The SNAPSHOT version that was published"
-    value: ${{ steps.get_version.outputs.version }}
+    value: ${{ steps.branch_version.outputs.final_version }}
 
 runs:
   using: "composite"
@@ -44,6 +48,37 @@ runs:
         fi
         echo "Valid SNAPSHOT version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Set branch-qualified SNAPSHOT version
+      id: branch_version
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.branch_name }}" ]; then
+          RAW_BRANCH="${{ inputs.branch_name }}"
+        else
+          RAW_BRANCH="${GITHUB_REF#refs/heads/}"
+        fi
+        
+        if [ "$RAW_BRANCH" = "develop" ]; then
+          FINAL_VERSION="${{ steps.get_version.outputs.version }}"
+          echo "Branch develop: keeping original version  $FINAL_VERSION"
+        else
+          BRANCH=$(echo "$RAW_BRANCH" \
+            | sed 's/[^a-zA-Z0-9]/-/g' \
+            | tr '[:upper:]' '[:lower:]')
+        
+          BASE=$(echo "${{ steps.get_version.outputs.version }}" \
+            | sed 's/-SNAPSHOT//')
+        
+          FINAL_VERSION="${BASE}-${BRANCH}-SNAPSHOT"
+          echo "Feature branch: qualified version → $FINAL_VERSION"
+        
+          mvn versions:set \
+            -DnewVersion="$FINAL_VERSION" \
+            -DgenerateBackupPoms=false
+        fi
+        
+        echo "final_version=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
     - name: Deploy SNAPSHOT to GitHub Package Registry
       shell: bash

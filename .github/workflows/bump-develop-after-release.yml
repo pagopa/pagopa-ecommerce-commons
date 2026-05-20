@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4.3.1
         with:
           ref: main
 
@@ -36,8 +36,10 @@ jobs:
       - name: Extract released version
         id: version
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          RAW_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(echo "$RAW_VERSION" | sed 's/-SNAPSHOT//')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Released version: $VERSION"
 
       - name: Compute next SNAPSHOT version
         id: next
@@ -46,16 +48,13 @@ jobs:
           NEXT_PATCH=$((PATCH + 1))
           NEXT_VERSION="$MAJOR.$MINOR.$NEXT_PATCH-SNAPSHOT"
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "Next version: $NEXT_VERSION"          
 
       - name: Checkout develop
         if: ${{ env.ACT != 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           ref: develop
-
-      - name: Update pom.xml to next SNAPSHOT
-        run: |
-          mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
 
       - name: Simulate develop checkout (act only)
         if: ${{ env.ACT == 'true' }}
@@ -64,7 +63,9 @@ jobs:
 
       - name: Update pom.xml to next SNAPSHOT
         run: |
-          mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
+          mvn versions:set \
+              -DnewVersion=${{ steps.next.outputs.next_version }} \
+              -DgenerateBackupPoms=false
 
       - name: Commit changes
         run: |

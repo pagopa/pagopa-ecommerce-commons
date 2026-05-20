@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 #v4.3.1
         with:
           ref: main
 
@@ -55,9 +55,8 @@ jobs:
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           BASE_VERSION=$(echo $CURRENT_VERSION | sed 's/-.*//')
           NEXT_VERSION=$(echo $BASE_VERSION | awk -F. '{printf "%d.%d.%d", $1, $2, $3+1}')
-          sed -i "s/<version>$CURRENT_VERSION<\/version>/<version>${NEXT_VERSION}-SNAPSHOT<\/version>/" pom.xml
-          echo "Next version: ${NEXT_VERSION}-SNAPSHOT"
-          echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV 
+          mvn versions:set -DnewVersion="${NEXT_VERSION}-SNAPSHOT" -DgenerateBackupPoms=false
+          echo "NEXT_VERSION=${NEXT_VERSION}-SNAPSHOT" >> $GITHUB_ENV
 
       - name: Show pom.xml result
         if: steps.check.outputs.exists == 'false'
