@@ -8,10 +8,6 @@ on:
       - synchronize
       - closed
 
-permissions:
-  packages: write
-  pull-requests: write
-
 jobs:
   publish_snapshot:
     name: Publish snapshot
