@@ -32,32 +32,27 @@ runs:
       run: |
         CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "Current version: ${CURRENT_VERSION}"
-
-        MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
-        MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
-        PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
-
-        NEXT_PATCH=$((PATCH + 1))
-
-        BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g')
-
-        SNAPSHOT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-${BRANCH}-SNAPSHOT"
+        BRANCH=$(echo "${{ inputs.branch_name }}" | sed 's/[^a-zA-Z0-9-]/-/g')        
+        COMMIT_ID=$(git rev-parse --short HEAD)
+        PREFIX_VERSION="${CURRENT_VERSION}-${BRANCH}-SNAPSHOT"
+        SNAPSHOT_VERSION="${PREFIX_VERSION}-${COMMIT_ID}"        
         echo "Snapshot version: ${SNAPSHOT_VERSION}"
+        echo "PREFIX_VERSION=${PREFIX_VERSION}" >> $GITHUB_ENV
         echo "SNAPSHOT_VERSION=${SNAPSHOT_VERSION}" >> $GITHUB_ENV
     - name: Delete existing snapshot version
       uses: actions/github-script@d556feaca394842dc55e4734bf3bb9f685482fa0
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          const snapshotVersion = process.env.SNAPSHOT_VERSION;
-          core.info(`Looking for existing version: ${snapshotVersion}`);
+          const snapshotVersionDelete = process.env.PREFIX_VERSION;
+          core.info(`Looking for existing version: ${snapshotVersionDelete}`);
           try {
             const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
               package_type: 'maven',
               package_name: 'pagopa-ecommerce-commons',
               org: context.repo.owner
             });
-            const toDelete = versions.data.filter(v => v.name === snapshotVersion);
+            const toDelete = versions.data.filter(v => v.name.startsWith(snapshotVersionDelete));
             core.info(`Found ${toDelete.length} versions to delete`);
             for (const version of toDelete) {
               core.info(`Deleting: ${version.name} (${version.id})`);
