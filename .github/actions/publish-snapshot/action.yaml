@@ -60,7 +60,11 @@ runs:
     - name: Deploy snapshot to GitHub Package Registry
       shell: bash
       run: |
-        REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
-        mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
+        if [ "$ACT" = "true" ]; then
+          echo "Skipping deploy in local environment (ACT=true)"
+        else
+          REPO="github::https://maven.pkg.github.com/pagopa/pagopa-ecommerce-commons"
+          mvn deploy -DaltReleaseDeploymentRepository="${REPO}"
+        fi
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}

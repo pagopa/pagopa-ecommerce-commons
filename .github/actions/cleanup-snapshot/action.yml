@@ -22,7 +22,14 @@ runs:
         PREFIX_VERSION="${CURRENT_VERSION}-${BRANCH}-SNAPSHOT"
         echo "PREFIX_VERSION=${PREFIX_VERSION}" >> $GITHUB_ENV
 
+    - name: Skip delete in local environment
+      if: ${{ env.ACT == 'true' }}
+      shell: bash
+      run: |
+        echo "Skipping delete in local environment (ACT=true)"
+    
     - name: Delete snapshot package versions
+      if: ${{ env.ACT != 'true' }}
       uses: actions/github-script@d556feaca394842dc55e4734bf3bb9f685482fa0
       with:
         github-token: ${{ inputs.github_token }}
