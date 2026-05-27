@@ -1,0 +1,51 @@
+name: Cleanup snapshot maven artifacts
+description: "Delete snapshot maven artifacts from github packages"
+
+inputs:
+  github_token:
+    required: true
+    description: The github token used to delete artifact
+  branch_name:
+    required: true
+    description: The branch name used to identify snapshot version to delete
+
+runs:
+  using: "composite"
+  steps:
+    - name: Compute snapshot version to delete
+      shell: bash
+      env:
+        BRANCH_NAME: ${{ inputs.branch_name }}
+      run: |
+        CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        BRANCH=$(echo "${BRANCH_NAME}" | sed 's/[^a-zA-Z0-9-]/-/g')
+        PREFIX_VERSION="${CURRENT_VERSION}-${BRANCH}-SNAPSHOT"
+        echo "PREFIX_VERSION=${PREFIX_VERSION}" >> $GITHUB_ENV
+
+    - name: Delete snapshot package versions
+      uses: actions/github-script@d556feaca394842dc55e4734bf3bb9f685482fa0
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const snapshotVersionDelete = process.env.PREFIX_VERSION;
+          core.info(`Deleting snapshot: ${snapshotVersionDelete}`);
+          try {
+            const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
+              package_type: 'maven',
+              package_name: 'pagopa-ecommerce-commons',
+              org: context.repo.owner
+            });
+            const toDelete = versions.data.filter(v => v.name.startsWith(snapshotVersionDelete));
+            core.info(`Found ${toDelete.length} versions to delete`);
+            for (const version of toDelete) {
+              core.info(`Deleting: ${version.name} (${version.id})`);
+              await github.rest.packages.deletePackageVersionForOrg({
+                package_type: 'maven',
+                package_name: 'pagopa-ecommerce-commons',
+                org: context.repo.owner,
+                package_version_id: version.id
+              });
+            }
+          } catch (e) {
+            core.info(`No versions found, skipping: ${e.message}`);
+          }

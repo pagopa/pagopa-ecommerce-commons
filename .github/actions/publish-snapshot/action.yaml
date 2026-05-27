@@ -12,6 +12,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Guard against main branch
+      if: ${{ inputs.branch_name == 'main' }}
+      shell: bash
+      run: |
+        echo "::error::This action must not run on main branch"
+        exit 1
     - name: Checkout branch
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
       with:
@@ -43,32 +49,10 @@ runs:
         echo "SNAPSHOT_VERSION=${SNAPSHOT_VERSION}" >> $GITHUB_ENV
 
     - name: Delete existing snapshot version
-      uses: actions/github-script@d556feaca394842dc55e4734bf3bb9f685482fa0
+      uses: ./.github/actions/cleanup-snapshot
       with:
-        github-token: ${{ inputs.github_token }}
-        script: |
-          const snapshotVersionDelete = process.env.PREFIX_VERSION;
-          core.info(`Looking for existing version: ${snapshotVersionDelete}`);
-          try {
-            const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
-              package_type: 'maven',
-              package_name: 'pagopa-ecommerce-commons',
-              org: context.repo.owner
-            });
-            const toDelete = versions.data.filter(v => v.name.startsWith(snapshotVersionDelete));
-            core.info(`Found ${toDelete.length} versions to delete`);
-            for (const version of toDelete) {
-              core.info(`Deleting: ${version.name} (${version.id})`);
-              await github.rest.packages.deletePackageVersionForOrg({
-                package_type: 'maven',
-                package_name: 'pagopa-ecommerce-commons',
-                org: context.repo.owner,
-                package_version_id: version.id
-              });
-            }
-          } catch (e) {
-            core.info(`No existing versions found, skipping delete: ${e.message}`);
-          }
+        github_token: ${{ inputs.github_token }}
+        branch_name: ${{ inputs.branch_name }}
     - name: Set maven snapshot version
       shell: bash
       run: |
