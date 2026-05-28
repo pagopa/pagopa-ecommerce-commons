@@ -43,7 +43,7 @@ runs:
           try {
             const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
               package_type: 'maven',
-              package_name: 'pagopa-ecommerce-commons',
+              package_name: 'it.pagopa.pagopa-ecommerce-commons',
               org: context.repo.owner
             });
             const toDelete = versions.data.filter(v => v.name.startsWith(snapshotVersionDelete)  && v.name.includes("SNAPSHOT"));
@@ -52,7 +52,7 @@ runs:
               core.info(`Deleting: ${version.name} (${version.id})`);
               await github.rest.packages.deletePackageVersionForOrg({
                 package_type: 'maven',
-                package_name: 'pagopa-ecommerce-commons',
+                package_name: 'it.pagopa.pagopa-ecommerce-commons',
                 org: context.repo.owner,
                 package_version_id: version.id
               });
