@@ -1,0 +1,39 @@
+name: Publish snapshot on Github artifacts
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types:
+      - opened
+      - synchronize
+      - closed
+
+jobs:
+  publish_snapshot:
+    name: Publish snapshot
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
+    permissions:
+      packages: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+      - uses: ./.github/actions/publish-snapshot
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch_name: ${{ github.head_ref }}
+
+  cleanup_snapshot:
+    name: Delete snapshot on PR close
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed'
+    permissions:
+      packages: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ./.github/actions/cleanup-snapshot
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch_name: ${{ github.head_ref }}
