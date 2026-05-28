@@ -59,7 +59,7 @@ runs:
             }
           } catch (e) {
               if (e.status === 404) {
-                  core.info(`No existing snapshot found for ${snapshotVersionDelete}, skipping delete`);
+                  core.info(`Error : No existing snapshot found for ${snapshotVersionDelete}, skipping delete`);
               } else {
                 core.warning(`Unexpected error during delete: ${e.message}`);
               }
