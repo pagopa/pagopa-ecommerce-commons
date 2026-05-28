@@ -20,10 +20,6 @@ runs:
         CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         BRANCH=$(echo "${BRANCH_NAME}" | sed 's/[^a-zA-Z0-9-]/-/g')
         PREFIX_VERSION="${CURRENT_VERSION}-${BRANCH}-SNAPSHOT"
-        if [[ "${PREFIX_VERSION}" != *"SNAPSHOT"* ]]; then
-          echo "::error::PREFIX_VERSION does not contain SNAPSHOT, aborting delete"
-          exit 1
-        fi
         echo "PREFIX_VERSION=${PREFIX_VERSION}" >> $GITHUB_ENV
 
     - name: Skip delete in local environment
