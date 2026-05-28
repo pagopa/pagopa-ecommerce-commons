@@ -58,5 +58,9 @@ runs:
               });
             }
           } catch (e) {
-            core.info(`No versions found, skipping: ${e.message}`);
+              if (e.status === 404) {
+                  core.info(`No existing snapshot found for ${snapshotVersionDelete}, skipping delete`);
+              } else {
+                core.warning(`Unexpected error during delete: ${e.message}`);
+              }
           }
