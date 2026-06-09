@@ -53,18 +53,18 @@ public class RedirectUrlMappingConf {
             List<Map<String, String>> expectedMatchingCriteria = objectMapper
                     .readValue(expectedMatchingCriteriaJsonValue, new TypeReference<>() {
                     });
-            expectedMatchingCriteria.forEach(matchingCriteria -> {
-                getRedirectUrlForCriteria(matchingCriteria)
-                        .fold(error -> {
-                            throw new RedirectConfigurationException(
-                                    "Redirect url configuration does not match expected criteria: %s"
-                                            .formatted(error.getMessage()),
-                                    RedirectConfigurationType.BACKEND_URLS
-                            );
-                        },
-                                Function.identity()
-                        );
-            });
+            expectedMatchingCriteria.forEach(
+                    matchingCriteria -> getRedirectUrlForCriteria(matchingCriteria)
+                            .fold(error -> {
+                                throw new RedirectConfigurationException(
+                                        "Redirect url configuration does not match expected criteria: %s"
+                                                .formatted(error.getMessage()),
+                                        RedirectConfigurationType.BACKEND_URLS
+                                );
+                            },
+                                    Function.identity()
+                            )
+            );
         } catch (JacksonException e) {
             throw new RedirectConfigurationException(
                     "Invalid redirect url configuration: error parsing json values",
