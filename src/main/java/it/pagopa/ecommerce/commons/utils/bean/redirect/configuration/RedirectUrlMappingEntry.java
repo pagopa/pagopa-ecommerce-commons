@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.utils.bean.redirect.configuration;
 
 import java.net.URI;
+import java.util.Map;
 
 /**
  * Redirect url configuration entry
@@ -10,8 +11,6 @@ import java.net.URI;
  */
 public record RedirectUrlMappingEntry(
         URI url,
-        MatchingCriteria matchingCriteria
+        Map<String, String> matchingCriteria
 ) {
 }
-
-
