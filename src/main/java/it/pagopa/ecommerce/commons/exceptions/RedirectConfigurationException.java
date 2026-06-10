@@ -11,14 +11,35 @@ public class RedirectConfigurationException extends RuntimeException {
      *
      * @param errorCause        error cause description
      * @param configurationType configuration type
+     * @param cause             cause
+     */
+    public RedirectConfigurationException(
+            String errorCause,
+            RedirectConfigurationType configurationType,
+            Throwable cause
+    ) {
+        super(
+                "Error parsing Redirect PSP %s configuration, cause: %s"
+                        .formatted(configurationType, errorCause),
+                cause
+        );
+    }
+
+    /**
+     * Constructor
+     *
+     * @param errorCause        error cause description
+     * @param configurationType configuration type
      */
     public RedirectConfigurationException(
             String errorCause,
             RedirectConfigurationType configurationType
     ) {
-        super(
-                "Error parsing Redirect PSP %s configuration, cause: %s"
-                        .formatted(configurationType, errorCause)
+        this(
+                errorCause,
+                configurationType,
+                null
         );
     }
+
 }

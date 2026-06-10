@@ -2,6 +2,7 @@ package it.pagopa.ecommerce.commons.utils;
 
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.exceptions.RedirectConfigurationException;
+import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingCriteria;
 import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingEntry;
 import org.junit.jupiter.api.Test;
 
@@ -16,25 +17,25 @@ public class RedirectUrlMappingConfTest {
                 {
                     "url": "http://localhost/psp1",
                     "matchingCriteria": {
-                        "paymentTypeCode": "paymentTypeCode1",
-                        "multiMatchKey": "noMatch"
+                        "PAYMENT_TYPE_CODE": "paymentTypeCode1",
+                        "PSP_CHANNEL_ID": "noMatch"
                     }
                 },
                 {
                     "url": "http://localhost/psp2",
                     "matchingCriteria": {
-                        "paymentTypeCode": "paymentTypeCode2",
-                        "pspId": "pspId2",
-                        "multiMatchKey": "multiMatchKey"
+                        "PAYMENT_TYPE_CODE": "paymentTypeCode2",
+                        "PSP_ID": "pspId2",
+                        "PSP_CHANNEL_ID": "multiMatchKey"
                     }
                 },
                 {
                     "url": "http://localhost/psp3",
                     "matchingCriteria": {
-                        "pspId": "pspId3",
-                        "touchpoint": "touchpoint3",
-                        "paymentTypeCode": "paymentTypeCode3",
-                        "multiMatchKey": "multiMatchKey"
+                        "PSP_ID": "pspId3",
+                        "TOUCHPOINT": "touchpoint3",
+                        "PAYMENT_TYPE_CODE": "paymentTypeCode3",
+                        "PSP_CHANNEL_ID": "multiMatchKey"
                     }
                 }
             ]
@@ -43,16 +44,16 @@ public class RedirectUrlMappingConfTest {
     private final String expectedMatchingCriteria = """
             [
                 {
-                    "paymentTypeCode": "paymentTypeCode1"
+                    "PAYMENT_TYPE_CODE": "paymentTypeCode1"
                 },
                 {
-                    "paymentTypeCode": "paymentTypeCode2",
-                    "pspId": "pspId2"
+                    "PAYMENT_TYPE_CODE": "paymentTypeCode2",
+                    "PSP_ID": "pspId2"
                 },
                 {
-                    "pspId": "pspId3",
-                    "touchpoint": "touchpoint3",
-                    "paymentTypeCode": "paymentTypeCode3"
+                    "PSP_ID": "pspId3",
+                    "TOUCHPOINT": "touchpoint3",
+                    "PAYMENT_TYPE_CODE": "paymentTypeCode3"
                 }
             ]
             """;
@@ -86,14 +87,14 @@ public class RedirectUrlMappingConfTest {
                         """
                                 [
                                     {
-                                        "paymentTypeCode": "missing"
+                                        "PAYMENT_TYPE_CODE": "missing"
                                     }
                                 ]
                                 """
                 )
         );
         assertEquals(
-                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Redirect url configuration does not match expected criteria: Error parsing Redirect PSP BACKEND_URLS configuration, cause: No configuration found for the provided matching criteria: {paymentTypeCode=missing}",
+                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Redirect url configuration does not match expected criteria: Error parsing Redirect PSP BACKEND_URLS configuration, cause: No configuration found for the provided matching criteria: {PAYMENT_TYPE_CODE=missing}",
                 exception.getMessage()
         );
     }
@@ -101,7 +102,7 @@ public class RedirectUrlMappingConfTest {
     @Test
     public void shouldLoadConfigurationSuccessfully() {
         RedirectUrlMappingEntry entry = redirectUrlMappingConf
-                .getRedirectUrlForCriteria(Map.of("paymentTypeCode", "paymentTypeCode1"))
+                .getRedirectUrlForCriteria(Map.of(RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE, "paymentTypeCode1"))
                 .get();
         assertEquals("http://localhost/psp1", entry.url().toString());
     }
@@ -109,12 +110,12 @@ public class RedirectUrlMappingConfTest {
     @Test
     public void shouldFetchConfigurationForPartialMatching() {
         RedirectUrlMappingEntry entry = redirectUrlMappingConf
-                .getRedirectUrlForCriteria(Map.of("paymentTypeCode", "paymentTypeCode1"))
+                .getRedirectUrlForCriteria(Map.of(RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE, "paymentTypeCode1"))
                 .get();
         assertEquals("http://localhost/psp1", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode2"
                 )
         )
@@ -122,9 +123,9 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp2", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode2",
-                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_ID,
                         "pspId2"
                 )
         )
@@ -132,7 +133,7 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp2", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode3"
                 )
         )
@@ -140,9 +141,9 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp3", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode3",
-                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_ID,
                         "pspId3"
                 )
         )
@@ -150,11 +151,11 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp3", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode3",
-                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_ID,
                         "pspId3",
-                        "touchpoint",
+                        RedirectUrlMappingCriteria.TOUCHPOINT,
                         "touchpoint3"
                 )
         )
@@ -166,9 +167,9 @@ public class RedirectUrlMappingConfTest {
     public void shouldFetchConfigurationForFullCriteriaMatching() {
         RedirectUrlMappingEntry entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode1",
-                        "duplicatedKey",
+                        RedirectUrlMappingCriteria.TOUCHPOINT,
                         "test"
                 )
         )
@@ -176,11 +177,11 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp1", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode2",
-                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_ID,
                         "pspId2",
-                        "duplicatedKey",
+                        RedirectUrlMappingCriteria.TOUCHPOINT,
                         "test"
                 )
         )
@@ -188,11 +189,11 @@ public class RedirectUrlMappingConfTest {
         assertEquals("http://localhost/psp2", entry.url().toString());
         entry = redirectUrlMappingConf.getRedirectUrlForCriteria(
                 Map.of(
-                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                         "paymentTypeCode3",
-                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_ID,
                         "pspId3",
-                        "touchpoint",
+                        RedirectUrlMappingCriteria.TOUCHPOINT,
                         "touchpoint3"
                 )
         )
@@ -205,13 +206,13 @@ public class RedirectUrlMappingConfTest {
         Either<RedirectConfigurationException, RedirectUrlMappingEntry> entry = redirectUrlMappingConf
                 .getRedirectUrlForCriteria(
                         Map.of(
-                                "paymentTypeCode",
+                                RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
                                 "noMatch"
                         )
                 );
         assertTrue(entry.isLeft());
         assertEquals(
-                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: No configuration found for the provided matching criteria: {paymentTypeCode=noMatch}",
+                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: No configuration found for the provided matching criteria: {PAYMENT_TYPE_CODE=noMatch}",
                 entry.getLeft().getMessage()
         );
     }
@@ -222,13 +223,13 @@ public class RedirectUrlMappingConfTest {
         Either<RedirectConfigurationException, RedirectUrlMappingEntry> entry = redirectUrlMappingConf
                 .getRedirectUrlForCriteria(
                         Map.of(
-                                "multiMatchKey",
+                                RedirectUrlMappingCriteria.PSP_CHANNEL_ID,
                                 "multiMatchKey"
                         )
                 );
         assertTrue(entry.isLeft());
         assertEquals(
-                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Multiple configurations found: [RedirectUrlMappingEntry[url=http://localhost/psp2, matchingCriteria={paymentTypeCode=paymentTypeCode2, pspId=pspId2, multiMatchKey=multiMatchKey}], RedirectUrlMappingEntry[url=http://localhost/psp3, matchingCriteria={pspId=pspId3, touchpoint=touchpoint3, paymentTypeCode=paymentTypeCode3, multiMatchKey=multiMatchKey}]] for the provided matching criteria: {multiMatchKey=multiMatchKey}",
+                "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Multiple configurations found: [RedirectUrlMappingEntry[url=http://localhost/psp2, matchingCriteria={PAYMENT_TYPE_CODE=paymentTypeCode2, PSP_ID=pspId2, PSP_CHANNEL_ID=multiMatchKey}], RedirectUrlMappingEntry[url=http://localhost/psp3, matchingCriteria={PAYMENT_TYPE_CODE=paymentTypeCode3, PSP_ID=pspId3, TOUCHPOINT=touchpoint3, PSP_CHANNEL_ID=multiMatchKey}]] for the provided matching criteria: {PSP_CHANNEL_ID=multiMatchKey}",
                 entry.getLeft().getMessage()
         );
     }

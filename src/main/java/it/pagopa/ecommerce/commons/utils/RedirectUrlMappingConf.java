@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Either;
 import it.pagopa.ecommerce.commons.exceptions.RedirectConfigurationException;
 import it.pagopa.ecommerce.commons.exceptions.RedirectConfigurationType;
+import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingCriteria;
 import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingEntry;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class RedirectUrlMappingConf {
         // configure object mapper for deserialization
         objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, true)
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
-                .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
                 .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
+
     }
 
     /**
@@ -50,7 +51,7 @@ public class RedirectUrlMappingConf {
         try {
             urlConfiguration = objectMapper.readValue(urlConfigurationJsonValue, new TypeReference<>() {
             });
-            List<Map<String, String>> expectedMatchingCriteria = objectMapper
+            List<Map<RedirectUrlMappingCriteria, String>> expectedMatchingCriteria = objectMapper
                     .readValue(expectedMatchingCriteriaJsonValue, new TypeReference<>() {
                     });
             expectedMatchingCriteria.forEach(
@@ -68,7 +69,8 @@ public class RedirectUrlMappingConf {
         } catch (JacksonException e) {
             throw new RedirectConfigurationException(
                     "Invalid redirect url configuration: error parsing json values",
-                    RedirectConfigurationType.BACKEND_URLS
+                    RedirectConfigurationType.BACKEND_URLS,
+                    e
             );
         }
 
@@ -82,7 +84,7 @@ public class RedirectUrlMappingConf {
      *         missing/ambiguous search result
      */
     public Either<RedirectConfigurationException, RedirectUrlMappingEntry> getRedirectUrlForCriteria(
-                                                                                                     Map<String, String> matchingCriteria
+                                                                                                     Map<RedirectUrlMappingCriteria, String> matchingCriteria
     ) {
         List<RedirectUrlMappingEntry> entries = urlConfiguration.stream()
                 .filter(
