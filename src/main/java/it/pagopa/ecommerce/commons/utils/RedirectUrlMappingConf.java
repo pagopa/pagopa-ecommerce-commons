@@ -10,9 +10,9 @@ import it.pagopa.ecommerce.commons.exceptions.RedirectConfigurationType;
 import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingCriteria;
 import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrlMappingEntry;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -88,7 +88,7 @@ public class RedirectUrlMappingConf {
     public Either<RedirectConfigurationException, RedirectUrlMappingEntry> getRedirectUrlForCriteria(
                                                                                                      Map<RedirectUrlMappingCriteria, String> searchCriteria
     ) {
-        Map<Integer, List<RedirectUrlMappingEntry>> rankedConfMatches = urlConfiguration.stream()
+        TreeMap<Integer, List<RedirectUrlMappingEntry>> rankedConfMatches = urlConfiguration.stream()
                 .filter(
                         confEntry -> searchCriteria.entrySet().stream()
                                 .allMatch(
@@ -113,11 +113,13 @@ public class RedirectUrlMappingConf {
                                         }
                                     }
                                     return matchingCriteriaCount;
-                                }
+                                },
+                                TreeMap::new,
+                                Collectors.toList()
                         )
                 );
         List<RedirectUrlMappingEntry> entries = rankedConfMatches.isEmpty() ? List.of()
-                : rankedConfMatches.get(Collections.max(rankedConfMatches.keySet()));
+                : rankedConfMatches.get(rankedConfMatches.lastKey());
         if (entries.size() != 1) {
             String errorMessageHeader = entries.isEmpty() ? "No configuration found"
                     : "Multiple configurations found: %s".formatted(entries);
