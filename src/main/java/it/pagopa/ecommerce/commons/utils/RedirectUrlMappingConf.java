@@ -12,7 +12,9 @@ import it.pagopa.ecommerce.commons.utils.bean.redirect.configuration.RedirectUrl
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Class used to handle redirect payment methods url configuration and search
@@ -79,16 +81,16 @@ public class RedirectUrlMappingConf {
     /**
      * Retrieve url configuration that matches input search criteria
      *
-     * @param matchingCriteria - the search matching criteria
+     * @param searchCriteria - the search matching criteria
      * @return Either the fetched configuration or error in case of
      *         missing/ambiguous search result
      */
     public Either<RedirectConfigurationException, RedirectUrlMappingEntry> getRedirectUrlForCriteria(
-                                                                                                     Map<RedirectUrlMappingCriteria, String> matchingCriteria
+                                                                                                     Map<RedirectUrlMappingCriteria, String> searchCriteria
     ) {
-        List<RedirectUrlMappingEntry> entries = urlConfiguration.stream()
+        TreeMap<Integer, List<RedirectUrlMappingEntry>> rankedConfMatches = urlConfiguration.stream()
                 .filter(
-                        confEntry -> matchingCriteria.entrySet().stream()
+                        confEntry -> searchCriteria.entrySet().stream()
                                 .allMatch(
                                         entry -> confEntry
                                                 .matchingCriteria()
@@ -98,17 +100,34 @@ public class RedirectUrlMappingConf {
                                                 .getOrDefault(entry.getKey(), entry.getValue())
                                                 .equals(entry.getValue())
                                 )
-                )
-                .toList();
+                ).collect(
+                        Collectors.groupingBy(
+                                entry -> {
+                                    int matchingCriteriaCount = 0;
+                                    for (Map.Entry<RedirectUrlMappingCriteria, String> criteria : searchCriteria
+                                            .entrySet()) {
+                                        if (criteria.getValue().equals(
+                                                entry.matchingCriteria().getOrDefault(criteria.getKey(), null)
+                                        )) {
+                                            matchingCriteriaCount++;
+                                        }
+                                    }
+                                    return matchingCriteriaCount;
+                                },
+                                TreeMap::new,
+                                Collectors.toList()
+                        )
+                );
+        List<RedirectUrlMappingEntry> entries = rankedConfMatches.isEmpty() ? List.of()
+                : rankedConfMatches.get(rankedConfMatches.lastKey());
         if (entries.size() != 1) {
             String errorMessageHeader = entries.isEmpty() ? "No configuration found"
                     : "Multiple configurations found: %s".formatted(entries);
             String errorMessage = errorMessageHeader
-                    + " for the provided matching criteria: %s".formatted(matchingCriteria);
+                    + " for the provided matching criteria: %s".formatted(searchCriteria);
             return Either
                     .left(new RedirectConfigurationException(errorMessage, RedirectConfigurationType.BACKEND_URLS));
         }
         return Either.right(entries.getFirst());
     }
-
 }

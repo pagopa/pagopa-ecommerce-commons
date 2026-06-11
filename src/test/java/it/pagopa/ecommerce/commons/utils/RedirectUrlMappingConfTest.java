@@ -58,6 +58,25 @@ public class RedirectUrlMappingConfTest {
             ]
             """;
 
+    private final String overlappingConf = """
+            [
+                {
+                    "url": "http://localhost/psp1",
+                    "matchingCriteria": {
+                        "PAYMENT_TYPE_CODE": "paymentTypeCode",
+                        "PSP_ID": "pspId"
+                    }
+                },
+                {
+                    "url": "http://localhost/psp2",
+                    "matchingCriteria": {
+                        "PAYMENT_TYPE_CODE": "paymentTypeCode",
+                        "PSP_ID": "pspId",
+                        "PSP_CHANNEL_ID": "channelId"
+                    }
+                }
+            ]
+            """;
     private final RedirectUrlMappingConf redirectUrlMappingConf = new RedirectUrlMappingConf(
             urlConfiguration,
             expectedMatchingCriteria
@@ -231,6 +250,45 @@ public class RedirectUrlMappingConfTest {
         assertEquals(
                 "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Multiple configurations found: [RedirectUrlMappingEntry[url=http://localhost/psp2, matchingCriteria={PAYMENT_TYPE_CODE=paymentTypeCode2, PSP_ID=pspId2, PSP_CHANNEL_ID=multiMatchKey}], RedirectUrlMappingEntry[url=http://localhost/psp3, matchingCriteria={PAYMENT_TYPE_CODE=paymentTypeCode3, PSP_ID=pspId3, TOUCHPOINT=touchpoint3, PSP_CHANNEL_ID=multiMatchKey}]] for the provided matching criteria: {PSP_CHANNEL_ID=multiMatchKey}",
                 entry.getLeft().getMessage()
+        );
+    }
+
+    @Test
+    public void shouldReturnConfigurationWithHigherMatchingParametersCount() {
+
+        RedirectUrlMappingConf conf = new RedirectUrlMappingConf(overlappingConf, "[]");
+        Either<RedirectConfigurationException, RedirectUrlMappingEntry> result = conf.getRedirectUrlForCriteria(
+                Map.of(
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
+                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PSP_ID,
+                        "pspId",
+                        RedirectUrlMappingCriteria.PSP_CHANNEL_ID,
+                        "channelId"
+                )
+        );
+        assertTrue(result.isRight());
+        assertEquals("http://localhost/psp2", result.get().url().toString());
+    }
+
+    @Test
+    public void shouldReturnErrorForConfigurationWithSameMatchingParametersCount() {
+
+        RedirectUrlMappingConf conf = new RedirectUrlMappingConf(overlappingConf, "[]");
+        Either<RedirectConfigurationException, RedirectUrlMappingEntry> result = conf.getRedirectUrlForCriteria(
+                Map.of(
+                        RedirectUrlMappingCriteria.PAYMENT_TYPE_CODE,
+                        "paymentTypeCode",
+                        RedirectUrlMappingCriteria.PSP_ID,
+                        "pspId"
+                )
+        );
+        assertTrue(result.isLeft());
+        assertTrue(
+                result.getLeft().getMessage().startsWith(
+                        "Error parsing Redirect PSP BACKEND_URLS configuration, cause: Multiple configurations found"
+                )
+
         );
     }
 
