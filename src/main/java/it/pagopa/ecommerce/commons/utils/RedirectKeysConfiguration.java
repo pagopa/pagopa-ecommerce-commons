@@ -12,8 +12,13 @@ import java.util.stream.Collectors;
 
 /**
  * This class manages the PSP redirect URL map.
+ *
+ * @deprecated Use
+ *             {@link it.pagopa.ecommerce.commons.utils.RedirectUrlMappingConf}
+ *             instead.
  */
 @Getter
+@Deprecated(forRemoval = true)
 public class RedirectKeysConfiguration {
 
     private final Map<String, URI> redirectBeApiCallUriMap;
