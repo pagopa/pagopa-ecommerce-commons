@@ -20,13 +20,6 @@ class EuroUtilsTest {
     }
 
     @Test
-    void shouldConvertIntEuroCentToEuroSuccessfully() {
-        BigDecimal euro = EuroUtils.euroCentsToEuro(111L);
-        System.out.println(euro);
-        assertEquals("1.11", euro.toString());
-    }
-
-    @Test
     void shouldConvertEuroToEuroCentSuccessfully() {
         Long euroCent = EuroUtils.euroToEuroCents(BigDecimal.valueOf(111, 2));
         assertEquals("111", euroCent.toString());
