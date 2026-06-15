@@ -58,7 +58,7 @@ class ReactiveRedisTemplateWrapperTests {
                 "77777777777",
                 "companyName",
                 "Pagamento di Test",
-                12000,
+                12000L,
                 "2021-07-31",
                 "1fb8539bdbc94123849a21be8eead8dd",
                 "2021-07-31",
