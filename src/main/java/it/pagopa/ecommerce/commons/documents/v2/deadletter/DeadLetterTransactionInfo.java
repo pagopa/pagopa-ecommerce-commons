@@ -40,7 +40,7 @@ public class DeadLetterTransactionInfo {
     private String paymentMethodName;
 
     @Nullable
-    private Integer grandTotal;
+    private Long grandTotal;
 
     @Nullable
     private String rrn;
@@ -71,7 +71,7 @@ public class DeadLetterTransactionInfo {
             List<String> paymentTokens,
             String pspId,
             String paymentMethodName,
-            Integer grandTotal,
+            Long grandTotal,
             String rrn,
             DeadLetterTransactionInfoDetailsData details
     ) {

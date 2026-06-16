@@ -37,7 +37,7 @@ public class DeadLetterTestUtils {
                         null,
                         "pspId",
                         "paymentMethodName",
-                        120,
+                        120L,
                         "rrn",
                         null
                 )
@@ -73,7 +73,7 @@ public class DeadLetterTestUtils {
                         List.of("payment token"),
                         "pspId",
                         "paymentMethodName",
-                        120,
+                        120L,
                         "rrn",
                         details
                 )
