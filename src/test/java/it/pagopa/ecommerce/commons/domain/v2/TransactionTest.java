@@ -4627,6 +4627,291 @@ class TransactionTest {
     }
 
     @Test
+    void shouldConstructTransactionWithAddedUserReceiptOkRecoveringFromExpiredTransactionWithUserReceiptError() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+        TransactionUserReceiptData transactionUserReceiptData = TransactionTestUtils
+                .transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK);
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
+        TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
+                .transactionUserReceiptAddErrorEvent(
+                        addUserReceiptEvent.getData()
+                );
+        TransactionUserReceiptAddRetriedEvent userReceiptAddRetriedEvent = TransactionTestUtils
+                .transactionUserReceiptAddRetriedEvent(1);
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent,
+                        transactionClosureRequestedEvent,
+                        closureSentEvent,
+                        addUserReceiptEvent,
+                        userReceiptAddErrorEvent,
+                        userReceiptAddRetriedEvent
+                )
+        );
+        TransactionUserReceiptAddedEvent userReceiptAddedEvent = TransactionTestUtils
+                .transactionUserReceiptAddedEvent(
+                        userReceiptAddErrorEvent.getData()
+                );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                transactionClosureRequestedEvent,
+                closureSentEvent,
+                addUserReceiptEvent,
+                userReceiptAddErrorEvent,
+                userReceiptAddRetriedEvent,
+                transactionExpiredEvent,
+                userReceiptAddedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionClosed transactionClosed = TransactionTestUtils
+                .transactionClosed(
+
+                        transactionWithClosureRequested,
+                        closureSentEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
+                .transactionWithRequestedUserReceipt(
+                        transactionClosed,
+                        addUserReceiptEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptError transactionWithUserReceiptError = TransactionTestUtils
+                .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptOk expected = TransactionTestUtils
+                .transactionWithUserReceiptOk(transactionWithUserReceiptError, userReceiptAddedEvent);
+
+        Mono<Transaction> actual = events
+                .reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptOk) t)
+                                        .getStatus())
+                                                .equals(TransactionStatusDto.NOTIFIED_OK)
+                                && (((TransactionWithUserReceiptOk) t).getTransactionUserReceiptData())
+                                        .equals(transactionUserReceiptData)
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConstructTransactionWithAddedUserReceiptKoRecoveringFromExpiredTransactionWithUserReceiptError() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+        TransactionUserReceiptData transactionUserReceiptData = TransactionTestUtils
+                .transactionUserReceiptData(TransactionUserReceiptData.Outcome.KO);
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
+        TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
+                .transactionUserReceiptAddErrorEvent(
+                        addUserReceiptEvent.getData()
+                );
+        TransactionUserReceiptAddRetriedEvent userReceiptAddRetriedEvent = TransactionTestUtils
+                .transactionUserReceiptAddRetriedEvent(1);
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent,
+                        transactionClosureRequestedEvent,
+                        closureSentEvent,
+                        addUserReceiptEvent,
+                        userReceiptAddErrorEvent,
+                        userReceiptAddRetriedEvent
+                )
+        );
+        TransactionUserReceiptAddedEvent userReceiptAddedEvent = TransactionTestUtils
+                .transactionUserReceiptAddedEvent(
+                        userReceiptAddErrorEvent.getData()
+                );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                transactionClosureRequestedEvent,
+                closureSentEvent,
+                addUserReceiptEvent,
+                userReceiptAddErrorEvent,
+                userReceiptAddRetriedEvent,
+                transactionExpiredEvent,
+                userReceiptAddedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionClosed transactionClosed = TransactionTestUtils
+                .transactionClosed(
+
+                        transactionWithClosureRequested,
+                        closureSentEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
+                .transactionWithRequestedUserReceipt(
+                        transactionClosed,
+                        addUserReceiptEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptError transactionWithUserReceiptError = TransactionTestUtils
+                .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptKo expected = TransactionTestUtils
+                .transactionWithUserReceiptKo(transactionWithUserReceiptError, userReceiptAddedEvent);
+
+        Mono<Transaction> actual = events
+                .reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptKo) t)
+                                        .getStatus())
+                                                .equals(TransactionStatusDto.NOTIFIED_KO)
+                                && (((TransactionWithUserReceiptKo) t).getTransactionUserReceiptData())
+                                        .equals(transactionUserReceiptData)
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreTransactionUserReceiptAddedEventForExpiredTransactionWithInvalidStatusBeforeExpiration() {
+        it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
+        TransactionUserReceiptData transactionUserReceiptData = TransactionTestUtils
+                .transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK);
+
+        TransactionActivatedEvent transactionActivatedEvent = TransactionTestUtils.transactionActivateEvent();
+        TransactionAuthorizationRequestedEvent authorizationRequestedEvent = TransactionTestUtils
+                .transactionAuthorizationRequestedEvent();
+        TransactionAuthorizationCompletedEvent authorizedEvent = TransactionTestUtils
+                .transactionAuthorizationCompletedEvent(
+                        TransactionTestUtils.npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED)
+                );
+        TransactionClosureRequestedEvent transactionClosureRequestedEvent = TransactionTestUtils
+                .transactionClosureRequestedEvent();
+        TransactionClosedEvent closureSentEvent = TransactionTestUtils
+                .transactionClosedEvent(TransactionClosureData.Outcome.OK);
+        TransactionUserReceiptRequestedEvent addUserReceiptEvent = TransactionTestUtils
+                .transactionUserReceiptRequestedEvent(
+                        transactionUserReceiptData
+                );
+        TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
+                .transactionUserReceiptAddErrorEvent(
+                        addUserReceiptEvent.getData()
+                );
+        TransactionUserReceiptAddRetriedEvent userReceiptAddRetriedEvent = TransactionTestUtils
+                .transactionUserReceiptAddRetriedEvent(1);
+        TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
+                TransactionStatusDto.NOTIFICATION_REQUESTED
+        );
+        TransactionUserReceiptAddedEvent userReceiptAddedEvent = TransactionTestUtils
+                .transactionUserReceiptAddedEvent(
+                        userReceiptAddErrorEvent.getData()
+                );
+        Flux<Object> events = Flux.just(
+                transactionActivatedEvent,
+                authorizationRequestedEvent,
+                authorizedEvent,
+                transactionClosureRequestedEvent,
+                closureSentEvent,
+                addUserReceiptEvent,
+                userReceiptAddErrorEvent,
+                userReceiptAddRetriedEvent,
+                transactionExpiredEvent,
+                userReceiptAddedEvent
+        );
+
+        it.pagopa.ecommerce.commons.domain.v2.TransactionActivated transactionActivated = TransactionTestUtils
+                .transactionActivated(transactionActivatedEvent.getCreationDate());
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedAuthorization transactionWithRequestedAuthorization = TransactionTestUtils
+                .transactionWithRequestedAuthorization(authorizationRequestedEvent, transactionActivated);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionAuthorizationCompleted transactionAuthorizationCompleted = TransactionTestUtils
+                .transactionAuthorizationCompleted(
+                        authorizedEvent,
+                        transactionWithRequestedAuthorization
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithClosureRequested transactionWithClosureRequested = TransactionTestUtils
+                .transactionWithClosureRequested(transactionAuthorizationCompleted);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionClosed transactionClosed = TransactionTestUtils
+                .transactionClosed(
+
+                        transactionWithClosureRequested,
+                        closureSentEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithRequestedUserReceipt transactionWithRequestedUserReceipt = TransactionTestUtils
+                .transactionWithRequestedUserReceipt(
+                        transactionClosed,
+                        addUserReceiptEvent
+                );
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptError transactionWithUserReceiptError = TransactionTestUtils
+                .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionExpired expected = TransactionTestUtils
+                .transactionExpired(transactionWithUserReceiptError, transactionExpiredEvent);
+
+        Mono<Transaction> actual = events
+                .reduce(transaction, Transaction::applyEvent);
+
+        StepVerifier.create(actual)
+                .expectNextMatches(
+                        t -> expected.equals(t)
+                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionExpired) t).getStatus())
+                                        .equals(TransactionStatusDto.EXPIRED)
+                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionExpired) t)
+                                        .getTransactionAtPreviousState().getStatus()
+                                        .equals(TransactionStatusDto.NOTIFICATION_ERROR))
+                )
+                .verifyComplete();
+    }
+
+    @Test
     void shouldConstructTransactionRefundRequestedFromTransactionWithUserReceiptErrorForSendPaymentResultKO() {
         it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
 

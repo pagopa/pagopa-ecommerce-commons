@@ -3,6 +3,8 @@ package it.pagopa.ecommerce.commons.domain.v2;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionClosureSyntheticEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionExpiredEvent;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionRefundRequestedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptAddedEvent;
+import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptData;
 import it.pagopa.ecommerce.commons.documents.v2.TransactionUserReceiptRequestedEvent;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionExpired;
@@ -24,6 +26,9 @@ import lombok.ToString;
  * {@link TransactionClosed}</li>
  * <li>{@link TransactionUserReceiptRequestedEvent} -->
  * {@link TransactionWithRequestedUserReceipt}</li>
+ * <li>{@link TransactionUserReceiptAddedEvent} from notification error before
+ * expiration --> {@link TransactionWithUserReceiptOk} /
+ * {@link TransactionWithUserReceiptKo}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
  *
@@ -80,6 +85,24 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
         if (event instanceof TransactionUserReceiptRequestedEvent transactionUserReceiptRequestedEvent &&
                 getTransactionAtPreviousState()instanceof BaseTransactionClosed baseTransactionClosed) {
             return new TransactionWithRequestedUserReceipt(baseTransactionClosed, transactionUserReceiptRequestedEvent);
+        }
+
+        if (event instanceof TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent &&
+                getTransactionAtPreviousState()instanceof TransactionWithUserReceiptError transactionWithUserReceiptError
+                &&
+                TransactionStatusDto.NOTIFICATION_ERROR.equals(
+                        getTransactionExpiredData().getStatusBeforeExpiration()
+                )) {
+            return transactionUserReceiptAddedEvent.getData().getResponseOutcome()
+                    .equals(TransactionUserReceiptData.Outcome.OK)
+                            ? new TransactionWithUserReceiptOk(
+                                    transactionWithUserReceiptError,
+                                    transactionUserReceiptAddedEvent
+                            )
+                            : new TransactionWithUserReceiptKo(
+                                    transactionWithUserReceiptError,
+                                    transactionUserReceiptAddedEvent
+                            );
         }
 
         return this;
