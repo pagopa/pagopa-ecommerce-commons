@@ -137,12 +137,11 @@ public class TracingUtils {
      * Wraps a {@link Mono} with a new {@link Span} with name {@code spanName}. The
      * new span is created as a child of the remote span whose tracing data is
      * extracted from {@code tracingInfo}, ensuring each processed message continues
-     * the producer's trace (same {@code trace.id}) rather than inheriting any
-     * ambient thread context.
+     * the producer's trace (same {@code trace.id}).
      * </p>
      * <p>
-     * When {@code tracingInfo} is {@code null} (e.g. for legacy untraced events) a
-     * fresh root span is created instead.
+     * When {@code tracingInfo} is {@code null} a fresh root span is created
+     * instead.
      * </p>
      *
      * @param tracingInfo tracing info carrying the remote span context to use as
