@@ -89,10 +89,7 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
 
         if (event instanceof TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent &&
                 getTransactionAtPreviousState()instanceof BaseTransactionWithRequestedUserReceipt baseTransactionWithUserReceipt
-                &&
-                TransactionStatusDto.NOTIFICATION_ERROR.equals(
-                        getTransactionExpiredData().getStatusBeforeExpiration()
-                )) {
+                ) {
             return transactionUserReceiptAddedEvent.getData().getResponseOutcome()
                     .equals(TransactionUserReceiptData.Outcome.OK)
                             ? new TransactionWithUserReceiptOk(
