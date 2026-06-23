@@ -10,6 +10,7 @@ import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionClosed;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionExpired;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithClosureRequested;
 import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithRequestedAuthorization;
+import it.pagopa.ecommerce.commons.domain.v2.pojos.BaseTransactionWithRequestedUserReceipt;
 import it.pagopa.ecommerce.commons.generated.server.model.TransactionStatusDto;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -26,8 +27,8 @@ import lombok.ToString;
  * {@link TransactionClosed}</li>
  * <li>{@link TransactionUserReceiptRequestedEvent} -->
  * {@link TransactionWithRequestedUserReceipt}</li>
- * <li>{@link TransactionUserReceiptAddedEvent} from notification error before
- * expiration --> {@link TransactionWithUserReceiptOk} /
+ * <li>{@link TransactionUserReceiptAddedEvent} from requested/error user
+ * receipt before expiration --> {@link TransactionWithUserReceiptOk} /
  * {@link TransactionWithUserReceiptKo}</li>
  * </ul>
  * Any other event than the above ones will be discarded.
@@ -88,16 +89,15 @@ public final class TransactionExpired extends BaseTransactionExpired implements 
         }
 
         if (event instanceof TransactionUserReceiptAddedEvent transactionUserReceiptAddedEvent &&
-                getTransactionAtPreviousState()instanceof BaseTransactionWithRequestedUserReceipt baseTransactionWithUserReceipt
-                ) {
+                getTransactionAtPreviousState()instanceof BaseTransactionWithRequestedUserReceipt baseTransactionWithUserReceipt) {
             return transactionUserReceiptAddedEvent.getData().getResponseOutcome()
                     .equals(TransactionUserReceiptData.Outcome.OK)
                             ? new TransactionWithUserReceiptOk(
-                                    transactionWithUserReceiptError,
+                                    baseTransactionWithUserReceipt,
                                     transactionUserReceiptAddedEvent
                             )
                             : new TransactionWithUserReceiptKo(
-                                    transactionWithUserReceiptError,
+                                    baseTransactionWithUserReceipt,
                                     transactionUserReceiptAddedEvent
                             );
         }

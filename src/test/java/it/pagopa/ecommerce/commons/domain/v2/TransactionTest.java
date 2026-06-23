@@ -4823,7 +4823,7 @@ class TransactionTest {
     }
 
     @Test
-    void shouldIgnoreTransactionUserReceiptAddedEventForExpiredTransactionWithInvalidStatusBeforeExpiration() {
+    void shouldConstructTransactionWithAddedUserReceiptOkRecoveringFromExpiredTransactionWithRequestedUserReceipt() {
         it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction transaction = new it.pagopa.ecommerce.commons.domain.v2.EmptyTransaction();
         TransactionUserReceiptData transactionUserReceiptData = TransactionTestUtils
                 .transactionUserReceiptData(TransactionUserReceiptData.Outcome.OK);
@@ -4843,18 +4843,19 @@ class TransactionTest {
                 .transactionUserReceiptRequestedEvent(
                         transactionUserReceiptData
                 );
-        TransactionUserReceiptAddErrorEvent userReceiptAddErrorEvent = TransactionTestUtils
-                .transactionUserReceiptAddErrorEvent(
-                        addUserReceiptEvent.getData()
-                );
-        TransactionUserReceiptAddRetriedEvent userReceiptAddRetriedEvent = TransactionTestUtils
-                .transactionUserReceiptAddRetriedEvent(1);
         TransactionExpiredEvent transactionExpiredEvent = TransactionTestUtils.transactionExpiredEvent(
-                TransactionStatusDto.NOTIFICATION_REQUESTED
+                TransactionTestUtils.reduceEvents(
+                        transactionActivatedEvent,
+                        authorizationRequestedEvent,
+                        authorizedEvent,
+                        transactionClosureRequestedEvent,
+                        closureSentEvent,
+                        addUserReceiptEvent
+                )
         );
         TransactionUserReceiptAddedEvent userReceiptAddedEvent = TransactionTestUtils
                 .transactionUserReceiptAddedEvent(
-                        userReceiptAddErrorEvent.getData()
+                        addUserReceiptEvent.getData()
                 );
         Flux<Object> events = Flux.just(
                 transactionActivatedEvent,
@@ -4863,8 +4864,6 @@ class TransactionTest {
                 transactionClosureRequestedEvent,
                 closureSentEvent,
                 addUserReceiptEvent,
-                userReceiptAddErrorEvent,
-                userReceiptAddRetriedEvent,
                 transactionExpiredEvent,
                 userReceiptAddedEvent
         );
@@ -4891,10 +4890,8 @@ class TransactionTest {
                         transactionClosed,
                         addUserReceiptEvent
                 );
-        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptError transactionWithUserReceiptError = TransactionTestUtils
-                .transactionWithUserReceiptError(transactionWithRequestedUserReceipt, userReceiptAddErrorEvent);
-        it.pagopa.ecommerce.commons.domain.v2.TransactionExpired expected = TransactionTestUtils
-                .transactionExpired(transactionWithUserReceiptError, transactionExpiredEvent);
+        it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptOk expected = TransactionTestUtils
+                .transactionWithUserReceiptOk(transactionWithRequestedUserReceipt, userReceiptAddedEvent);
 
         Mono<Transaction> actual = events
                 .reduce(transaction, Transaction::applyEvent);
@@ -4902,11 +4899,11 @@ class TransactionTest {
         StepVerifier.create(actual)
                 .expectNextMatches(
                         t -> expected.equals(t)
-                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionExpired) t).getStatus())
-                                        .equals(TransactionStatusDto.EXPIRED)
-                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionExpired) t)
-                                        .getTransactionAtPreviousState().getStatus()
-                                        .equals(TransactionStatusDto.NOTIFICATION_ERROR))
+                                && (((it.pagopa.ecommerce.commons.domain.v2.TransactionWithUserReceiptOk) t)
+                                        .getStatus())
+                                                .equals(TransactionStatusDto.NOTIFIED_OK)
+                                && (((TransactionWithUserReceiptOk) t).getTransactionUserReceiptData())
+                                        .equals(transactionUserReceiptData)
                 )
                 .verifyComplete();
     }
