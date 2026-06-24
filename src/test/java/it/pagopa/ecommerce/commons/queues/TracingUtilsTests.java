@@ -2,7 +2,6 @@ package it.pagopa.ecommerce.commons.queues;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
@@ -10,8 +9,6 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -79,6 +76,26 @@ public class TracingUtilsTests {
         Mono<Integer> operation = Mono.error(expected);
 
         StepVerifier.create(tracingUtils.traceMonoWithRemoteSpan(MOCK_TRACING_INFO, "test", operation))
+                .expectErrorMatches(e -> e.equals(expected))
+                .verify();
+    }
+
+    @Test
+    void traceMonoWithRemoteSpanWithNullTracingInfoReturnsValue() {
+        int expected = 0;
+        Mono<Integer> operation = Mono.just(expected);
+
+        StepVerifier.create(tracingUtils.traceMonoWithRemoteSpan(null, "test", operation))
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void traceMonoWithRemoteSpanWithNullTracingInfoPropagatesError() {
+        RuntimeException expected = new RuntimeException("error!");
+        Mono<Integer> operation = Mono.error(expected);
+
+        StepVerifier.create(tracingUtils.traceMonoWithRemoteSpan(null, "test", operation))
                 .expectErrorMatches(e -> e.equals(expected))
                 .verify();
     }

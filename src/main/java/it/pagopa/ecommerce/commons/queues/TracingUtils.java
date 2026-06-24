@@ -135,20 +135,25 @@ public class TracingUtils {
     /**
      * <p>
      * Wraps a {@link Mono} with a new {@link Span} with name {@code spanName}. The
-     * new span is created with a link to a remote span whose tracing data is
-     * extracted from {@code tracingInfo}.
+     * new span is created as a child of the remote span whose tracing data is
+     * extracted from {@code tracingInfo}, ensuring each processed message continues
+     * the producer's trace (same {@code trace.id}).
+     * </p>
+     * <p>
+     * When {@code tracingInfo} is {@code null} a fresh root span is created
+     * instead.
      * </p>
      *
-     * @param tracingInfo tracing info to reconstruct the remote span to be linked
-     *                    to
+     * @param tracingInfo tracing info carrying the remote span context to use as
+     *                    parent, or {@code null} to start a new root trace
      * @param spanName    name of the new span
      * @param operation   {@link Mono} that will be wrapped
-     * @return a new {@link Mono} with a span linked to the remote span identified
-     *         by {@code tracingInfo}
+     * @return a new {@link Mono} whose span is a child of the remote span
+     *         identified by {@code tracingInfo}
      * @param <T> type parameter for the original {@link Mono}
      */
     public <T> @NonNull Mono<T> traceMonoWithRemoteSpan(
-                                                        @NonNull TracingInfo tracingInfo,
+                                                        @Nullable TracingInfo tracingInfo,
                                                         @NonNull String spanName,
                                                         @NonNull Mono<T> operation
     ) {
@@ -158,44 +163,47 @@ public class TracingUtils {
     }
 
     private @NonNull Span createSpanWithRemoteTracingContext(
-                                                             @NonNull TracingInfo tracingInfo,
+                                                             @Nullable TracingInfo tracingInfo,
                                                              @NonNull String spanName
     ) {
         logger.debug("Creating Span with remote tracing context: {}", tracingInfo);
 
-        Context extractedContext = openTelemetry.getPropagators().getTextMapPropagator().extract(
-                Context.current(),
-                tracingInfo,
-                new TextMapGetter<>() {
-                    @Override
-                    public Iterable<String> keys(@Nonnull TracingInfo tracingInfo) {
-                        return Set.of(TRACEPARENT, TRACESTATE, BAGGAGE);
-                    }
+        Context parentContext;
+        if (tracingInfo != null) {
+            parentContext = openTelemetry.getPropagators().getTextMapPropagator().extract(
+                    Context.root(),
+                    tracingInfo,
+                    new TextMapGetter<>() {
+                        @Override
+                        public Iterable<String> keys(@Nonnull TracingInfo carrier) {
+                            return Set.of(TRACEPARENT, TRACESTATE, BAGGAGE);
+                        }
 
-                    @Nullable
-                    @Override
-                    public String get(
-                                      @Nullable TracingInfo tracingInfo,
-                                      @Nonnull String key
-                    ) {
-                        return switch (key) {
-                            case TRACEPARENT -> Optional.ofNullable(tracingInfo).map(TracingInfo::getTraceparent)
-                                    .orElse(null);
-                            case TRACESTATE -> Optional.ofNullable(tracingInfo).flatMap(TracingInfo::getTracestate)
-                                    .orElse(null);
-                            case BAGGAGE -> Optional.ofNullable(tracingInfo).flatMap(TracingInfo::getBaggage)
-                                    .orElse(null);
-                            default -> null;
-                        };
+                        @Nullable
+                        @Override
+                        public String get(
+                                          @Nullable TracingInfo carrier,
+                                          @Nonnull String key
+                        ) {
+                            return switch (key) {
+                                case TRACEPARENT -> Optional.ofNullable(carrier).map(TracingInfo::getTraceparent)
+                                        .orElse(null);
+                                case TRACESTATE -> Optional.ofNullable(carrier).flatMap(TracingInfo::getTracestate)
+                                        .orElse(null);
+                                case BAGGAGE -> Optional.ofNullable(carrier).flatMap(TracingInfo::getBaggage)
+                                        .orElse(null);
+                                default -> null;
+                            };
+                        }
                     }
-                }
-        );
-
+            );
+        } else {
+            parentContext = Context.root();
+        }
         return tracer
                 .spanBuilder(spanName)
                 .setSpanKind(SpanKind.CONSUMER)
-                .setParent(Context.current().with(Span.current()))
-                .addLink(Span.fromContext(extractedContext).getSpanContext())
+                .setParent(parentContext)
                 .startSpan();
     }
 
