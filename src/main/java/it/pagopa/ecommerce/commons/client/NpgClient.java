@@ -146,6 +146,9 @@ public class NpgClient {
          */
         public final String serviceName;
 
+        /**
+         * The payment type code (e.g. "CP", "PPAL")
+         */
         public final String methodTypeCode;
 
         PaymentMethod(
