@@ -66,6 +66,16 @@ public class Transaction extends BaseTransactionView {
 
     @Nullable
     private String pspId;
+    /**
+     * unique identifier for the authorization request
+     */
+    @Nullable
+    private String authorizationRequestId;
+    /**
+     * Payment end to end id as communicated by payment gateway (NPG)
+     */
+    @Nullable
+    private String endToEndId;
 
     /**
      * Timestamp of the last processed CDC event. Used by CDC service to handle
