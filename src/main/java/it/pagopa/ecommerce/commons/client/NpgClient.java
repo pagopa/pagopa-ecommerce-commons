@@ -83,71 +83,80 @@ public class NpgClient {
         /**
          * Credit cards
          */
-        CARDS("CARDS"),
+        CARDS("CARDS", "CP"),
         /**
          * PayPal
          */
-        PAYPAL("PAYPAL"),
+        PAYPAL("PAYPAL", "PPAL"),
         /**
          * PayPal with Pay in 3 option
          */
-        PAYPAL_PAGAIN3("PAYPAL_PAGAIN3"),
+        PAYPAL_PAGAIN3("PAYPAL_PAGAIN3", null),
         /**
          * GiroPay
          */
-        GIROPAY("GIROPAY"),
+        GIROPAY("GIROPAY", null),
         /**
          * Ideal
          */
-        IDEAL("IDEAL"),
+        IDEAL("IDEAL", null),
         /**
          * MyBank
          */
-        MYBANK("MYBANK"),
+        MYBANK("MYBANK", "MYBK"),
         /**
          * Google Pay
          */
-        GOOGLEPAY("GOOGLEPAY"),
+        GOOGLEPAY("GOOGLEPAY", "GOOG"),
         /**
          * Apple Pay
          */
-        APPLEPAY("APPLEPAY"),
+        APPLEPAY("APPLEPAY", "APPL"),
         /**
          * Bancomat Pay
          */
-        BANCOMATPAY("BANCOMATPAY"),
+        BANCOMATPAY("BANCOMATPAY", "BPAY"),
         /**
          * Bancontact
          */
-        BANCONTACT("BANCONTACT"),
+        BANCONTACT("BANCONTACT", null),
         /**
          * Multibanco
          */
-        MULTIBANCO("MULTIBANCO"),
+        MULTIBANCO("MULTIBANCO", null),
         /**
          * WeChat
          */
-        WECHAT("WECHAT"),
+        WECHAT("WECHAT", null),
         /**
          * AliPay
          */
-        ALIPAY("ALIPAY"),
+        ALIPAY("ALIPAY", null),
         /**
          * PIS (3DS2 Payment Initiation Service)
          */
-        PIS("PIS"),
+        PIS("PIS", null),
         /**
          * Satispay direct
          */
-        SATISPAY("SATISPAY_DIRECT");
+        SATISPAY("SATISPAY_DIRECT", "SATY");
 
         /**
          * API value for `serviceName`
          */
         public final String serviceName;
 
-        PaymentMethod(String serviceName) {
+        /**
+         * The payment type code (e.g. "CP", "PPAL")
+         */
+        public final String methodTypeCode;
+
+        PaymentMethod(
+                String serviceName,
+                String methodTypeCode
+        ) {
             this.serviceName = serviceName;
+            this.methodTypeCode = methodTypeCode;
         }
 
         /**
@@ -166,6 +175,29 @@ public class NpgClient {
             }
 
             throw new IllegalArgumentException("Invalid payment method service name: '%s'".formatted(serviceName));
+        }
+
+        /**
+         * Retrieves a {@link PaymentMethod} by its AFM payment type code.
+         *
+         * @param methodTypeCode the AFM payment type code (e.g. "CP", "PPAL", "BPAY")
+         * @return the corresponding payment method
+         * @throws IllegalArgumentException if no payment method exists for the given
+         *                                  type code
+         */
+        public static PaymentMethod fromMethodTypeCode(String methodTypeCode) {
+            if (methodTypeCode == null) {
+                throw new IllegalArgumentException("methodTypeCode must not be null");
+            }
+            for (PaymentMethod paymentMethod : PaymentMethod.values()) {
+                if (methodTypeCode.equals(paymentMethod.methodTypeCode)) {
+                    return paymentMethod;
+                }
+            }
+
+            throw new IllegalArgumentException(
+                    "No PaymentMethod found for methodTypeCode: '%s'".formatted(methodTypeCode)
+            );
         }
     }
 
