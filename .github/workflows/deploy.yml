@@ -49,13 +49,21 @@ jobs:
           echo "SKIP_RELEASE=${{ steps.configure_pipeline_parameters.outputs.SKIP_RELEASE }}"
         shell: bash
       - name: Azure Pipelines Action
-        uses: jacopocarlini/azure-pipelines@b9721743a54e862597395b4a70727cfdc03028fb # v1.3
         if: steps.configure_pipeline_parameters.outputs.SKIP_RELEASE == 'false'
-        with:
-          azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
-          azure-pipeline-name: 'pagopa-ecommerce-commons.deploy'
-          azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
-          azure-template-parameters: |
-            {
-                "RELEASE_SEMVER": "${{ steps.configure_pipeline_parameters.outputs.RELEASE_SEMVER }}"
-            }
+        run: |
+          curl -X POST \
+            -u ":${{ secrets.AZURE_DEVOPS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "resources": {
+                    "repositories": {
+                      "self": {
+                        "refName": "${{ github.ref }}"
+                      }
+                    }
+                  },
+                  "templateParameters": {
+                    "RELEASE_SEMVER": "${{ steps.configure_pipeline_parameters.outputs.RELEASE_SEMVER }}"
+                  }
+                }' \
+            "https://dev.azure.com/pagopaspa/pagoPA-projects/_apis/pipelines/1801/runs?api-version=7.0"
