@@ -424,7 +424,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                https://raw.githubusercontent.com/pagopa/pagopa-infra/main/src/core/api/node_forwarder_api/v1/_openapi.json.tpl
+                                https://raw.githubusercontent.com/pagopa/pagopa-infra/refs/tags/v1.919.2/src/domains/shared-app/api/node_forwarder_api/v1/_openapi.json.tpl
                             </inputSpec>
                             <generatorName>java</generatorName>
                             <library>webclient</library>
