@@ -12,13 +12,14 @@ import org.slf4j.MDC;
 import reactor.util.context.Context;
 
 /**
- * Utility class with helper methods to enrich Reactor Context for CDC event
- * processing.
+ * Utility class with helper methods to enrich Reactor Context event processing.
  */
 public class LogTracingUtils {
 
     private static final String CTX_DETAILS_KEY = "ctx.details";
+    /** Dependency label used in MDC for MongoDB operations. */
     public static final String MONGO_DEPENDENCY_KEY = "eCommerce-mongodb";
+    /** Dependency label used in MDC for Redis operations. */
     public static final String REDIS_DEPENDENCY_KEY = "eCommerce-redis";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
@@ -29,15 +30,51 @@ public class LogTracingUtils {
 
     /** Tracing keys copied from Reactor Context to MDC. */
     public enum TracingEntry {
+        /** Reactor context key for transaction identifier. */
         CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}", true),
+        /** Reactor context key for event code. */
         CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}", true),
+        /** Reactor context key for event identifier. */
         CTX_EVENT_ID("ctx.event.id", "{eventId-not-found}", true),
-        CTX_RPT_IDS("ctx.rpt.ids", "{rptId-not-found}", false),
+        /** Reactor context key for RPT identifiers. */
+        CTX_RPT_IDS("ctx.rpt.ids", "{rptIds-not-found}", false),
+        /** Reactor context key for payment tokens. */
         CTX_PAYMENT_TOKENS("ctx.payment.tokens", "{paymentTokens-not-found}", false),
+        /** Reactor context key for user identifier. */
+        CTX_USER_ID("ctx.user.id", "{userId-not-found}", true),
+        /** Reactor context key for X-Forwarded-For value. */
+        CTX_FORWARDED_FOR("ctx.forwarded.for", "{forwardedFor-not-found}", true),
+        /** MDC key for business transaction identifier. */
+        TRANSACTION_ID("transaction.id", "{transactionId-not-found}", false),
+        /** MDC key for business transaction status. */
+        TRANSACTION_STATUS("transaction.status", "{transactionStatus-not-found}", false),
+        /** MDC key for correlation identifier. */
+        CORRELATION_ID("correlation.id", "{correlationId-not-found}", false),
+        /** MDC key for operation identifier. */
+        OPERATION_ID("operation.id", "{operationId-not-found}", false),
+        /** MDC key for response code. */
+        RESPONSE_CODE("response.code", "{responseCode-not-found}", false),
+        /** MDC key for response payload. */
+        RESPONSE_BODY("response.body", "{responseBody-not-found}", false),
+        /** MDC key for PSP identifier. */
+        PSP_ID("psp.id", "{pspId-not-found}", false),
+        /** MDC key for PSP channel code. */
+        PSP_CHANNEL_CODE("psp.channel.code", "{pspChannelCode-not-found}", false),
+        /** MDC key for PSP transaction identifier. */
+        PSP_TRANSACTION_ID("psp.transaction.id", "{pspTransactionId-not-found}", false),
+        /** MDC key for queue event identifier. */
+        QUEUE_EVENT_ID("queue.event.id", "{queueEventId-not-found}", false),
+        /** MDC key for request path. */
+        PATH("path", "{path-not-found}", false),
+        /** Reactor context key for action associated with the event. */
         EVENT_ACTION("event.action", "{eventAction-not-found}", true),
+        /** Reactor context key for event outcome. */
         EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}", false),
+        /** MDC key for dependency name involved in the operation. */
         DEPENDENCY("dependency", "{dependency-not-found}", false),
+        /** MDC key for error class name. */
         ERROR_TYPE("error.type", "{errorType-not-found}", false),
+        /** MDC key for error message text. */
         ERROR_MESSAGE("error.message", "{errorMessage-not-found}", false);
 
         private final String key;
@@ -54,14 +91,29 @@ public class LogTracingUtils {
             this.contextBound = contextBound;
         }
 
+        /**
+         * Returns the MDC/reactor key name.
+         *
+         * @return key name
+         */
         public String getKey() {
             return key;
         }
 
+        /**
+         * Returns the fallback value used when the key is missing.
+         *
+         * @return default value
+         */
         public String getDefaultValue() {
             return defaultValue;
         }
 
+        /**
+         * Indicates whether this entry is expected in Reactor Context.
+         *
+         * @return {@code true} if context-bound
+         */
         public boolean isContextBound() {
             return contextBound;
         }
@@ -196,8 +248,10 @@ public class LogTracingUtils {
      * ({@code {}}) is used as fallback. The key is always removed after block
      * execution.
      *
-     * @param details map of detail values to serialize under {@code ctx.details}
-     * @param block   code to execute while {@code ctx.details} is available in MDC
+     * @param details    map of detail values to serialize under {@code ctx.details}
+     * @param attributes map of top-level MDC key-value attributes (can be null)
+     * @param block      code to execute while {@code ctx.details} is available in
+     *                   MDC
      */
     public static void withContextDetailsMdc(
                                              Map<String, ?> details,

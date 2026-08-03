@@ -6,10 +6,19 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+/**
+ * Registers Reactor hooks to propagate MDC values across reactive operators.
+ */
 @Configuration
 public class MDCContextLifterConfiguration {
 
     private final String mdcContextReactorKey = MDCContextLifterConfiguration.class.getName();
+
+    /**
+     * Default constructor for Spring configuration instantiation.
+     */
+    public MDCContextLifterConfiguration() {
+    }
 
     @PostConstruct
     private void contextOperatorHook() {
