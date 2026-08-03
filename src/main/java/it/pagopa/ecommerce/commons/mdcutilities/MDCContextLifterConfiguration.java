@@ -18,6 +18,7 @@ public class MDCContextLifterConfiguration {
      * Default constructor for Spring configuration instantiation.
      */
     public MDCContextLifterConfiguration() {
+        super();
     }
 
     @PostConstruct
