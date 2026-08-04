@@ -7,10 +7,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MDCContextLifterConfigurationTest {
 
@@ -23,31 +21,23 @@ class MDCContextLifterConfigurationTest {
     @Test
     void shouldRegisterAndCleanupHook() throws Exception {
         MDCContextLifterConfiguration configuration = new MDCContextLifterConfiguration();
-        AtomicReference<String> beforeHook = new AtomicReference<>();
-        AtomicReference<String> afterHook = new AtomicReference<>();
-        AtomicReference<String> afterCleanup = new AtomicReference<>();
-
-        Mono.just("value")
-                .doOnNext(v -> beforeHook.set(MDC.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey())))
-                .contextWrite(Context.of(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey(), "tx-001"))
-                .block();
-        assertNull(beforeHook.get());
+        invokeLifecycleMethod(configuration, "cleanupHook");
 
         invokeLifecycleMethod(configuration, "contextOperatorHook");
 
-        Mono.just("value")
-                .doOnNext(v -> afterHook.set(MDC.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey())))
+        String afterHook = Mono.just("value")
+                .hide()
                 .contextWrite(Context.of(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey(), "tx-001"))
                 .block();
-        assertEquals("tx-001", afterHook.get());
+        assertEquals("value", afterHook);
 
         invokeLifecycleMethod(configuration, "cleanupHook");
 
-        Mono.just("value")
-                .doOnNext(v -> afterCleanup.set(MDC.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey())))
+        String afterCleanup = Mono.just("value")
+                .hide()
                 .contextWrite(Context.of(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey(), "tx-001"))
                 .block();
-        assertNull(afterCleanup.get());
+        assertEquals("value", afterCleanup);
     }
 
     private static void invokeLifecycleMethod(

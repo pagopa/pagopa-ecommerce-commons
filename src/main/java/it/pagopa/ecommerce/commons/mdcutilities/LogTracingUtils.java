@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
+import lombok.Getter;
 import org.slf4j.MDC;
 import reactor.util.context.Context;
 
@@ -25,70 +25,78 @@ public class LogTracingUtils {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    private LogTracingUtils() {
+    @Getter
+    private static Set<TracingEntry> contextBounded = new HashSet<>();
+
+    /**
+     * Adds the provided tracing entries to the set of context-bound keys used by
+     * {@link MDCContextLifter}.
+     *
+     * @param contextBounded tracing entries to be copied from Reactor Context to
+     *                       MDC
+     */
+    public LogTracingUtils(Set<TracingEntry> contextBounded) {
+        LogTracingUtils.contextBounded.addAll(contextBounded);
     }
 
     /** Tracing keys copied from Reactor Context to MDC. */
     public enum TracingEntry {
         /** Reactor context key for transaction identifier. */
-        CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}", true),
+        CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}"),
         /** Reactor context key for event code. */
-        CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}", true),
+        CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}"),
         /** Reactor context key for event identifier. */
-        CTX_EVENT_ID("ctx.event.id", "{eventId-not-found}", true),
+        CTX_EVENT_ID("ctx.event.id", "{eventId-not-found}"),
         /** Reactor context key for RPT identifiers. */
-        CTX_RPT_IDS("ctx.rpt.ids", "{rptIds-not-found}", false),
+        CTX_RPT_IDS("ctx.rpt.ids", "{rptIds-not-found}"),
         /** Reactor context key for payment tokens. */
-        CTX_PAYMENT_TOKENS("ctx.payment.tokens", "{paymentTokens-not-found}", false),
+        CTX_PAYMENT_TOKENS("ctx.payment.tokens", "{paymentTokens-not-found}"),
         /** Reactor context key for user identifier. */
-        CTX_USER_ID("ctx.user.id", "{userId-not-found}", true),
+        CTX_USER_ID("ctx.user.id", "{userId-not-found}"),
         /** Reactor context key for X-Forwarded-For value. */
-        CTX_FORWARDED_FOR("ctx.forwarded.for", "{forwardedFor-not-found}", true),
+        CTX_FORWARDED_FOR("ctx.forwarded.for", "{forwardedFor-not-found}"),
         /** MDC key for business transaction identifier. */
-        TRANSACTION_ID("transaction.id", "{transactionId-not-found}", false),
+        TRANSACTION_ID("transaction.id", "{transactionId-not-found}"),
         /** MDC key for business transaction status. */
-        TRANSACTION_STATUS("transaction.status", "{transactionStatus-not-found}", false),
+        TRANSACTION_STATUS("transaction.status", "{transactionStatus-not-found}"),
         /** MDC key for correlation identifier. */
-        CORRELATION_ID("correlation.id", "{correlationId-not-found}", false),
+        CORRELATION_ID("correlation.id", "{correlationId-not-found}"),
         /** MDC key for operation identifier. */
-        OPERATION_ID("operation.id", "{operationId-not-found}", false),
+        OPERATION_ID("operation.id", "{operationId-not-found}"),
         /** MDC key for response code. */
-        RESPONSE_CODE("response.code", "{responseCode-not-found}", false),
+        RESPONSE_CODE("response.code", "{responseCode-not-found}"),
         /** MDC key for response payload. */
-        RESPONSE_BODY("response.body", "{responseBody-not-found}", false),
+        RESPONSE_BODY("response.body", "{responseBody-not-found}"),
         /** MDC key for PSP identifier. */
-        PSP_ID("psp.id", "{pspId-not-found}", false),
+        PSP_ID("psp.id", "{pspId-not-found}"),
         /** MDC key for PSP channel code. */
-        PSP_CHANNEL_CODE("psp.channel.code", "{pspChannelCode-not-found}", false),
+        PSP_CHANNEL_CODE("psp.channel.code", "{pspChannelCode-not-found}"),
         /** MDC key for PSP transaction identifier. */
-        PSP_TRANSACTION_ID("psp.transaction.id", "{pspTransactionId-not-found}", false),
+        PSP_TRANSACTION_ID("psp.transaction.id", "{pspTransactionId-not-found}"),
         /** MDC key for queue event identifier. */
-        QUEUE_EVENT_ID("queue.event.id", "{queueEventId-not-found}", false),
+        QUEUE_EVENT_ID("queue.event.id", "{queueEventId-not-found}"),
         /** MDC key for request path. */
-        PATH("path", "{path-not-found}", false),
+        PATH("path", "{path-not-found}"),
         /** Reactor context key for action associated with the event. */
-        EVENT_ACTION("event.action", "{eventAction-not-found}", true),
+        EVENT_ACTION("event.action", "{eventAction-not-found}"),
         /** Reactor context key for event outcome. */
-        EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}", false),
+        EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
         /** MDC key for dependency name involved in the operation. */
-        DEPENDENCY("dependency", "{dependency-not-found}", false),
+        DEPENDENCY("dependency", "{dependency-not-found}"),
         /** MDC key for error class name. */
-        ERROR_TYPE("error.type", "{errorType-not-found}", false),
+        ERROR_TYPE("error.type", "{errorType-not-found}"),
         /** MDC key for error message text. */
-        ERROR_MESSAGE("error.message", "{errorMessage-not-found}", false);
+        ERROR_MESSAGE("error.message", "{errorMessage-not-found}");
 
         private final String key;
         private final String defaultValue;
-        private final boolean contextBound;
 
         TracingEntry(
                 String key,
-                String defaultValue,
-                boolean contextBound
+                String defaultValue
         ) {
             this.key = key;
             this.defaultValue = defaultValue;
-            this.contextBound = contextBound;
         }
 
         /**
@@ -109,14 +117,6 @@ public class LogTracingUtils {
             return defaultValue;
         }
 
-        /**
-         * Indicates whether this entry is expected in Reactor Context.
-         *
-         * @return {@code true} if context-bound
-         */
-        public boolean isContextBound() {
-            return contextBound;
-        }
     }
 
     /**

@@ -8,6 +8,8 @@ import org.slf4j.MDC;
 import reactor.core.CoreSubscriber;
 import reactor.util.context.Context;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -31,6 +33,7 @@ class MDCContextLifterTest {
     @AfterEach
     void clearMdc() {
         MDC.clear();
+        LogTracingUtils.getContextBounded().clear();
     }
 
     @Test
@@ -45,6 +48,13 @@ class MDCContextLifterTest {
 
     @Test
     void shouldCopyContextToMdcOnNext() {
+        new LogTracingUtils(
+                Set.of(
+                        LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID,
+                        LogTracingUtils.TracingEntry.EVENT_ACTION,
+                        LogTracingUtils.TracingEntry.CTX_EVENT_CODE
+                )
+        );
         RecordingSubscriber coreSubscriber = new RecordingSubscriber(
                 Context.of(
                         LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey(),
@@ -58,13 +68,13 @@ class MDCContextLifterTest {
         lifter.onNext("payload");
 
         assertEquals("payload", coreSubscriber.nextValue);
-        assertEquals("transaction-id", MDC.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey()));
-        assertEquals("ACTION", MDC.get(LogTracingUtils.TracingEntry.EVENT_ACTION.getKey()));
+        assertEquals("transaction-id", coreSubscriber.capturedTransactionId);
+        assertEquals("ACTION", coreSubscriber.capturedEventAction);
         assertEquals(
                 LogTracingUtils.TracingEntry.CTX_EVENT_CODE.getDefaultValue(),
-                MDC.get(LogTracingUtils.TracingEntry.CTX_EVENT_CODE.getKey())
+                coreSubscriber.capturedEventCode
         );
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.DEPENDENCY.getKey()));
+        assertNull(coreSubscriber.capturedDependency);
     }
 
     @Test
@@ -132,6 +142,10 @@ class MDCContextLifterTest {
         private RuntimeException onCompleteToThrow;
         private Throwable lastError;
         private boolean completed;
+        private String capturedTransactionId;
+        private String capturedEventAction;
+        private String capturedEventCode;
+        private String capturedDependency;
 
         private RecordingSubscriber(@NotNull Context context) {
             this.context = context;
@@ -145,6 +159,10 @@ class MDCContextLifterTest {
         @Override
         public void onNext(String value) {
             this.nextValue = value;
+            this.capturedTransactionId = MDC.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey());
+            this.capturedEventAction = MDC.get(LogTracingUtils.TracingEntry.EVENT_ACTION.getKey());
+            this.capturedEventCode = MDC.get(LogTracingUtils.TracingEntry.CTX_EVENT_CODE.getKey());
+            this.capturedDependency = MDC.get(LogTracingUtils.TracingEntry.DEPENDENCY.getKey());
         }
 
         @Override

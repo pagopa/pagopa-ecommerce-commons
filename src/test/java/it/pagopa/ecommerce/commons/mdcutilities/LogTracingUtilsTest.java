@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -92,18 +91,6 @@ class LogTracingUtilsTest {
         assertEquals("{eventAction-not-found}", LogTracingUtils.TracingEntry.EVENT_ACTION.getDefaultValue());
         assertEquals("{errorType-not-found}", LogTracingUtils.TracingEntry.ERROR_TYPE.getDefaultValue());
         assertEquals("{errorMessage-not-found}", LogTracingUtils.TracingEntry.ERROR_MESSAGE.getDefaultValue());
-    }
-
-    @Test
-    void shouldExposeExpectedTracingEntryContextBoundFlags() {
-        assertTrue(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.isContextBound());
-        assertTrue(LogTracingUtils.TracingEntry.CTX_EVENT_CODE.isContextBound());
-        assertTrue(LogTracingUtils.TracingEntry.CTX_EVENT_ID.isContextBound());
-        assertTrue(LogTracingUtils.TracingEntry.EVENT_ACTION.isContextBound());
-        assertFalse(LogTracingUtils.TracingEntry.EVENT_OUTCOME.isContextBound());
-        assertFalse(LogTracingUtils.TracingEntry.DEPENDENCY.isContextBound());
-        assertFalse(LogTracingUtils.TracingEntry.ERROR_TYPE.isContextBound());
-        assertFalse(LogTracingUtils.TracingEntry.ERROR_MESSAGE.isContextBound());
     }
 
     @Test
