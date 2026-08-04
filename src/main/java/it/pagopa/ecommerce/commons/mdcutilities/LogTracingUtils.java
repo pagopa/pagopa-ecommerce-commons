@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.*;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.MDC;
 import reactor.util.context.Context;
 
@@ -26,20 +27,14 @@ public class LogTracingUtils {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Getter
+    @Setter
     private static Set<TracingEntry> contextBounded = new HashSet<>();
 
-    /**
-     * Adds the provided tracing entries to the set of context-bound keys used by
-     * {@link MDCContextLifter}.
-     *
-     * @param contextBounded tracing entries to be copied from Reactor Context to
-     *                       MDC
-     */
-    public LogTracingUtils(Set<TracingEntry> contextBounded) {
-        LogTracingUtils.contextBounded.addAll(contextBounded);
+    private LogTracingUtils() {
     }
 
     /** Tracing keys copied from Reactor Context to MDC. */
+    @Getter
     public enum TracingEntry {
         /** Reactor context key for transaction identifier. */
         CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}"),
@@ -88,7 +83,15 @@ public class LogTracingUtils {
         /** MDC key for error message text. */
         ERROR_MESSAGE("error.message", "{errorMessage-not-found}");
 
+        /**
+         * -- GETTER -- Returns the MDC/reactor key name.
+         *
+         */
         private final String key;
+        /**
+         * -- GETTER -- Returns the fallback value used when the key is missing.
+         *
+         */
         private final String defaultValue;
 
         TracingEntry(
@@ -97,24 +100,6 @@ public class LogTracingUtils {
         ) {
             this.key = key;
             this.defaultValue = defaultValue;
-        }
-
-        /**
-         * Returns the MDC/reactor key name.
-         *
-         * @return key name
-         */
-        public String getKey() {
-            return key;
-        }
-
-        /**
-         * Returns the fallback value used when the key is missing.
-         *
-         * @return default value
-         */
-        public String getDefaultValue() {
-            return defaultValue;
         }
 
     }

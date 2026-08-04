@@ -8,7 +8,7 @@ import org.slf4j.MDC;
 import reactor.core.CoreSubscriber;
 import reactor.util.context.Context;
 
-import java.util.Set;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -48,13 +48,13 @@ class MDCContextLifterTest {
 
     @Test
     void shouldCopyContextToMdcOnNext() {
-        new LogTracingUtils(
-                Set.of(
-                        LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID,
-                        LogTracingUtils.TracingEntry.EVENT_ACTION,
-                        LogTracingUtils.TracingEntry.CTX_EVENT_CODE
-                )
-        );
+        HashSet<LogTracingUtils.TracingEntry> entries = new HashSet<>();
+        entries.add(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID);
+        entries.add(LogTracingUtils.TracingEntry.EVENT_ACTION);
+        entries.add(LogTracingUtils.TracingEntry.CTX_EVENT_CODE);
+
+        LogTracingUtils.setContextBounded(entries);
+
         RecordingSubscriber coreSubscriber = new RecordingSubscriber(
                 Context.of(
                         LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey(),
