@@ -279,6 +279,7 @@ public class LogTracingUtils {
      * then cleans up the MDC.
      *
      * @param logger  the SLF4J logger to use
+     * @param error   Throwable to log
      * @param message the log message
      */
     public void logError(
@@ -297,6 +298,7 @@ public class LogTracingUtils {
      * then cleans up the MDC.
      *
      * @param logger  the SLF4J logger to use
+     * @param error   Throwable to log
      * @param message the log message
      */
     public void logErrorWithStackTrace(
