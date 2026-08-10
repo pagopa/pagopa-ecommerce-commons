@@ -1,43 +1,44 @@
 package it.pagopa.ecommerce.commons.mdcutilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Getter;
-import lombok.Setter;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
+import org.slf4j.event.Level;
 import reactor.util.context.Context;
 
-/**
- * Utility class with helper methods to enrich Reactor Context event processing.
- */
 public class LogTracingUtils {
+    private String outcome;
+    private String message;
+    private Throwable error;
+    private String stackTrace;
+    private Map<AttributeKeys, String> attributes = new EnumMap<>(AttributeKeys.class);
+    private final Map<String, String> details = new HashMap<>();
+    private Logger logger;
 
-    private static final String CTX_DETAILS_KEY = "ctx.details";
-    /** Dependency label used in MDC for MongoDB operations. */
-    public static final String MONGO_DEPENDENCY_KEY = "eCommerce-mongodb";
-    /** Dependency label used in MDC for Redis operations. */
-    public static final String REDIS_DEPENDENCY_KEY = "eCommerce-redis";
+    private final List<String> mdcKeys = new ArrayList<>();
+
+    private static final String SUCCESS = "success";
+    private static final String FAILURE = "failure";
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Getter
-    @Setter
-    private static Set<TracingEntry> contextBounded = new HashSet<>();
-
-    private LogTracingUtils() {
-    }
-
-    /** Tracing keys copied from Reactor Context to MDC. */
-    @Getter
-    public enum TracingEntry {
+    public enum AttributeKeys {
+        /** Reactor context key for action associated with the event. */
+        EVENT_ACTION("event.action", "{eventAction-not-found}"),
         /** Reactor context key for transaction identifier. */
         CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}"),
+        /** Reactor context key for transaction identifier. */
+        CTX_AUTHORIZATION_REQUEST_ID("ctx.authorization.request.id", "{authorizationRequestId-not-found}"),
         /** Reactor context key for event code. */
         CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}"),
         /** Reactor context key for event identifier. */
@@ -48,53 +49,15 @@ public class LogTracingUtils {
         CTX_PAYMENT_TOKENS("ctx.payment.tokens", "{paymentTokens-not-found}"),
         /** Reactor context key for user identifier. */
         CTX_USER_ID("ctx.user.id", "{userId-not-found}"),
-        /** Reactor context key for X-Forwarded-For value. */
-        CTX_FORWARDED_FOR("ctx.forwarded.for", "{forwardedFor-not-found}"),
-        /** MDC key for business transaction identifier. */
-        TRANSACTION_ID("transaction.id", "{transactionId-not-found}"),
-        /** MDC key for business transaction status. */
-        TRANSACTION_STATUS("transaction.status", "{transactionStatus-not-found}"),
         /** MDC key for correlation identifier. */
         CORRELATION_ID("correlation.id", "{correlationId-not-found}"),
-        /** MDC key for operation identifier. */
-        OPERATION_ID("operation.id", "{operationId-not-found}"),
-        /** MDC key for response code. */
-        RESPONSE_CODE("response.code", "{responseCode-not-found}"),
-        /** MDC key for response payload. */
-        RESPONSE_BODY("response.body", "{responseBody-not-found}"),
         /** MDC key for PSP identifier. */
-        PSP_ID("psp.id", "{pspId-not-found}"),
-        /** MDC key for PSP channel code. */
-        PSP_CHANNEL_CODE("psp.channel.code", "{pspChannelCode-not-found}"),
-        /** MDC key for PSP transaction identifier. */
-        PSP_TRANSACTION_ID("psp.transaction.id", "{pspTransactionId-not-found}"),
-        /** MDC key for queue event identifier. */
-        QUEUE_EVENT_ID("queue.event.id", "{queueEventId-not-found}"),
-        /** MDC key for request path. */
-        PATH("path", "{path-not-found}"),
-        /** Reactor context key for action associated with the event. */
-        EVENT_ACTION("event.action", "{eventAction-not-found}"),
-        /** Reactor context key for event outcome. */
-        EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
-        /** MDC key for dependency name involved in the operation. */
-        DEPENDENCY("dependency", "{dependency-not-found}"),
-        /** MDC key for error class name. */
-        ERROR_TYPE("error.type", "{errorType-not-found}"),
-        /** MDC key for error message text. */
-        ERROR_MESSAGE("error.message", "{errorMessage-not-found}");
+        PSP_ID("psp.id", "{pspId-not-found}");
 
-        /**
-         * -- GETTER -- Returns the MDC/reactor key name.
-         *
-         */
         private final String key;
-        /**
-         * -- GETTER -- Returns the fallback value used when the key is missing.
-         *
-         */
         private final String defaultValue;
 
-        TracingEntry(
+        AttributeKeys(
                 String key,
                 String defaultValue
         ) {
@@ -104,11 +67,183 @@ public class LogTracingUtils {
 
     }
 
+    private enum AttributeKeysPrivate {
+        CTX_DETAILS("ctx.details", "{details-not-found}"),
+        /** MDC key for event outcome. */
+        EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
+        /** MDC key for dependency name involved in the operation. */
+        DEPENDENCY("dependency", "{dependency-not-found}"),
+        /** MDC key for error class name. */
+        ERROR_TYPE("error.type", "{errorType-not-found}"),
+        /** MDC key for error message text. */
+        ERROR_MESSAGE("error.message", "{errorMessage-not-found}"),
+
+        ERROR_STACK_TRACE("error.stack_trace", "{errorStackTrace-not-found}");
+
+        private final String key;
+        private final String defaultValue;
+
+        AttributeKeysPrivate(
+                String key,
+                String defaultValue
+        ) {
+            this.key = key;
+            this.defaultValue = defaultValue;
+        }
+
+    }
+
+    private LogTracingUtils() {}
+
+    public static LogTracingUtils loggerTracingUtils() {
+        return new LogTracingUtils();
+    }
+
+    public LogTracingUtils attributes(Map<AttributeKeys, String> attributes){
+        this.attributes = attributes;
+        return this;
+    }
+
+    public LogTracingUtils details(Map<String, String> details) {
+        this.details.putAll(details);
+        return this;
+    }
+
+    public LogTracingUtils dependency(String dependency){
+        this.details.put(AttributeKeysPrivate.DEPENDENCY.key, dependency);
+        return this;
+    }
+
+    public LogTracingUtils error(Throwable error) {
+        this.error = error;
+        return this;
+    }
+
+    public LogTracingUtils errorWithStackTrace(Throwable error) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        error.printStackTrace(pw);
+
+        this.stackTrace = sw.toString();
+
+        pw.close();
+
+        return this.error(error);
+    }
+
+    public LogTracingUtils success() {
+        this.outcome = SUCCESS;
+        return this;
+    }
+
+    public LogTracingUtils failure() {
+        this.outcome = FAILURE;
+        return this;
+    }
+
+    private static String serializeDetailsToMdcMap(Map<String, ?> details){
+        String rawDetails = "{}";
+        if (details != null) {
+            try {
+                rawDetails = OBJECT_MAPPER.writeValueAsString(details);
+            } catch (JsonProcessingException ignored) {
+                rawDetails = "{}";
+            }
+        }
+        return rawDetails;
+    }
+
+    // Save key added to MDC
+    private void addMdcKey(String key, String value){
+        MDC.put(key, value);
+        mdcKeys.add(key);
+    }
+
+    public void logInfo(Logger logger, String message){
+        this.message = message;
+        this.logger = logger;
+        log(Level.INFO);
+    }
+
+    public void logDebug(Logger logger, String message){
+        this.message = message;
+        this.logger = logger;
+        log(Level.DEBUG);
+    }
+
+    public void logWarn(Logger logger, String message){
+        this.message = message;
+        this.logger = logger;
+        log(Level.WARN);
+    }
+
+    public void logTrace(Logger logger, String message){
+        this.message = message;
+        this.logger = logger;
+        log(Level.TRACE);
+    }
+
+    public void logError(Logger logger){
+        this.logger = logger;
+        log(Level.ERROR);
+    }
+
+    private void log(Level loggerLevel) {
+        // Add attributes keys and values to MDC map
+        if (!attributes.isEmpty()) {
+            attributes.forEach(
+                    (
+                            key,
+                            value
+                    ) -> {
+                        if (key != null && value != null) {
+                            MDC.put(key.key, value);
+                            mdcKeys.add(key.key);
+                        }
+                    }
+            );
+        }
+
+        // Add details key and value to MDC map
+
+        if(!details.isEmpty()) {
+            addMdcKey(AttributeKeysPrivate.CTX_DETAILS.key, serializeDetailsToMdcMap(details));
+        }
+
+        if (outcome != null) {
+            addMdcKey(AttributeKeysPrivate.EVENT_OUTCOME.key, outcome);
+        }
+
+        if(error != null) {
+            addMdcKey(AttributeKeysPrivate.ERROR_TYPE.key, error.getClass().getName());
+            addMdcKey(AttributeKeysPrivate.ERROR_MESSAGE.key, error.getMessage() != null
+                    ? error.getMessage()
+                    : AttributeKeysPrivate.ERROR_MESSAGE.defaultValue);
+        }
+
+        if (stackTrace != null) {
+            addMdcKey(AttributeKeysPrivate.ERROR_STACK_TRACE.key, stackTrace);
+        }
+
+        switch(loggerLevel) {
+            case INFO -> logger.info(message);
+            case WARN -> logger.warn(message);
+            case DEBUG -> logger.debug(message);
+            case TRACE -> logger.trace(message);
+            case ERROR -> logger.error(message);
+            case null, default -> throw new RuntimeException("loggerLevel null or not defined.");
+        }
+
+        // Cleanup MDC
+        this.mdcKeys.forEach(MDC::remove);
+        this.mdcKeys.clear();
+    }
+
     /**
      * Enrich Reactor Context with tracing entries in a fully generic way.
      *
      * <p>
-     * This method accepts a map of {@link TracingEntry} enum keys with their
+     * This method accepts a map of {@link LogTracingUtilsOld.AttributeKeys} enum keys with their
      * corresponding values. Each entry is added to the context with its value or
      * default value if null. Any future TracingEntry additions are automatically
      * supported without method changes.
@@ -118,193 +253,20 @@ public class LogTracingUtils {
      * @return enriched context with all tracing entries
      */
     public static Context enrichContextForEvent(
-                                                Map<TracingEntry, String> tracingEntries,
-                                                Context reactorContext
+            Map<LogTracingUtils.AttributeKeys, String> tracingEntries,
+            Context reactorContext
     ) {
         Context enrichedContext = reactorContext;
         if (tracingEntries != null) {
-            for (Map.Entry<TracingEntry, String> entry : tracingEntries.entrySet()) {
+            for (Map.Entry<LogTracingUtils.AttributeKeys, String> entry : tracingEntries.entrySet()) {
                 enrichedContext = enrichedContext.put(
-                        entry.getKey().getKey(),
+                        entry.getKey().key,
                         entry.getValue() != null
                                 ? entry.getValue()
-                                : entry.getKey().getDefaultValue()
+                                : entry.getKey().defaultValue
                 );
             }
         }
         return enrichedContext;
-    }
-
-    /**
-     * Executes a block with error attributes ({@code error.type} and
-     * {@code error.message}) and an arbitrary map of top-level attributes
-     * temporarily stored in MDC.
-     *
-     * <p>
-     * Error attributes are extracted from the provided {@link Throwable}. Top-level
-     * attributes are passed to MDC cleanup logic where string conversion is
-     * handled. All keys are guaranteed to be removed after block execution.
-     *
-     * @param error      the exception to extract type and message from (can be
-     *                   null)
-     * @param attributes map of top-level MDC key-value attributes (can be null)
-     * @param block      code to execute while attributes are available in MDC
-     */
-    public static void withErrorMdc(
-                                    Throwable error,
-                                    Map<String, ?> attributes,
-                                    Runnable block
-    ) {
-        Map<String, Object> mdcMap = new HashMap<>();
-
-        mdcMap.put(
-                TracingEntry.ERROR_TYPE.getKey(),
-                error != null
-                        ? error.getClass().getName()
-                        : TracingEntry.ERROR_TYPE.getDefaultValue()
-        );
-        mdcMap.put(
-                TracingEntry.ERROR_MESSAGE.getKey(),
-                error != null && error.getMessage() != null
-                        ? error.getMessage()
-                        : TracingEntry.ERROR_MESSAGE.getDefaultValue()
-        );
-
-        if (attributes != null) {
-            attributes.forEach(
-                    (
-                     key,
-                     value
-                    ) -> {
-                        if (key != null && value != null) {
-                            mdcMap.put(key, value);
-                        }
-                    }
-            );
-        }
-
-        insertIntoMdcAndCleanup(mdcMap, block);
-    }
-
-    /**
-     * Executes a block with structured error details temporarily inserted in MDC.
-     *
-     * <p>
-     * The method adds {@code error.type} and {@code error.message} keys, executes
-     * the provided block, and always removes those keys afterward.
-     *
-     * @param error error instance used to populate MDC metadata
-     * @param block code to execute while error metadata is available in MDC
-     */
-    public static void withErrorMdc(
-                                    Throwable error,
-                                    Runnable block
-    ) {
-        withErrorMdc(error, null, block);
-    }
-
-    /**
-     * Executes a block with {@code ctx.details} temporarily stored in MDC as a JSON
-     * string.
-     *
-     * <p>
-     * The input map is serialized to raw JSON and stored under key
-     * {@code ctx.details}. If serialization fails, an empty JSON object
-     * ({@code {}}) is used as fallback. The key is always removed after block
-     * execution.
-     *
-     * @param details map of detail values to serialize under {@code ctx.details}
-     * @param block   code to execute while {@code ctx.details} is available in MDC
-     */
-    public static void withContextDetailsMdc(
-                                             Map<String, ?> details,
-                                             Runnable block
-    ) {
-        withContextDetailsMdc(details, null, block);
-    }
-
-    /**
-     * Executes a block with {@code ctx.details} temporarily stored in MDC as a JSON
-     * string.
-     *
-     * <p>
-     * The input map is serialized to raw JSON and stored under key
-     * {@code ctx.details}. If serialization fails, an empty JSON object
-     * ({@code {}}) is used as fallback. The key is always removed after block
-     * execution.
-     *
-     * @param details    map of detail values to serialize under {@code ctx.details}
-     * @param attributes map of top-level MDC key-value attributes (can be null)
-     * @param block      code to execute while {@code ctx.details} is available in
-     *                   MDC
-     */
-    public static void withContextDetailsMdc(
-                                             Map<String, ?> details,
-                                             Map<String, ?> attributes,
-                                             Runnable block
-    ) {
-        Map<String, Object> mdcMap = new HashMap<>();
-
-        String rawDetails = "{}";
-        if (details != null) {
-            try {
-                rawDetails = OBJECT_MAPPER.writeValueAsString(details);
-            } catch (JsonProcessingException ignored) {
-                rawDetails = "{}";
-            }
-        }
-        mdcMap.put(CTX_DETAILS_KEY, rawDetails);
-
-        if (attributes != null) {
-            attributes.forEach(
-                    (
-                     k,
-                     v
-                    ) -> {
-                        if (k != null && v != null) {
-                            mdcMap.put(k, v);
-                        }
-                    }
-            );
-        }
-
-        insertIntoMdcAndCleanup(mdcMap, block);
-    }
-
-    /**
-     * Inserts the provided entries into MDC, executes the given block, and always
-     * removes the inserted keys afterward.
-     *
-     * <p>
-     * This method guarantees MDC cleanup through a {@code finally} block, so
-     * temporary values do not leak across log statements or threads.
-     *
-     * @param entries key/value pairs to temporarily add to MDC
-     * @param block   code to execute while MDC entries are available
-     */
-    private static void insertIntoMdcAndCleanup(
-                                                Map<String, ?> entries,
-                                                Runnable block
-    ) {
-        List<String> detailKeys = new ArrayList<>();
-
-        try {
-            if (entries != null) {
-                entries.forEach(
-                        (
-                         key,
-                         value
-                        ) -> {
-                            if (key != null && value != null) {
-                                MDC.put(key, value.toString());
-                                detailKeys.add(key);
-                            }
-                        }
-                );
-            }
-            block.run();
-        } finally {
-            detailKeys.forEach(MDC::remove);
-        }
     }
 }
