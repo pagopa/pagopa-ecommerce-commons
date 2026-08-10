@@ -89,10 +89,14 @@ class LogTracingUtilsTest {
         Map<String, String> details = Map.of("userId", "u-123", "retryCount", "3");
 
         doAnswer(invocation -> {
-            assertEquals("{\"userId\":\"u-123\",\"dependency\":\"my-dependency\",\"retryCount\":\"3\"}", MDC.get("ctx.details"));
+            assertEquals(
+                    "{\"userId\":\"u-123\",\"dependency\":\"my-dependency\",\"retryCount\":\"3\"}",
+                    MDC.get("ctx.details")
+            );
 
             // Note: because LogTracingUtils puts dependencies into the details map,
-            // we should parse the JSON to verify both the details and the dependency are present
+            // we should parse the JSON to verify both the details and the dependency are
+            // present
             String mdcDetails = MDC.get("ctx.details");
             assertNotNull(mdcDetails);
             assertTrue(mdcDetails.contains("\"userId\":\"u-123\""));
@@ -116,8 +120,10 @@ class LogTracingUtilsTest {
     void testLogWarn_basic() {
         // Arrange
         doAnswer(invocation -> {
-            assertTrue(MDC.getCopyOfContextMap() == null || MDC.getCopyOfContextMap().isEmpty(),
-                    "MDC should be empty since no attributes were added");
+            assertTrue(
+                    MDC.getCopyOfContextMap() == null || MDC.getCopyOfContextMap().isEmpty(),
+                    "MDC should be empty since no attributes were added"
+            );
             return null;
         }).when(mockLogger).warn(anyString());
 

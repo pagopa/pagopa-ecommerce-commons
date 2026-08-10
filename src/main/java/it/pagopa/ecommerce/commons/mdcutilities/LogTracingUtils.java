@@ -15,6 +15,16 @@ import org.slf4j.MDC;
 import org.slf4j.event.Level;
 import reactor.util.context.Context;
 
+/**
+ * Utility class for structured logging utilizing the Fluent Builder pattern.
+ * <p>
+ * This class facilitates the population of the SLF4J Mapped Diagnostic Context
+ * (MDC) with predefined attributes, custom details, and error information. It
+ * ensures that MDC keys are safely added before logging and properly cleaned up
+ * immediately after the log is emitted, preventing context leaks in concurrent
+ * environments.
+ * </p>
+ */
 public class LogTracingUtils {
     private String outcome;
     private String message;
@@ -33,13 +43,17 @@ public class LogTracingUtils {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+    /**
+     * Enumeration of standard public keys used for MDC and Reactor context
+     * population.
+     */
     @Getter
     public enum AttributeKeys {
         /** Reactor context key for action associated with the event. */
         EVENT_ACTION("event.action", "{eventAction-not-found}"),
         /** Reactor context key for transaction identifier. */
         CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}"),
-        /** Reactor context key for transaction identifier. */
+        /** Reactor context key for authorization request identifier. */
         CTX_AUTHORIZATION_REQUEST_ID("ctx.authorization.request.id", "{authorizationRequestId-not-found}"),
         /** Reactor context key for event code. */
         CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}"),
@@ -66,10 +80,13 @@ public class LogTracingUtils {
             this.key = key;
             this.defaultValue = defaultValue;
         }
-
     }
 
+    /**
+     * Enumeration of internal/private MDC keys handled exclusively by the builder.
+     */
     private enum AttributeKeysPrivate {
+        /** MDC key for custom JSON details map. */
         CTX_DETAILS("ctx.details", "{details-not-found}"),
         /** MDC key for event outcome. */
         EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
@@ -79,7 +96,7 @@ public class LogTracingUtils {
         ERROR_TYPE("error.type", "{errorType-not-found}"),
         /** MDC key for error message text. */
         ERROR_MESSAGE("error.message", "{errorMessage-not-found}"),
-
+        /** MDC key for the complete error stack trace. */
         ERROR_STACK_TRACE("error.stack_trace", "{errorStackTrace-not-found}");
 
         private final String key;
@@ -92,35 +109,71 @@ public class LogTracingUtils {
             this.key = key;
             this.defaultValue = defaultValue;
         }
-
     }
 
-    private LogTracingUtils() {}
+    private LogTracingUtils() {
+    }
 
+    /**
+     * Creates a new instance of the log builder.
+     *
+     * @return a new {@link LogTracingUtils} instance
+     */
     public static LogTracingUtils loggerTracingUtils() {
         return new LogTracingUtils();
     }
 
-    public LogTracingUtils attributes(Map<AttributeKeys, String> attributes){
+    /**
+     * Sets a map of standard attributes to be added to the MDC.
+     *
+     * @param attributes map of standard {@link AttributeKeys} and their values
+     * @return this builder instance
+     */
+    public LogTracingUtils attributes(Map<AttributeKeys, String> attributes) {
         this.attributes = attributes;
         return this;
     }
 
+    /**
+     * Adds custom details that will be serialized as a JSON string in the MDC.
+     *
+     * @param details a map containing custom key-value string pairs
+     * @return this builder instance
+     */
     public LogTracingUtils details(Map<String, String> details) {
         this.details.putAll(details);
         return this;
     }
 
-    public LogTracingUtils dependency(String dependency){
+    /**
+     * Sets the external dependency name involved in the current operation.
+     *
+     * @param dependency the name of the dependency
+     * @return this builder instance
+     */
+    public LogTracingUtils dependency(String dependency) {
         this.details.put(AttributeKeysPrivate.DEPENDENCY.key, dependency);
         return this;
     }
 
+    /**
+     * Attaches an error to the log, extracting its type and message.
+     *
+     * @param error the {@link Throwable} occurred
+     * @return this builder instance
+     */
     public LogTracingUtils error(Throwable error) {
         this.error = error;
         return this;
     }
 
+    /**
+     * Attaches an error to the log, extracting its type, message, and full stack
+     * trace.
+     *
+     * @param error the {@link Throwable} occurred
+     * @return this builder instance
+     */
     public LogTracingUtils errorWithStackTrace(Throwable error) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -133,17 +186,34 @@ public class LogTracingUtils {
         return this.error(error);
     }
 
+    /**
+     * Marks the outcome of the logged event as successful.
+     *
+     * @return this builder instance
+     */
     public LogTracingUtils success() {
         this.outcome = SUCCESS;
         return this;
     }
 
+    /**
+     * Marks the outcome of the logged event as a failure.
+     *
+     * @return this builder instance
+     */
     public LogTracingUtils failure() {
         this.outcome = FAILURE;
         return this;
     }
 
-    private static String serializeDetailsToMdcMap(Map<String, ?> details){
+    /**
+     * Serializes the custom details map into a JSON string.
+     *
+     * @param details the map to serialize
+     * @return a JSON formatted string, or "{}" if serialization fails or map is
+     *         null
+     */
+    private static String serializeDetailsToMdcMap(Map<String, ?> details) {
         String rawDetails = "{}";
         if (details != null) {
             try {
@@ -155,42 +225,107 @@ public class LogTracingUtils {
         return rawDetails;
     }
 
-    // Save key added to MDC
-    private void addMdcKey(String key, String value){
+    /**
+     * Adds a key-value pair to the MDC and tracks it for post-log cleanup.
+     *
+     * @param key   the MDC key
+     * @param value the MDC value
+     */
+    private void addMdcKey(
+                           String key,
+                           String value
+    ) {
         MDC.put(key, value);
         mdcKeys.add(key);
     }
 
-    public void logInfo(Logger logger, String message){
+    /**
+     * Terminal operation: emits an INFO log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logInfo(
+                        Logger logger,
+                        String message
+    ) {
         this.message = message;
         this.logger = logger;
         log(Level.INFO);
     }
 
-    public void logDebug(Logger logger, String message){
+    /**
+     * Terminal operation: emits a DEBUG log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logDebug(
+                         Logger logger,
+                         String message
+    ) {
         this.message = message;
         this.logger = logger;
         log(Level.DEBUG);
     }
 
-    public void logWarn(Logger logger, String message){
+    /**
+     * Terminal operation: emits a WARN log with the configured MDC attributes, then
+     * cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logWarn(
+                        Logger logger,
+                        String message
+    ) {
         this.message = message;
         this.logger = logger;
         log(Level.WARN);
     }
 
-    public void logTrace(Logger logger, String message){
+    /**
+     * Terminal operation: emits a TRACE log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logTrace(
+                         Logger logger,
+                         String message
+    ) {
         this.message = message;
         this.logger = logger;
         log(Level.TRACE);
     }
 
-    public void logError(Logger logger, String message){
+    /**
+     * Terminal operation: emits an ERROR log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logError(
+                         Logger logger,
+                         String message
+    ) {
         this.logger = logger;
         this.message = message;
         log(Level.ERROR);
     }
 
+    /**
+     * Core logging routine.
+     * Populates the MDC with attributes, details, and errors, issues the log statement
+     * using the requested level, and immediately performs MDC cleanup to prevent context leaks.
+     *
+     * @param loggerLevel the SLF4J log level
+     */
     private void log(Level loggerLevel) {
         // Add attributes keys and values to MDC map
         if (!attributes.isEmpty()) {
@@ -208,7 +343,6 @@ public class LogTracingUtils {
         }
 
         // Add details key and value to MDC map
-
         if(!details.isEmpty()) {
             addMdcKey(AttributeKeysPrivate.CTX_DETAILS.key, serializeDetailsToMdcMap(details));
         }
@@ -256,8 +390,8 @@ public class LogTracingUtils {
      * @return enriched context with all tracing entries
      */
     public static Context enrichContextForEvent(
-            Map<LogTracingUtils.AttributeKeys, String> tracingEntries,
-            Context reactorContext
+                                                Map<LogTracingUtils.AttributeKeys, String> tracingEntries,
+                                                Context reactorContext
     ) {
         Context enrichedContext = reactorContext;
         if (tracingEntries != null) {
