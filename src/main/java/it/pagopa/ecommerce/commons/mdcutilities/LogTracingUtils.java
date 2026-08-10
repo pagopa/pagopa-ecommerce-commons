@@ -2,6 +2,8 @@ package it.pagopa.ecommerce.commons.mdcutilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -183,8 +185,9 @@ public class LogTracingUtils {
         log(Level.TRACE);
     }
 
-    public void logError(Logger logger){
+    public void logError(Logger logger, String message){
         this.logger = logger;
+        this.message = message;
         log(Level.ERROR);
     }
 
@@ -243,7 +246,7 @@ public class LogTracingUtils {
      * Enrich Reactor Context with tracing entries in a fully generic way.
      *
      * <p>
-     * This method accepts a map of {@link LogTracingUtilsOld.AttributeKeys} enum keys with their
+     * This method accepts a map of {@link AttributeKeys} enum keys with their
      * corresponding values. Each entry is added to the context with its value or
      * default value if null. Any future TracingEntry additions are automatically
      * supported without method changes.

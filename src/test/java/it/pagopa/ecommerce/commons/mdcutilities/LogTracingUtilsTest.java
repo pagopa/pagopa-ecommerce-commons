@@ -1,306 +1,180 @@
 package it.pagopa.ecommerce.commons.mdcutilities;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
-import reactor.util.context.Context;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 class LogTracingUtilsTest {
 
+    private Logger mockLogger;
+
+    @BeforeEach
+    void setUp() {
+        mockLogger = mock(Logger.class);
+        MDC.clear(); // Ensure clean state before each test
+    }
+
     @AfterEach
-    void clearMdc() {
-        MDC.clear();
+    void tearDown() {
+        MDC.clear(); // Ensure clean state after each test
     }
 
     @Test
-    void shouldReturnSameContextWhenTracingEntriesAreNull() {
-        // prerequisite
-        Context reactorContext = Context.of("existing-key", "existing-value");
+    void testLogInfo_withSuccessAndAttributes() {
+        // Arrange
+        Map<LogTracingUtils.AttributeKeys, String> attributes = new EnumMap<>(LogTracingUtils.AttributeKeys.class);
+        attributes.put(LogTracingUtils.AttributeKeys.EVENT_ACTION, "test-action");
+        attributes.put(LogTracingUtils.AttributeKeys.CORRELATION_ID, "12345");
 
-        // test
-        Context enrichedContext = LogTracingUtils.enrichContextForEvent(null, reactorContext);
+        // Act
+        // We use doAnswer to inspect MDC exactly when logger.info() is called
+        doAnswer(invocation -> {
+            assertEquals("test-action", MDC.get("event.action"));
+            assertEquals("12345", MDC.get("correlation.id"));
+            assertEquals("success", MDC.get("event.outcome"));
+            return null;
+        }).when(mockLogger).info(anyString());
 
-        // assertions
-        assertSame(reactorContext, enrichedContext);
-        assertEquals("existing-value", enrichedContext.get("existing-key"));
+        LogTracingUtils.loggerTracingUtils()
+                .attributes(attributes)
+                .success()
+                .logInfo(mockLogger, "Test info message");
+
+        // Assert
+        verify(mockLogger, times(1)).info("Test info message");
+        // Verify Cleanup
+        assertNull(MDC.get("event.action"), "MDC should be cleaned up after logging");
+        assertNull(MDC.get("correlation.id"));
+        assertNull(MDC.get("event.outcome"));
     }
 
     @Test
-    void shouldPreserveExistingContextEntriesWhenEnriching() {
-        // prerequisite
-        Context existingContext = Context.of("pre-existing-key", "pre-existing-value");
-        Map<LogTracingUtils.TracingEntry, String> tracingEntries = Map.of(
-                LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID,
-                "transaction-id"
-        );
+    void testLogError_withExceptionAndStackTrace() {
+        // Arrange
+        RuntimeException testException = new RuntimeException("Something went wrong");
 
-        // test
-        Context enrichedContext = LogTracingUtils.enrichContextForEvent(tracingEntries, existingContext);
+        doAnswer(invocation -> {
+            assertEquals("failure", MDC.get("event.outcome"));
+            assertEquals(RuntimeException.class.getName(), MDC.get("error.type"));
+            assertEquals("Something went wrong", MDC.get("error.message"));
+            assertNotNull(MDC.get("error.stack_trace"));
+            assertTrue(MDC.get("error.stack_trace").contains("Something went wrong"));
+            return null;
+        }).when(mockLogger).error(anyString());
 
-        // assertions
-        assertEquals("pre-existing-value", enrichedContext.get("pre-existing-key"));
-        assertEquals("transaction-id", enrichedContext.get(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey()));
+        // Act
+        LogTracingUtils.loggerTracingUtils()
+                .failure()
+                .errorWithStackTrace(testException)
+                .logError(mockLogger, "Test error message");
+
+        // Assert
+        verify(mockLogger, times(1)).error("Test error message");
+        assertNull(MDC.get("error.type"));
+        assertNull(MDC.get("error.stack_trace"));
     }
 
     @Test
-    void shouldEnrichContextUsingProvidedAndDefaultValues() {
-        // prerequisite
-        Map<LogTracingUtils.TracingEntry, String> tracingEntries = new EnumMap<>(LogTracingUtils.TracingEntry.class);
-        tracingEntries.put(LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID, "transaction-id");
-        tracingEntries.put(LogTracingUtils.TracingEntry.CTX_EVENT_CODE, null);
+    void testLogDebug_withDetailsAndDependency() throws Exception {
+        // Arrange
+        Map<String, String> details = Map.of("userId", "u-123", "retryCount", "3");
 
-        // test
-        Context enrichedContext = LogTracingUtils.enrichContextForEvent(
-                tracingEntries,
-                Context.empty()
-        );
+        doAnswer(invocation -> {
+            assertEquals("{\"userId\":\"u-123\",\"dependency\":\"my-dependency\",\"retryCount\":\"3\"}", MDC.get("ctx.details"));
 
-        // assertions
-        assertEquals("transaction-id", enrichedContext.get("ctx.transaction.id"));
-        assertEquals("{eventCode-not-found}", enrichedContext.get("ctx.event.code"));
-    }
+            // Note: because LogTracingUtils puts dependencies into the details map,
+            // we should parse the JSON to verify both the details and the dependency are present
+            String mdcDetails = MDC.get("ctx.details");
+            assertNotNull(mdcDetails);
+            assertTrue(mdcDetails.contains("\"userId\":\"u-123\""));
+            assertTrue(mdcDetails.contains("\"retryCount\":\"3\""));
+            assertTrue(mdcDetails.contains("\"dependency\":\"my-dependency\""));
+            return null;
+        }).when(mockLogger).debug(anyString());
 
-    @Test
-    void shouldExposeExpectedTracingEntryKeys() {
-        assertEquals("ctx.transaction.id", LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getKey());
-        assertEquals("ctx.event.code", LogTracingUtils.TracingEntry.CTX_EVENT_CODE.getKey());
-        assertEquals("ctx.event.id", LogTracingUtils.TracingEntry.CTX_EVENT_ID.getKey());
-        assertEquals("event.action", LogTracingUtils.TracingEntry.EVENT_ACTION.getKey());
-        assertEquals("event.outcome", LogTracingUtils.TracingEntry.EVENT_OUTCOME.getKey());
-        assertEquals("dependency", LogTracingUtils.TracingEntry.DEPENDENCY.getKey());
-        assertEquals("error.type", LogTracingUtils.TracingEntry.ERROR_TYPE.getKey());
-        assertEquals("error.message", LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey());
-    }
+        // Act
+        LogTracingUtils.loggerTracingUtils()
+                .details(details)
+                .dependency("my-dependency")
+                .logDebug(mockLogger, "Test debug message");
 
-    @Test
-    void shouldExposeExpectedTracingEntryDefaultValues() {
-        assertEquals("{transactionId-not-found}", LogTracingUtils.TracingEntry.CTX_TRANSACTION_ID.getDefaultValue());
-        assertEquals("{eventCode-not-found}", LogTracingUtils.TracingEntry.CTX_EVENT_CODE.getDefaultValue());
-        assertEquals("{eventId-not-found}", LogTracingUtils.TracingEntry.CTX_EVENT_ID.getDefaultValue());
-        assertEquals("{eventAction-not-found}", LogTracingUtils.TracingEntry.EVENT_ACTION.getDefaultValue());
-        assertEquals("{errorType-not-found}", LogTracingUtils.TracingEntry.ERROR_TYPE.getDefaultValue());
-        assertEquals("{errorMessage-not-found}", LogTracingUtils.TracingEntry.ERROR_MESSAGE.getDefaultValue());
-    }
-
-    @Test
-    void shouldPopulateAndCleanupMdcForErrorDetails() {
-        // prerequisite
-        RuntimeException error = new RuntimeException("error");
-        String dependency = LogTracingUtils.MONGO_DEPENDENCY_KEY;
-
-        // test
-        LogTracingUtils.withErrorMdc(
-                error,
-                Map.of(LogTracingUtils.TracingEntry.DEPENDENCY.getKey(), dependency),
-                () -> {
-                    assertEquals(
-                            RuntimeException.class.getName(),
-                            MDC.get(LogTracingUtils.TracingEntry.ERROR_TYPE.getKey())
-                    );
-                    assertEquals("error", MDC.get(LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey()));
-                    assertEquals(dependency, MDC.get(LogTracingUtils.TracingEntry.DEPENDENCY.getKey()));
-                }
-        );
-
-        // assertions
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.ERROR_TYPE.getKey()));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey()));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.DEPENDENCY.getKey()));
-    }
-
-    @Test
-    void shouldUseFallbackValuesForNullThrowable() {
-        // test
-        LogTracingUtils.withErrorMdc(null, () -> {
-            assertEquals(
-                    "{errorType-not-found}",
-                    MDC.get(LogTracingUtils.TracingEntry.ERROR_TYPE.getKey())
-            );
-            assertEquals(
-                    "{errorMessage-not-found}",
-                    MDC.get(LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey())
-            );
-        });
-    }
-
-    @Test
-    void shouldUseDefaultMessageWhenThrowableMessageIsNull() {
-        // test
-        LogTracingUtils.withErrorMdc(
-                new RuntimeException((String) null),
-                () -> assertEquals(
-                        "{errorMessage-not-found}",
-                        MDC.get(LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey())
-                )
-        );
-    }
-
-    @Test
-    void shouldCleanupMdcEvenWhenWithErrorMdcBlockThrows() {
-        // prerequisite
-        RuntimeException expected = new RuntimeException("failing-block");
-        IllegalStateException error = new IllegalStateException("error");
-        Map<String, String> attributes = Map.of(
-                LogTracingUtils.TracingEntry.DEPENDENCY.getKey(),
-                LogTracingUtils.REDIS_DEPENDENCY_KEY
-        );
-        Runnable block = () -> {
-            throw expected;
-        };
-
-        // test & assertions
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> LogTracingUtils.withErrorMdc(error, attributes, block)
-        );
-        assertSame(expected, thrown);
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.ERROR_TYPE.getKey()));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.ERROR_MESSAGE.getKey()));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.DEPENDENCY.getKey()));
-    }
-
-    @Test
-    void shouldIgnoreNullAttributesInWithErrorMdc() {
-        // prerequisite
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("valid.key", "value");
-        attributes.put(null, "ignored-value");
-        attributes.put("null.value", null);
-
-        // test
-        LogTracingUtils.withErrorMdc(new RuntimeException("error"), attributes, () -> {
-            assertEquals("value", MDC.get("valid.key"));
-            assertNull(MDC.get("null.value"));
-        });
-
-        // assertions
-        assertNull(MDC.get("valid.key"));
-    }
-
-    @Test
-    void shouldWorkWhenErrorAttributesMapIsNull() {
-        // test
-        LogTracingUtils.withErrorMdc(
-                new RuntimeException("error"),
-                null,
-                () -> assertEquals(
-                        RuntimeException.class.getName(),
-                        MDC.get(LogTracingUtils.TracingEntry.ERROR_TYPE.getKey())
-                )
-        );
-    }
-
-    @Test
-    void shouldPopulateAndCleanupMdcForContextDetails() {
-        // test
-        LogTracingUtils.withContextDetailsMdc(
-                Map.of("detail", "value"),
-                Map.of(LogTracingUtils.TracingEntry.PATH.getKey(), "/transactions"),
-                () -> {
-                    assertTrue(MDC.get("ctx.details").contains("\"detail\":\"value\""));
-                    assertEquals("/transactions", MDC.get(LogTracingUtils.TracingEntry.PATH.getKey()));
-                }
-        );
-
-        // assertions
-        assertNull(MDC.get("ctx.details"));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.PATH.getKey()));
-    }
-
-    @Test
-    void shouldPopulateContextDetailsFromSingleArgumentOverload() {
-        // test
-        LogTracingUtils.withContextDetailsMdc(Map.of("status", "CLOSED"), () -> {
-            String details = MDC.get("ctx.details");
-            assertNotNull(details);
-            assertTrue(details.contains("\"status\":\"CLOSED\""));
-        });
-    }
-
-    @Test
-    void shouldPopulateEmptyJsonWhenDetailsAreNull() {
-        // test
-        LogTracingUtils.withContextDetailsMdc(null, () -> assertEquals("{}", MDC.get("ctx.details")));
-
-        // assertions
+        // Assert
+        verify(mockLogger, times(1)).debug("Test debug message");
         assertNull(MDC.get("ctx.details"));
     }
 
     @Test
-    void shouldPopulateEmptyJsonWhenDetailsAreEmpty() {
-        // test
-        LogTracingUtils.withContextDetailsMdc(Map.of(), () -> assertEquals("{}", MDC.get("ctx.details")));
+    void testLogWarn_basic() {
+        // Arrange
+        doAnswer(invocation -> {
+            assertTrue(MDC.getCopyOfContextMap() == null || MDC.getCopyOfContextMap().isEmpty(),
+                    "MDC should be empty since no attributes were added");
+            return null;
+        }).when(mockLogger).warn(anyString());
 
-        // assertions
-        assertNull(MDC.get("ctx.details"));
+        // Act
+        LogTracingUtils.loggerTracingUtils().logWarn(mockLogger, "Warning message");
+
+        // Assert
+        verify(mockLogger, times(1)).warn("Warning message");
     }
 
     @Test
-    void shouldIgnoreNullAttributesInWithContextDetailsMdc() {
-        // prerequisite
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("present", "yes");
-        attributes.put("absent", null);
+    void testLogTrace_basic() {
+        // Act
+        LogTracingUtils.loggerTracingUtils().logTrace(mockLogger, "Trace message");
 
-        // test
-        LogTracingUtils.withContextDetailsMdc(
-                Map.of("k", "v"),
-                attributes,
-                () -> {
-                    assertEquals("yes", MDC.get("present"));
-                    assertNull(MDC.get("absent"));
-                }
-        );
-
-        // assertions
-        assertNull(MDC.get("present"));
+        // Assert
+        verify(mockLogger, times(1)).trace("Trace message");
     }
 
     @Test
-    void shouldWorkWhenContextDetailsAttributesMapIsNull() {
-        // test
-        LogTracingUtils.withContextDetailsMdc(
-                Map.of("transactionId", "event"),
-                null,
-                () -> {
-                    String details = MDC.get("ctx.details");
-                    assertNotNull(details);
-                    assertTrue(details.contains("\"transactionId\":\"event\""));
-                }
-        );
+    void testErrorWithoutMessage() {
+        // Arrange
+        Exception exceptionNoMessage = new Exception(); // No message provided
+
+        doAnswer(invocation -> {
+            assertEquals(Exception.class.getName(), MDC.get("error.type"));
+            // Fallback to default value from AttributeKeysPrivate
+            assertEquals("{errorMessage-not-found}", MDC.get("error.message"));
+            return null;
+        }).when(mockLogger).error(anyString());
+
+        // Act
+        LogTracingUtils.loggerTracingUtils()
+                .error(exceptionNoMessage)
+                .logError(mockLogger, "Error happened");
+
+        // Assert
+        verify(mockLogger, times(1)).error("Error happened");
     }
 
     @Test
-    void shouldCleanupMdcEvenWhenWithContextDetailsBlockThrows() {
-        // prerequisite
-        RuntimeException expected = new RuntimeException("failing-context-details");
-        Map<String, String> details = Map.of("detail", "value");
-        Map<String, String> attributes = Map.of(
-                LogTracingUtils.TracingEntry.PATH.getKey(),
-                "/transactions"
-        );
-        Runnable block = () -> {
-            throw expected;
-        };
+    void testNullAttributeKeysAndValuesAreIgnored() {
+        // Arrange
+        Map<LogTracingUtils.AttributeKeys, String> attributes = new EnumMap<>(LogTracingUtils.AttributeKeys.class);
+        attributes.put(LogTracingUtils.AttributeKeys.CTX_USER_ID, null); // Null value
 
-        // test & assertions
-        RuntimeException thrown = assertThrows(
-                RuntimeException.class,
-                () -> LogTracingUtils.withContextDetailsMdc(details, attributes, block)
-        );
-        assertSame(expected, thrown);
-        assertNull(MDC.get("ctx.details"));
-        assertNull(MDC.get(LogTracingUtils.TracingEntry.PATH.getKey()));
+        doAnswer(invocation -> {
+            assertNull(MDC.get("ctx.user.id"));
+            return null;
+        }).when(mockLogger).info(anyString());
+
+        // Act
+        LogTracingUtils.loggerTracingUtils()
+                .attributes(attributes)
+                .logInfo(mockLogger, "Testing nulls");
+
+        // Assert
+        verify(mockLogger, times(1)).info("Testing nulls");
     }
 }
