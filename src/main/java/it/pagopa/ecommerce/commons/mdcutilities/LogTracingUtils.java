@@ -44,6 +44,11 @@ public class LogTracingUtils {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+    /** Dependency value used in MDC for MongoDB operations. */
+    public static final String MONGO_DEPENDENCY = "eCommerce-mongodb";
+    /** Dependency value used in MDC for Redis operations. */
+    public static final String REDIS_DEPENDENCY = "eCommerce-redis";
+
     /**
      * Enumeration of standard public keys used for MDC and Reactor context
      * population.
@@ -294,8 +299,8 @@ public class LogTracingUtils {
     }
 
     /**
-     * Terminal operation: emits an ERROR log with the configured MDC attributes,
-     * then cleans up the MDC.
+     * Terminal operation: emits an ERROR log with the configured MDC attributes and
+     * the full stack trace of the provided Throwable, then cleans up the MDC.
      *
      * @param logger  the SLF4J logger to use
      * @param error   Throwable to log
