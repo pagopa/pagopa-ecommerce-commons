@@ -76,8 +76,7 @@ class LogTracingUtilsTest {
         // Act
         LogTracingUtils.loggerTracingUtils()
                 .failure()
-                .errorWithStackTrace(testException)
-                .logError(mockLogger, "Test error message");
+                .logErrorWithStackTrace(mockLogger, testException, "Test error message");
 
         // Assert
         verify(mockLogger, times(1)).error("Test error message");
@@ -159,8 +158,7 @@ class LogTracingUtilsTest {
 
         // Act
         LogTracingUtils.loggerTracingUtils()
-                .error(exceptionNoMessage)
-                .logError(mockLogger, "Error happened");
+                .logError(mockLogger, exceptionNoMessage, "Error happened");
 
         // Assert
         verify(mockLogger, times(1)).error("Error happened");

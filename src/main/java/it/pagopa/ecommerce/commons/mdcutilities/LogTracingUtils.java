@@ -158,36 +158,6 @@ public class LogTracingUtils {
     }
 
     /**
-     * Attaches an error to the log, extracting its type and message.
-     *
-     * @param error the {@link Throwable} occurred
-     * @return this builder instance
-     */
-    public LogTracingUtils error(Throwable error) {
-        this.error = error;
-        return this;
-    }
-
-    /**
-     * Attaches an error to the log, extracting its type, message, and full stack
-     * trace.
-     *
-     * @param error the {@link Throwable} occurred
-     * @return this builder instance
-     */
-    public LogTracingUtils errorWithStackTrace(Throwable error) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        error.printStackTrace(pw);
-
-        this.stackTrace = sw.toString();
-
-        pw.close();
-
-        return this.error(error);
-    }
-
-    /**
      * Marks the outcome of the logged event as successful.
      *
      * @return this builder instance
@@ -313,11 +283,36 @@ public class LogTracingUtils {
      */
     public void logError(
                          Logger logger,
+                         Throwable error,
                          String message
     ) {
         this.logger = logger;
         this.message = message;
+        this.error = error;
         log(Level.ERROR);
+    }
+
+    /**
+     * Terminal operation: emits an ERROR log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logErrorWithStackTrace(
+                                       Logger logger,
+                                       Throwable error,
+                                       String message
+    ) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        error.printStackTrace(pw);
+
+        this.stackTrace = sw.toString();
+
+        pw.close();
+
+        logError(logger, error, message);
     }
 
     /**
