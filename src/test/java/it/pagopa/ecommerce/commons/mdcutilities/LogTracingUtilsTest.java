@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import reactor.util.context.Context;
+
 class LogTracingUtilsTest {
 
     private Logger mockLogger;
@@ -183,4 +185,53 @@ class LogTracingUtilsTest {
         // Assert
         verify(mockLogger, times(1)).info("Testing nulls");
     }
+
+    @Test
+    void shouldReturnSameContextWhenTracingEntriesAreNull() {
+        // prerequisite
+        Context reactorContext = Context.of("existing-key", "existing-value");
+
+        // test
+        Context enrichedContext = LogTracingUtils.enrichContextForEvent(null, reactorContext);
+
+        // assertions
+        assertSame(reactorContext, enrichedContext);
+        assertEquals("existing-value", enrichedContext.get("existing-key"));
+    }
+
+    @Test
+    void shouldPreserveExistingContextEntriesWhenEnriching() {
+        // prerequisite
+        Context existingContext = Context.of("pre-existing-key", "pre-existing-value");
+        Map<LogTracingUtils.AttributeKeys, String> tracingEntries = Map.of(
+                LogTracingUtils.AttributeKeys.EVENT_ACTION,
+                "event_action"
+        );
+
+        // test
+        Context enrichedContext = LogTracingUtils.enrichContextForEvent(tracingEntries, existingContext);
+
+        // assertions
+        assertEquals("pre-existing-value", enrichedContext.get("pre-existing-key"));
+        assertEquals("event_action", enrichedContext.get(LogTracingUtils.AttributeKeys.EVENT_ACTION.getKey()));
+    }
+
+    @Test
+    void shouldEnrichContextUsingProvidedAndDefaultValues() {
+        // prerequisite
+        Map<LogTracingUtils.AttributeKeys, String> tracingEntries = new EnumMap<>(LogTracingUtils.AttributeKeys.class);
+        tracingEntries.put(LogTracingUtils.AttributeKeys.EVENT_ACTION, "event_action");
+        tracingEntries.put(LogTracingUtils.AttributeKeys.CORRELATION_ID, null);
+
+        // test
+        Context enrichedContext = LogTracingUtils.enrichContextForEvent(
+                tracingEntries,
+                Context.empty()
+        );
+
+        // assertions
+        assertEquals("event_action", enrichedContext.get("event.action"));
+        assertEquals("{correlationId-not-found}", enrichedContext.get("correlation.id"));
+    }
+
 }

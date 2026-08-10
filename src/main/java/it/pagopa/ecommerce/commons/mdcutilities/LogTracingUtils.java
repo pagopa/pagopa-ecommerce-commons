@@ -9,6 +9,7 @@ import java.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import it.pagopa.ecommerce.commons.exceptions.LogTracingUtilException;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
@@ -368,7 +369,7 @@ public class LogTracingUtils {
             case DEBUG -> logger.debug(message);
             case TRACE -> logger.trace(message);
             case ERROR -> logger.error(message);
-            case null, default -> throw new RuntimeException("loggerLevel null or not defined.");
+            case null, default -> throw new LogTracingUtilException("loggerLevel null or not defined.");
         }
 
         // Cleanup MDC
