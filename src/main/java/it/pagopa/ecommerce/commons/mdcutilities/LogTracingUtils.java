@@ -48,6 +48,10 @@ public class LogTracingUtils {
     public static final String MONGO_DEPENDENCY = "eCommerce-mongodb";
     /** Dependency value used in MDC for Redis operations. */
     public static final String REDIS_DEPENDENCY = "eCommerce-redis";
+    /** Dependency value used in MDC for storage queue operations. */
+    public static final String STORAGE_QUEUE_DEPENDENCY = "storage-queue";
+    /** Dependency value used in MDC for NPG operations. */
+    public static final String NPG_DEPENDENCY = "npg";
 
     /**
      * Enumeration of standard public keys used for MDC and Reactor context
