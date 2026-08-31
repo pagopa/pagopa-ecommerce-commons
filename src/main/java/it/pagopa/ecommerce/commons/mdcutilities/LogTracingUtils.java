@@ -31,7 +31,7 @@ public class LogTracingUtils {
     private String message;
     private Throwable error;
     private String stackTrace;
-    private Map<AttributeKeys, String> attributes = new EnumMap<>(AttributeKeys.class);
+    private final Map<AttributeKeys, String> attributes = new EnumMap<>(AttributeKeys.class);
     private final Map<String, String> details = new HashMap<>();
     private Logger logger;
 
@@ -102,7 +102,10 @@ public class LogTracingUtils {
         CTX_DETAILS("ctx.details", "{details-not-found}"),
         /** MDC key for event outcome. */
         EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
-        /** MDC key for dependency name involved in the operation. */
+        /**
+         * Details key for dependency name involved in the operation (serialized inside
+         * ctx.details).
+         */
         DEPENDENCY("dependency", "{dependency-not-found}"),
         /** MDC key for error class name. */
         ERROR_TYPE("error.type", "{errorType-not-found}"),
@@ -142,7 +145,7 @@ public class LogTracingUtils {
      * @return this builder instance
      */
     public LogTracingUtils attributes(Map<AttributeKeys, String> attributes) {
-        this.attributes = attributes;
+        this.attributes.putAll(attributes);
         return this;
     }
 
@@ -317,14 +320,14 @@ public class LogTracingUtils {
                                        Throwable error,
                                        String message
     ) {
+        if (error == null) {
+            throw new LogTracingUtilException("error must not be null");
+        }
+
         StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        error.printStackTrace(pw);
+        error.printStackTrace(new PrintWriter(sw));
 
         this.stackTrace = sw.toString();
-
-        pw.close();
-
         logError(logger, error, message);
     }
 
@@ -399,12 +402,15 @@ public class LogTracingUtils {
      * @return enriched context with all tracing entries
      */
     public static Context enrichContextForEvent(
-                                                Map<LogTracingUtils.AttributeKeys, String> tracingEntries,
+                                                Map<AttributeKeys, String> tracingEntries,
                                                 Context reactorContext
     ) {
         Context enrichedContext = reactorContext;
         if (tracingEntries != null) {
-            for (Map.Entry<LogTracingUtils.AttributeKeys, String> entry : tracingEntries.entrySet()) {
+            for (Map.Entry<AttributeKeys, String> entry : tracingEntries.entrySet()) {
+                if (entry.getKey() == null) {
+                    continue;
+                }
                 enrichedContext = enrichedContext.put(
                         entry.getKey().key,
                         entry.getValue() != null
