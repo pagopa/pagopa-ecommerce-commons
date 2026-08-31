@@ -52,6 +52,8 @@ public class LogTracingUtils {
     public static final String STORAGE_QUEUE_DEPENDENCY = "storage-queue";
     /** Dependency value used in MDC for NPG operations. */
     public static final String NPG_DEPENDENCY = "npg";
+    /** Dependency value used in MDC for NODO operations. */
+    public static final String NODO_DEPENDENCY = "nodo";
 
     /**
      * Enumeration of standard public keys used for MDC and Reactor context
