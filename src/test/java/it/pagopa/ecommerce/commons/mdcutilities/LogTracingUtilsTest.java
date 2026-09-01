@@ -89,22 +89,22 @@ class LogTracingUtilsTest {
         // Arrange
         Map<String, String> details = Map.of("userId", "u-123", "retryCount", "3");
 
-doAnswer(invocation -> {
-    String mdcDetails = MDC.get("ctx.details");
-    assertNotNull(mdcDetails);
+        doAnswer(invocation -> {
+            String mdcDetails = MDC.get("ctx.details");
+            assertNotNull(mdcDetails);
 
-    Map<String, String> parsedDetails = new com.fasterxml.jackson.databind.ObjectMapper().readValue(
-            mdcDetails,
-            new com.fasterxml.jackson.core.type.TypeReference<>() {
-            }
-    );
+            Map<String, String> parsedDetails = new com.fasterxml.jackson.databind.ObjectMapper().readValue(
+                    mdcDetails,
+                    new com.fasterxml.jackson.core.type.TypeReference<>() {
+                    }
+            );
 
-    assertEquals(
-            Map.of("userId", "u-123", "retryCount", "3", "dependency", "my-dependency"),
-            parsedDetails
-    );
-    return null;
-}).when(mockLogger).debug(anyString());
+            assertEquals(
+                    Map.of("userId", "u-123", "retryCount", "3", "dependency", "my-dependency"),
+                    parsedDetails
+            );
+            return null;
+        }).when(mockLogger).debug(anyString());
 
         // Act
         LogTracingUtils.loggerTracingUtils()
