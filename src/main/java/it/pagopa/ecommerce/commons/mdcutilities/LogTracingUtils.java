@@ -320,14 +320,11 @@ public class LogTracingUtils {
                                        Throwable error,
                                        String message
     ) {
-        if (error == null) {
-            throw new LogTracingUtilException("error must not be null");
+        if (error != null) {
+            StringWriter sw = new StringWriter();
+            error.printStackTrace(new PrintWriter(sw));
+            this.stackTrace = sw.toString();
         }
-
-        StringWriter sw = new StringWriter();
-        error.printStackTrace(new PrintWriter(sw));
-
-        this.stackTrace = sw.toString();
         logError(logger, error, message);
     }
 
