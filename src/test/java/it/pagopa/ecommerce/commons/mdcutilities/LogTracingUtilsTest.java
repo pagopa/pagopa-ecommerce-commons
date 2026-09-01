@@ -89,22 +89,22 @@ class LogTracingUtilsTest {
         // Arrange
         Map<String, String> details = Map.of("userId", "u-123", "retryCount", "3");
 
-        doAnswer(invocation -> {
-            assertEquals(
-                    "{\"userId\":\"u-123\",\"dependency\":\"my-dependency\",\"retryCount\":\"3\"}",
-                    MDC.get("ctx.details")
-            );
+doAnswer(invocation -> {
+    String mdcDetails = MDC.get("ctx.details");
+    assertNotNull(mdcDetails);
 
-            // Note: because LogTracingUtils puts dependencies into the details map,
-            // we should parse the JSON to verify both the details and the dependency are
-            // present
-            String mdcDetails = MDC.get("ctx.details");
-            assertNotNull(mdcDetails);
-            assertTrue(mdcDetails.contains("\"userId\":\"u-123\""));
-            assertTrue(mdcDetails.contains("\"retryCount\":\"3\""));
-            assertTrue(mdcDetails.contains("\"dependency\":\"my-dependency\""));
-            return null;
-        }).when(mockLogger).debug(anyString());
+    Map<String, String> parsedDetails = new com.fasterxml.jackson.databind.ObjectMapper().readValue(
+            mdcDetails,
+            new com.fasterxml.jackson.core.type.TypeReference<>() {
+            }
+    );
+
+    assertEquals(
+            Map.of("userId", "u-123", "retryCount", "3", "dependency", "my-dependency"),
+            parsedDetails
+    );
+    return null;
+}).when(mockLogger).debug(anyString());
 
         // Act
         LogTracingUtils.loggerTracingUtils()
