@@ -62,25 +62,25 @@ public class LogTracingUtils {
     @Getter
     public enum AttributeKeys {
         /** Reactor context key for action associated with the event. */
-        EVENT_ACTION("event.action", "{eventAction-not-found}"),
+        EVENT_ACTION("event_action", "{eventAction-not-found}"),
         /** Reactor context key for transaction identifier. */
-        CTX_TRANSACTION_ID("ctx.transaction.id", "{transactionId-not-found}"),
+        CTX_TRANSACTION_ID("ctx_transaction_id", "{transactionId-not-found}"),
         /** Reactor context key for authorization request identifier. */
-        CTX_AUTHORIZATION_REQUEST_ID("ctx.authorization.request.id", "{authorizationRequestId-not-found}"),
+        CTX_AUTHORIZATION_REQUEST_ID("ctx_authorization_request_id", "{authorizationRequestId-not-found}"),
         /** Reactor context key for event code. */
-        CTX_EVENT_CODE("ctx.event.code", "{eventCode-not-found}"),
+        CTX_EVENT_CODE("ctx_event_code", "{eventCode-not-found}"),
         /** Reactor context key for event identifier. */
-        CTX_EVENT_ID("ctx.event.id", "{eventId-not-found}"),
+        CTX_EVENT_ID("ctx_event_id", "{eventId-not-found}"),
         /** Reactor context key for RPT identifiers. */
-        CTX_RPT_IDS("ctx.rpt.ids", "{rptIds-not-found}"),
+        CTX_RPT_IDS("ctx_rpt_ids", "{rptIds-not-found}"),
         /** Reactor context key for payment tokens. */
-        CTX_PAYMENT_TOKENS("ctx.payment.tokens", "{paymentTokens-not-found}"),
+        CTX_PAYMENT_TOKENS("ctx_payment_tokens", "{paymentTokens-not-found}"),
         /** Reactor context key for user identifier. */
-        CTX_USER_ID("ctx.user.id", "{userId-not-found}"),
+        CTX_USER_ID("ctx_user_id", "{userId-not-found}"),
         /** MDC key for correlation identifier. */
-        CORRELATION_ID("correlation.id", "{correlationId-not-found}"),
+        CORRELATION_ID("correlation_id", "{correlationId-not-found}"),
         /** MDC key for PSP identifier. */
-        PSP_ID("psp.id", "{pspId-not-found}");
+        PSP_ID("psp_id", "{pspId-not-found}");
 
         private final String key;
         private final String defaultValue;
@@ -99,9 +99,9 @@ public class LogTracingUtils {
      */
     private enum AttributeKeysPrivate {
         /** MDC key for custom JSON details map. */
-        CTX_DETAILS("ctx.details", "{details-not-found}"),
+        CTX_DETAILS("ctx_details", "{details-not-found}"),
         /** MDC key for event outcome. */
-        EVENT_OUTCOME("event.outcome", "{eventOutcome-not-found}"),
+        EVENT_OUTCOME("event_outcome", "{eventOutcome-not-found}"),
         /**
          * Details key for dependency name involved in the operation (serialized inside
          * ctx.details).

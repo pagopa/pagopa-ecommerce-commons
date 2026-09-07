@@ -40,9 +40,9 @@ class LogTracingUtilsTest {
         // Act
         // We use doAnswer to inspect MDC exactly when logger.info() is called
         doAnswer(invocation -> {
-            assertEquals("test-action", MDC.get("event.action"));
-            assertEquals("12345", MDC.get("correlation.id"));
-            assertEquals("success", MDC.get("event.outcome"));
+            assertEquals("test-action", MDC.get("event_action"));
+            assertEquals("12345", MDC.get("correlation_id"));
+            assertEquals("success", MDC.get("event_outcome"));
             return null;
         }).when(mockLogger).info(anyString());
 
@@ -54,9 +54,9 @@ class LogTracingUtilsTest {
         // Assert
         verify(mockLogger, times(1)).info("Test info message");
         // Verify Cleanup
-        assertNull(MDC.get("event.action"), "MDC should be cleaned up after logging");
-        assertNull(MDC.get("correlation.id"));
-        assertNull(MDC.get("event.outcome"));
+        assertNull(MDC.get("event_action"), "MDC should be cleaned up after logging");
+        assertNull(MDC.get("correlation_id"));
+        assertNull(MDC.get("event_outcome"));
     }
 
     @Test
@@ -65,7 +65,7 @@ class LogTracingUtilsTest {
         RuntimeException testException = new RuntimeException("Something went wrong");
 
         doAnswer(invocation -> {
-            assertEquals("failure", MDC.get("event.outcome"));
+            assertEquals("failure", MDC.get("event_outcome"));
             assertEquals(RuntimeException.class.getName(), MDC.get("error.type"));
             assertEquals("Something went wrong", MDC.get("error.message"));
             assertNotNull(MDC.get("error.stack_trace"));
@@ -90,7 +90,7 @@ class LogTracingUtilsTest {
         Map<String, String> details = Map.of("userId", "u-123", "retryCount", "3");
 
         doAnswer(invocation -> {
-            String mdcDetails = MDC.get("ctx.details");
+            String mdcDetails = MDC.get("ctx_details");
             assertNotNull(mdcDetails);
 
             Map<String, String> parsedDetails = new com.fasterxml.jackson.databind.ObjectMapper().readValue(
@@ -114,7 +114,7 @@ class LogTracingUtilsTest {
 
         // Assert
         verify(mockLogger, times(1)).debug("Test debug message");
-        assertNull(MDC.get("ctx.details"));
+        assertNull(MDC.get("ctx_details"));
     }
 
     @Test
@@ -171,7 +171,7 @@ class LogTracingUtilsTest {
         attributes.put(LogTracingUtils.AttributeKeys.CTX_USER_ID, null); // Null value
 
         doAnswer(invocation -> {
-            assertNull(MDC.get("ctx.user.id"));
+            assertNull(MDC.get("ctx_user_id"));
             return null;
         }).when(mockLogger).info(anyString());
 
@@ -228,8 +228,8 @@ class LogTracingUtilsTest {
         );
 
         // assertions
-        assertEquals("event_action", enrichedContext.get("event.action"));
-        assertEquals("{correlationId-not-found}", enrichedContext.get("correlation.id"));
+        assertEquals("event_action", enrichedContext.get("event_action"));
+        assertEquals("{correlationId-not-found}", enrichedContext.get("correlation_id"));
     }
 
 }
