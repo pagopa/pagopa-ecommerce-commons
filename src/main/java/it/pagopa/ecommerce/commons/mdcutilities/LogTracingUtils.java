@@ -1,11 +1,6 @@
 package it.pagopa.ecommerce.commons.mdcutilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -15,6 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.event.Level;
 import reactor.util.context.Context;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.*;
 
 /**
  * Utility class for structured logging utilizing the Fluent Builder pattern.
@@ -44,16 +43,42 @@ public class LogTracingUtils {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    /** Dependency value used in MDC for MongoDB operations. */
+    /**
+     * Dependency value used in MDC for MongoDB operations.
+     */
     public static final String MONGO_DEPENDENCY = "eCommerce-mongodb";
-    /** Dependency value used in MDC for Redis operations. */
+    /**
+     * Dependency value used in MDC for Redis operations.
+     */
     public static final String REDIS_DEPENDENCY = "eCommerce-redis";
-    /** Dependency value used in MDC for storage queue operations. */
+    /**
+     * Dependency value used in MDC for storage queue operations.
+     */
     public static final String STORAGE_QUEUE_DEPENDENCY = "storage-queue";
-    /** Dependency value used in MDC for NPG operations. */
+    /**
+     * Dependency value used in MDC for NPG operations.
+     */
     public static final String NPG_DEPENDENCY = "npg";
-    /** Dependency value used in MDC for NODO operations. */
+    /**
+     * Dependency value used in MDC for NODO operations.
+     */
     public static final String NODO_DEPENDENCY = "nodo";
+    /**
+     * Dependency value used in MDC for payment wallet operations.
+     */
+    public static final String WALLET_DEPENDENCY = "payment-wallet";
+    /**
+     * Dependency value used in MDC for payment wallet operations.
+     */
+    public static final String JWT_ISSUER_DEPENDENCY = "jwt-issuer-wallet";
+    /**
+     * Dependency value used in MDC for payment wallet operations.
+     */
+    public static final String PAYMENT_METHODS_DEPENDENCY = "payment-methods-service";
+    /**
+     * Dependency value used in MDC for Redirect operations.
+     */
+    public static final String REDIRECT_DEPENDENCY = "redirect";
 
     /**
      * Enumeration of standard public keys used for MDC and Reactor context
@@ -61,26 +86,55 @@ public class LogTracingUtils {
      */
     @Getter
     public enum AttributeKeys {
-        /** Reactor context key for action associated with the event. */
+        /**
+         * Reactor context key for action associated with the event.
+         */
         EVENT_ACTION("event_action", "{eventAction-not-found}"),
-        /** Reactor context key for transaction identifier. */
+        /**
+         * Reactor context key for transaction identifier.
+         */
         CTX_TRANSACTION_ID("ctx_transaction_id", "{transactionId-not-found}"),
-        /** Reactor context key for authorization request identifier. */
+        /**
+         * Reactor context key for authorization request identifier.
+         */
         CTX_AUTHORIZATION_REQUEST_ID("ctx_authorization_request_id", "{authorizationRequestId-not-found}"),
-        /** Reactor context key for event code. */
+        /**
+         * Reactor context key for event code.
+         */
         CTX_EVENT_CODE("ctx_event_code", "{eventCode-not-found}"),
-        /** Reactor context key for event identifier. */
+        /**
+         * Reactor context key for event identifier.
+         */
         CTX_EVENT_ID("ctx_event_id", "{eventId-not-found}"),
-        /** Reactor context key for RPT identifiers. */
+        /**
+         * Reactor context key for RPT identifiers.
+         */
         CTX_RPT_IDS("ctx_rpt_ids", "{rptIds-not-found}"),
-        /** Reactor context key for payment tokens. */
+        /**
+         * Reactor context key for payment tokens.
+         */
         CTX_PAYMENT_TOKENS("ctx_payment_tokens", "{paymentTokens-not-found}"),
-        /** Reactor context key for user identifier. */
+        /**
+         * Reactor context key for user identifier.
+         */
         CTX_USER_ID("ctx_user_id", "{userId-not-found}"),
-        /** MDC key for correlation identifier. */
+        /**
+         * MDC key for correlation identifier.
+         */
         CORRELATION_ID("correlation_id", "{correlationId-not-found}"),
-        /** MDC key for PSP identifier. */
-        PSP_ID("psp_id", "{pspId-not-found}");
+        /**
+         * MDC key for PSP identifier.
+         */
+        PSP_ID("psp_id", "{pspId-not-found}"),
+        /**
+         * Reactor context key for wallet id.
+         */
+        CTX_WALLET_ID("ctx_wallet_id", "{walletId-not-found}"),
+        /**
+         * Reactor context key for client id.
+         */
+        CTX_CLIENT_ID("ctx_client_id", "{clientId-not-found}"),
+        ;
 
         private final String key;
         private final String defaultValue;
@@ -98,20 +152,30 @@ public class LogTracingUtils {
      * Enumeration of internal/private MDC keys handled exclusively by the builder.
      */
     private enum AttributeKeysPrivate {
-        /** MDC key for custom JSON details map. */
+        /**
+         * MDC key for custom JSON details map.
+         */
         CTX_DETAILS("ctx_details", "{details-not-found}"),
-        /** MDC key for event outcome. */
+        /**
+         * MDC key for event outcome.
+         */
         EVENT_OUTCOME("event_outcome", "{eventOutcome-not-found}"),
         /**
          * Details key for dependency name involved in the operation (serialized inside
          * ctx.details).
          */
         DEPENDENCY("dependency", "{dependency-not-found}"),
-        /** MDC key for error class name. */
+        /**
+         * MDC key for error class name.
+         */
         ERROR_TYPE("error.type", "{errorType-not-found}"),
-        /** MDC key for error message text. */
+        /**
+         * MDC key for error message text.
+         */
         ERROR_MESSAGE("error.message", "{errorMessage-not-found}"),
-        /** MDC key for the complete error stack trace. */
+        /**
+         * MDC key for the complete error stack trace.
+         */
         ERROR_STACK_TRACE("error.stack_trace", "{errorStackTrace-not-found}");
 
         private final String key;
@@ -293,6 +357,20 @@ public class LogTracingUtils {
      * then cleans up the MDC.
      *
      * @param logger  the SLF4J logger to use
+     * @param message the log message
+     */
+    public void logError(
+                         Logger logger,
+                         String message
+    ) {
+        logError(logger, null, message);
+    }
+
+    /**
+     * Terminal operation: emits an ERROR log with the configured MDC attributes,
+     * then cleans up the MDC.
+     *
+     * @param logger  the SLF4J logger to use
      * @param error   Throwable to log
      * @param message the log message
      */
@@ -352,7 +430,7 @@ public class LogTracingUtils {
         }
 
         // Add details key and value to MDC map
-        if(!details.isEmpty()) {
+        if (!details.isEmpty()) {
             addMdcKey(AttributeKeysPrivate.CTX_DETAILS.key, serializeDetailsToMdcMap(details));
         }
 
@@ -360,7 +438,7 @@ public class LogTracingUtils {
             addMdcKey(AttributeKeysPrivate.EVENT_OUTCOME.key, outcome);
         }
 
-        if(error != null) {
+        if (error != null) {
             addMdcKey(AttributeKeysPrivate.ERROR_TYPE.key, error.getClass().getName());
             addMdcKey(AttributeKeysPrivate.ERROR_MESSAGE.key, error.getMessage() != null
                     ? error.getMessage()
@@ -371,7 +449,7 @@ public class LogTracingUtils {
             addMdcKey(AttributeKeysPrivate.ERROR_STACK_TRACE.key, stackTrace);
         }
 
-        switch(loggerLevel) {
+        switch (loggerLevel) {
             case INFO -> logger.info(message);
             case WARN -> logger.warn(message);
             case DEBUG -> logger.debug(message);

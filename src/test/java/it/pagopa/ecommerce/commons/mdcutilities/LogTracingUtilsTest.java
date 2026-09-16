@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
+import reactor.util.context.Context;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -12,8 +13,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-
-import reactor.util.context.Context;
 
 class LogTracingUtilsTest {
 
@@ -230,6 +229,25 @@ class LogTracingUtilsTest {
         // assertions
         assertEquals("event_action", enrichedContext.get("event_action"));
         assertEquals("{correlationId-not-found}", enrichedContext.get("correlation_id"));
+    }
+
+    @Test
+    void testErrorWithoutException() {
+        // Arrange
+
+        doAnswer(invocation -> {
+            assertNull(MDC.get("error.type"));
+            // Fallback to default value from AttributeKeysPrivate
+            assertNull(MDC.get("error.message"));
+            return null;
+        }).when(mockLogger).error(anyString());
+
+        // Act
+        LogTracingUtils.loggerTracingUtils()
+                .logError(mockLogger, "Error happened");
+
+        // Assert
+        verify(mockLogger, times(1)).error("Error happened");
     }
 
 }
