@@ -83,6 +83,10 @@ public class LogTracingUtils {
      * Dependency value used in MDC for Redirect operations.
      */
     public static final String REDIRECT_DEPENDENCY = "redirect";
+    /**
+     * Dependency value used in MDC for Notifications service operations.
+     */
+    public static final String NOTIFICATIONS_SERVICE_DEPENDENCY = "notifications-service";
 
     /**
      * Enumeration of standard public keys used for MDC and Reactor context
