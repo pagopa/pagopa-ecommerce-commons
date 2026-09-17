@@ -68,13 +68,17 @@ public class LogTracingUtils {
      */
     public static final String WALLET_DEPENDENCY = "payment-wallet";
     /**
-     * Dependency value used in MDC for payment wallet operations.
+     * Dependency value used in MDC for JWT issuer operations.
      */
-    public static final String JWT_ISSUER_DEPENDENCY = "jwt-issuer-wallet";
+    public static final String JWT_ISSUER_DEPENDENCY = "jwt-issuer";
     /**
-     * Dependency value used in MDC for payment wallet operations.
+     * Dependency value used in MDC for payment methods service operations.
      */
-    public static final String PAYMENT_METHODS_DEPENDENCY = "payment-methods-service";
+    public static final String PAYMENT_METHODS_SERVICE_DEPENDENCY = "payment-methods-service";
+    /**
+     * Dependency value used in MDC for payment methods handler operations.
+     */
+    public static final String PAYMENT_METHODS_HANDLER_DEPENDENCY = "payment-methods-handler";
     /**
      * Dependency value used in MDC for Redirect operations.
      */
