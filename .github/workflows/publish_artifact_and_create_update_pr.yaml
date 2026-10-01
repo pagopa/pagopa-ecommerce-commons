@@ -33,7 +33,6 @@ jobs:
 
     name: Create PR on ${{ matrix.config.repo }}
     runs-on: ubuntu-latest
-    needs: deploy_artifact
     steps:
       - name: Get latest release tag from pagopa-ecommerce-commons
         id: get_latest_tag
