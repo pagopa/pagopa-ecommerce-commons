@@ -73,15 +73,12 @@ jobs:
       - name: Update dep lock & verification files (Maven)
         if: matrix.config.build_tool == 'maven'
         id: update_lock_dependencies_maven
-        env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           latest_tag="${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
           max_attempts=6
 
           for attempt in $(seq 1 "$max_attempts"); do
-             ./mvnw depcheck:generate
+             mvn depcheck:generate
 
             if jq -e --arg version "$latest_tag" '
               any(
