@@ -57,7 +57,7 @@ jobs:
           repository: pagopa/${{ matrix.config.repo }}
 
       - name: Replace old version with new version (Maven)
-        if: matrix.config.build_tool == "maven"
+        if: matrix.config.build_tool == 'maven'
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "<pagopa-ecommerce-commons.version>\\d+\\.\\d+\\.\\d+</pagopa-ecommerce-commons.version>"
@@ -66,7 +66,7 @@ jobs:
           include: "pom.xml"
 
       - name: Update dep lock & verification files (Maven)
-        if: matrix.config.build_tool == "maven"
+        if: matrix.config.build_tool == 'maven'
         id: update_lock_dependencies_maven
         env:
           GITHUB_ACTOR: ${{ github.actor }}
@@ -100,7 +100,7 @@ jobs:
         shell: bash
 
       - name: Replace old version with new version (Gradle)
-        if: matrix.config.build_tool == "gradle"
+        if: matrix.config.build_tool == 'gradle'
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
           find: "val ecommerceCommonsVersion = \"\\d+\\.\\d+\\.\\d+\""
@@ -109,7 +109,7 @@ jobs:
           include: "build.gradle.kts"
 
       - name: Update dep lock & verification files (Gradle)
-        if: matrix.config.build_tool == "gradle"
+        if: matrix.config.build_tool == 'gradle'
         id: update_lock_dependencies
         env:
           GITHUB_ACTOR: ${{ github.actor }}
