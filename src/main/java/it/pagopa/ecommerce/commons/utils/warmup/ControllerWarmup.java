@@ -1,6 +1,7 @@
 package it.pagopa.ecommerce.commons.utils.warmup;
 
 import it.pagopa.ecommerce.commons.annotations.Warmup;
+import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Controller warmup logic. This class is an {@link ApplicationListener} for the
@@ -65,29 +67,53 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                 .mapToInt(method -> {
                     long methodStartTime = System.currentTimeMillis();
                     try {
-                        log.info("Invoking method: [{}]", method);
+                        if (log.isDebugEnabled()) {
+                            LogTracingUtils.loggerTracingUtils()
+                                    .details(
+                                            Map.of(
+                                                    "method",
+                                                    method.getName()
+                                            )
+                                    )
+                                    .logDebug(log, "Invoking warmup method");
+                        }
                         method.invoke(controller);
                     } catch (InvocationTargetException | IllegalAccessException e) {
-                        log.error("Exception invoking warmup method", e);
+                        LogTracingUtils.loggerTracingUtils()
+                                .failure()
+                                .logError(log, "Exception invoking warmup method");
                     } finally {
                         long interTime = System.currentTimeMillis() - methodStartTime;
-                        log.info(
-                                "Warmup method: [{}] -> elapsed time: [{}] ms",
-                                method,
-                                interTime
-                        );
+                        if (log.isDebugEnabled()) {
+                            LogTracingUtils.loggerTracingUtils()
+                                    .details(
+                                            Map.of(
+                                                    "method",
+                                                    method.getName(),
+                                                    "elapsed_time",
+                                                    String.valueOf(interTime)
+                                            )
+                                    )
+                                    .logDebug(log, "Warmup method executed");
+                        }
                     }
 
                     return 1;
                 })
                 .sum();
         long elapsedTime = System.currentTimeMillis() - startTime;
-        log.info(
-                "Controller: [{}] warm-up executed methods: [{}], elapsed time: [{}] ms",
-                controllerClass,
-                warmUpMethods,
-                elapsedTime
-        );
+        LogTracingUtils.loggerTracingUtils()
+                .details(
+                        Map.of(
+                                "controller",
+                                controllerClass.getName(),
+                                "warmup_methods",
+                                String.valueOf(warmUpMethods),
+                                "elapsed_time",
+                                String.valueOf(elapsedTime)
+                        )
+                )
+                .logInfo(log, "Controller warm-up executed");
     }
 
 }
