@@ -5,6 +5,7 @@ import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.api.JwtIssuerApi;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequestDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
+import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -63,10 +64,14 @@ public class JwtIssuerClient {
     }
 
     private static void logError(WebClientResponseException e) {
-        log.info(
-                JWT_ISSUER_LOG_ERROR_MESSAGE,
-                e.getStatusCode()
-        );
+        LogTracingUtils.loggerTracingUtils()
+                .failure()
+                .dependency(LogTracingUtils.JWT_ISSUER_DEPENDENCY)
+                .logErrorWithStackTrace(
+                        log,
+                        e,
+                        JWT_ISSUER_LOG_ERROR_MESSAGE
+                );
     }
 
     /**

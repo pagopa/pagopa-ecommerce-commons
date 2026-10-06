@@ -5,11 +5,13 @@ import com.azure.core.util.BinaryData;
 import com.azure.core.util.serializer.JsonSerializer;
 import com.azure.storage.queue.models.SendMessageResult;
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
+import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Map;
 
 /**
  * <p>
@@ -59,7 +61,18 @@ public class QueueAsyncClient {
                                                                                                          Duration visibilityTimeout,
                                                                                                          Duration timeToLive
     ) {
-        log.debug("Sending event {} with tracing info: {}", event.event(), event.tracingInfo());
+        if (log.isDebugEnabled()) {
+            LogTracingUtils.loggerTracingUtils()
+                    .details(
+                            Map.of(
+                                    "event",
+                                    event.event().toString(),
+                                    "tracing_info",
+                                    event.tracingInfo().toString()
+                            )
+                    )
+                    .logDebug(log, "Sending event");
+        }
         return BinaryData.fromObjectAsync(event, jsonSerializer)
                 .flatMap(e -> innerClient.sendMessageWithResponse(e, visibilityTimeout, timeToLive));
     }

@@ -10,6 +10,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import it.pagopa.ecommerce.commons.exceptions.NodeForwarderClientException;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
+import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -162,13 +164,26 @@ public class NodeForwarderClient<T, R> {
             port = 443;
         }
         String path = proxyTo.getPath();
-        log.info(
-                "Sending request to node forwarder. hostName: [{}], port: [{}], path: [{}], requestId: [{}]",
-                hostName,
-                port,
-                path,
-                requestId
-        );
+        if (log.isDebugEnabled()) {
+            LogTracingUtils.loggerTracingUtils()
+                    .dependency(LogTracingUtils.NODE_FORWARDER_DEPENDENCY)
+                    .details(
+                            Map.of(
+                                    "host_name",
+                                    hostName,
+                                    "port",
+                                    String.valueOf(port),
+                                    "path",
+                                    path,
+                                    "request_id",
+                                    requestId
+                            )
+                    )
+                    .logDebug(
+                            log,
+                            "Sending request to node forwarder."
+                    );
+        }
         return proxyApiClient
                 .forwardWithHttpInfo(
                         hostName,
@@ -191,14 +206,27 @@ public class NodeForwarderClient<T, R> {
                     }
                 })
                 .doOnError(e -> {
-                    log.error("Error communicating with Node forwarder", e);
+                    LogTracingUtils logErr = LogTracingUtils.loggerTracingUtils()
+                            .dependency(LogTracingUtils.NODE_FORWARDER_DEPENDENCY)
+                            .failure();
+
                     if (e.getCause()instanceof WebClientResponseException cause) {
-                        log.error(
-                                "Error response code: [{}], body: [{}]",
-                                cause.getStatusCode(),
-                                cause.getResponseBodyAsString()
+                        logErr.details(
+                                Map.of(
+                                        "response_code",
+                                        String.valueOf(cause.getStatusCode()),
+                                        "response_body",
+                                        cause.getResponseBodyAsString()
+                                )
                         );
                     }
+
+                    logErr.logErrorWithStackTrace(
+                            log,
+                            e,
+                            "Error communicating with Node forwarder"
+                    );
+
                 });
     }
 
