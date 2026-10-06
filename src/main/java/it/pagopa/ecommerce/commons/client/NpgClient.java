@@ -541,36 +541,7 @@ public class NpgClient {
                                 totalAmount,
                                 language
                         )
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> LogTracingUtils.loggerTracingUtils()
-                                .failure()
-                                .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                .attributes(
-                                        Map.of(
-                                                LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                correlationId.toString()
-                                        )
-                                )
-                                .details(
-                                        Map.of(
-                                                "order_id",
-                                                orderId,
-                                                "customer_id",
-                                                customerId,
-                                                "payment_method",
-                                                paymentMethod.serviceName,
-                                                "status_code",
-                                                String.valueOf(e.getStatusCode())
-                                        )
-                                )
-                                .logErrorWithStackTrace(
-                                        log,
-                                        e,
-                                        NPG_LOG_ERROR_MESSAGE
-                                )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -600,32 +571,7 @@ public class NpgClient {
                         correlationId,
                         sessionId,
                         defaultApiKey
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> LogTracingUtils.loggerTracingUtils()
-                                .failure()
-                                .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                .attributes(
-                                        Map.of(
-                                                LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                correlationId.toString()
-                                        )
-                                )
-                                .details(
-                                        Map.of(
-                                                "session_id",
-                                                sessionId,
-                                                "status_code",
-                                                String.valueOf(e.getStatusCode())
-                                        )
-                                )
-                                .logErrorWithStackTrace(
-                                        log,
-                                        e,
-                                        NPG_LOG_ERROR_MESSAGE
-                                )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -657,32 +603,7 @@ public class NpgClient {
                         pspApiKey,
                         new ConfirmPaymentRequestDto()
                                 .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> LogTracingUtils.loggerTracingUtils()
-                                .failure()
-                                .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                .attributes(
-                                        Map.of(
-                                                LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                correlationId.toString()
-                                        )
-                                )
-                                .details(
-                                        Map.of(
-                                                "session_id",
-                                                sessionId,
-                                                "status_code",
-                                                String.valueOf(e.getStatusCode())
-                                        )
-                                )
-                                .logErrorWithStackTrace(
-                                        log,
-                                        e,
-                                        NPG_LOG_ERROR_MESSAGE
-                                )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -720,32 +641,7 @@ public class NpgClient {
                         defaultApiKey,
                         idempotenceKey.toString(),
                         buildRefundRequestDto(grandTotal, description)
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> LogTracingUtils.loggerTracingUtils()
-                                .failure()
-                                .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                .attributes(
-                                        Map.of(
-                                                LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                correlationId.toString()
-                                        )
-                                )
-                                .details(
-                                        Map.of(
-                                                "operation_id",
-                                                operationId,
-                                                "status_code",
-                                                String.valueOf(e.getStatusCode())
-                                        )
-                                )
-                                .logErrorWithStackTrace(
-                                        log,
-                                        e,
-                                        NPG_LOG_ERROR_MESSAGE
-                                )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -772,31 +668,6 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId, pspApiKey)
-                        .doOnError(
-                                WebClientResponseException.class,
-                                e -> LogTracingUtils.loggerTracingUtils()
-                                        .failure()
-                                        .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                        .attributes(
-                                                Map.of(
-                                                        LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                        correlationId.toString()
-                                                )
-                                        )
-                                        .details(
-                                                Map.of(
-                                                        "session_id",
-                                                        sessionId,
-                                                        "status_code",
-                                                        String.valueOf(e.getStatusCode())
-                                                )
-                                        )
-                                        .logErrorWithStackTrace(
-                                                log,
-                                                e,
-                                                NPG_LOG_ERROR_MESSAGE
-                                        )
-                        )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -823,31 +694,6 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId, pspApiKey)
-                        .doOnError(
-                                WebClientResponseException.class,
-                                e -> LogTracingUtils.loggerTracingUtils()
-                                        .failure()
-                                        .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                                        .attributes(
-                                                Map.of(
-                                                        LogTracingUtils.AttributeKeys.CORRELATION_ID,
-                                                        correlationId.toString()
-                                                )
-                                        )
-                                        .details(
-                                                Map.of(
-                                                        "order_id",
-                                                        orderId,
-                                                        "status_code",
-                                                        String.valueOf(e.getStatusCode())
-                                                )
-                                        )
-                                        .logErrorWithStackTrace(
-                                                log,
-                                                e,
-                                                NPG_LOG_ERROR_MESSAGE
-                                        )
-                        )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -968,21 +814,6 @@ public class NpgClient {
                 statusCode = Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value()));
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";
-                LogTracingUtils.loggerTracingUtils()
-                        .failure()
-                        .dependency(LogTracingUtils.NPG_DEPENDENCY)
-                        .details(
-                                Map.of(
-                                        "status_code",
-                                        String.valueOf(e.getStatusCode())
-                                )
-                        )
-                        .logErrorWithStackTrace(
-                                log,
-                                ex,
-                                errorMessage.formatted(e.getStatusCode())
-                        );
-
                 return new NpgResponseException(
                         errorMessage.formatted(e.getStatusCode()),
                         Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value())),

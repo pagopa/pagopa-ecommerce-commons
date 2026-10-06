@@ -63,27 +63,13 @@ public class JwtIssuerClient {
         this.jwtIssuerApi = jwtIssuerApi;
     }
 
-    private static void logError(WebClientResponseException e) {
-        LogTracingUtils.loggerTracingUtils()
-                .failure()
-                .dependency(LogTracingUtils.JWT_ISSUER_DEPENDENCY)
-                .logErrorWithStackTrace(
-                        log,
-                        e,
-                        JWT_ISSUER_LOG_ERROR_MESSAGE
-                );
-    }
-
     /**
      * Retrieve the keys to validate a jwt token
      *
      * @return An object containing the keys to validate a token
      */
     public Mono<JWKSResponseDto> getKeys() {
-        return jwtIssuerApi.getTokenPublicKeys().doOnError(
-                WebClientResponseException.class,
-                JwtIssuerClient::logError
-        )
+        return jwtIssuerApi.getTokenPublicKeys()
                 .onErrorMap(err -> new JwtIssuerClientException("Error communicating with JWT issuer", err));
     }
 
@@ -107,9 +93,6 @@ public class JwtIssuerClient {
                         .audience(audience)
                         .duration(duration)
                         .privateClaims(privateClaims)
-        ).doOnError(
-                WebClientResponseException.class,
-                JwtIssuerClient::logError
         )
                 .onErrorMap(err -> new JwtIssuerClientException("Error communicating with JWT issuer", err));
     }

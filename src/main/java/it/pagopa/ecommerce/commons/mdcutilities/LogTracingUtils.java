@@ -87,10 +87,6 @@ public class LogTracingUtils {
      * Dependency value used in MDC for Notifications service operations.
      */
     public static final String NOTIFICATIONS_SERVICE_DEPENDENCY = "notifications-service";
-    /**
-     * Dependency value used in MDC for Node Forwarder operations.
-     */
-    public static final String NODE_FORWARDER_DEPENDENCY = "node-forwarder";
 
     /**
      * Enumeration of standard public keys used for MDC and Reactor context

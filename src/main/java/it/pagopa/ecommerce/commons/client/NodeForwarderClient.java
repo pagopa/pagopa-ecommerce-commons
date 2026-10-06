@@ -166,7 +166,7 @@ public class NodeForwarderClient<T, R> {
         String path = proxyTo.getPath();
         if (log.isDebugEnabled()) {
             LogTracingUtils.loggerTracingUtils()
-                    .dependency(LogTracingUtils.NODE_FORWARDER_DEPENDENCY)
+                    .dependency(LogTracingUtils.REDIRECT_DEPENDENCY)
                     .details(
                             Map.of(
                                     "host_name",
@@ -204,29 +204,6 @@ public class NodeForwarderClient<T, R> {
                     } catch (JsonProcessingException e) {
                         return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
                     }
-                })
-                .doOnError(e -> {
-                    LogTracingUtils logErr = LogTracingUtils.loggerTracingUtils()
-                            .dependency(LogTracingUtils.NODE_FORWARDER_DEPENDENCY)
-                            .failure();
-
-                    if (e.getCause()instanceof WebClientResponseException cause) {
-                        logErr.details(
-                                Map.of(
-                                        "response_code",
-                                        String.valueOf(cause.getStatusCode()),
-                                        "response_body",
-                                        cause.getResponseBodyAsString()
-                                )
-                        );
-                    }
-
-                    logErr.logErrorWithStackTrace(
-                            log,
-                            e,
-                            "Error communicating with Node forwarder"
-                    );
-
                 });
     }
 
