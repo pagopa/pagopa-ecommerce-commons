@@ -70,8 +70,6 @@ public class NpgClient {
 
     private final ObjectMapper objectMapper;
 
-    private static final String NPG_LOG_ERROR_MESSAGE = "Got bad response from npg-service [HTTP {}]";
-
     /**
      * <p>
      * Enumeration for payment methods which NPG can do payments with.
