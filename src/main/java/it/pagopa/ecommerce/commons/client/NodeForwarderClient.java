@@ -10,7 +10,6 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import it.pagopa.ecommerce.commons.exceptions.NodeForwarderClientException;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.ApiClient;
 import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
-import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,7 +17,6 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -171,28 +169,6 @@ public class NodeForwarderClient<T, R> {
                         requestId,
                         requestPayload
                 )
-                .doOnSuccess(response -> {
-                    if (log.isDebugEnabled()) {
-                        LogTracingUtils.loggerTracingUtils()
-                                .dependency(LogTracingUtils.REDIRECT_DEPENDENCY)
-                                .details(
-                                        Map.of(
-                                                "host_name",
-                                                hostName,
-                                                "port",
-                                                String.valueOf(port),
-                                                "path",
-                                                path,
-                                                "request_id",
-                                                requestId
-                                        )
-                                )
-                                .logDebug(
-                                        log,
-                                        "Sent request to node forwarder."
-                                );
-                    }
-                })
                 .onErrorMap(e -> new NodeForwarderClientException("Error communicating with Node forwarder", e))
                 .flatMap(response -> {
                     try {
