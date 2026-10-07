@@ -7,7 +7,6 @@ import com.azure.storage.queue.models.SendMessageResult;
 import it.pagopa.ecommerce.commons.documents.BaseTransactionEvent;
 import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import it.pagopa.ecommerce.commons.queues.QueueEvent;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
