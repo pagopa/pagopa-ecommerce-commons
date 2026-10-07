@@ -62,21 +62,23 @@ public class QueueAsyncClient {
                                                                                                          Duration visibilityTimeout,
                                                                                                          Duration timeToLive
     ) {
-        if (log.isDebugEnabled()) {
-            LogTracingUtils.loggerTracingUtils()
-                    .dependency(LogTracingUtils.STORAGE_QUEUE_DEPENDENCY)
-                    .details(
-                            Map.of(
-                                    "event",
-                                    event.event().toString(),
-                                    "tracing_info",
-                                    event.tracingInfo().toString()
-                            )
-                    )
-                    .logDebug(log, "Sending event");
-        }
         return BinaryData.fromObjectAsync(event, jsonSerializer)
-                .flatMap(e -> innerClient.sendMessageWithResponse(e, visibilityTimeout, timeToLive));
+                .flatMap(e -> innerClient.sendMessageWithResponse(e, visibilityTimeout, timeToLive))
+                .doOnSuccess(response -> {
+                    if (log.isDebugEnabled()) {
+                        LogTracingUtils.loggerTracingUtils()
+                                .dependency(LogTracingUtils.STORAGE_QUEUE_DEPENDENCY)
+                                .details(
+                                        Map.of(
+                                                "event",
+                                                event.event().toString(),
+                                                "tracing_info",
+                                                event.tracingInfo().toString()
+                                        )
+                                )
+                                .logDebug(log, "Event sent");
+                    }
+                });
     }
 
     /**

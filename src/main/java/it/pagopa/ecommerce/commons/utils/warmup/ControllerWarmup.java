@@ -67,6 +67,7 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                 .mapToInt(method -> {
                     long methodStartTime = System.currentTimeMillis();
                     try {
+                        method.invoke(controller);
                         if (log.isDebugEnabled()) {
                             LogTracingUtils.loggerTracingUtils()
                                     .details(
@@ -75,9 +76,8 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                                                     method.getName()
                                             )
                                     )
-                                    .logDebug(log, "Invoking warmup method");
+                                    .logDebug(log, "Warmup method invoked");
                         }
-                        method.invoke(controller);
                     } catch (InvocationTargetException | IllegalAccessException e) {
                         LogTracingUtils.loggerTracingUtils()
                                 .failure()

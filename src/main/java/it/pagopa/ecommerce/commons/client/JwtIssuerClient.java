@@ -45,8 +45,6 @@ public class JwtIssuerClient {
      */
     public static final String NPG_AUDIENCE = "npg";
 
-    private static final String JWT_ISSUER_LOG_ERROR_MESSAGE = "Got bad response from jwt-issuer-service [HTTP {}]";
-
     private final JwtIssuerApi jwtIssuerApi;
 
     /**

@@ -159,31 +159,11 @@ public class NodeForwarderClient<T, R> {
             return Mono.error(new NodeForwarderClientException("Error serializing request", e));
         }
         String hostName = proxyTo.getHost();
-        int port = proxyTo.getPort();
-        if (port == -1) {
-            port = 443;
-        }
+        int uriPort = proxyTo.getPort();
+        final int port = uriPort == -1 ? 443 : uriPort;
+
         String path = proxyTo.getPath();
-        if (log.isDebugEnabled()) {
-            LogTracingUtils.loggerTracingUtils()
-                    .dependency(LogTracingUtils.REDIRECT_DEPENDENCY)
-                    .details(
-                            Map.of(
-                                    "host_name",
-                                    hostName,
-                                    "port",
-                                    String.valueOf(port),
-                                    "path",
-                                    path,
-                                    "request_id",
-                                    requestId
-                            )
-                    )
-                    .logDebug(
-                            log,
-                            "Sending request to node forwarder."
-                    );
-        }
+
         return proxyApiClient
                 .forwardWithHttpInfo(
                         hostName,
@@ -192,6 +172,28 @@ public class NodeForwarderClient<T, R> {
                         requestId,
                         requestPayload
                 )
+                .doOnSuccess(response -> {
+                    if (log.isDebugEnabled()) {
+                        LogTracingUtils.loggerTracingUtils()
+                                .dependency(LogTracingUtils.REDIRECT_DEPENDENCY)
+                                .details(
+                                        Map.of(
+                                                "host_name",
+                                                hostName,
+                                                "port",
+                                                String.valueOf(port),
+                                                "path",
+                                                path,
+                                                "request_id",
+                                                requestId
+                                        )
+                                )
+                                .logDebug(
+                                        log,
+                                        "Sent request to node forwarder."
+                                );
+                    }
+                })
                 .onErrorMap(e -> new NodeForwarderClientException("Error communicating with Node forwarder", e))
                 .flatMap(response -> {
                     try {

@@ -726,23 +726,6 @@ public class NpgClient {
 
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
-
-        if (log.isDebugEnabled()) {
-            LogTracingUtils.loggerTracingUtils()
-                    .details(
-                            Map.of(
-                                    "payment_method",
-                                    paymentMethod.serviceName,
-                                    "amount",
-                                    orderBuildAmount
-                            )
-                    )
-                    .logDebug(
-                            log,
-                            "Creating order build request for payment service: [{}] with amount: [{}]"
-                    );
-        }
-
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
                 .merchantUrl(merchantUrl.toString())
