@@ -69,8 +69,6 @@ public class NpgClient {
 
     private final ObjectMapper objectMapper;
 
-    private static final String NPG_LOG_ERROR_MESSAGE = "Got bad response from npg-service [HTTP {}]";
-
     /**
      * <p>
      * Enumeration for payment methods which NPG can do payments with.
@@ -540,14 +538,7 @@ public class NpgClient {
                                 totalAmount,
                                 language
                         )
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> log.info(
-                                NPG_LOG_ERROR_MESSAGE,
-                                e.getStatusCode()
-                        )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -577,14 +568,7 @@ public class NpgClient {
                         correlationId,
                         sessionId,
                         defaultApiKey
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> log.info(
-                                NPG_LOG_ERROR_MESSAGE,
-                                e.getStatusCode()
-                        )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -616,14 +600,7 @@ public class NpgClient {
                         pspApiKey,
                         new ConfirmPaymentRequestDto()
                                 .amount(String.valueOf(grandTotal.toString())).sessionId(sessionId)
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> log.info(
-                                NPG_LOG_ERROR_MESSAGE,
-                                e.getStatusCode()
-                        )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -661,14 +638,7 @@ public class NpgClient {
                         defaultApiKey,
                         idempotenceKey.toString(),
                         buildRefundRequestDto(grandTotal, description)
-                ).doOnError(
-                        WebClientResponseException.class,
-                        e -> log.info(
-                                NPG_LOG_ERROR_MESSAGE,
-                                e.getStatusCode()
-                        )
-                )
-                        .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
+                ).onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
     }
@@ -695,13 +665,6 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1BuildStateGet(correlationId, sessionId, pspApiKey)
-                        .doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
-                        )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -728,13 +691,6 @@ public class NpgClient {
                         .setAttribute(NPG_CORRELATION_ID_ATTRIBUTE_NAME, correlationId.toString())
                         .startSpan(),
                 span -> paymentServicesApi.pspApiV1OrdersOrderIdGet(correlationId, orderId, pspApiKey)
-                        .doOnError(
-                                WebClientResponseException.class,
-                                e -> log.info(
-                                        NPG_LOG_ERROR_MESSAGE,
-                                        e.getStatusCode()
-                                )
-                        )
                         .onErrorMap(err -> exceptionToNpgResponseException(err, span, gatewayOperation)),
                 Span::end
         );
@@ -769,11 +725,6 @@ public class NpgClient {
 
         String orderBuildAmount = Optional.ofNullable(totalAmount).map(Object::toString)
                 .orElse(CREATE_HOSTED_ORDER_REQUEST_PAY_AMOUNT);
-        log.info(
-                "Creating order build request for payment service: [{}] with amount: [{}]",
-                paymentMethod.serviceName,
-                orderBuildAmount
-        );
         return new CreateHostedOrderRequestDto()
                 .version(CREATE_HOSTED_ORDER_REQUEST_VERSION)
                 .merchantUrl(merchantUrl.toString())
@@ -843,8 +794,6 @@ public class NpgClient {
                 statusCode = Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value()));
             } catch (IOException ex) {
                 String errorMessage = "Invalid error response from NPG with status code %s";
-                log.error(errorMessage.formatted(e.getStatusCode()));
-
                 return new NpgResponseException(
                         errorMessage.formatted(e.getStatusCode()),
                         Optional.ofNullable(HttpStatus.resolve(e.getStatusCode().value())),

@@ -6,8 +6,6 @@ import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequest
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
 import jakarta.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -17,7 +15,6 @@ import java.util.Map;
  *
  * @see JwtIssuerApi
  */
-@Slf4j
 public class JwtIssuerClient {
     /**
      * The claim transactionId
@@ -46,8 +43,6 @@ public class JwtIssuerClient {
      */
     public static final String NPG_AUDIENCE = "npg";
 
-    private static final String JWT_ISSUER_LOG_ERROR_MESSAGE = "Got bad response from jwt-issuer-service [HTTP {}]";
-
     private final JwtIssuerApi jwtIssuerApi;
 
     /**
@@ -62,23 +57,13 @@ public class JwtIssuerClient {
         this.jwtIssuerApi = jwtIssuerApi;
     }
 
-    private static void logError(WebClientResponseException e) {
-        log.info(
-                JWT_ISSUER_LOG_ERROR_MESSAGE,
-                e.getStatusCode()
-        );
-    }
-
     /**
      * Retrieve the keys to validate a jwt token
      *
      * @return An object containing the keys to validate a token
      */
     public Mono<JWKSResponseDto> getKeys() {
-        return jwtIssuerApi.getTokenPublicKeys().doOnError(
-                WebClientResponseException.class,
-                JwtIssuerClient::logError
-        )
+        return jwtIssuerApi.getTokenPublicKeys()
                 .onErrorMap(err -> new JwtIssuerClientException("Error communicating with JWT issuer", err));
     }
 
@@ -102,9 +87,6 @@ public class JwtIssuerClient {
                         .audience(audience)
                         .duration(duration)
                         .privateClaims(privateClaims)
-        ).doOnError(
-                WebClientResponseException.class,
-                JwtIssuerClient::logError
         )
                 .onErrorMap(err -> new JwtIssuerClientException("Error communicating with JWT issuer", err));
     }

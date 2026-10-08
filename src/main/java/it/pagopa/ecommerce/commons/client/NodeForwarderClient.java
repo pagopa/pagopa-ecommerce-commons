@@ -13,7 +13,6 @@ import it.pagopa.ecommerce.commons.generated.nodeforwarder.v1.api.ProxyApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -157,18 +156,11 @@ public class NodeForwarderClient<T, R> {
             return Mono.error(new NodeForwarderClientException("Error serializing request", e));
         }
         String hostName = proxyTo.getHost();
-        int port = proxyTo.getPort();
-        if (port == -1) {
-            port = 443;
-        }
+        int uriPort = proxyTo.getPort();
+        final int port = uriPort == -1 ? 443 : uriPort;
+
         String path = proxyTo.getPath();
-        log.info(
-                "Sending request to node forwarder. hostName: [{}], port: [{}], path: [{}], requestId: [{}]",
-                hostName,
-                port,
-                path,
-                requestId
-        );
+
         return proxyApiClient
                 .forwardWithHttpInfo(
                         hostName,
@@ -188,16 +180,6 @@ public class NodeForwarderClient<T, R> {
                         );
                     } catch (JsonProcessingException e) {
                         return Mono.error(new NodeForwarderClientException("Error deserializing body", e));
-                    }
-                })
-                .doOnError(e -> {
-                    log.error("Error communicating with Node forwarder", e);
-                    if (e.getCause()instanceof WebClientResponseException cause) {
-                        log.error(
-                                "Error response code: [{}], body: [{}]",
-                                cause.getStatusCode(),
-                                cause.getResponseBodyAsString()
-                        );
                     }
                 });
     }
