@@ -72,7 +72,7 @@ public class QueueAsyncClient {
                                                 "event",
                                                 event.event().toString(),
                                                 "tracing_info",
-                                                event.tracingInfo().toString()
+                                                String.valueOf(event.tracingInfo())
                                         )
                                 )
                                 .logDebug(log, "Event sent");

@@ -68,20 +68,16 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                     long methodStartTime = System.currentTimeMillis();
                     try {
                         method.invoke(controller);
-                        if (log.isDebugEnabled()) {
-                            LogTracingUtils.loggerTracingUtils()
-                                    .details(
-                                            Map.of(
-                                                    "method",
-                                                    method.getName()
-                                            )
-                                    )
-                                    .logDebug(log, "Warmup method invoked");
-                        }
                     } catch (InvocationTargetException | IllegalAccessException e) {
                         LogTracingUtils.loggerTracingUtils()
                                 .failure()
-                                .logError(log, "Exception invoking warmup method");
+                                .details(
+                                        Map.of(
+                                                "method",
+                                                method.getName()
+                                        )
+                                )
+                                .logErrorWithStackTrace(log, e, "Exception invoking warmup method");
                     } finally {
                         long interTime = System.currentTimeMillis() - methodStartTime;
                         if (log.isDebugEnabled()) {
@@ -90,7 +86,7 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                                             Map.of(
                                                     "method",
                                                     method.getName(),
-                                                    "elapsed_time",
+                                                    "elapsed_time_ms",
                                                     String.valueOf(interTime)
                                             )
                                     )
@@ -109,7 +105,7 @@ public class ControllerWarmup implements ApplicationListener<ContextRefreshedEve
                                 controllerClass.getName(),
                                 "warmup_methods",
                                 String.valueOf(warmUpMethods),
-                                "elapsed_time",
+                                "elapsed_time_ms",
                                 String.valueOf(elapsedTime)
                         )
                 )

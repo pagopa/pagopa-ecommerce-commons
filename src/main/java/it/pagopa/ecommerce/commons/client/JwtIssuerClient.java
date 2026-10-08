@@ -6,7 +6,6 @@ import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenRequest
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.CreateTokenResponseDto;
 import it.pagopa.ecommerce.commons.generated.jwtissuer.v1.dto.JWKSResponseDto;
 import jakarta.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -16,7 +15,6 @@ import java.util.Map;
  *
  * @see JwtIssuerApi
  */
-@Slf4j
 public class JwtIssuerClient {
     /**
      * The claim transactionId
