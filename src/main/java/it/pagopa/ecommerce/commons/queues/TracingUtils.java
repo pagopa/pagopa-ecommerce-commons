@@ -7,6 +7,7 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator;
+import it.pagopa.ecommerce.commons.mdcutilities.LogTracingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -117,7 +119,11 @@ public class TracingUtils {
                             HashMap::put
                     );
 
-                    logger.debug("Raw tracing info: {}", rawTracingInfo);
+                    if (logger.isDebugEnabled()) {
+                        LogTracingUtils.loggerTracingUtils()
+                                .details(Map.of("raw_tracing_info", String.valueOf(rawTracingInfo.toString())))
+                                .logDebug(logger, "Raw tracing info");
+                    }
 
                     TracingInfo tracingInfo = new TracingInfo(
                             rawTracingInfo.get(TRACEPARENT),
@@ -166,7 +172,11 @@ public class TracingUtils {
                                                              @Nullable TracingInfo tracingInfo,
                                                              @NonNull String spanName
     ) {
-        logger.debug("Creating Span with remote tracing context: {}", tracingInfo);
+        if (logger.isDebugEnabled()) {
+            LogTracingUtils.loggerTracingUtils()
+                    .details(Map.of("tracing_info", String.valueOf(tracingInfo)))
+                    .logDebug(logger, "Creating Span with remote tracing context");
+        }
 
         Context parentContext;
         if (tracingInfo != null) {
