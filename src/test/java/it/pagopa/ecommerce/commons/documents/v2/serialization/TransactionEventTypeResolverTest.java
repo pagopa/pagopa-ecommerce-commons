@@ -44,8 +44,7 @@ import java.util.List;
 
 import static it.pagopa.ecommerce.commons.queues.TracingInfoTest.MOCK_TRACING_INFO;
 import static it.pagopa.ecommerce.commons.v1.TransactionTestUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionEventTypeResolverTest {
@@ -1256,7 +1255,8 @@ class TransactionEventTypeResolverTest {
                         "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
                         "data": {
                             "retryCount": 0,
-                            "transactionGatewayAuthorizationData": null
+                            "transactionGatewayAuthorizationData": null,
+                            "transactionRefundErrorData":null
                         },
                         "eventCode": "TRANSACTION_REFUND_RETRIED_EVENT"
                     },
@@ -1319,7 +1319,8 @@ class TransactionEventTypeResolverTest {
                                       "paymentEndToEndId": "npgPaymentEndToEndId",
                                       "errorCode": null,
                                       "validationServiceId": "validationServiceId"
-                                  }
+                                  },
+                                  "transactionRefundErrorData":null
                               },
                               "eventCode": "TRANSACTION_REFUND_RETRIED_EVENT"
                           },
@@ -1514,7 +1515,7 @@ class TransactionEventTypeResolverTest {
                         new ClosureErrorData(
                                 HttpStatus.BAD_REQUEST,
                                 "ERROR",
-                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
+                                ErrorType.KO_RESPONSE_RECEIVED
                         )
                 ),
                 MOCK_TRACING_INFO
@@ -1909,7 +1910,7 @@ class TransactionEventTypeResolverTest {
                         new ClosureErrorData(
                                 HttpStatus.BAD_REQUEST,
                                 "ERROR",
-                                ClosureErrorData.ErrorType.KO_RESPONSE_RECEIVED
+                                ErrorType.KO_RESPONSE_RECEIVED
                         )
                 ),
                 MOCK_TRACING_INFO
@@ -2221,4 +2222,123 @@ class TransactionEventTypeResolverTest {
                 .expectNext(expectedEvent)
                 .verifyComplete();
     }
+
+    @Test
+    void canDeserializeRefundErrorEventWithoutGatewayErrorData() {
+        // pre-requisites
+        String serializedEvent = """
+                 {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionRefundErrorEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "statusBeforeRefunded": "REFUND_REQUESTED"
+                        },
+                        "eventCode": "TRANSACTION_REFUND_ERROR_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """
+                .replace("\n", "").replace(" ", "");
+        QueueEvent<TransactionRefundErrorEvent> expectedEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionRefundErrorEvent(
+                        new TransactionRefundErrorData(
+                                TransactionStatusDto.REFUND_REQUESTED,
+                                null,
+                                null,
+                                null
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        expectedEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        expectedEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        expectedEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        Hooks.onOperatorDebug();
+        // test and assertions
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionRefundErrorEvent>>() {
+                                }
+                        )
+        )
+                .assertNext(event -> {
+                    assertEquals(expectedEvent, event);
+                    assertNull(event.event().getData().getHttpErrorCode());
+                    assertNull(event.event().getData().getErrorDescription());
+                    assertEquals(ErrorType.COMMUNICATION_ERROR, event.event().getData().getErrorType());
+                }
+                )
+                .verifyComplete();
+
+    }
+
+    @Test
+    void canDeserializeRefundErrorEventWithGatewayErrorData() {
+        // pre-requisites
+        String serializedEvent = """
+                 {
+                    "event": {
+                        "_class": "it.pagopa.ecommerce.commons.documents.v2.TransactionRefundErrorEvent",
+                        "id": "0660cd04-db3e-4b7e-858b-e8f75a29ac30",
+                        "transactionId": "bdb92a6577fb4aab9bba2ebb80cd8310",
+                        "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
+                        "data": {
+                            "statusBeforeRefunded": "REFUND_REQUESTED",
+                            "httpErrorCode": "INTERNAL_SERVER_ERROR",
+                            "errorDescription": "Internal Server Error",
+                            "errorType": "KO_RESPONSE_RECEIVED"
+                        },
+                        "eventCode": "TRANSACTION_REFUND_ERROR_EVENT"
+                    },
+                    "tracingInfo": {
+                        "traceparent": "mock_traceparent",
+                        "tracestate": "mock_tracestate",
+                        "baggage": "mock_baggage"
+                    }
+                }
+                """;
+        QueueEvent<TransactionRefundErrorEvent> expectedEvent = new QueueEvent<>(
+                TransactionTestUtils.transactionRefundErrorEvent(
+                        new TransactionRefundErrorData(
+                                TransactionStatusDto.REFUND_REQUESTED,
+                                HttpStatus.INTERNAL_SERVER_ERROR,
+                                "Internal Server Error",
+                                ErrorType.KO_RESPONSE_RECEIVED
+                        )
+                ),
+                MOCK_TRACING_INFO
+        );
+        expectedEvent.event().setTransactionId("bdb92a6577fb4aab9bba2ebb80cd8310");
+        expectedEvent.event().setId("0660cd04-db3e-4b7e-858b-e8f75a29ac30");
+        expectedEvent.event().setCreationDate("2023-09-25T14:44:31.177776+02:00[Europe/Rome]");
+        Hooks.onOperatorDebug();
+        // test and assertion
+        StepVerifier.create(
+                jsonSerializer
+                        .deserializeFromBytesAsync(
+                                serializedEvent.getBytes(StandardCharsets.UTF_8),
+                                new TypeReference<QueueEvent<TransactionRefundErrorEvent>>() {
+                                }
+                        )
+        )
+                .assertNext(event -> {
+                    assertEquals(expectedEvent, event);
+                    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, event.event().getData().getHttpErrorCode());
+                    assertEquals("Internal Server Error", event.event().getData().getErrorDescription());
+                    assertEquals(ErrorType.KO_RESPONSE_RECEIVED, event.event().getData().getErrorType());
+                }
+                )
+                .verifyComplete();
+
+    }
+
 }
