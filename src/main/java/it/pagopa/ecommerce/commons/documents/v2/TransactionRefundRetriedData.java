@@ -34,6 +34,7 @@ public final class TransactionRefundRetriedData extends BaseTransactionRetriedDa
      * @param transactionGatewayAuthorizationData the transaction gateway
      *                                            authorization data as retrieved
      *                                            during refund operation
+     * @param transactionRefundErrorData          the transaction refund error data
      * @param retryCount                          the retry event counter
      */
     public TransactionRefundRetriedData(
@@ -43,5 +44,6 @@ public final class TransactionRefundRetriedData extends BaseTransactionRetriedDa
     ) {
         super(retryCount);
         this.transactionGatewayAuthorizationData = transactionGatewayAuthorizationData;
+        this.transactionRefundErrorData = transactionRefundErrorData;
     }
 }
