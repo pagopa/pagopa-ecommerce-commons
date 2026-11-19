@@ -6193,7 +6193,8 @@ class TransactionTest {
                 .npgTransactionGatewayAuthorizationData(OperationResultDto.EXECUTED);
         TransactionRefundRequestedEvent transactionRefundRequestedEvent = TransactionTestUtils
                 .transactionRefundRequestedEvent(transactionWithRequestedAuthorization, null);
-        TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils.transactionRefundErrorEvent();
+        TransactionRefundErrorEvent transactionRefundErrorEvent = TransactionTestUtils
+                .transactionRefundErrorEvent(new TransactionRefundErrorData());
         TransactionRefundRetriedEvent transactionRefundRetriedEvent = TransactionTestUtils
                 .transactionRefundRetriedEvent(1, gatewayAuthorizationData);
 

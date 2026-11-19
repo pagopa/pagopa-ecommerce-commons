@@ -685,14 +685,19 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
-        return transactionRefundErrorEvent();
+        return new TransactionRefundErrorEvent(
+                TRANSACTION_ID,
+                new TransactionRefundErrorData(baseTransaction.getStatus())
+        );
     }
 
     @Nonnull
-    public static TransactionRefundErrorEvent transactionRefundErrorEvent() {
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent(
+                                                                          TransactionRefundErrorData transactionRefundErrorData
+    ) {
         return new TransactionRefundErrorEvent(
                 TRANSACTION_ID,
-                new TransactionRefundErrorData()
+                transactionRefundErrorData
         );
     }
 
