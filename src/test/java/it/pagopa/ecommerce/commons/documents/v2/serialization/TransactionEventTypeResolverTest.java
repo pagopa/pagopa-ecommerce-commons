@@ -1255,7 +1255,8 @@ class TransactionEventTypeResolverTest {
                         "creationDate": "2023-09-25T14:44:31.177776+02:00[Europe/Rome]",
                         "data": {
                             "retryCount": 0,
-                            "transactionGatewayAuthorizationData": null
+                            "transactionGatewayAuthorizationData": null,
+                            "transactionRefundErrorData":null
                         },
                         "eventCode": "TRANSACTION_REFUND_RETRIED_EVENT"
                     },
@@ -1318,7 +1319,8 @@ class TransactionEventTypeResolverTest {
                                       "paymentEndToEndId": "npgPaymentEndToEndId",
                                       "errorCode": null,
                                       "validationServiceId": "validationServiceId"
-                                  }
+                                  },
+                                  "transactionRefundErrorData":null
                               },
                               "eventCode": "TRANSACTION_REFUND_RETRIED_EVENT"
                           },
@@ -2247,7 +2249,10 @@ class TransactionEventTypeResolverTest {
         QueueEvent<TransactionRefundErrorEvent> expectedEvent = new QueueEvent<>(
                 TransactionTestUtils.transactionRefundErrorEvent(
                         new TransactionRefundErrorData(
-                                TransactionStatusDto.REFUND_REQUESTED
+                                TransactionStatusDto.REFUND_REQUESTED,
+                                null,
+                                null,
+                                null
                         )
                 ),
                 MOCK_TRACING_INFO

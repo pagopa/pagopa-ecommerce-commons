@@ -576,9 +576,22 @@ public class TransactionTestUtils {
                                                                               int retryCount,
                                                                               TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
     ) {
+        return transactionRefundRetriedEvent(retryCount, transactionGatewayAuthorizationData, null);
+    }
+
+    @Nonnull
+    public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(
+                                                                              int retryCount,
+                                                                              TransactionGatewayAuthorizationData transactionGatewayAuthorizationData,
+                                                                              TransactionRefundErrorData transactionRefundErrorData
+    ) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundRetriedData(transactionGatewayAuthorizationData, retryCount)
+                new TransactionRefundRetriedData(
+                        transactionGatewayAuthorizationData,
+                        transactionRefundErrorData,
+                        retryCount
+                )
         );
     }
 
@@ -687,7 +700,7 @@ public class TransactionTestUtils {
     public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
         return new TransactionRefundErrorEvent(
                 TRANSACTION_ID,
-                new TransactionRefundErrorData(baseTransaction.getStatus())
+                new TransactionRefundErrorData(baseTransaction.getStatus(), null, null, null)
         );
     }
 

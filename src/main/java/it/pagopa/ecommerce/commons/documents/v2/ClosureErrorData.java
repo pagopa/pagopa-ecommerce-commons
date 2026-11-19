@@ -42,9 +42,9 @@ public class ClosureErrorData {
      * @param errorType        the type of error
      */
     public ClosureErrorData(
-            HttpStatus httpErrorCode,
-            String errorDescription,
-            ErrorType errorType
+            @Nullable HttpStatus httpErrorCode,
+            @Nullable String errorDescription,
+            @NotNull ErrorType errorType
     ) {
         this.httpErrorCode = httpErrorCode;
         this.errorDescription = errorDescription;

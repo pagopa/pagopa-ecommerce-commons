@@ -47,15 +47,6 @@ public final class TransactionRefundErrorData extends BaseTransactionRefundedDat
      * Constructor
      *
      * @param statusBeforeRefunded the transaction before
-     */
-    public TransactionRefundErrorData(@NotNull TransactionStatusDto statusBeforeRefunded) {
-        super(statusBeforeRefunded);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param statusBeforeRefunded the transaction before
      * @param httpErrorCode        gateway http error code performing refund: This
      *                             field is null when HTTP response error code
      *                             cannot be detected (f.e. timeout)
@@ -67,11 +58,13 @@ public final class TransactionRefundErrorData extends BaseTransactionRefundedDat
             @NotNull TransactionStatusDto statusBeforeRefunded,
             @Nullable HttpStatus httpErrorCode,
             @Nullable String errorDescription,
-            @NotNull ErrorType errorType
+            @Nullable ErrorType errorType
     ) {
         super(statusBeforeRefunded);
         this.httpErrorCode = httpErrorCode;
         this.errorDescription = errorDescription;
-        this.errorType = errorType;
+        if (errorType != null) {
+            this.errorType = errorType;
+        }
     }
 }

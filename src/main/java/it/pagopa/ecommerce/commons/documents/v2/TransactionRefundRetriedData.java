@@ -25,6 +25,9 @@ public final class TransactionRefundRetriedData extends BaseTransactionRetriedDa
     @Nullable
     private TransactionGatewayAuthorizationData transactionGatewayAuthorizationData;
 
+    @Nullable
+    private TransactionRefundErrorData transactionRefundErrorData;
+
     /**
      * Constructor
      *
@@ -35,6 +38,7 @@ public final class TransactionRefundRetriedData extends BaseTransactionRetriedDa
      */
     public TransactionRefundRetriedData(
             @Nullable TransactionGatewayAuthorizationData transactionGatewayAuthorizationData,
+            @Nullable TransactionRefundErrorData transactionRefundErrorData,
             Integer retryCount
     ) {
         super(retryCount);
