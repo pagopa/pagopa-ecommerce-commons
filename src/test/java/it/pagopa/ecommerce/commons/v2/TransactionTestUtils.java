@@ -576,9 +576,22 @@ public class TransactionTestUtils {
                                                                               int retryCount,
                                                                               TransactionGatewayAuthorizationData transactionGatewayAuthorizationData
     ) {
+        return transactionRefundRetriedEvent(retryCount, transactionGatewayAuthorizationData, null);
+    }
+
+    @Nonnull
+    public static TransactionRefundRetriedEvent transactionRefundRetriedEvent(
+                                                                              int retryCount,
+                                                                              TransactionGatewayAuthorizationData transactionGatewayAuthorizationData,
+                                                                              TransactionRefundErrorData transactionRefundErrorData
+    ) {
         return new TransactionRefundRetriedEvent(
                 TRANSACTION_ID,
-                new TransactionRefundRetriedData(transactionGatewayAuthorizationData, retryCount)
+                new TransactionRefundRetriedData(
+                        transactionGatewayAuthorizationData,
+                        transactionRefundErrorData,
+                        retryCount
+                )
         );
     }
 
@@ -685,14 +698,19 @@ public class TransactionTestUtils {
 
     @Nonnull
     public static TransactionRefundErrorEvent transactionRefundErrorEvent(BaseTransaction baseTransaction) {
-        return transactionRefundErrorEvent();
+        return new TransactionRefundErrorEvent(
+                TRANSACTION_ID,
+                new TransactionRefundErrorData(baseTransaction.getStatus(), null, null, null)
+        );
     }
 
     @Nonnull
-    public static TransactionRefundErrorEvent transactionRefundErrorEvent() {
+    public static TransactionRefundErrorEvent transactionRefundErrorEvent(
+                                                                          TransactionRefundErrorData transactionRefundErrorData
+    ) {
         return new TransactionRefundErrorEvent(
                 TRANSACTION_ID,
-                new TransactionRefundErrorData()
+                transactionRefundErrorData
         );
     }
 
